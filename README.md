@@ -5,7 +5,7 @@ Cmdr Olklei
 
 2018.06.26
 ==========
-Trade Dangerous Helper has been updated. The excellent maddavo plugin stopped working some months ago and CMDR Eyeonus wrote a new plugin that pulls data either from a server mainained by CMDR Tromador or from the EDDB server as a fallback. This new pugin, EDDBlink, allowed TD Helper to work again but not as an integrated system. I have, therefore, removed all the maddavo plugin calls and substituted the EDDBlink plugin call allowing TD Helkper to work again as intended. Tjere were a few other bugs that got squished in the process and the applicationis currently in beta testing.
+Trade Dangerous Helper has been updated. The excellent maddavo plugin stopped working some months ago and Cmdr Eyeonus wrote a new plugin that pulls data either from a server mainained by Cmdr Tromador or from the EDDB server as a fallback. This new pugin, EDDBlink, allowed TD Helper to work again but not as an integrated system. I have, therefore, removed all the maddavo plugin calls and substituted the EDDBlink plugin call allowing TD Helkper to work again as intended. Tjere were a few other bugs that got squished in the process and the applicationis currently in beta testing.
 
 Cmdr MarkAusten
 
@@ -25,7 +25,7 @@ Installation Instructions
 =========================
 First, you'll need to make sure you have at least [.NET 4.5 Framework](http://go.microsoft.com/fwlink/?LinkId=397674) or above installed.
 You'll also need at least [Python 3.4](https://www.python.org/downloads/) available. As well as the very latest version of Trade Dangerous
-from Oliver Smith's ([BitBucket GIT](https://bitbucket.org/kfsone/tradedangerous)).
+from Eyeonus' ([GitHub GIT](https://github.com/eyeonus/Trade-Dangerous)).
 
 Once you have those requirements:
 
@@ -192,3 +192,4 @@ Respectful mentions
 ===================
 Thanks to Oliver Smith for his [Trade Dangerous](https://bitbucket.org/kfsone/tradedangerous) tool written in Python. Without which
 this tool would not be possible.
+Thanks also to Cmdr Olklei for his modifications to the original.
