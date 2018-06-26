@@ -7,6 +7,8 @@ Cmdr Olklei
 ==========
 Trade Dangerous Helper has been updated. The excellent maddavo plugin stopped working some months ago and CMDR Eyeonus wrote a new plugin that pulls data either from a server mainained by CMDR Tromador or from the EDDB server as a fallback. This new pugin, EDDBlink, allowed TD Helper to work again but not as an integrated system. I have, therefore, removed all the maddavo plugin calls and substituted the EDDBlink plugin call allowing TD Helkper to work again as intended. Tjere were a few other bugs that got squished in the process and the applicationis currently in beta testing.
 
+Cmdr MarkAusten
+
 Trade Dangerous Helper
 ======================
 Copyright under the MIT License (C) 2015, Jon Wrights
