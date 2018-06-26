@@ -1,0 +1,500 @@
+v1.0.7.7
+--------
+* Added a global hotkey for the Import button, and a section in the Misc. Settings panel to configure it (WIP)
+* Added an option to copy the selected system name from the Pilot's Log into the EDDB panel (WIP)
+* We now switch to the Station Editor panel if we are missing station details before importing a .prices file (WIP)
+* We now encrypt the saved username, password, and authentication cookies used when importing via EDAPI (WIP)
+* We now have native support for EDAPI instead of using TD's EDAPI plugin (WIP)
+* We now require a source before activating the Towards checkbox
+* Fixed the command dropdown tooltip for Buy/Sell
+* Fixed a bug that prevented duplicates from being removed when joining lists in the Pilot's Log (WIP)
+* Fixed a bug in the main worker delegate that caused Run to not pass "--to" if no "--fr" was set
+* Fixed a bug that caused incorrect sorting of the recent systems list when cleaning duplicates in the dropdown
+
+v1.0.7.6
+--------
+* Fixed a bug in readNetLog() preventing quick-loading systems from the database on startup
+* Fixed some bugs that caused index exceptions when deleting rows from the Pilot's Log
+* Fixed the "C" button reordering the most recent systems in the recents dropdown
+* Fixed the selection behavior of the top-left-corner selection button in the DataGridView
+* We now prevent from updating the recent systems dropdown unless there are changes
+* We now batch removal of rows from the Pilot's Log for a performance increase and stability improvement
+* Lots of performance improvements when building or updating the Pilot's Log with systems
+
+v1.0.7.5
+--------
+* The netLog path collection is now more resilient against errors and file timestamp shenanigans
+* Fixed some more sorting bugs when loading the database and appending the most recent systems
+* Fixed incorrect behavior in getMaddavoUpdates() when using "Force Prices" with the "Skip prices" checkbox
+* Rewrite of readNetLog() and accompanying methods feeding the recent systems list-- this should alleviate many stubborn bugs
+
+v1.0.7.4
+--------
+* Fixed a fatal index exception when deleting the last row in the Pilot's Log
+* Fixed a bug in readNetLog() causing the recent systems updater to print duplicates of the recents array on startup
+* Fixed some bugs in how readNetLog() sorts the recent systems array that resulted in improper ordering
+* We now use the AppConfigLocal.xml to save our VerboseLogging setting, which should survive Elite Dangerous patches
+
+v1.0.7.3
+--------
+* Added a Ctrl+Click handler to allow resetting the font in the Misc. Settings dialog
+* Added a splash window when populating the database to let the user know we're working
+* Added settings box for changing the font in TreeView to the Misc. Settings dialog
+* Fixed TreeView unnecessarily making a sound when copying system/station names
+* Fixed the TreeView cutting off the bottom of a list when resizing
+* Fixed the Ctrl+Shift+C shortcut in TreeView grabbing the whole line instead of the System/Station
+* Fixed a rare race condition in the recent systems updater that caused multiple updates to fire at once
+* Fixed a bug that resulted in duplicates being inserted into the Pilot's Log when appending multiple systems
+* Fixed some bugs in row insertion, now we generate a unique timestamp from the selected row
+* Fixed the sort when inserting rows in Pilot's Log, entries shouldn't drop to the bottom anymore
+* Fixed more bugs in the Pilot's Log and recent systems updater, they should no longer update unless they need to
+* Improved performance when loading the pilot's log database by moving the work to a background thread
+* Re-ordered the way database transactions are performed, should drastically increase insert/delete performance
+* We now perform a database vacuum during potentially fragmenting procedures for ideal performance over time
+
+v1.0.7.2
+--------
+* Fixed a bug in the circular text buffer that caused the output log to spaz out on large text dumps
+* Fixed a bug that caused the recent systems list to fail while updating with new systems
+* Fixed a bug that caused the Pilot's Log to constantly update unnecessarily
+
+v1.0.7.1
+--------
+* Added a handler (Ctrl+C/Ctrl+Shift+C) to allow clipboard copying of the system or system/station name from nodes in the TreeView
+* Added a context menu option for copying system names from the Pilot's Log to the src/dest boxes
+* Added a Ctrl+Click handler to the config file selector to allow deleting non-default config files
+* Fixed a bug that caused the Pilot's Log DataGridView to update unnecessarily
+* Fixed a bug that caused the Pilot's Log to not retain the most recently visited entries in the list
+* Fixed a Data Property Mismatch exception when switching config files from the config selection box
+* Fixed the Padsize box not using the Padsize value from the config when loading alternate config files
+* Fixed a bug in the worker delegate that was causing all price file imports to go to cleanUpdatedPricesFile() and fail
+* Fixed a bug causing strange selection behavior in the Pilot's Log when selecting a cell after editing any other cell
+* Fixed an exception when cancelling out of the Import button's path selection dialog when no .prices file is selected
+* Fixed the Import button not asking for a path when the current path to the .prices file is blank
+* We no longer switch to the Output pane when loading a config file
+* The EDAPI import executed from the Import button will now open a console window for user input
+* The Recent Systems dropdown in src/dest is now capped at the most recent 50 unique items to reduce clutter
+* Rewrote the support code for the DataGrid--it should now be faster, safer, and lighter on resources
+* Rewrote the recent systems list to integrate better with the Pilot's Log and to only read logs when necessary
+
+v1.0.7.0
+--------
+NOTE: This release requires that you update to Trade Dangerous v7.2.0 or above to function correctly
+* Added hyperlinks to the main window pointing to the FAQ and the Issue tracker to encourage people to report bugs
+* Added a Pilot's Log tab with the previous systems visited in a timestamped format with notes
+* Added a couple of context menu options to the Pilot's Log GridView, mainly for inserting custom rows (like timestamped notes)
+* Added a config option ("CopySystemToClipboard") to allow copying unrecognized system names to clipboard automatically
+* Added a button to the misc. settings dialog to allow for completely wiping all settings from the current config file
+* Fixed path validation dialogs throwing exceptions when simply cancelling a dialog
+* Fixed the "T" button in TreeView to properly remember state when re-entering the dialog
+* Fixed "Notify on unknown system" not notifying when starting in an unknown system
+* Fixed Routes value being wiped when switching between panels after the worker delegate has run
+* "Notify on unrecognized system" option no longer steals window focus, flashes the TDHelper window, and has a new audio alarm
+* We now allow the user to change the "Unknown System" alarm by putting an "unknown.wav" in the executable directory
+* We now grab new systems automatically in the background every few seconds instead of requiring manual updates (the "C" button is optional)
+* The Gear button on the Run options panel now opens a more detailed configuration window to give access to obscure settings from the config file
+* Changed the behavior of the path validators to better support the Trade Dangerous Installer
+* Changed the default behavior of the unrecognized system notifier, we no longer copy system names automatically--instead we print a message to the output log buffer by default
+* Changed the behavior of the "Import" button: a normal click now uses EDAPI, Shift+Click imports a previous .prices file, and Ctrl+Click imports a custom .prices file
+
+v1.0.6.7
+--------
+* The Import and Upload buttons now properly save/load their chosen file paths
+* Fixed an exception when readNetLog() processes a netLog that contains no System names
+* Fixed an OOR exception when updating a blank recent systems list with more than 1 marked stations
+
+v1.0.6.6
+--------
+* Improved CPU usage when dumping large amounts of text to the output log (like during database updates)
+* Fixed a bug that caused an OOR exception when setting the SelectedIndex after using the "C" button
+* Fixed some more potential index and null exceptions when getting recent systems
+
+v1.0.6.5
+--------
+* Added a cog button in the Run panel for customizing ExtraRunParams
+* (Re-release) Fixed a null reference when getting recent systems from an empty Logs directory
+* Fixed station/shipvendor information populating incorrectly for stations with the same name in different systems
+* Fixed failing when adding VerboseLogging="1" to the AppConfig.xml in some situations
+* Fixed a bug that resulted in loading/validating the default config multiple times on startup
+* Fixed an issue with the Local checkbox resetting ladenLY to 1 in some situations
+* Fixed the ShipVendor panel neglecting to update the ShipVendor panel when adding/removing
+* Fixed the "C" button not pulling recent systems since ED 1.3
+* The Ships Sold dropdown box should now behave like all other dropdowns when entered/clicked
+* Jumps between hops are now included in the TreeView output when available
+* We now clean the input when passing ships in the ShipVendor panel to the delegate
+* We now parse all network logs for previous destinations and not just the most recent
+
+v1.0.6.4
+--------
+* Removed recursion from path validator methods (we now ask the user instead)
+* (Re-release) Fixed a logic error with the Towards/Shorten checkboxes
+* Fixed switching between Buy/Sell and Station commands breaking the option panel
+* Fixed capacity not being passed to the primary worker delegate when set to 1
+* Fixed Shorten to be mutually exclusive with both Towards and Loop
+
+v1.0.6.3
+--------
+* Added an option in the config file ("ExtraRunParams") to add a custom string to the commandline of Run
+* Added the "--show-jumps" option to the Run command panel and config file
+* Fixed a failure in saving/loading proper localized decimals
+* Fixed TreeView failing to parse Run output if local culture is not "en-US"
+
+v1.0.6.2
+--------
+NOTE: This release requires that you update to Trade Dangerous v7.0.2 or above to function correctly
+* Added "--demand" to the Run command
+* Added "--avoid", "--bm", "--supply", and "--demand" to the Buy/Sell commands
+* Added a dropdown for sorting results in the Buy/Sell commands
+* Added a dropdown for filtering by legality in the Rare command
+* Fixed options filtering in the Buy/Sell commands
+* Fixed Towards option not passing "--towards" to the worker delegate
+* Fixed Towards option refusing to toggle off (except by Shorten/Loop)
+* Fixed TD v7.x Run output breaking regex on populating TreeView
+* Fixed loadSettings() not using the local Default.xml
+* Cleaned up the tooltips for the station dropdown in all relevant modes
+* We now prevent command context issues by resetting our selected command on loading a settings file
+
+v1.0.6.1
+--------
+* Added an option in the CSV selector to allow specifically rebuilding the database cache
+* Added the "--routes" option to the Run options panel
+* Added support for selected text to be pushed to the saved pages (rather than the whole log)
+* We now sort output by recent date (newest to oldest) in the recents mode of EDSC
+* Fixed "Push to Notes" context menu option erroneously pushing header when not in buy/sell mode
+* Fixed verbosity "-vvv" resetting to "-v" when loading a config
+* Fixed python process remaining active when exiting TDHelper during a long operation
+* Fixed Notes box loading/saving at the wrong times, will now load/save upon switching from/to the page
+
+v1.0.6.0
+--------
+* Added support for inserting EDSC systems to the System.csv via the context menu in the Output box
+* Added a TD formatted system line after each of the EDSC recents/lookup results
+* Added CR filtering support to the EDSC panel in lookup/recents mode
+* Added a commandline argument ("/noupdate") to disable auto-updating on startup
+* Added a commandline argument ("/?") to list known arguments and options
+* Added a confirmation box before we download a new update
+* Added support for "--shorten" to the Run command panel
+* Fixed tabstops wandering off when switching between panels
+* Fixed Buy/Sell/Rare not properly saving/restoring ladenLY value
+* Fixed CSV selection box not passing the correct index sometimes
+* Fixed cr/t estimate in null/-v verbosity modes not reporting correctly
+* Towards checkbox now requires Destination to be given first
+* The user-alert messagebox now makes noise
+* We now support null verbosity in TreeView for both regular and saved output
+* Added a null verbosity option to the verbosity dropdown box
+* We now print the commandline for all commands at the top of the output log
+* Improved the ShipVendor "Ship's Sold" box, and added a List command to the panel dropdown
+
+v1.0.5.5
+--------
+* Fixed notification sound playing repeatedly when entering an unknown system
+* Fixed EDSC submit command erroneously responding with rounded distances
+* Fixed EDSC submission response reporting the wrong origin system
+* Fixed substrings of a system name being erroneously reported as unique
+
+v1.0.5.4
+--------
+* Added orphaned systems to the autocomplete system/station names
+* Added "--loop-int" support to the Run command and the config file
+* Added limited EDSC submit/lookup/recents support
+* Added loading of the last used config file on startup
+* Fixed unknown station notifier triggering on known systems
+* Fixed playAlert() not playing sound correctly in some cases
+* Fixed Rare command not failing when origin is empty
+* Fixed Buy/Sell including "--near" when origin is empty
+* Changed playAlert() to play "notify.wav" in its current directory
+* Relaxed the filename restrictions in the Upload file dialog
+* The autocompletion mode on src/dest boxes should be less aggressive now
+
+v1.0.5.3
+--------
+* Fixed bugs and data loss when switching between any command and Rare when Avoids weren't empty
+* Fixed the mini-mode auto-sizer not including space for the taskbar
+* Fixed "--loop" not being passed to the Run command when using an anonymous src/dest
+* Fixed various regex bugs in the parsing of recent system/station names
+* Fixed "C" button not selecting the most recent system when favorites has only 1 item
+* Improved profit estimates in mini-mode, should now give a reasonable ballpark of cr/t/hr for higher verbosity modes
+
+v1.0.5.2
+--------
+* Added an indicator to differentiate a favorited system/station from recent systems/stations
+* Added support for favoriting of recognized systems/stations in Src/Dest boxes
+* Added a checkbox for notifying the user when entering an unrecognized system
+* Added a tally of the average cr/ton of a run to the mini-mode form
+* Added a checkbox for "--stations" to the Local command
+* Added support for "--min-age" and "--route" to the OldData command
+* Selecting any tab now selects its dependent text box control
+* Improvements to auto-sizing of TreeView, now calculates height intelligently
+* Improvements to sanitization of system/station string in src/dest
+* Fixed TreeView silently failing to populate when using saved pages
+* Fixes for text box weirdness in the saved pages and notes tabs
+* Significant improvements to snap-to-edge functionality
+* The Output tab now focuses automatically when the contents has changed after a Run
+
+v1.0.5.1
+--------
+* Added support for "--stock" in the Run panel
+* Added support for using saved pages of Run output to populated TreeView
+* Fixed a zero bounds error when parsing Run output on the highest verbosity
+* Fixed Ctrl+Click on Save Settings button not saving a file
+* Added keyboard shortcuts for TreeView and on-top mode
+* Added support for using Escape key to exit the mini-mode window
+* Improved the auto-resizing of the mini-window, and made the snap-to-screen radius smaller
+* The Run button now switches to the Output page when running
+* Visual changes to the on-top button in the mini-mode window
+* The on-top button in mini-mode now remembers its state more intelligently
+* Tweaked the color scheme in the mini-mode window
+* Various fixes/cleanups in the main and mini-mode windows
+
+v1.0.5.0
+--------
+* Added hot-swap auto-updating with a notification in the Run panel
+* Added ships sold as a watermark in the ShipVendor panel
+* Added better sanity checking for files uploaded to Maddavo's DB
+* Added a TreeView to the mini-mode form for the Run command
+* Added a pinnable mini-mode for the TreeView output
+* Added support for the "OldData" command
+* Added support for "--loop" in the Run command, replaced Circular with Loop in the UI/config
+* Added snap-to-screen support to the mini-mode form
+* Added support for downloading Corrections from Maddavo
+* Added a checkbox to force downloading Corrections in addition to the selected CSV
+* Added a dropdown for alternate config files, Load/Save now updates the dropdown as well
+* Added smart pruning of whitespace from text entered/copied into the src/dest boxes
+* Fixed the "C" button incorrectly doing a full refresh on a simple click
+* Fixed the Ctrl+Click on Load/Save buttons not changing to the correct config name in the selector box
+* Fixed the Cancel button playing the notification when stopping a process after the timeout
+* Fixed the CSV selector not using the proper index for ShipVendor/Force Prices
+* Changed the timeout for the notification on a long running process to at least 10 seconds
+* The Buy/Sell commands now remember the ladenLY box between command switches
+* The CSV selector now remembers its state properly
+* NumericUpDown controls now select text when focused or clicked
+* ShipVendor command now lists currently sold ships in its panel
+* Major rewrite of the config file handling for maintainability
+* Lots of code cleanup for cleanliness and maintainability
+* The main window is now resizable, remembers its size, and more intelligently restores its position
+* Removed some unnecessary exceptions, this should help present more useful error logs
+
+v1.04i_re2
+----------
+* Fixed a typo in the worker delegate preventing the import/upload buttons from working
+* Corrected a regex error that caused the recent systems list to remain empty despite having a valid path and log
+* Removed a conditional on recurseDirectories() that filtered out junctions when acquiring a path
+* Cleaned up the primary worker delegate a little
+* Fixed a bug with the window not remembering its location
+* We now play an alert when the Run button fails to execute a command
+* Fixed the "C" button not updating the interface with the latest log info
+* Fixed a few logic ordering bugs in the primary worker delegate
+
+v1.04h
+------
+* Added support for the Trade command
+* Default behavior of the "C" button is now to only update the recent systems
+* Readded Ctrl+Click on the "C" button to force a database update
+* The "C" button now runs a populateStationPanel() call when it finishes setting the most recent system/station
+* Moved the system/station database to the AutoCompleteCustomSource collection, this should vastly improve performance for the comboboxes
+* Improved the performance of selection changes to the source/destination boxes
+* Fixed configFile being derived incorrectly if TDHelper is run from outside its working directory
+* Fixed endJumps box being in an incorrect state after switching back to the Run command with a valid dest
+* You can now use a custom notification sound for longer operations by putting a file called "beep.wav" in the same directory as the executable
+* Removed the superfluous "Force All" command in the CSV selector
+* Fixed a mutex issue where the application would not exit cleanly if another instance was running
+* Improved the tooltips of the CSV selection drop down
+* Fixed Circular checkbox placing unnecessary arbitrary restrictions on Hops/Jumps
+* Fixed LadenLY not being passed to the Navigation command in the worker delegate
+* Fixed the Cancel button not working to kill active Run commands
+* Fixed the Swap button incorrectly working on the Destination box when it wasn't visible
+* Added support for collecting Systems and Stations from the net logs (similar to EliteOCR)
+
+
+v1.04g
+------
+* There is now a beep when longer operations finish
+* Improved the performance of parsing large net logs
+* There is now a swap button for Source/Destination boxes
+* The file output when we set VerboseLogging is a little prettier now
+* We now make a copy of the selected AppConfig.xml when we set VerboseLogging for safety
+* The escape button now deletes text intelligently in the source/destination boxes
+* Station editor panel now triggers a panel/systems update after adding/removing a station
+* Improvements to how we handle paths, also fixed the file dialog for the net log path
+* We now check the sanity of the database before running our station queries
+* There is now a box in the Station editor panel for the confirm code
+
+v1.04f
+------
+* Improvements to the tab ordering of all command panes
+* Fixed the ordering conflict in the main worker delegate, fixes issue #18
+* A few more improvements to the path finding algorithm for NetLogPath
+* We now pull station details from the Source box on-the-fly upon auto-complete for the station editor
+* Fixed access time using GetLastAccessTime rather than GetLastWriteTime, fixes issue #17
+* Improvements to how VerboseLogging is validated
+* Lots of improvements to auto-generating XML configuration tags
+* Major improvements to recursive searching for NetLogPath, should fix most pathing errors
+* Fixed a typo in the station editor's delegate handler for the "outfitting" checkbox
+* Fixed VerboseLogging not being checked when NetLogPath is set
+
+v1.04e
+------
+* Added support for saving/loading to different XML configuration files
+* We now ensure the correct decimal separator is used when passing commands to TD
+* Improvements to globalization when loading/saving the config.xml
+* We now generate config tags when a given tag is missing from the config.xml file
+* Added a checkbox for skipping importing of prices after CSV download during "Update DB" operation
+* Added support for filtering to the Station and Local commands (and some UI cleanup)
+* Added "None" as an option to the CSV download dropdown for forcing a buildcache
+* Moved the "Force" checkbox option for the "Update DB" button to the CSV download dropdown as the "Force All" option
+* Added a dropdown and config tag for selecting which CSVs to download when using the "Update DB" button
+* Added support for CSV files to the Upload button, and fixed a pathing bug when cancelling the dialog
+* Fixed the Capacity box not allowing a setting of "1"
+* Fixed lots of logic bugs with the DataSources for comboboxes, this should increase performance
+* Improvements to path finding (it's less lethal when it fails)
+* Added support for --max-gain-per-ton to the Run command
+* The Local override now remembers the "Near LY" distance between uses, but does not persist
+* Fixed a bug that caused the "Update DB" delegate to conflict with getting the current systems
+
+v1.04d
+------
+* Added support for --margin to the Run command
+* Fixed the combo boxes not updating correctly
+* Improved the tab ordering on the Station and Run commands
+* Made the Source system box always focus when switching commands
+* Added a keyboard shortcut for the Local override on the Run/Station/ShipVendor commands
+* Fixed the net log not properly updating the current systems
+* Massively increased the speed of loading/processing data updates to comboboxes
+* Circular mode now correctly reports 3 hops as the minimum to the hopsBox
+* Improvements to the config file loading/saving code, the config file is now generated dynamically
+* Added my own file uploader due to madupload.py being broken when using files with paths
+* Fixed the "C" button not setting the current system correctly if pre/post data structures are the same
+* Fix for a regression: the Local override now correctly resets the state of the ladenLY box between command switches
+* Fix for a regression: Local overrides now correctly copy the saved laden LY value to their box when done
+* Fix for a regression: re-added ctrl+click to the C button for forcing a database refresh
+* Fix for a regression: database now only updates once (full or quick) after importing data
+* Fix for database refreshing upon completing any command (fixes sluggishness)
+* Fix for a regression: the left Run panel options stay disabled after changing commands
+
+v1.04c
+------
+* Refactoring to improve overall performance of parsing
+* Fixed a bug that involved readNetLog() not parsing the most recent file
+* Added a mutex to enforce a single instance of TDHelper at any given time
+* Massive improvements to the speed of parsing database refreshes when grabbing Station/System data
+* Fixed a silly derp in the binding of DataSources to the combo boxes
+
+v1.04b
+------
+* Various code cleanups for ease of maintainability
+* Added true system/station persistence via the Trade Dangerous database
+* Improved the method of checking for the net log path
+* Implemented a first pass at limited system/station persistence
+* Implemented smarter path finding for the python executable
+* Added a specific combobox for table exporting under the Station command
+* Added an override ("DisableNetLogs") in the config file for people who don't want to use net logs
+* Ctrl+Clicking on the "E" button for a station will now produce a zero'd updated.prices file to simplify removing commodity data
+* Cleaned up the numeric controls' support code, they should work more predictably now (and no longer kill the Run button)
+
+v1.04a
+------
+NOTE: Please make sure to update your version of Trade Dangerous from Oliver's GIT as this
+  release relies on the very latest GIT version!
+
+* Added Nav command support
+* You can now run/cancel a command by hitting enter in either of the Source/Destination boxes
+* ShipVendor command now supports listing ships at a station, just leave the textbox blank
+* First pass at implementing station/shipvendor editor
+* The UI now disables options that do not apply to the active command
+* Fixed lots of UI bugs dealing with the comboboxes and checkboxes
+* Fixed post-update message, it should be more sensible after a loop of updates
+* Disabled runnable buttons while doing any uncancellable operations
+* Fixed the Run button getting stuck on Cancel while using "Update DB"
+* Added ShipVendors.csv to the download list for the "Update DB" delegate
+
+v1.04
+-----
+* Added commodities editing for the Source box
+* Added support for importing/uploading of .prices files
+* Added clearing of saved pages to the appropriate context menus
+* Major cleanup of the UI and backing code
+* Fixed the tab ordering of common controls
+* Added a keyboard shortcut for the Run/Cancel button
+* Started stubbing for a full station editor via dynamic panels
+* Added support for ships and 1-stop mode in Buy/Sell
+* Added support for --direct in Run
+* Bug fixes and cleanups to notes/pages and stuff
+* Made "Update DB" delegate a bit smarter about when/how it grabs data
+* Drastically improved the usefulness of the output log
+
+v1.03e
+------
+* Added the ladenLY input to the Local transient search
+* Fixed the logic of the "Update DB" button, it now grabs data more intelligently
+* Fixes to autocomplete for source/destination boxes
+
+v1.03d
+------
+* Added the "market" command (from TD v6.11.0)
+* Fixed non-specific "run" command not working
+* Fixed a rounding issue in the (un)laden LY boxes
+* Fixed many UI bugs involving the new NumericUpDown boxes
+* Added "Delete" to the context menu for the notes pane
+* Fixed a few more worker delegate logic bugs
+* Moved the stopwatch to a separate running thread during processing
+* Fixed contents of from/avoidBox not being restored correctly when switching
+* Switched "From" box (for the "Rare" command) to the avoidBox for sensibility
+* The update function is now smarter by checking the maddavo timestamp
+
+v1.03c
+------
+* Fixed some minor file saving bugs
+* Fixed a crash after closing the app when the config file doesn't exist
+* Temporarily added Rare command with Away/From support
+* Significantly improved sanity checking for the interface and config file
+
+v1.03b
+------
+* Fixed the log file reader not realizing VerboseLogging needs to be set
+* Fixed the log file reader not re-reading the log file between relogs
+* Bug fix to prevent commodities box from duplicating entries
+* The commodities box now sorts by name, and makes julienne fries
+* Added above/below price filters for commodities
+* Fixes for the limit and above/below boxes
+* Renamed assembly to TDHelper for more consistency with the code
+
+v1.03a
+------
+* The tabs now focus the text box when switching between them
+* Caught an annoying bug to do with the Update and Run buttons
+* Fixed the note copier forgetting we're not in buy/sell mode
+* Fixed a cosmetic bug in the Cancel button when using Update
+
+v1.03
+-----
+* Major improvements to the notes pane
+* Major improvements to the buy/sell command
+* Lots of bug fixes (log file crash, etc)
+* Additional context menu functionality in the text panes
+
+v1.02
+-----
+* Redesigned the UI to be more consistent and streamlined (thanks to dbeachy1 for the inspiration)
+* Implemented cancelling for the Run command
+* Fixed the padsize option being derpy
+* Fixed more file loading bugs I could find
+* Added some more sanity checking to the interface
+
+v1.01b
+------
+* Most common bugs with file loading should be fixed
+* WIP: Improving the process handler to stop TD with a cancel button
+
+v1.01a
+------
+* Another attempt to fix some file loading bugs, and a threading issue
+
+v1.01
+-----
+* Attempted to fix file dialog bugs
+* Fixed some logic bugs in the interface
+
+v1.00
+-----
+* Initial release.
+* Features include rudimentary Run and Buy/Sell command support
