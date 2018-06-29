@@ -12,6 +12,7 @@ using System.Net;
 using System.Xml.Linq;
 using System.Security.Cryptography;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace TDHelper
 {
@@ -938,17 +939,39 @@ namespace TDHelper
         {
             string json = this.RetrieveCommanderProfile();
 
-            dynamic profile = JsonConvert.DeserializeObject<dynamic>(json);
+            JObject o = JObject.Parse(json);
 
-            decimal creditBalance = profile.profile.commander.credits;
+            decimal creditBalance = (decimal)o["profile"]["commander"]["credits"];
 
             this.creditsBox.Value = creditBalance;
 
-            decimal hullValue = profile.profile.ship.value.hull;
-            decimal modulesValue = profile.profile.ship.value.modules;
+            decimal hullValue = (decimal)o["profile"]["ship"]["value"]["hull"];
+            decimal modulesValue = (decimal)o["profile"]["ship"]["value"]["modules"];
             decimal rebuyPercentage = Form1.settingsRef.RebuyPercentage;
 
             this.insuranceBox.Value = (hullValue + modulesValue) * rebuyPercentage / 100;
+            decimal capacity = 0;
+            int stringLength = "Int_CargoRack_Size".Length;
+
+            foreach (var slot in o["profile"]["ship"]["modules"])
+            {
+                string module = (string)slot.First["module"]["name"];
+
+                if (module.Length > stringLength && module.Substring(0, stringLength) == "Int_CargoRack_Size")
+                {
+                    int size;
+
+                    if (Int32.TryParse(module.Substring(stringLength, 1), out size))
+                    {
+                        capacity += (decimal)Math.Pow(2, size);
+                    }
+                }
+            }
+
+            if (capacity > 0)
+            {
+                this.capacityBox.Value = capacity;
+            }
         }
 
         /// <summary>
