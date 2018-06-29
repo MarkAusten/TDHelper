@@ -3082,12 +3082,12 @@ namespace TDHelper
 
         private void trackerLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://bitbucket.org/WombatFromHell/trade-dangerous-helper/issues/new");
+            System.Diagnostics.Process.Start("https://github.com/MarkAusten/TDHelper/issues/new");
         }
 
         private void faqLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://bitbucket.org/WombatFromHell/trade-dangerous-helper/wiki/Home");
+            System.Diagnostics.Process.Start("https://github.com/MarkAusten/TDHelper/wiki/Home");
         }
 
         private void comboBox_DropDown(object sender, EventArgs e)
