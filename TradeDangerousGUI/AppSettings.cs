@@ -88,6 +88,8 @@ namespace TDHelper
             instance.DoNotUpdate = false;
             instance.HasUpdated = false;
             instance.CopySystemToClipboard = false;
+
+            instance.RebuyPercentage = 5;
         }
 
 
@@ -191,6 +193,8 @@ namespace TDHelper
             else
                 return "";
         }
+
+        public decimal RebuyPercentage { get; set; }
     }
     #endregion
 

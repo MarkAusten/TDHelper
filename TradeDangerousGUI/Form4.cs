@@ -52,6 +52,8 @@ namespace TDHelper
                 currentTVFontBox.Text = String.Format("{0}", Form1.settingsRef.convertToFontString(tvDefaultFont));
                 Form1.settingsRef.TreeViewFont = Form1.settingsRef.convertToFontString(tvDefaultFont);
             }
+
+            this.rebuyPercentage.Value = Form1.settingsRef.RebuyPercentage;
         }
 
         private void FormValidator()
@@ -61,6 +63,7 @@ namespace TDHelper
             Form1.settingsRef.DisableNetLogs = overrideDisableNetLogs.Checked;
             Form1.settingsRef.DoNotUpdate = overrideDoNotUpdate.Checked;
             Form1.settingsRef.CopySystemToClipboard = overrideCopySystemToClipboard.Checked;
+            Form1.settingsRef.RebuyPercentage = this.rebuyPercentage.Value;
 
             // encrypt our edapi login details
             Form1.settingsRef.EDAPIUser = !String.IsNullOrEmpty(edapiUserBox.Text)
@@ -86,6 +89,8 @@ namespace TDHelper
             // save our font name/size for the treeview
             if (!String.IsNullOrEmpty(Form1.settingsRef.TreeViewFont))
                 Form1.Serialize(Form1.configFile, Form1.settingsRef.TreeViewFont, "TreeViewFont");
+
+            Form1.Serialize(Form1.configFile, Form1.settingsRef.RebuyPercentage, "RebuyPercentge");
 
             this.Close();
         }

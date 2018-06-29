@@ -53,12 +53,17 @@
             this.resetButton = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.edapiGroup = new System.Windows.Forms.GroupBox();
-            this.edapiUserBox = new System.Windows.Forms.TextBox();
-            this.edapiPassBox = new System.Windows.Forms.TextBox();
-            this.edapiUserLabel = new System.Windows.Forms.Label();
             this.edapiPassLabel = new System.Windows.Forms.Label();
+            this.edapiUserLabel = new System.Windows.Forms.Label();
+            this.edapiPassBox = new System.Windows.Forms.TextBox();
+            this.edapiUserBox = new System.Windows.Forms.TextBox();
+            this.miscGroupBox = new System.Windows.Forms.GroupBox();
+            this.lblRebuyPercentage = new System.Windows.Forms.Label();
+            this.rebuyPercentage = new System.Windows.Forms.NumericUpDown();
             this.overrideGroupBox.SuspendLayout();
             this.edapiGroup.SuspendLayout();
+            this.miscGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.rebuyPercentage)).BeginInit();
             this.SuspendLayout();
             // 
             // textBox1
@@ -82,7 +87,7 @@
             // okButton
             // 
             this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.okButton.Location = new System.Drawing.Point(300, 294);
+            this.okButton.Location = new System.Drawing.Point(300, 369);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 16;
@@ -93,7 +98,7 @@
             // cancelButton
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cancelButton.Location = new System.Drawing.Point(12, 294);
+            this.cancelButton.Location = new System.Drawing.Point(12, 369);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 14;
@@ -265,7 +270,7 @@
             // resetButton
             // 
             this.resetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.resetButton.Location = new System.Drawing.Point(151, 294);
+            this.resetButton.Location = new System.Drawing.Point(151, 369);
             this.resetButton.Name = "resetButton";
             this.resetButton.Size = new System.Drawing.Size(84, 23);
             this.resetButton.TabIndex = 15;
@@ -286,20 +291,14 @@
             this.edapiGroup.TabStop = false;
             this.edapiGroup.Text = "EDAPI";
             // 
-            // edapiUserBox
+            // edapiPassLabel
             // 
-            this.edapiUserBox.Location = new System.Drawing.Point(70, 19);
-            this.edapiUserBox.Name = "edapiUserBox";
-            this.edapiUserBox.Size = new System.Drawing.Size(100, 20);
-            this.edapiUserBox.TabIndex = 0;
-            // 
-            // edapiPassBox
-            // 
-            this.edapiPassBox.Location = new System.Drawing.Point(253, 19);
-            this.edapiPassBox.Name = "edapiPassBox";
-            this.edapiPassBox.Size = new System.Drawing.Size(100, 20);
-            this.edapiPassBox.TabIndex = 1;
-            this.edapiPassBox.UseSystemPasswordChar = true;
+            this.edapiPassLabel.AutoSize = true;
+            this.edapiPassLabel.Location = new System.Drawing.Point(191, 22);
+            this.edapiPassLabel.Name = "edapiPassLabel";
+            this.edapiPassLabel.Size = new System.Drawing.Size(56, 13);
+            this.edapiPassLabel.TabIndex = 3;
+            this.edapiPassLabel.Text = "Password:";
             // 
             // edapiUserLabel
             // 
@@ -310,20 +309,62 @@
             this.edapiUserLabel.TabIndex = 2;
             this.edapiUserLabel.Text = "Username:";
             // 
-            // edapiPassLabel
+            // edapiPassBox
             // 
-            this.edapiPassLabel.AutoSize = true;
-            this.edapiPassLabel.Location = new System.Drawing.Point(191, 22);
-            this.edapiPassLabel.Name = "edapiPassLabel";
-            this.edapiPassLabel.Size = new System.Drawing.Size(56, 13);
-            this.edapiPassLabel.TabIndex = 3;
-            this.edapiPassLabel.Text = "Password:";
+            this.edapiPassBox.Location = new System.Drawing.Point(253, 19);
+            this.edapiPassBox.Name = "edapiPassBox";
+            this.edapiPassBox.Size = new System.Drawing.Size(100, 20);
+            this.edapiPassBox.TabIndex = 1;
+            this.edapiPassBox.UseSystemPasswordChar = true;
+            // 
+            // edapiUserBox
+            // 
+            this.edapiUserBox.Location = new System.Drawing.Point(70, 19);
+            this.edapiUserBox.Name = "edapiUserBox";
+            this.edapiUserBox.Size = new System.Drawing.Size(100, 20);
+            this.edapiUserBox.TabIndex = 0;
+            // 
+            // miscGroupBox
+            // 
+            this.miscGroupBox.Controls.Add(this.rebuyPercentage);
+            this.miscGroupBox.Controls.Add(this.lblRebuyPercentage);
+            this.miscGroupBox.Location = new System.Drawing.Point(12, 294);
+            this.miscGroupBox.Name = "miscGroupBox";
+            this.miscGroupBox.Size = new System.Drawing.Size(363, 50);
+            this.miscGroupBox.TabIndex = 17;
+            this.miscGroupBox.TabStop = false;
+            this.miscGroupBox.Text = "Misc.";
+            // 
+            // lblRebuyPercentage
+            // 
+            this.lblRebuyPercentage.AutoSize = true;
+            this.lblRebuyPercentage.Location = new System.Drawing.Point(6, 22);
+            this.lblRebuyPercentage.Name = "lblRebuyPercentage";
+            this.lblRebuyPercentage.Size = new System.Drawing.Size(99, 13);
+            this.lblRebuyPercentage.TabIndex = 2;
+            this.lblRebuyPercentage.Text = "Rebuy Percentage:";
+            // 
+            // rebuyPercentage
+            // 
+            this.rebuyPercentage.DecimalPlaces = 2;
+            this.rebuyPercentage.Location = new System.Drawing.Point(111, 19);
+            this.rebuyPercentage.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            131072});
+            this.rebuyPercentage.Name = "rebuyPercentage";
+            this.rebuyPercentage.Size = new System.Drawing.Size(60, 20);
+            this.rebuyPercentage.TabIndex = 5;
+            this.rebuyPercentage.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip1.SetToolTip(this.rebuyPercentage, "Percentage of ship cost for rebuy.");
             // 
             // Form4
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(387, 329);
+            this.ClientSize = new System.Drawing.Size(387, 404);
+            this.Controls.Add(this.miscGroupBox);
             this.Controls.Add(this.edapiGroup);
             this.Controls.Add(this.resetButton);
             this.Controls.Add(this.overrideGroupBox);
@@ -342,6 +383,9 @@
             this.overrideGroupBox.PerformLayout();
             this.edapiGroup.ResumeLayout(false);
             this.edapiGroup.PerformLayout();
+            this.miscGroupBox.ResumeLayout(false);
+            this.miscGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.rebuyPercentage)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -375,5 +419,8 @@
         private System.Windows.Forms.Label edapiUserLabel;
         private System.Windows.Forms.TextBox edapiPassBox;
         private System.Windows.Forms.TextBox edapiUserBox;
+        private System.Windows.Forms.GroupBox miscGroupBox;
+        private System.Windows.Forms.Label lblRebuyPercentage;
+        private System.Windows.Forms.NumericUpDown rebuyPercentage;
     }
 }

@@ -332,6 +332,12 @@ namespace TDHelper
             // make sure we pull CSV paths after we validate our inputs
             if (!String.IsNullOrEmpty(settingsRef.TDPath)) { t_itemListPath = settingsRef.TDPath + @"\data\Item.csv"; }
             if (!String.IsNullOrEmpty(settingsRef.TDPath)) { t_shipListPath = settingsRef.TDPath + @"\data\Ship.csv"; }
+
+            // Set the default rebuy percentage to 5%.
+            if ( settingsRef.RebuyPercentage == 0)
+            {
+                settingsRef.RebuyPercentage = 5;
+            }
         }
 
         public static void validateTDPath(string altPath)

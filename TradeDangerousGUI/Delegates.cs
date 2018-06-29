@@ -11,6 +11,7 @@ using System.Globalization;
 using System.Net;
 using System.Xml.Linq;
 using System.Security.Cryptography;
+using Newtonsoft.Json;
 
 namespace TDHelper
 {
@@ -776,9 +777,13 @@ namespace TDHelper
 
                 // only start the stopwatch for callers that run in the background
                 if (!backgroundWorker3.IsBusy)
+                {
                     backgroundWorker3.RunWorkerAsync();
+                }
                 else
+                {
                     stopwatch.Start();
+                }
 
                 td_proc.Start();
                 td_proc.Refresh(); // clear process cache between instances
@@ -915,6 +920,60 @@ namespace TDHelper
             // change flag indicator and serialize it
             settingsRef.HasUpdated = true;
             Serialize(configFileDefault, settingsRef.HasUpdated, "HasUpdated");
+        }
+
+        /// <summary>
+        /// Check to see if the EDCE installation is valid.
+        /// </summary>
+        /// <returns>True of the EDCE is valid otherwise false.</returns>
+        private bool ValidateEdce()
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Read the Cmdr Profile file and update the credit balance.
+        /// </summary>
+        private void UpdateCreditBalance()
+        {
+            string json = this.RetrieveCommanderProfile();
+
+            dynamic profile = JsonConvert.DeserializeObject<dynamic>(json);
+
+            decimal creditBalance = profile.profile.commander.credits;
+
+            this.creditsBox.Value = creditBalance;
+
+            decimal hullValue = profile.profile.ship.value.hull;
+            decimal modulesValue = profile.profile.ship.value.modules;
+            decimal rebuyPercentage = Form1.settingsRef.RebuyPercentage;
+
+            this.insuranceBox.Value = (hullValue + modulesValue) * rebuyPercentage / 100;
+        }
+
+        /// <summary>
+        /// Read the Cmdr Profile file and update the credit balance.
+        /// </summary>
+        private string RetrieveCommanderProfile()
+        {
+            string fileName = @"c:\Development\TDHelper\edce-client\last.json";
+            string json = string.Empty;
+
+            // If the file exists read it into the return string.
+            if (File.Exists(fileName))
+            {
+                // Create a StreamReader and open the file
+                using (TextReader reader = new StreamReader(fileName, Encoding.Default))
+                {
+                    // Read all the contents of the file in a string
+                    json = reader.ReadToEnd();
+
+                    // Close the StreamReader
+                    reader.Close();
+                }
+            }
+
+            return json;
         }
     }
 }

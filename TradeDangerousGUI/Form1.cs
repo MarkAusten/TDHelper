@@ -14,6 +14,8 @@ using System.Runtime.InteropServices;
 using System.Data.SQLite;
 using System.Data;
 using System.Timers;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace TDHelper
 {
@@ -22,7 +24,7 @@ namespace TDHelper
         #region FormProps
         string appVersion = "v" + Application.ProductVersion;
 
-        private string tv_outputBox = "";
+        private string tv_outputBox = string.Empty;
 
         private string notesFile = Path.GetDirectoryName(Application.ExecutablePath) + @"\saved_notes.txt";
         private string savedFile1 = Path.GetDirectoryName(Application.ExecutablePath) + @"\saved_1.txt";
@@ -73,6 +75,8 @@ namespace TDHelper
             testSystemsTimer.AutoReset = false;
             testSystemsTimer.Interval = 10000;
             testSystemsTimer.Elapsed += this.testSystemsTimer_Delegate;
+
+            this.creditsBox.Maximum = Decimal.MaxValue;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -286,7 +290,7 @@ namespace TDHelper
             // copy verbosity to string format
             if (settingsRef.Verbosity == 0)
             {
-                t_outputVerbosity = "";
+                t_outputVerbosity = string.Empty;
                 verbosityComboBox.SelectedIndex = 0;
             }
             else if (settingsRef.Verbosity == 2)
@@ -339,7 +343,7 @@ namespace TDHelper
             if (containsPadSizes(settingsRef.Padsizes))
                 padSizeBox.Text = settingsRef.Padsizes;
             else
-                padSizeBox.Text = "";
+                padSizeBox.Text = string.Empty;
 
             if (settingsRef.TestSystems)
                 testSystemsCheckBox.Checked = settingsRef.TestSystems;
@@ -364,7 +368,7 @@ namespace TDHelper
 
             // make sure we don't pass the "Ship's Sold" box if its still unchanged
             if (shipsSoldBox.Text.Equals(outputStationShips.ToString(), StringComparison.OrdinalIgnoreCase))
-                temp_shipsSold = "";
+                temp_shipsSold = string.Empty;
             else
                 temp_shipsSold = shipsSoldBox.Text;
 
@@ -659,7 +663,7 @@ namespace TDHelper
                 settingsRef.Padsizes = padSizeBox.Text;
             else
             {
-                settingsRef.Padsizes = "";
+                settingsRef.Padsizes = string.Empty;
                 padSizeBox.Text = settingsRef.Padsizes.ToString();
             }
 
@@ -667,7 +671,7 @@ namespace TDHelper
                 t_confirmCode = confirmBox.Text;
             else
             {
-                t_confirmCode = "";
+                t_confirmCode = string.Empty;
                 confirmBox.Text = t_confirmCode.ToString();
             }
 
@@ -781,7 +785,7 @@ namespace TDHelper
             td_proc.StartInfo.FileName = settingsRef.PythonPath;
 
             if (settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase))
-                t_path = ""; // go in blank so we don't pass silliness to trade.exe
+                t_path = string.Empty; // go in blank so we don't pass silliness to trade.exe
             else
                 t_path = "-u \"" + settingsRef.TDPath + "\\trade.py\" ";
 
@@ -818,6 +822,7 @@ namespace TDHelper
              * buttonCaller = 20 is an explicit semaphor for playAlert()
              * buttonCaller = 21 is the config file selection box
              * 
+             * buttonCaller = 22 is the Cmdr Profile button
              * 
              * Buttons should always be placed above normal indexes!
              */
@@ -1237,7 +1242,7 @@ namespace TDHelper
 
                 // turn off checkboxes where sensible
                 if (t_csvExportCheckBox) { csvExportCheckBox.Checked = false; }
-                if (!String.IsNullOrEmpty(confirmBox.Text)) { confirmBox.Text = ""; }
+                if (!String.IsNullOrEmpty(confirmBox.Text)) { confirmBox.Text = string.Empty; }
 
                 // let's alert the user that the Output pane has changed
                 if (!String.IsNullOrEmpty(td_outputBox.Text) && tabControl1.SelectedTab != outputPage)
@@ -1328,7 +1333,7 @@ namespace TDHelper
             getDataUpdates(); // update conditionally
             doTDProc(t_path); // pass this to the worker delegate
 
-            t_path = ""; // reset path for thread safety
+            t_path = string.Empty; // reset path for thread safety
         }
 
         private void backgroundWorker4_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -1424,6 +1429,71 @@ namespace TDHelper
         {
             testSystemsTimer.Start(); // fire again after ~10s
         }
+
+        private void backgroundWorker7_DoWork(object sender, DoWorkEventArgs e)
+        {
+            /*
+             * This worker delegate is for the Cmdr Profile process
+             */
+            bool okayToRun = true;
+
+            if (buttonCaller == 22)
+            {
+                // Check to see if the EDCE folder and files are valid
+                if (this.ValidateEdce())
+                {
+                    // EDCE is valid so set up the call.
+                    t_path = @"c:\Development\TDHelper\edce-client\edce_client.py";
+                }
+                else
+                {
+                    okayToRun = false;
+                    playAlert();
+                }
+            }
+
+            // pass the built command-line to the delegate
+            if (okayToRun)
+            {
+                string currentFolder = Directory.GetCurrentDirectory();
+                Directory.SetCurrentDirectory(@"c:\Development\TDHelper\edce-client");
+
+                try
+                {
+                    td_proc = new Process();
+                    td_proc.StartInfo.FileName = settingsRef.PythonPath;
+
+                    doTDProc(t_path);
+                }
+                finally
+                {
+                    Directory.SetCurrentDirectory(currentFolder);
+                }
+            }
+
+            t_path = string.Empty; // reset path for thread safety
+        }
+
+        private void backgroundWorker7_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (!backgroundWorker7.IsBusy)
+            {
+                stopwatch.Stop(); // stop the timer
+                circularBuffer = new System.Text.StringBuilder(2 * circularBufferSize);
+
+                enableRunButtons();
+                td_proc.Dispose();
+
+                // make a sound when we're done with a long operation (>10s)
+                if (stopwatch.ElapsedMilliseconds > 10000)
+                {
+                    playAlert();
+                }
+
+                this.UpdateCreditBalance();
+            }
+        }
+
         #endregion
 
         #region FormHelpers
@@ -1525,7 +1595,7 @@ namespace TDHelper
                     stationDropDown.Visible = true;
                     stationDropDown.Enabled = true;
 
-                    List<string> shipVendorDrop = new List<string>(new string[] { "", "Legal", "Illegal" });
+                    List<string> shipVendorDrop = new List<string>(new string[] { string.Empty, "Legal", "Illegal" });
                     stationDropDown.DataSource = shipVendorDrop;
 
                     // point the user to the proper labels
@@ -1935,7 +2005,7 @@ namespace TDHelper
                 if (!String.IsNullOrEmpty(r_fromBox))
                     avoidBox.Text = r_fromBox;
                 else
-                    avoidBox.Text = "";
+                    avoidBox.Text = string.Empty;
             }
             else if (methodFromIndex == 3)
             {// coming from Rare switching to anywhere
@@ -1945,7 +2015,7 @@ namespace TDHelper
                 if (!String.IsNullOrEmpty(settingsRef.Avoid))
                     avoidBox.Text = settingsRef.Avoid;
                 else
-                    avoidBox.Text = "";
+                    avoidBox.Text = string.Empty;
             }
         }
 
@@ -2331,7 +2401,7 @@ namespace TDHelper
         {
             if (!String.IsNullOrEmpty(savedTextBox1.Text))
             {
-                savedTextBox1.Text = "";
+                savedTextBox1.Text = string.Empty;
                 if (File.Exists(savedFile1))
                     File.Delete(savedFile1);
             }
@@ -2341,7 +2411,7 @@ namespace TDHelper
         {
             if (!String.IsNullOrEmpty(savedTextBox2.Text))
             {
-                savedTextBox2.Text = "";
+                savedTextBox2.Text = string.Empty;
                 if (File.Exists(savedFile2))
                     File.Delete(savedFile2);
             }
@@ -2351,7 +2421,7 @@ namespace TDHelper
         {
             if (!String.IsNullOrEmpty(savedTextBox3.Text))
             {
-                savedTextBox3.Text = "";
+                savedTextBox3.Text = string.Empty;
                 if (File.Exists(savedFile3))
                     File.Delete(savedFile3);
             }
@@ -2395,7 +2465,7 @@ namespace TDHelper
             }
             else
             {
-                padSizeBox.Text += "";
+                padSizeBox.Text += string.Empty;
                 e.Handled = true;
             }
         }
@@ -2517,14 +2587,14 @@ namespace TDHelper
                 {// swap from source to destination
                     string temp = removeExtraWhitespace(srcSystemComboBox.Text);
                     destSystemComboBox.Text = temp;
-                    srcSystemComboBox.Text = "";
+                    srcSystemComboBox.Text = string.Empty;
                 }
                 else if (String.IsNullOrEmpty(srcSystemComboBox.Text)
                     && !String.IsNullOrEmpty(destSystemComboBox.Text))
                 {// swap from destination to source
                     string temp = removeExtraWhitespace(destSystemComboBox.Text);
                     srcSystemComboBox.Text = temp;
-                    destSystemComboBox.Text = "";
+                    destSystemComboBox.Text = string.Empty;
                 }
             }
         }
@@ -2663,7 +2733,7 @@ namespace TDHelper
         {
             if (!String.IsNullOrEmpty(notesTextBox.Text))
             {
-                notesTextBox.Text = "";
+                notesTextBox.Text = string.Empty;
                 if (File.Exists(notesFile))
                     File.Delete(notesFile);
             }
@@ -2674,7 +2744,7 @@ namespace TDHelper
             RichTextBox clickedControl = (RichTextBox)this.contextMenuStrip1.SourceControl;
 
             if (clickedControl.Name == notesTextBox.Name)
-                notesTextBox.SelectedText = "";
+                notesTextBox.SelectedText = string.Empty;
         }
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
@@ -2787,13 +2857,13 @@ namespace TDHelper
         private void procOutputDataHandler(object sender, DataReceivedEventArgs output)
         {
             string[] exceptions = new string[] { "NOTE:", "####" };
-            string filteredOutput = "";
+            string filteredOutput = string.Empty;
 
             if (output.Data != null)
             {
                 // prevent a null reference
                 if (output.Data.Contains("\a"))
-                    filteredOutput = output.Data.Replace("\a", "") + "\n";
+                    filteredOutput = output.Data.Replace("\a", string.Empty) + "\n";
                 else
                     filteredOutput = output.Data + "\n";
 
@@ -2955,7 +3025,7 @@ namespace TDHelper
                         srcSystemComboBox.Text = tokens[0];
                     }
                     else if (!filteredString.Contains("/"))
-                        srcSystemComboBox.Text = ""; // wipe entirely if only a system is left
+                        srcSystemComboBox.Text = string.Empty; // wipe entirely if only a system is left
 
                     e.Handled = true;
                 }
@@ -2994,7 +3064,7 @@ namespace TDHelper
                     destSystemComboBox.Text = tokens[0];
                 }
                 else if (!destSystemComboBox.Text.Contains("/"))
-                    destSystemComboBox.Text = "";
+                    destSystemComboBox.Text = string.Empty;
 
                 e.Handled = true;
             }
@@ -3166,6 +3236,18 @@ namespace TDHelper
             {// grab the system from the system field, if it exists, copy to the src box
                 string dbSys = pilotsLogDataGrid.Rows[dRowIndex].Cells[2].Value.ToString();
                 destSystemComboBox.Text = dbSys;
+            }
+        }
+
+        private void btnCmdrProfile_Click(object sender, EventArgs e)
+        {
+            if (!backgroundWorker7.IsBusy)
+            {
+                // Cmdr Profile button.
+                buttonCaller = 22;
+                disableRunButtons(); // disable buttons during uncancellable operations
+
+                backgroundWorker7.RunWorkerAsync();
             }
         }
 

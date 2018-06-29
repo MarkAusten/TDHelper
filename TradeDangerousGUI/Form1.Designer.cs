@@ -180,6 +180,7 @@
             this.demandLabel = new System.Windows.Forms.Label();
             this.showJumpsCheckBox = new System.Windows.Forms.CheckBox();
             this.miscSettingsButton = new System.Windows.Forms.Button();
+            this.btnCmdrProfile = new System.Windows.Forms.Button();
             this.verbosityComboBox = new System.Windows.Forms.ComboBox();
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker4 = new System.ComponentModel.BackgroundWorker();
@@ -225,6 +226,7 @@
             this.edscPanel = new System.Windows.Forms.Panel();
             this.trackerLinkLabel = new System.Windows.Forms.LinkLabel();
             this.faqLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.backgroundWorker7 = new System.ComponentModel.BackgroundWorker();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.belowPriceBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.abovePriceBox)).BeginInit();
@@ -854,11 +856,6 @@
             // creditsBox
             // 
             this.creditsBox.Location = new System.Drawing.Point(241, 31);
-            this.creditsBox.Maximum = new decimal(new int[] {
-            -2147483648,
-            2,
-            0,
-            0});
             this.creditsBox.Minimum = new decimal(new int[] {
             100,
             0,
@@ -2131,6 +2128,19 @@
             this.miscSettingsButton.UseVisualStyleBackColor = true;
             this.miscSettingsButton.Click += new System.EventHandler(this.miscSettingsButton_Click);
             // 
+            // btnCmdrProfile
+            // 
+            this.btnCmdrProfile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnCmdrProfile.Location = new System.Drawing.Point(472, 713);
+            this.btnCmdrProfile.Name = "btnCmdrProfile";
+            this.btnCmdrProfile.Size = new System.Drawing.Size(75, 23);
+            this.btnCmdrProfile.TabIndex = 68;
+            this.btnCmdrProfile.TabStop = false;
+            this.btnCmdrProfile.Text = "Cmdr Profile";
+            this.toolTip1.SetToolTip(this.btnCmdrProfile, "Update the database based on time from previous update");
+            this.btnCmdrProfile.UseVisualStyleBackColor = true;
+            this.btnCmdrProfile.Click += new System.EventHandler(this.btnCmdrProfile_Click);
+            // 
             // verbosityComboBox
             // 
             this.verbosityComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -2706,12 +2716,20 @@
             this.faqLinkLabel.Text = "Help/FAQ";
             this.faqLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.faqLinkLabel_LinkClicked);
             // 
+            // backgroundWorker7
+            // 
+            this.backgroundWorker7.WorkerReportsProgress = true;
+            this.backgroundWorker7.WorkerSupportsCancellation = true;
+            this.backgroundWorker7.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker7_DoWork);
+            this.backgroundWorker7.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker7_RunWorkerCompleted);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(826, 759);
+            this.Controls.Add(this.btnCmdrProfile);
             this.Controls.Add(this.faqLinkLabel);
             this.Controls.Add(this.trackerLinkLabel);
             this.Controls.Add(this.panel1);
@@ -3010,6 +3028,8 @@
         private System.Windows.Forms.ToolStripMenuItem removeAtGridRow;
         private System.Windows.Forms.ToolStripMenuItem forceResortMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copySystemToEDSC;
+        private System.Windows.Forms.Button btnCmdrProfile;
+        private System.ComponentModel.BackgroundWorker backgroundWorker7;
     }
 }
 
