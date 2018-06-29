@@ -20,25 +20,54 @@ namespace TDHelper
         private void Form4_Load(object sender, EventArgs e)
         {// load our current settings from the config
             if (!String.IsNullOrEmpty(Form1.settingsRef.EDAPIUser))
+            {
                 edapiUserBox.Text = Form1.Decrypt(Form1.settingsRef.EDAPIUser);
+            }
+
             if (!String.IsNullOrEmpty(Form1.settingsRef.EDAPIPass))
+            {
                 edapiPassBox.Text = Form1.Decrypt(Form1.settingsRef.EDAPIPass);
+            }
 
             if (!String.IsNullOrEmpty(Form1.settingsRef.ExtraRunParams))
+            {
                 textBox1.Text = Form1.settingsRef.ExtraRunParams;
+            }
+
             if (Form1.settingsRef.DisableNetLogs)
+            {
                 overrideDisableNetLogs.Checked = true;
+            }
+
             if (Form1.settingsRef.DoNotUpdate)
+            {
                 overrideDoNotUpdate.Checked = true;
+            }
+
             if (Form1.settingsRef.CopySystemToClipboard)
+            {
                 overrideCopySystemToClipboard.Checked = true;
+            }
 
             if (!String.IsNullOrEmpty(Form1.settingsRef.PythonPath))
+            {
                 pythonPathBox.Text = Form1.settingsRef.PythonPath;
+            }
+
             if (!String.IsNullOrEmpty(Form1.settingsRef.TDPath))
+            {
                 tdPathBox.Text = Form1.settingsRef.TDPath;
+            }
+
             if (!String.IsNullOrEmpty(Form1.settingsRef.NetLogPath))
+            {
                 netLogsPathBox.Text = Form1.settingsRef.NetLogPath;
+            }
+
+            if (!String.IsNullOrEmpty(Form1.settingsRef.EdcePath))
+            {
+                edcePathBox.Text = Form1.settingsRef.EdcePath;
+            }
 
             if (!String.IsNullOrEmpty(Form1.settingsRef.TreeViewFont))
             {// set our selected font and text box to what we've set in our config
@@ -64,6 +93,7 @@ namespace TDHelper
             Form1.settingsRef.DoNotUpdate = overrideDoNotUpdate.Checked;
             Form1.settingsRef.CopySystemToClipboard = overrideCopySystemToClipboard.Checked;
             Form1.settingsRef.RebuyPercentage = this.rebuyPercentage.Value;
+            Form1.settingsRef.EdcePath = this.edcePathBox.Text;
 
             // encrypt our edapi login details
             Form1.settingsRef.EDAPIUser = !String.IsNullOrEmpty(edapiUserBox.Text)
@@ -86,11 +116,12 @@ namespace TDHelper
             Form1.Serialize(Form1.configFile, Form1.settingsRef.PythonPath, "PythonPath");
             Form1.Serialize(Form1.configFile, Form1.settingsRef.TDPath, "TDPath");
             Form1.Serialize(Form1.configFile, Form1.settingsRef.NetLogPath, "NetLogPath");
+            Form1.Serialize(Form1.configFile, Form1.settingsRef.EdcePath, "EdcePath");
             // save our font name/size for the treeview
             if (!String.IsNullOrEmpty(Form1.settingsRef.TreeViewFont))
                 Form1.Serialize(Form1.configFile, Form1.settingsRef.TreeViewFont, "TreeViewFont");
 
-            Form1.Serialize(Form1.configFile, Form1.settingsRef.RebuyPercentage, "RebuyPercentge");
+            Form1.Serialize(Form1.configFile, Form1.settingsRef.RebuyPercentage, "RebuyPercentage");
 
             this.Close();
         }
@@ -173,6 +204,14 @@ namespace TDHelper
             Form1.settingsRef.NetLogPath = "";
             Form1.validateNetLogPath(origPath);
             netLogsPathBox.Text = Form1.settingsRef.NetLogPath;
+        }
+
+        private void validateEdcePath_Click(object sender, EventArgs e)
+        {
+            string origPath = Form1.settingsRef.EdcePath;
+            Form1.settingsRef.EdcePath = "";
+            Form1.validateEdcePath(origPath);
+            edcePathBox.Text = Form1.settingsRef.EdcePath;
         }
 
         private void resetButton_Click(object sender, EventArgs e)

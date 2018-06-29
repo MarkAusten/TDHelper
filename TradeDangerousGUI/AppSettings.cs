@@ -36,6 +36,7 @@ namespace TDHelper
             instance.SizeParent = "";
             instance.SizeChild = "";
             instance.TDPath = "";
+            instance.EdcePath = "";
             instance.NetLogPath = "";
             instance.PythonPath = "";
             instance.ImportPath = "";
@@ -99,6 +100,7 @@ namespace TDHelper
         public string SizeParent { get; set; }
         public string SizeChild { get; set; }
         public string TDPath { get; set; }
+        public string EdcePath { get; set; }
         public string NetLogPath { get; set; }
         public string PythonPath { get; set; }
         public string ImportPath { get; set; }

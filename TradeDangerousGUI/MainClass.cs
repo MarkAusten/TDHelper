@@ -325,6 +325,7 @@ namespace TDHelper
             validatePython(null);
             validateTDPath(null);
             validateNetLogPath(null);
+            validateEdcePath(null);
 
             // default to Run command if unset
             methodDropDown.SelectedIndex = methodIndex;
@@ -336,8 +337,11 @@ namespace TDHelper
             // Set the default rebuy percentage to 5%.
             if ( settingsRef.RebuyPercentage == 0)
             {
-                settingsRef.RebuyPercentage = 5;
+                settingsRef.RebuyPercentage = 5.00M;
             }
+
+            // Disable the Cmdr Profile button if EDCE is not set.
+            this.btnCmdrProfile.Enabled = !String.IsNullOrEmpty(settingsRef.EdcePath);
         }
 
         public static void validateTDPath(string altPath)
@@ -373,6 +377,39 @@ namespace TDHelper
                         }
                         else
                             throw new Exception("TradeDangerous path is empty or invalid, cannot continue");
+                    }
+                }
+            }
+        }
+
+        public static void validateEdcePath(string altPath)
+        {
+            // bypass this routine if the python path validator sets our path for us (due to Trade Dangerous Installer)
+            if (String.IsNullOrEmpty(settingsRef.EdcePath) || !checkIfFileOpens(settingsRef.EdcePath + "\\edce_client.py"))
+            {
+                OpenFileDialog x = new OpenFileDialog();
+                x.Title = "Select edce_client.py from the EDCE directory";
+
+                if (Directory.Exists(settingsRef.EdcePath))
+                    x.InitialDirectory = settingsRef.EdcePath;
+
+                x.Filter = "Py files (*.py)|*.py";
+                if (x.ShowDialog() == DialogResult.OK)
+                {
+                    settingsRef.EdcePath = Path.GetDirectoryName(x.FileName);
+                    Serialize(configFile, settingsRef.EdcePath, "EdcePath");
+                }
+                else
+                {
+                    string localPath = altPath ?? ""; // prevent null
+                    if (!String.IsNullOrEmpty(localPath) && checkIfFileOpens(localPath + "\\edce_client.py") || localPath.EndsWith(".py"))
+                    {// if we have an alternate path, we can reset the variable here
+                        settingsRef.EdcePath = localPath;
+                        Serialize(configFile, settingsRef.EdcePath, "EdcePath");
+                    }
+                    else
+                    {
+                        throw new Exception("EDCE path is empty or invalid, cannot continue");
                     }
                 }
             }

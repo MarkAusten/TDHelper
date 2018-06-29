@@ -52,6 +52,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.resetButton = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.rebuyPercentage = new System.Windows.Forms.NumericUpDown();
             this.edapiGroup = new System.Windows.Forms.GroupBox();
             this.edapiPassLabel = new System.Windows.Forms.Label();
             this.edapiUserLabel = new System.Windows.Forms.Label();
@@ -59,16 +60,18 @@
             this.edapiUserBox = new System.Windows.Forms.TextBox();
             this.miscGroupBox = new System.Windows.Forms.GroupBox();
             this.lblRebuyPercentage = new System.Windows.Forms.Label();
-            this.rebuyPercentage = new System.Windows.Forms.NumericUpDown();
+            this.validateEdcePath = new System.Windows.Forms.Button();
+            this.edcePathBox = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.overrideGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.rebuyPercentage)).BeginInit();
             this.edapiGroup.SuspendLayout();
             this.miscGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.rebuyPercentage)).BeginInit();
             this.SuspendLayout();
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(97, 190);
+            this.textBox1.Location = new System.Drawing.Point(96, 225);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(257, 20);
             this.textBox1.TabIndex = 13;
@@ -78,7 +81,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 193);
+            this.label1.Location = new System.Drawing.Point(5, 228);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(85, 13);
             this.label1.TabIndex = 1;
@@ -87,7 +90,7 @@
             // okButton
             // 
             this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.okButton.Location = new System.Drawing.Point(300, 369);
+            this.okButton.Location = new System.Drawing.Point(300, 398);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 16;
@@ -98,7 +101,7 @@
             // cancelButton
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cancelButton.Location = new System.Drawing.Point(12, 369);
+            this.cancelButton.Location = new System.Drawing.Point(12, 398);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 14;
@@ -138,6 +141,9 @@
             // 
             // overrideGroupBox
             // 
+            this.overrideGroupBox.Controls.Add(this.validateEdcePath);
+            this.overrideGroupBox.Controls.Add(this.edcePathBox);
+            this.overrideGroupBox.Controls.Add(this.label5);
             this.overrideGroupBox.Controls.Add(this.tvFontSelectorButton);
             this.overrideGroupBox.Controls.Add(this.currentTVFontBox);
             this.overrideGroupBox.Controls.Add(this.currentTVFontLabel);
@@ -157,7 +163,7 @@
             this.overrideGroupBox.Controls.Add(this.textBox1);
             this.overrideGroupBox.Location = new System.Drawing.Point(12, 69);
             this.overrideGroupBox.Name = "overrideGroupBox";
-            this.overrideGroupBox.Size = new System.Drawing.Size(363, 219);
+            this.overrideGroupBox.Size = new System.Drawing.Size(363, 263);
             this.overrideGroupBox.TabIndex = 7;
             this.overrideGroupBox.TabStop = false;
             this.overrideGroupBox.Text = "Overrides";
@@ -270,13 +276,28 @@
             // resetButton
             // 
             this.resetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.resetButton.Location = new System.Drawing.Point(151, 369);
+            this.resetButton.Location = new System.Drawing.Point(151, 398);
             this.resetButton.Name = "resetButton";
             this.resetButton.Size = new System.Drawing.Size(84, 23);
             this.resetButton.TabIndex = 15;
             this.resetButton.Text = "Reset Settings";
             this.resetButton.UseVisualStyleBackColor = true;
             this.resetButton.Click += new System.EventHandler(this.resetButton_Click);
+            // 
+            // rebuyPercentage
+            // 
+            this.rebuyPercentage.DecimalPlaces = 2;
+            this.rebuyPercentage.Location = new System.Drawing.Point(111, 19);
+            this.rebuyPercentage.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            131072});
+            this.rebuyPercentage.Name = "rebuyPercentage";
+            this.rebuyPercentage.Size = new System.Drawing.Size(60, 20);
+            this.rebuyPercentage.TabIndex = 5;
+            this.rebuyPercentage.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip1.SetToolTip(this.rebuyPercentage, "Percentage of ship cost for rebuy.");
             // 
             // edapiGroup
             // 
@@ -328,7 +349,7 @@
             // 
             this.miscGroupBox.Controls.Add(this.rebuyPercentage);
             this.miscGroupBox.Controls.Add(this.lblRebuyPercentage);
-            this.miscGroupBox.Location = new System.Drawing.Point(12, 294);
+            this.miscGroupBox.Location = new System.Drawing.Point(12, 338);
             this.miscGroupBox.Name = "miscGroupBox";
             this.miscGroupBox.Size = new System.Drawing.Size(363, 50);
             this.miscGroupBox.TabIndex = 17;
@@ -344,26 +365,37 @@
             this.lblRebuyPercentage.TabIndex = 2;
             this.lblRebuyPercentage.Text = "Rebuy Percentage:";
             // 
-            // rebuyPercentage
+            // validateEdcePath
             // 
-            this.rebuyPercentage.DecimalPlaces = 2;
-            this.rebuyPercentage.Location = new System.Drawing.Point(111, 19);
-            this.rebuyPercentage.Maximum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            131072});
-            this.rebuyPercentage.Name = "rebuyPercentage";
-            this.rebuyPercentage.Size = new System.Drawing.Size(60, 20);
-            this.rebuyPercentage.TabIndex = 5;
-            this.rebuyPercentage.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.toolTip1.SetToolTip(this.rebuyPercentage, "Percentage of ship cost for rebuy.");
+            this.validateEdcePath.Location = new System.Drawing.Point(329, 190);
+            this.validateEdcePath.Name = "validateEdcePath";
+            this.validateEdcePath.Size = new System.Drawing.Size(24, 20);
+            this.validateEdcePath.TabIndex = 16;
+            this.validateEdcePath.Text = "...";
+            this.validateEdcePath.UseVisualStyleBackColor = true;
+            this.validateEdcePath.Click += new System.EventHandler(this.validateEdcePath_Click);
+            // 
+            // edcePathBox
+            // 
+            this.edcePathBox.Location = new System.Drawing.Point(96, 190);
+            this.edcePathBox.Name = "edcePathBox";
+            this.edcePathBox.Size = new System.Drawing.Size(227, 20);
+            this.edcePathBox.TabIndex = 15;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(27, 193);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(64, 13);
+            this.label5.TabIndex = 14;
+            this.label5.Text = "EDCE Path:";
             // 
             // Form4
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(387, 404);
+            this.ClientSize = new System.Drawing.Size(387, 433);
             this.Controls.Add(this.miscGroupBox);
             this.Controls.Add(this.edapiGroup);
             this.Controls.Add(this.resetButton);
@@ -381,11 +413,11 @@
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.generic_KeyDown);
             this.overrideGroupBox.ResumeLayout(false);
             this.overrideGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.rebuyPercentage)).EndInit();
             this.edapiGroup.ResumeLayout(false);
             this.edapiGroup.PerformLayout();
             this.miscGroupBox.ResumeLayout(false);
             this.miscGroupBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.rebuyPercentage)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -422,5 +454,8 @@
         private System.Windows.Forms.GroupBox miscGroupBox;
         private System.Windows.Forms.Label lblRebuyPercentage;
         private System.Windows.Forms.NumericUpDown rebuyPercentage;
+        private System.Windows.Forms.Button validateEdcePath;
+        private System.Windows.Forms.TextBox edcePathBox;
+        private System.Windows.Forms.Label label5;
     }
 }
