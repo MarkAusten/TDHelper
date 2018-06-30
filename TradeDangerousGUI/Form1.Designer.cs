@@ -726,6 +726,7 @@
             // 
             // lsPenaltyBox
             // 
+            this.lsPenaltyBox.DecimalPlaces = 1;
             this.lsPenaltyBox.Location = new System.Drawing.Point(163, 123);
             this.lsPenaltyBox.Maximum = new decimal(new int[] {
             20000,
