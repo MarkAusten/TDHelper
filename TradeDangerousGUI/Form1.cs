@@ -815,7 +815,7 @@ namespace TDHelper
              * buttonCaller = 14 is the Shift+Import button
              * buttonCaller = 13 is the Upload button
              * 
-             * buttonCaller = 20 is an explicit semaphor for playAlert()
+             * buttonCaller = 20 is an explicit semaphore for playAlert()
              * buttonCaller = 21 is the config file selection box
              * 
              * 
