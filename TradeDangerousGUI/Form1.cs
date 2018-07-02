@@ -1445,7 +1445,7 @@ namespace TDHelper
                 if (this.ValidateEdce())
                 {
                     // EDCE is valid so set up the call.
-                    t_path = @"c:\Development\TDHelper\edce-client\edce_client.py";
+                    t_path = Path.Combine(Form1.settingsRef.EdcePath, "edce_client.py");
                 }
                 else
                 {
@@ -1458,7 +1458,7 @@ namespace TDHelper
             if (okayToRun)
             {
                 string currentFolder = Directory.GetCurrentDirectory();
-                Directory.SetCurrentDirectory(@"c:\Development\TDHelper\edce-client");
+                Directory.SetCurrentDirectory(Form1.settingsRef.EdcePath);
 
                 try
                 {

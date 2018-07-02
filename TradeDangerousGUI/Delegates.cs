@@ -984,7 +984,7 @@ namespace TDHelper
         /// </summary>
         private string RetrieveCommanderProfile()
         {
-            string fileName = @"c:\Development\TDHelper\edce-client\last.json";
+            string fileName = Path.Combine(Form1.settingsRef.EdcePath, "last.json");
             string json = string.Empty;
 
             // If the file exists read it into the return string.
