@@ -1308,10 +1308,10 @@ namespace TDHelper
 
             while (stopwatch.IsRunning)
             {
-                System.Threading.Thread.Sleep(100);
+                System.Threading.Thread.Sleep(1000);
                 this.Invoke(new Action(() =>
                 {// do this on the UI thread
-                    stopWatchLabel.Text = "Elapsed: " + stopwatch.Elapsed.ToString("hh\\:mm\\:ss\\.fff");
+                    stopWatchLabel.Text = "Elapsed: " + stopwatch.Elapsed.ToString("hh\\:mm\\:ss");
                 }));
             }
         }
@@ -1321,7 +1321,7 @@ namespace TDHelper
             // when we get the !IsRunning signal, write out
             this.Invoke(new Action(() =>
             {// do this on the UI thread
-                stopWatchLabel.Text = "Elapsed: " + stopwatch.Elapsed.ToString("hh\\:mm\\:ss\\.fff");
+                stopWatchLabel.Text = "Elapsed: " + stopwatch.Elapsed.ToString("hh\\:mm\\:ss");
                 stopwatch.Reset();
             }));
         }
