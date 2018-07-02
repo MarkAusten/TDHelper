@@ -36,6 +36,7 @@ namespace TDHelper
             instance.SizeParent = "";
             instance.SizeChild = "";
             instance.TDPath = "";
+            instance.EdcePath = "";
             instance.NetLogPath = "";
             instance.PythonPath = "";
             instance.ImportPath = "";
@@ -48,9 +49,6 @@ namespace TDHelper
             instance.Via = "";
             instance.ExtraRunParams = "";
             instance.TreeViewFont = "";
-
-            instance.EDAPIUser = "";
-            instance.EDAPIPass = "";
 
             instance.Hops = 0;
             instance.Jumps = 0;
@@ -88,6 +86,8 @@ namespace TDHelper
             instance.DoNotUpdate = false;
             instance.HasUpdated = false;
             instance.CopySystemToClipboard = false;
+
+            instance.RebuyPercentage = 5;
         }
 
 
@@ -97,6 +97,7 @@ namespace TDHelper
         public string SizeParent { get; set; }
         public string SizeChild { get; set; }
         public string TDPath { get; set; }
+        public string EdcePath { get; set; }
         public string NetLogPath { get; set; }
         public string PythonPath { get; set; }
         public string ImportPath { get; set; }
@@ -108,9 +109,6 @@ namespace TDHelper
         public string Avoid { get; set; }
         public string Via { get; set; }
         public string TreeViewFont { get; set; }
-
-        public string EDAPIUser { get; set; }
-        public string EDAPIPass { get; set; }
 
         private string _ExtraRunParams;
         public string ExtraRunParams
@@ -191,6 +189,8 @@ namespace TDHelper
             else
                 return "";
         }
+
+        public decimal RebuyPercentage { get; set; }
     }
     #endregion
 

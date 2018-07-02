@@ -11,6 +11,8 @@ using System.Globalization;
 using System.Net;
 using System.Xml.Linq;
 using System.Security.Cryptography;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace TDHelper
 {
@@ -735,75 +737,84 @@ namespace TDHelper
             // only run the delegate if we have a path
             if (!String.IsNullOrEmpty(path))
             {
-                procCode = -1; // reset the exit code
-                td_proc.StartInfo.Arguments = path;
-
-                if (buttonCaller == 12)
-                {
-                    td_proc.StartInfo.UseShellExecute = true;
-                    td_proc.StartInfo.CreateNoWindow = false;
-                }
-                else
-                {
-                    td_proc.StartInfo.RedirectStandardOutput = true;
-                    td_proc.StartInfo.RedirectStandardInput = false;
-                    td_proc.StartInfo.RedirectStandardError = true;
-                    td_proc.StartInfo.UseShellExecute = false;
-                    td_proc.StartInfo.CreateNoWindow = true;
-                    td_proc.EnableRaisingEvents = true;
-                    td_proc.SynchronizingObject = this;
-                    td_proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                }
-
-                td_proc.OutputDataReceived += new DataReceivedEventHandler(procOutputDataHandler);
-                td_proc.ErrorDataReceived += new DataReceivedEventHandler(procErrorDataHandler);
-
-                // pre-invoke
-                if (circularBuffer.Length == 0)
-                    stackCircularBuffer("Command line: " + path + "\n");
-                else
-                    stackCircularBuffer("\nCommand line: " + path + "\n");
-
-                this.Invoke(new Action(() =>
-                {
-                    if (buttonCaller != 5 && buttonCaller != 10 && buttonCaller != 11
-                        && buttonCaller != 12 && buttonCaller != 13)
-                    {// don't show cancelling for UpdateDB/Import/Upload/Editor
-                        runButton.Font = new Font(runButton.Font, FontStyle.Bold);
-                        runButton.Text = "&Cancel";
-                    }
-                }));
-
-                // only start the stopwatch for callers that run in the background
-                if (!backgroundWorker3.IsBusy)
-                    backgroundWorker3.RunWorkerAsync();
-                else
-                    stopwatch.Start();
-
-                td_proc.Start();
-                td_proc.Refresh(); // clear process cache between instances
-
-                if (buttonCaller != 12)
-                {
-                    td_proc.BeginOutputReadLine();
-                    td_proc.BeginErrorReadLine();
-                }
-
-                td_proc.WaitForExit();
-
                 try
                 {
-                    if (td_proc.HasExited)
-                        procCode = td_proc.ExitCode; // save our exit code
-                }
-                catch (Exception ex)
-                {
-                    // swallow the exception for the moment.
-                    Debug.WriteLine(ex.Message);
-                }
+                    procCode = -1; // reset the exit code
+                    td_proc.StartInfo.Arguments = path;
 
-                td_proc.Close();
-                td_proc.Dispose();
+                    if (buttonCaller == 12)
+                    {
+                        td_proc.StartInfo.UseShellExecute = true;
+                        td_proc.StartInfo.CreateNoWindow = false;
+                    }
+                    else
+                    {
+                        td_proc.StartInfo.RedirectStandardOutput = true;
+                        td_proc.StartInfo.RedirectStandardInput = false;
+                        td_proc.StartInfo.RedirectStandardError = true;
+                        td_proc.StartInfo.UseShellExecute = false;
+                        td_proc.StartInfo.CreateNoWindow = true;
+                        td_proc.EnableRaisingEvents = true;
+                        td_proc.SynchronizingObject = this;
+                        td_proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                    }
+
+                    td_proc.OutputDataReceived += new DataReceivedEventHandler(procOutputDataHandler);
+                    td_proc.ErrorDataReceived += new DataReceivedEventHandler(procErrorDataHandler);
+
+                    // pre-invoke
+                    if (circularBuffer.Length == 0)
+                        stackCircularBuffer("Command line: " + path + "\n");
+                    else
+                        stackCircularBuffer("\nCommand line: " + path + "\n");
+
+                    this.Invoke(new Action(() =>
+                    {
+                        if (buttonCaller != 5 && buttonCaller != 10 && buttonCaller != 11
+                            && buttonCaller != 12 && buttonCaller != 13)
+                        {// don't show cancelling for UpdateDB/Import/Upload/Editor
+                            runButton.Font = new Font(runButton.Font, FontStyle.Bold);
+                            runButton.Text = "&Cancel";
+                        }
+                    }));
+
+                    // only start the stopwatch for callers that run in the background
+                    if (!backgroundWorker3.IsBusy)
+                    {
+                        backgroundWorker3.RunWorkerAsync();
+                    }
+                    else
+                    {
+                        stopwatch.Start();
+                    }
+
+                    td_proc.Start();
+                    td_proc.Refresh(); // clear process cache between instances
+
+                    if (buttonCaller != 12)
+                    {
+                        td_proc.BeginOutputReadLine();
+                        td_proc.BeginErrorReadLine();
+                    }
+
+                    td_proc.WaitForExit();
+
+                    try
+                    {
+                        if (td_proc.HasExited)
+                            procCode = td_proc.ExitCode; // save our exit code
+                    }
+                    catch (Exception ex)
+                    {
+                        // swallow the exception for the moment.
+                        Debug.WriteLine(ex.Message);
+                    }
+                }
+                finally
+                {
+                    td_proc.Close();
+                    td_proc.Dispose();
+                }
             }
             else
                 buttonCaller = 20; // flag to play an error sound if we can't execute the command
@@ -915,6 +926,82 @@ namespace TDHelper
             // change flag indicator and serialize it
             settingsRef.HasUpdated = true;
             Serialize(configFileDefault, settingsRef.HasUpdated, "HasUpdated");
+        }
+
+        /// <summary>
+        /// Check to see if the EDCE installation is valid.
+        /// </summary>
+        /// <returns>True of the EDCE is valid otherwise false.</returns>
+        private bool ValidateEdce()
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Read the Cmdr Profile file and update the credit balance.
+        /// </summary>
+        private void UpdateCreditBalance()
+        {
+            string json = this.RetrieveCommanderProfile();
+
+            JObject o = JObject.Parse(json);
+
+            decimal creditBalance = (decimal)o["profile"]["commander"]["credits"];
+
+            this.creditsBox.Value = creditBalance;
+
+            decimal hullValue = (decimal)o["profile"]["ship"]["value"]["hull"];
+            decimal modulesValue = (decimal)o["profile"]["ship"]["value"]["modules"];
+            decimal rebuyPercentage = Form1.settingsRef.RebuyPercentage;
+
+            this.insuranceBox.Value = (hullValue + modulesValue) * rebuyPercentage / 100;
+            decimal capacity = 0;
+            int stringLength = "Int_CargoRack_Size".Length;
+
+            foreach (var slot in o["profile"]["ship"]["modules"])
+            {
+                string module = (string)slot.First["module"]["name"];
+
+                if (module.Length > stringLength && module.Substring(0, stringLength) == "Int_CargoRack_Size")
+                {
+                    int size;
+
+                    if (Int32.TryParse(module.Substring(stringLength, 1), out size))
+                    {
+                        capacity += (decimal)Math.Pow(2, size);
+                    }
+                }
+            }
+
+            if (capacity > 0)
+            {
+                this.capacityBox.Value = capacity;
+            }
+        }
+
+        /// <summary>
+        /// Read the Cmdr Profile file and update the credit balance.
+        /// </summary>
+        private string RetrieveCommanderProfile()
+        {
+            string fileName = @"c:\Development\TDHelper\edce-client\last.json";
+            string json = string.Empty;
+
+            // If the file exists read it into the return string.
+            if (File.Exists(fileName))
+            {
+                // Create a StreamReader and open the file
+                using (TextReader reader = new StreamReader(fileName, Encoding.Default))
+                {
+                    // Read all the contents of the file in a string
+                    json = reader.ReadToEnd();
+
+                    // Close the StreamReader
+                    reader.Close();
+                }
+            }
+
+            return json;
         }
     }
 }
