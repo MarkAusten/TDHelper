@@ -1483,6 +1483,7 @@ namespace TDHelper
                 stopwatch.Stop(); // stop the timer
                 circularBuffer = new System.Text.StringBuilder(2 * circularBufferSize);
 
+                runButton.Text = "&Run";
                 enableRunButtons();
                 td_proc.Dispose();
 
