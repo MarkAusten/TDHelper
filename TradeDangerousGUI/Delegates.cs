@@ -737,79 +737,84 @@ namespace TDHelper
             // only run the delegate if we have a path
             if (!String.IsNullOrEmpty(path))
             {
-                procCode = -1; // reset the exit code
-                td_proc.StartInfo.Arguments = path;
-
-                if (buttonCaller == 12)
-                {
-                    td_proc.StartInfo.UseShellExecute = true;
-                    td_proc.StartInfo.CreateNoWindow = false;
-                }
-                else
-                {
-                    td_proc.StartInfo.RedirectStandardOutput = true;
-                    td_proc.StartInfo.RedirectStandardInput = false;
-                    td_proc.StartInfo.RedirectStandardError = true;
-                    td_proc.StartInfo.UseShellExecute = false;
-                    td_proc.StartInfo.CreateNoWindow = true;
-                    td_proc.EnableRaisingEvents = true;
-                    td_proc.SynchronizingObject = this;
-                    td_proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                }
-
-                td_proc.OutputDataReceived += new DataReceivedEventHandler(procOutputDataHandler);
-                td_proc.ErrorDataReceived += new DataReceivedEventHandler(procErrorDataHandler);
-
-                // pre-invoke
-                if (circularBuffer.Length == 0)
-                    stackCircularBuffer("Command line: " + path + "\n");
-                else
-                    stackCircularBuffer("\nCommand line: " + path + "\n");
-
-                this.Invoke(new Action(() =>
-                {
-                    if (buttonCaller != 5 && buttonCaller != 10 && buttonCaller != 11
-                        && buttonCaller != 12 && buttonCaller != 13)
-                    {// don't show cancelling for UpdateDB/Import/Upload/Editor
-                        runButton.Font = new Font(runButton.Font, FontStyle.Bold);
-                        runButton.Text = "&Cancel";
-                    }
-                }));
-
-                // only start the stopwatch for callers that run in the background
-                if (!backgroundWorker3.IsBusy)
-                {
-                    backgroundWorker3.RunWorkerAsync();
-                }
-                else
-                {
-                    stopwatch.Start();
-                }
-
-                td_proc.Start();
-                td_proc.Refresh(); // clear process cache between instances
-
-                if (buttonCaller != 12)
-                {
-                    td_proc.BeginOutputReadLine();
-                    td_proc.BeginErrorReadLine();
-                }
-
-                td_proc.WaitForExit();
-
                 try
                 {
-                    if (td_proc.HasExited)
-                        procCode = td_proc.ExitCode; // save our exit code
-                }
-                catch (Exception ex)
-                {
-                    // swallow the exception for the moment.
-                    Debug.WriteLine(ex.Message);
-                }
+                    procCode = -1; // reset the exit code
+                    td_proc.StartInfo.Arguments = path;
 
-                td_proc.Close();
-                td_proc.Dispose();
+                    if (buttonCaller == 12)
+                    {
+                        td_proc.StartInfo.UseShellExecute = true;
+                        td_proc.StartInfo.CreateNoWindow = false;
+                    }
+                    else
+                    {
+                        td_proc.StartInfo.RedirectStandardOutput = true;
+                        td_proc.StartInfo.RedirectStandardInput = false;
+                        td_proc.StartInfo.RedirectStandardError = true;
+                        td_proc.StartInfo.UseShellExecute = false;
+                        td_proc.StartInfo.CreateNoWindow = true;
+                        td_proc.EnableRaisingEvents = true;
+                        td_proc.SynchronizingObject = this;
+                        td_proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                    }
+
+                    td_proc.OutputDataReceived += new DataReceivedEventHandler(procOutputDataHandler);
+                    td_proc.ErrorDataReceived += new DataReceivedEventHandler(procErrorDataHandler);
+
+                    // pre-invoke
+                    if (circularBuffer.Length == 0)
+                        stackCircularBuffer("Command line: " + path + "\n");
+                    else
+                        stackCircularBuffer("\nCommand line: " + path + "\n");
+
+                    this.Invoke(new Action(() =>
+                    {
+                        if (buttonCaller != 5 && buttonCaller != 10 && buttonCaller != 11
+                            && buttonCaller != 12 && buttonCaller != 13)
+                        {// don't show cancelling for UpdateDB/Import/Upload/Editor
+                            runButton.Font = new Font(runButton.Font, FontStyle.Bold);
+                            runButton.Text = "&Cancel";
+                        }
+                    }));
+
+                    // only start the stopwatch for callers that run in the background
+                    if (!backgroundWorker3.IsBusy)
+                    {
+                        backgroundWorker3.RunWorkerAsync();
+                    }
+                    else
+                    {
+                        stopwatch.Start();
+                    }
+
+                    td_proc.Start();
+                    td_proc.Refresh(); // clear process cache between instances
+
+                    if (buttonCaller != 12)
+                    {
+                        td_proc.BeginOutputReadLine();
+                        td_proc.BeginErrorReadLine();
+                    }
+
+                    td_proc.WaitForExit();
+
+                    try
+                    {
+                        if (td_proc.HasExited)
+                            procCode = td_proc.ExitCode; // save our exit code
+                    }
+                    catch (Exception ex)
+                    {
+                        // swallow the exception for the moment.
+                        Debug.WriteLine(ex.Message);
+                    }
+                }
+                finally
+                {
+                    td_proc.Close();
+                    td_proc.Dispose();
+                }
             }
             else
                 buttonCaller = 20; // flag to play an error sound if we can't execute the command

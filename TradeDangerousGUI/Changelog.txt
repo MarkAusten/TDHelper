@@ -1,3 +1,19 @@
+v2.0.1.0
+--------
+* Added edce integration to retrieve the commander's credit balance, the current ship cargo space and the ship cost.
+* Added new settig for re-buy perentage.
+* Set insurance value from the ship value and re-buy percentage.
+* Removed EDAPI credentials from TD Helper as these are now stored in the EDCE ini file.
+
+v2.0.0.1
+--------
+* Changed lsp number box to have one decimal place.
+
+v2.0.0.0
+--------
+* Removed maddavo plugin calls and added calls to EDDBlink.
+* Updated pilot's log to correctly parse the more recent net logs.
+
 v1.0.7.7
 --------
 * Added a global hotkey for the Import button, and a section in the Misc. Settings panel to configure it (WIP)

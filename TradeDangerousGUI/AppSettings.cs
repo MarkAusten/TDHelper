@@ -50,9 +50,6 @@ namespace TDHelper
             instance.ExtraRunParams = "";
             instance.TreeViewFont = "";
 
-            instance.EDAPIUser = "";
-            instance.EDAPIPass = "";
-
             instance.Hops = 0;
             instance.Jumps = 0;
             instance.Credits = 0;
@@ -112,9 +109,6 @@ namespace TDHelper
         public string Avoid { get; set; }
         public string Via { get; set; }
         public string TreeViewFont { get; set; }
-
-        public string EDAPIUser { get; set; }
-        public string EDAPIPass { get; set; }
 
         private string _ExtraRunParams;
         public string ExtraRunParams

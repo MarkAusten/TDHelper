@@ -142,7 +142,9 @@ namespace TDHelper
             if (!String.IsNullOrEmpty(settingsRef.LastUsedConfig)
                 && settingsRef.LastUsedConfig != configFile
                 && validateConfigFile(settingsRef.LastUsedConfig))
+            {
                 loadSettings(settingsRef.LastUsedConfig);
+            }
         }
 
         private void Form1_Shown(object sender, EventArgs e)

@@ -593,6 +593,8 @@ namespace TDHelper
         #region HelpFuncs
         public static bool checkIfFileOpens(String path)
         {
+            bool fileOpens = false;
+
             try
             {
                 if (File.Exists(path))
@@ -601,15 +603,16 @@ namespace TDHelper
                     FileStream p = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                     p.Close();
                     p.Dispose();
-                    return true;
+
+                    fileOpens = true;
                 }
-                else
-                    return false;
             }
             catch
             {
-                return false;
+                // Do nothing...
             }
+
+            return fileOpens;
         }
 
         private bool stringInList(string input, List<string> listToSearch)

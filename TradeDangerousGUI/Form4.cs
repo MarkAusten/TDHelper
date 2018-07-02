@@ -19,16 +19,6 @@ namespace TDHelper
 
         private void Form4_Load(object sender, EventArgs e)
         {// load our current settings from the config
-            if (!String.IsNullOrEmpty(Form1.settingsRef.EDAPIUser))
-            {
-                edapiUserBox.Text = Form1.Decrypt(Form1.settingsRef.EDAPIUser);
-            }
-
-            if (!String.IsNullOrEmpty(Form1.settingsRef.EDAPIPass))
-            {
-                edapiPassBox.Text = Form1.Decrypt(Form1.settingsRef.EDAPIPass);
-            }
-
             if (!String.IsNullOrEmpty(Form1.settingsRef.ExtraRunParams))
             {
                 textBox1.Text = Form1.settingsRef.ExtraRunParams;
@@ -95,23 +85,11 @@ namespace TDHelper
             Form1.settingsRef.RebuyPercentage = this.rebuyPercentage.Value;
             Form1.settingsRef.EdcePath = this.edcePathBox.Text;
 
-            // encrypt our edapi login details
-            Form1.settingsRef.EDAPIUser = !String.IsNullOrEmpty(edapiUserBox.Text)
-                ? Form1.Encrypt(edapiUserBox.Text)
-                : String.Empty;
-
-            Form1.settingsRef.EDAPIPass = !String.IsNullOrEmpty(edapiPassBox.Text)
-                ? Form1.Encrypt(edapiPassBox.Text)
-                : String.Empty;
-
             // save our misc settings to the config file
             Form1.Serialize(Form1.configFile, Form1.settingsRef.DoNotUpdate, "DoNotUpdate");
             Form1.Serialize(Form1.configFile, Form1.settingsRef.DisableNetLogs, "DisableNetLogs");
             Form1.Serialize(Form1.configFile, Form1.settingsRef.CopySystemToClipboard, "CopySystemToClipboard");
             Form1.Serialize(Form1.configFile, Form1.settingsRef.ExtraRunParams, "ExtraRunParams");
-            // serialize our encrypted login details
-            Form1.Serialize(Form1.configFile, Form1.settingsRef.EDAPIUser, "EDAPIUser");
-            Form1.Serialize(Form1.configFile, Form1.settingsRef.EDAPIPass, "EDAPIPass");
             // save our paths as well
             Form1.Serialize(Form1.configFile, Form1.settingsRef.PythonPath, "PythonPath");
             Form1.Serialize(Form1.configFile, Form1.settingsRef.TDPath, "TDPath");
