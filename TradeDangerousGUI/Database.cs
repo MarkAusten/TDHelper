@@ -464,7 +464,20 @@ namespace TDHelper
         }
 
         private List<String> loadSystemsFromLogs(bool refreshMode, List<string> filePaths)
-        {// this method initially populates the recent systems and pilot's log in the absence of a DB
+        {
+            Splash splashForm = new Splash();
+
+            this.Invoke(new Action(() =>
+            {
+                this.Enabled = false;
+                splashForm.StartPosition = FormStartPosition.Manual;
+                splashForm.Location = new Point(this.Location.X + (this.Width - splashForm.Width) / 2, this.Location.Y + (this.Height - splashForm.Height) / 2);
+                splashForm.Caption = "Reading Net Logs";
+                splashForm.Show(this); // center on our location
+                splashForm.Focus(); // force this to the top
+            }));
+
+            // this method initially populates the recent systems and pilot's log in the absence of a DB
             // grab the timestamp of this particular netlog
             string fileBuffer = "";
             String pattern0 = @"(\d{2,4}\-\d\d\-\d\d)[\s\-](\d\d:\d\d)\sGMT"; // $1=Y, $2=M, $3=D; $4=GMT
@@ -626,6 +639,14 @@ namespace TDHelper
                 updatePilotsLogDB(tdhDBConn, exceptTable); // pass just the diffs, no table
             }
 
+            if (splashForm.Visible)
+            {
+                this.Invoke(new Action(() =>
+                {
+                    this.Enabled = true;
+                    splashForm.Close();
+                }));
+            }
             return output; // return our finished list
         }
 
@@ -686,6 +707,7 @@ namespace TDHelper
                             }
                         }
                     }
+
 
                     // our most recently entered system is always on top
                     if (output_unclean.Count > 0 && !String.IsNullOrEmpty(output_unclean[0]))
