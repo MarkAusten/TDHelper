@@ -21,6 +21,19 @@ namespace TDHelper
         [DllImportAttribute("user32.dll")]
         public static extern bool ReleaseCapture();
 
+        public string Caption
+        {
+            get
+            {
+                return this.label1.Text;
+            }
+
+            set
+            {
+                this.label1.Text = value;
+            }
+        }
+
         public Splash()
         {
             InitializeComponent();
