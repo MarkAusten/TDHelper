@@ -1,13 +1,14 @@
-v2.0.1.2
+v2.0.2.0
 --------
 * Fixed bug that left the run button with the cancel text after a Cmdr profile.
 * Removed copyright message
 * Update stopwatch once a second and not ten times a second.
 * Added commander name to main form title.
 * Added read and write settings to ini configuration file.
-* Current settings save on closing TD Helper.
+* Current settings saved on closing TD Helper.
 * TD Helper now shows a message when loading the net logs.
 * Running the Cmdr Profile will build an entry for every ship the commander owns.
+* Currently selected ship is saved on exit and restored at next run.
 
 v2.0.1.1
 --------

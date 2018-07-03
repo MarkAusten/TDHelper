@@ -239,7 +239,7 @@ namespace TDHelper
                 doc = new XDocument(new XElement("Route", new XElement("Summary", String.Format("{0} -> {1}", matches1[0].Groups[1].Value, matches1[0].Groups[2].Value))));
 
                 XElement element = doc.Descendants("Route").FirstOrDefault(); // move to our list root
-                
+
                 // put our details in a child node
                 element.Add(new XElement("SummaryDetails", String.Format("Gain: {0} -> {1}", matches2[0].Groups[2].Value, matches2[0].Groups[3].Value)));
 
@@ -284,7 +284,7 @@ namespace TDHelper
                     {// make an entry for the destination
                         element = doc.Descendants("Hop").Last();
                         element.Add(new XElement("UnloadAt", String.Format("Unload @ {0}", matches5[k].Groups[1].Value)));
-                        
+
                         if (k + 1 < matches5.Count)
                             k++;
                         else
@@ -707,7 +707,7 @@ namespace TDHelper
             // let's push all the boxes into variables
             copySettingsFromForm();
             // sanity check inputs before running
-            validateSettings();       
+            validateSettings();
 
             // Run button
             if (!backgroundWorker2.IsBusy)
@@ -821,7 +821,7 @@ namespace TDHelper
                 buttonCaller = 20; // flag to play an error sound if we can't execute the command
 
             // catch a few outcomes
-            
+
             if (buttonCaller == 5)
             {
                 if (hasUpdated == 0)
@@ -851,34 +851,34 @@ namespace TDHelper
              * 8) Cleans up when done
              */
             // grab the remote manifest to a tmp file
-/*            UpdateClass.downloadFile(remoteManifestPath, localManifestPath);
+            /*            UpdateClass.downloadFile(remoteManifestPath, localManifestPath);
 
-            if (File.Exists(localManifestPath))
-            {// only grab new archive if assembly doesn't match
-                if (!UpdateClass.compareAssemblyToManifest(localManifestPath, localDir))
-                {
-                    DialogResult d = TopMostMessageBox.Show(true, true, "An update is available, should we download it?", "Confirmation", MessageBoxButtons.YesNo);
-                    if (d == DialogResult.Yes)
-                    {
-                        XDocument doc = XDocument.Load(localManifestPath);
-                        XElement urlRoot = doc.Element("Manifest").Element("Assembly").Element("URL");
+                        if (File.Exists(localManifestPath))
+                        {// only grab new archive if assembly doesn't match
+                            if (!UpdateClass.compareAssemblyToManifest(localManifestPath, localDir))
+                            {
+                                DialogResult d = TopMostMessageBox.Show(true, true, "An update is available, should we download it?", "Confirmation", MessageBoxButtons.YesNo);
+                                if (d == DialogResult.Yes)
+                                {
+                                    XDocument doc = XDocument.Load(localManifestPath);
+                                    XElement urlRoot = doc.Element("Manifest").Element("Assembly").Element("URL");
 
-                        if (urlRoot != null)
-                        {
-                            string remoteArchiveURL = urlRoot.Value;
-                            decompressUpdate(remoteArchiveURL, localDir);
+                                    if (urlRoot != null)
+                                    {
+                                        string remoteArchiveURL = urlRoot.Value;
+                                        decompressUpdate(remoteArchiveURL, localDir);
+                                    }
+                                    else
+                                    {
+                                        Debug.WriteLine(doc.ToString());
+                                        UpdateClass.writeToLog(Form1.updateLogPath, "The manifest does not contain a URL tag, cannot parse for remote archive");
+                                    }
+                                }
+                                else
+                                    UpdateClass.writeToLog(Form1.updateLogPath, "The user cancelled the auto-update download");
+                            }
                         }
-                        else
-                        {
-                            Debug.WriteLine(doc.ToString());
-                            UpdateClass.writeToLog(Form1.updateLogPath, "The manifest does not contain a URL tag, cannot parse for remote archive");
-                        }
-                    }
-                    else
-                        UpdateClass.writeToLog(Form1.updateLogPath, "The user cancelled the auto-update download");
-                }
-            }
-*/
+            */
         }
 
         private void doHotSwapCleanup()
@@ -1019,6 +1019,10 @@ namespace TDHelper
                     // This is a new ship then set the capacity to the current ship capacity or zero as required.
                     config[sectionName]["capacity"].DecimalValue = shipCapacity;
                 }
+                else if (capacitySetting.IsEmpty)
+                {
+                    capacitySetting.DecimalValue = shipCapacity;
+                }
                 else if (shipCapacity > 0 && capacitySetting.DecimalValue != shipCapacity)
                 {
                     capacitySetting.DecimalValue = shipCapacity;
@@ -1029,7 +1033,7 @@ namespace TDHelper
                 config[sectionName]["Insurance"].DecimalValue = (hullValue + modulesValue) * rebuyPercentage / 100;
                 config[sectionName]["LadenLY"].DecimalValue = 1;
                 config[sectionName]["UnladenLY"].DecimalValue = 1;
-                config[sectionName]["Padsizes"].StringValue = "";
+                config[sectionName]["Padsizes"].StringValue = this.GetPadSizes(shipType);
             }
 
             string currentShips = Form1.settingsRef.AvailableShips;
@@ -1041,7 +1045,7 @@ namespace TDHelper
 
             if (missingShips.Count > 0)
             {
-                foreach(string ship in missingShips)
+                foreach (string ship in missingShips)
                 {
                     config.RemoveAllNamed(ship);
                 }
@@ -1085,21 +1089,177 @@ namespace TDHelper
         /// <param name="availableShips">The list of now available ships from the profile.</param>
         /// <returns>A list of missing ships.</returns>
         private IList<string> DeterminMissingShips(
-            string currentShips, 
+            string currentShips,
             string availableShips)
         {
-            IList<string> available = new List<string>(availableShips.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries));
             IList<string> missing = new List<string>();
 
-            foreach(string ship in currentShips.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries))
+            if (!string.IsNullOrEmpty(currentShips) &&
+                !string.IsNullOrEmpty(availableShips))
             {
-                if ( ! available.Contains(ship))
+                IList<string> available = new List<string>(availableShips.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries));
+
+                foreach (string ship in currentShips.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    missing.Add(ship);
+                    if (!available.Contains(ship))
+                    {
+                        missing.Add(ship);
+                    }
                 }
             }
 
             return missing;
+        }
+
+        /// <summary>
+        /// Get the padsizes upon which the ship may land.
+        /// </summary>
+        /// <param name="shipType">The internal ship type.</param>
+        /// <returns>The padsizes upon which the ship may land.</returns>
+        private string GetPadSizes(string shipType)
+        {
+            string padSizes = string.Empty;
+
+            switch (shipType)
+            {
+                case "Adder":
+                    padSizes = "SML";
+                    break;
+
+                case "Anaconda":
+                    padSizes = "L";
+                    break;
+
+                case "Asp":
+                    padSizes = "ML";
+                    break;
+
+                case "Asp_Scout":
+                    padSizes = "ML";
+                    break;
+
+                case "BelugaLiner":
+                    padSizes = "L";
+                    break;
+
+                case "CobraMkIII":
+                    padSizes = "SML";
+                    break;
+
+                case "CobraMkIV":
+                    padSizes = "SML";
+                    break;
+
+                case "Cutter":
+                    padSizes = "L";
+                    break;
+
+                case "DiamondBack":
+                    padSizes = "SML";
+                    break;
+
+                case "DiamondBackXL":
+                    padSizes = "SML";
+                    break;
+
+                case "Dolphin":
+                    padSizes = "SML";
+                    break;
+
+                case "Eagle":
+                    padSizes = "SML";
+                    break;
+
+                case "Empire_Courier":
+                    padSizes = "SML";
+                    break;
+
+                case "Empire_Eagle":
+                    padSizes = "SML";
+                    break;
+
+                case "Empire_Trader":
+                    padSizes = "L";
+                    break;
+
+                case "Federation_Corvette":
+                    padSizes = "L";
+                    break;
+
+                case "Federation_Dropship":
+                    padSizes = "ML";
+                    break;
+
+                case "Federation_Dropship_MkII":
+                    padSizes = "ML";
+                    break;
+
+                case "Federation_Gunship":
+                    padSizes = "ML";
+                    break;
+
+                case "FerDeLance":
+                    padSizes = "ML";
+                    break;
+
+                case "Hauler":
+                    padSizes = "S";
+                    break;
+
+                case "Independant_Trader":
+                    padSizes = "ML";
+                    break;
+
+                case "Orca":
+                    padSizes = "L";
+                    break;
+
+                case "Python":
+                    padSizes = "ML";
+                    break;
+
+                case "SideWinder":
+                    padSizes = "SML";
+                    break;
+
+                case "Type6":
+                    padSizes = "ML";
+                    break;
+
+                case "Type7":
+                    padSizes = "L";
+                    break;
+
+                case "Type9":
+                    padSizes = "L";
+                    break;
+
+                case "Type9_Military":
+                    padSizes = "L";
+                    break;
+
+                case "TypeX":
+                    padSizes = "SML";
+                    break;
+
+                case "Viper":
+                    padSizes = "SML";
+                    break;
+
+                case "Viper_MkIV":
+                    padSizes = "SML";
+                    break;
+
+                case "Vulture":
+                    padSizes = "SML";
+                    break;
+
+                default:
+                    padSizes = "?";
+                    break;
+            }
+
+            return padSizes;
         }
     }
 }

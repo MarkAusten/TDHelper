@@ -110,14 +110,11 @@ namespace TDHelper
                 };
             }
 
-            copySettingsFromConfig();
-            SetShipList(true);
-
             validateSettings();
-            // copy variables to controls
+            copySettingsFromConfig();
 
             // bind our alternate config files
-            SetShipList();
+            SetShipList(true);
 
             if (!checkIfFileOpens(configFile))
             {

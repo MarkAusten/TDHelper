@@ -626,6 +626,33 @@ namespace TDHelper
             config["System"]["UploadPath"].StringValue = settings.UploadPath ?? string.Empty;
             config["System"]["AvailableShips"].StringValue = settings.AvailableShips ?? string.Empty ;
 
+            // Update the current ship if required.
+            if (! string.IsNullOrEmpty(settings.LastUsedConfig))
+            {
+                string sectionName = settings.LastUsedConfig;
+
+                if (config[sectionName]["Capacity"].DecimalValue != settings.Capacity)
+                {
+                    config[sectionName]["Capacity"].DecimalValue = settings.Capacity;
+                }
+
+                if (config[sectionName]["LadenLY"].DecimalValue != settings.LadenLY)
+                {
+                    config[sectionName]["LadenLY"].DecimalValue = settings.LadenLY;
+                }
+
+                if (config[sectionName]["Padsizes"].StringValue != settings.Padsizes)
+                {
+                    config[sectionName]["Padsizes"].StringValue = settings.Padsizes;
+                }
+
+                if (config[sectionName]["UnladenLY"].DecimalValue != settings.UnladenLY)
+                {
+                    config[sectionName]["UnladenLY"].DecimalValue = settings.UnladenLY;
+                }
+
+            }
+
             config.SaveToFile(configFile);
         }
 

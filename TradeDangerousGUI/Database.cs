@@ -467,16 +467,6 @@ namespace TDHelper
         {
             Splash splashForm = new Splash();
 
-            this.Invoke(new Action(() =>
-            {
-                this.Enabled = false;
-                splashForm.StartPosition = FormStartPosition.Manual;
-                splashForm.Location = new Point(this.Location.X + (this.Width - splashForm.Width) / 2, this.Location.Y + (this.Height - splashForm.Height) / 2);
-                splashForm.Caption = "Reading Net Logs";
-                splashForm.Show(this); // center on our location
-                splashForm.Focus(); // force this to the top
-            }));
-
             // this method initially populates the recent systems and pilot's log in the absence of a DB
             // grab the timestamp of this particular netlog
             string fileBuffer = "";
@@ -491,6 +481,16 @@ namespace TDHelper
 
             if (filePaths.Count > 0 && !String.IsNullOrEmpty(filePaths[0]) && refreshMode)
             {// compile a list of all unique systems last visited in all valid log files, oldest to newest
+                this.Invoke(new Action(() =>
+                {
+                    this.Enabled = false;
+                    splashForm.StartPosition = FormStartPosition.Manual;
+                    splashForm.Location = new Point(this.Location.X + (this.Width - splashForm.Width) / 2, this.Location.Y + (this.Height - splashForm.Height) / 2);
+                    splashForm.Caption = "Reading Net Logs";
+                    splashForm.Show(this); // center on our location
+                    splashForm.Focus(); // force this to the top
+                }));
+
                 foreach (string path in latestLogPaths)
                 {
                     using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
