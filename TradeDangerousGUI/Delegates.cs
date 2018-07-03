@@ -986,7 +986,9 @@ namespace TDHelper
             string shipType = (string)o["profile"]["ship"]["name"];
             string shipName = (string)o["profile"]["ship"]["shipName"] ?? string.Empty;
 
-            string currentlySelected = shipType + (!string.IsNullOrEmpty(shipName) ? " (" + shipName + ")" : string.Empty);
+            string currentlySelected 
+                = this.TranslateShipType(shipType) 
+                + (!string.IsNullOrEmpty(shipName) ? " (" + shipName + ")" : string.Empty);
 
             Form1.settingsRef.LastUsedConfig = currentlySelected;
 
@@ -1000,7 +1002,7 @@ namespace TDHelper
                 shipType = (string)ship.First["name"];
                 shipName = (string)ship.First["shipName"] ?? string.Empty;
 
-                string sectionName = shipType + (!string.IsNullOrEmpty(shipName) ? " (" + shipName + ")" : string.Empty);
+                string sectionName = this.TranslateShipType(shipType) + (!string.IsNullOrEmpty(shipName) ? " (" + shipName + ")" : string.Empty);
 
                 availableShips += "," + sectionName;
 
@@ -1206,7 +1208,11 @@ namespace TDHelper
                     padSizes = "S";
                     break;
 
-                case "Independant_Trader":
+                case "Independant_Trader": // Keelback
+                    padSizes = "ML";
+                    break;
+
+                case "Krait_MkII":
                     padSizes = "ML";
                     break;
 
@@ -1234,12 +1240,16 @@ namespace TDHelper
                     padSizes = "L";
                     break;
 
-                case "Type9_Military":
+                case "Type9_Military": // Type 10
                     padSizes = "L";
                     break;
 
-                case "TypeX":
-                    padSizes = "SML";
+                case "TypeX": // Chieftain
+                    padSizes = "ML";
+                    break;
+
+                case "TypeX_3": // Challenger
+                    padSizes = "ML";
                     break;
 
                 case "Viper":
@@ -1260,6 +1270,113 @@ namespace TDHelper
             }
 
             return padSizes;
+        }
+        /// <summary>
+        /// Get the padsizes upon which the ship may land.
+        /// </summary>
+        /// <param name="shipType">The internal ship type.</param>
+        /// <returns>The padsizes upon which the ship may land.</returns>
+        private string TranslateShipType(string shipType)
+        {
+            string shipName = shipType;
+
+            switch (shipType)
+            {
+                case "Asp_Scout":
+                    shipName = "Asp scout";
+                    break;
+
+                case "BelugaLiner":
+                    shipName = "Beluga";
+                    break;
+
+                case "CobraMkIII":
+                    shipName = "Cobra MkIII";
+                    break;
+
+                case "CobraMkIV":
+                    shipName = "Cobra MkIV";
+                    break;
+
+                case "Cutter":
+                    shipName = "Imperial Cutter";
+                    break;
+
+                case "DiamondBack":
+                    shipName = "DiamondBack Scout";
+                    break;
+
+                case "DiamondBackXL":
+                    shipName = "DiamondBack Explorer";
+                    break;
+
+                case "Empire_Courier":
+                    shipName = "Imperial Courier";
+                    break;
+
+                case "Empire_Eagle":
+                    shipName = "Imperial Eagle";
+                    break;
+
+                case "Empire_Trader":
+                    shipName = "Imperial Clipper";
+                    break;
+
+                case "Federation_Corvette":
+                    shipName = "Federal Corvette";
+                    break;
+
+                case "Federation_Dropship":
+                    shipName = "Federal Dropship";
+                    break;
+
+                case "Federation_Dropship_MkII":
+                    shipName = "Federal Assault Ship";
+                    break;
+
+                case "Federation_Gunship":
+                    shipName = "Federal Gunship";
+                    break;
+
+
+                case "Independant_Trader":
+                    shipName = "Keelback";
+                    break;
+
+                case "Krait_MkII":
+                    shipName = "Krait MkII";
+                    break;
+
+                case "Type6":
+                    shipName = "Type 6";
+                    break;
+
+                case "Type7":
+                    shipName = "Type 7";
+                    break;
+
+                case "Type9":
+                    shipName = "Type 9";
+                    break;
+
+                case "Type9_Military":
+                    shipName = "Type 10";
+                    break;
+
+                case "TypeX":
+                    shipName = "Alliance Chieftain";
+                    break;
+
+                case "TypeX_3":
+                    shipName = "Alliance Challenger";
+                    break;
+
+                case "Viper_MkIV":
+                    shipName = "Viper MkIV";
+                    break;
+            }
+
+            return shipName;
         }
     }
 }

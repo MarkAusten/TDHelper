@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form4));
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.extraRunParameters = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
@@ -63,14 +63,14 @@
             this.miscGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
-            // textBox1
+            // extraRunParameters
             // 
-            this.textBox1.Location = new System.Drawing.Point(96, 225);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(257, 20);
-            this.textBox1.TabIndex = 13;
-            this.toolTip1.SetToolTip(this.textBox1, "This text will be added on to the end of the Run command [caution!]");
-            this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.generic_KeyDown);
+            this.extraRunParameters.Location = new System.Drawing.Point(96, 225);
+            this.extraRunParameters.Name = "extraRunParameters";
+            this.extraRunParameters.Size = new System.Drawing.Size(257, 20);
+            this.extraRunParameters.TabIndex = 13;
+            this.toolTip1.SetToolTip(this.extraRunParameters, "This text will be added on to the end of the Run command [caution!]");
+            this.extraRunParameters.KeyDown += new System.Windows.Forms.KeyEventHandler(this.generic_KeyDown);
             // 
             // label1
             // 
@@ -154,7 +154,7 @@
             this.overrideGroupBox.Controls.Add(this.overrideDisableNetLogs);
             this.overrideGroupBox.Controls.Add(this.overrideDoNotUpdate);
             this.overrideGroupBox.Controls.Add(this.label1);
-            this.overrideGroupBox.Controls.Add(this.textBox1);
+            this.overrideGroupBox.Controls.Add(this.extraRunParameters);
             this.overrideGroupBox.Location = new System.Drawing.Point(12, 12);
             this.overrideGroupBox.Name = "overrideGroupBox";
             this.overrideGroupBox.Size = new System.Drawing.Size(363, 263);
@@ -369,7 +369,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox extraRunParameters;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Button cancelButton;

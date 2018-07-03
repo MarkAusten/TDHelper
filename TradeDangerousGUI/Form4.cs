@@ -21,7 +21,7 @@ namespace TDHelper
         {// load our current settings from the config
             if (!String.IsNullOrEmpty(Form1.settingsRef.ExtraRunParams))
             {
-                textBox1.Text = Form1.settingsRef.ExtraRunParams;
+                extraRunParameters.Text = Form1.settingsRef.ExtraRunParams;
             }
 
             if (Form1.settingsRef.DisableNetLogs)
@@ -77,9 +77,32 @@ namespace TDHelper
 
         private void FormValidator()
         {
+            this.CopyValuesToSettings();
+
             Form1.SaveSettingsToIniFile();
 
             this.Close();
+        }
+
+        /// <summary>
+        /// Copy the values from the setting boxes to the settings obejct.
+        /// </summary>
+        private void CopyValuesToSettings()
+        {
+            TDSettings settings = Form1.settingsRef;
+
+            settings.DisableNetLogs = this.overrideDisableNetLogs.Checked;
+            settings.DoNotUpdate = this.overrideDoNotUpdate.Checked;
+            settings.CopySystemToClipboard = !this.overrideCopySystemToClipboard.Checked;
+
+            settings.PythonPath = this.pythonPathBox.Text;
+            settings.TDPath = this.tdPathBox.Text;
+            settings.EdcePath = this.edcePathBox.Text;
+            settings.NetLogPath = this.netLogsPathBox.Text;
+
+            settings.ExtraRunParams = this.extraRunParameters.Text;
+
+            settings.RebuyPercentage = this.rebuyPercentage.Value;
         }
 
         private void generic_KeyDown(object sender, KeyEventArgs e)

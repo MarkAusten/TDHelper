@@ -327,8 +327,8 @@ namespace TDHelper
 
             validatePython(null);
             validateTDPath(null);
-            validateNetLogPath(null);
             validateEdcePath(null);
+            validateNetLogPath(null);
 
             // default to Run command if unset
             methodDropDown.SelectedIndex = methodIndex;
