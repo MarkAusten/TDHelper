@@ -940,15 +940,14 @@ namespace TDHelper
         /// <summary>
         /// Read the Cmdr Profile file and update the credit balance.
         /// </summary>
-        private void UpdateCreditBalance()
+        private void UpdateCommanderAndShipDetails()
         {
             string json = this.RetrieveCommanderProfile();
 
             JObject o = JObject.Parse(json);
 
-            decimal creditBalance = (decimal)o["profile"]["commander"]["credits"];
-
-            this.creditsBox.Value = creditBalance;
+            Form1.settingsRef.CmdrName = (string)o["profile"]["commander"]["name"];
+            this.creditsBox.Value = (decimal)o["profile"]["commander"]["credits"];
 
             decimal hullValue = (decimal)o["profile"]["ship"]["value"]["hull"];
             decimal modulesValue = (decimal)o["profile"]["ship"]["value"]["modules"];
@@ -977,10 +976,12 @@ namespace TDHelper
             {
                 this.capacityBox.Value = capacity;
             }
+
+            SetFormTitle(this);
         }
 
         /// <summary>
-        /// Read the Cmdr Profile file and update the credit balance.
+        /// Read the Cmdr Profile file.
         /// </summary>
         private string RetrieveCommanderProfile()
         {

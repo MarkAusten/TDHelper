@@ -120,7 +120,6 @@ namespace TDHelper
                 notesTextBox.SaveFile(notesFile, RichTextBoxStreamType.PlainText);
 
             Serialize(configFile);
-            SaveSettingsToIniFile();
 
             // call the parser to add new configs to the list
             validConfigs = parseValidConfigs();
@@ -946,5 +945,21 @@ namespace TDHelper
             return Encoding.UTF8.GetString(MachineKey.Unprotect(inputBytes));
         }
         #endregion
+
+        /// <summary>
+        /// Set the title of the main form.
+        /// </summary>
+        /// <param name="mainform"></param>
+        private void SetFormTitle(Form mainform)
+        {
+            // Let's change the title to the current version
+            mainform.Text = "TDHelper " + appVersion;
+
+            // Plus the commander name if set.
+            if (!string.IsNullOrEmpty(Form1.settingsRef.CmdrName))
+            {
+                mainform.Text += " : Commander " + Form1.settingsRef.CmdrName;
+            }
+        }
     }
 }

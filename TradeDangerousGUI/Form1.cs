@@ -66,11 +66,11 @@ namespace TDHelper
                     | ControlStyles.UserPaint 
                     | ControlStyles.DoubleBuffer, true);
 
-            // Let's change the title to the current version
-            this.Text = "TDHelper " + appVersion + "-Beta";
-
             // Build variables from config
             buildSettings();
+
+            // Let's change the title
+            SetFormTitle(this);
 
             testSystemsTimer.AutoReset = false;
             testSystemsTimer.Interval = 10000;
@@ -1493,7 +1493,7 @@ namespace TDHelper
                     playAlert();
                 }
 
-                this.UpdateCreditBalance();
+                this.UpdateCommanderAndShipDetails();
             }
         }
 
