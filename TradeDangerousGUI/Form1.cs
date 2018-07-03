@@ -35,7 +35,7 @@ namespace TDHelper
 
         int buttonCaller, methodIndex, exportIndex, stationIndex, methodFromIndex = -1, hasUpdated, procCode = -1;
         
-        List<List<string>> validConfigs = new List<List<string>>();
+        IList<string> validConfigs = new List<string>();
         CultureInfo userCulture = CultureInfo.CurrentCulture;
         #endregion
 
@@ -85,7 +85,6 @@ namespace TDHelper
             Rectangle workingArea = screen.WorkingArea;
             int[] winLoc = loadWinLoc(settingsRef.LocationParent);
             int[] winSize = loadWinSize(settingsRef.SizeParent);
-            validConfigs = parseValidConfigs();
 
             // restore window size from config
             if (winSize.Length != 0 && winSize != null)
@@ -111,21 +110,25 @@ namespace TDHelper
                 };
             }
 
+            copySettingsFromConfig();
+            SetShipList(true);
+
             validateSettings();
             // copy variables to controls
-            copySettingsFromConfig();
 
             // bind our alternate config files
-            altConfigBox.DataSource = validConfigs[1]; // only the names, we use this for our index
+            SetShipList();
 
             if (!checkIfFileOpens(configFile))
-                Serialize(configFile); // overwrite the config file for validity
+            {
+                SaveSettingsToIniFile();
+            }
 
             if (settingsRef.HasUpdated)
             {// display the changelog for the user
                 Form3 changelogForm = new Form3();
                 settingsRef.HasUpdated = false; // we've updated
-                Serialize(configFile); // force a serialize to catch any missing tags
+                SaveSettingsToIniFile();
                 doHotSwapCleanup(); // call cleanup to remove unnecessary files if they exist
 
                 // show the user the changelog after an update
@@ -162,9 +165,6 @@ namespace TDHelper
                 settingsRef.SizeParent = saveWinSize(this);
 
                 SaveSettingsToIniFile();
-
-                //// Serialize(configFileDefault, settingsRef.LocationParent, "LocationParent");
-                //// Serialize(configFileDefault, settingsRef.SizeParent, "SizeParent");
             }
         }
 
@@ -748,10 +748,7 @@ namespace TDHelper
             // let the refresh methods decide what to refresh
             this.Invoke(new Action(() =>
             {
-                if (buttonCaller == 16)
-                    buildOutput(true); // update everything
-                else
-                    buildOutput(false);
+                buildOutput(buttonCaller == 16);
             }));
         }
 
@@ -900,7 +897,7 @@ namespace TDHelper
                     SubmitSystem(temp_src, refSysTextBox1.Text, t_refDist1, refSysTextBox2.Text, t_refDist2, refSysTextBox3.Text, t_refDist3, refSysTextBox4.Text, t_refDist4, refSysTextBox5.Text, t_refDist5, cmdrNameTextBox.Text);
 
                     // save our cmdrname to our config for next time
-                    Serialize(configFile, settingsRef.CmdrName, "CmdrName");
+                    SaveSettingsToIniFile();
                 }
                 else if (stationIndex > 0)
                 {// coming from the EDSC command (Lookup/Recent)
@@ -1394,10 +1391,8 @@ namespace TDHelper
              * notifying when an unrecognized system is detected.
              */
 
-            if (!hasRun)
-                buildOutput(true);
-            else if (hasRun)
-                buildOutput(false); // update with only the most recent
+
+            buildOutput(!hasRun);
 
             if (settingsRef.TestSystems)
             {
@@ -2252,7 +2247,7 @@ namespace TDHelper
                 File.Delete(configFile);
                 settingsRef.Reset(settingsRef);
                 validateSettings();
-                Serialize(configFile);
+                SaveSettingsToIniFile();
                 copySettingsFromConfig();
             }
         }
@@ -2271,38 +2266,6 @@ namespace TDHelper
             {
                 backgroundWorker1.RunWorkerAsync();
             }
-        }
-
-        private void loadSettingsButton_Click(object sender, EventArgs e)
-        {
-            if (Control.ModifierKeys == Keys.Control)
-            {// let's ask the user the path they'd like
-                OpenFileDialog x = new OpenFileDialog();
-                x.Title = "Select an XML configuration file to load";
-                x.Filter = "TDHelper config files (*.xml)|*.xml";
-                x.InitialDirectory = Application.StartupPath;
-                x.RestoreDirectory = true;
-                if (x.ShowDialog() == DialogResult.OK)
-                    configFile = x.FileName;
-            }
-
-            loadSettings(configFile);
-        }
-
-        private void saveSettingsButton_Click(object sender, EventArgs e)
-        {
-            if (Control.ModifierKeys == Keys.Control)
-            {// let's ask the user the path they'd like to save to
-                SaveFileDialog x = new SaveFileDialog();
-                x.Title = "Select a new filename to save to";
-                x.Filter = "TDHelper config files (*.xml)|*.xml";
-                x.InitialDirectory = Application.StartupPath;
-                x.RestoreDirectory = true;
-                if (x.ShowDialog() == DialogResult.OK)
-                    configFile = x.FileName; // we've got a valid path
-            }
-
-            writeSettings();
         }
 
         private void localNavBox_CheckedChanged(object sender, EventArgs e)
@@ -2618,9 +2581,7 @@ namespace TDHelper
             this.Hide();
             childForm.ShowDialog(); // always modal, never instance
             // save some globals
-            Serialize(configFile, settingsRef.LocationChild, "LocationChild");
-            Serialize(configFile, settingsRef.SizeChild, "SizeChild");
-            Serialize(configFile, settingsRef.MiniModeOnTop, "MiniModeOnTop");
+            SaveSettingsToIniFile();
             this.Show(); // restore when we return
         }
 
@@ -2949,23 +2910,17 @@ namespace TDHelper
         }
 
         private void altConfigBox_SelectionChangeCommitted(object sender, EventArgs e)
-        {// let's switch configs based on their name in the index
-            // something other than default (by name)
-            int index = validConfigs[1].IndexOf(altConfigBox.Text);
-            string indexPath = validConfigs[0][index];
-            if (!String.IsNullOrEmpty(indexPath) && validateConfigFile(indexPath))
-            {
-                buttonCaller = 21; // mark us as coming from the config selector
-                loadSettings(indexPath);
-            }
+        {
+            settingsRef.LastUsedConfig = altConfigBox.Text;
+            SetShipList();
         }
 
         private void altConfigBox_DropDown(object sender, EventArgs e)
         {
             // refresh our index
-            validConfigs = parseValidConfigs();
-            altConfigBox.DataSource = null;
-            altConfigBox.DataSource = validConfigs[1];
+            //validConfigs = parseValidConfigs();
+            //altConfigBox.DataSource = null;
+            //altConfigBox.DataSource = validConfigs[1];
         }
 
         private void numericUpDown_Enter(object sender, EventArgs e)
@@ -3009,7 +2964,7 @@ namespace TDHelper
                 {// if ctrl+enter, is a known system/station, and not in our net log, mark it down
                     addMarkedStation(filteredString, currentMarkedStations);
                     buildOutput(true);
-                    Serialize(configFile, settingsRef.MarkedStations, "MarkedStations");
+                    SaveSettingsToIniFile();
                     e.Handled = true;
                 }
                 else if ((e.KeyCode == Keys.Enter & e.Modifiers == Keys.Shift)
@@ -3018,7 +2973,7 @@ namespace TDHelper
                     removeMarkedStation(filteredString, currentMarkedStations);
                     int index = indexInList(filteredString, output_unclean);
                     buildOutput(true);
-                    Serialize(configFile, settingsRef.MarkedStations, "MarkedStations");
+                    SaveSettingsToIniFile();
                     e.Handled = true;
                 }
                 else if (e.KeyCode == Keys.Escape
@@ -3048,7 +3003,7 @@ namespace TDHelper
             {// if ctrl+enter, is a known system/station, and not in our net log, mark it down
                 addMarkedStation(filteredString, currentMarkedStations);
                 buildOutput(true);
-                Serialize(configFile, settingsRef.MarkedStations, "MarkedStations");
+                SaveSettingsToIniFile();
                 e.Handled = true;
             }
             else if ((e.KeyCode == Keys.Enter & e.Modifiers == Keys.Shift)
@@ -3057,7 +3012,7 @@ namespace TDHelper
                 removeMarkedStation(filteredString, currentMarkedStations);
                 int index = indexInList(filteredString, output_unclean);
                 buildOutput(true);
-                Serialize(configFile, settingsRef.MarkedStations, "MarkedStations");
+                SaveSettingsToIniFile();
                 e.Handled = true;
             }
             else if (e.KeyCode == Keys.Escape
@@ -3175,19 +3130,6 @@ namespace TDHelper
         private void comboBox_DropDownClosed(object sender, EventArgs e)
         {
             dropdownOpened = false;
-        }
-
-        private void altConfigBox_Click(object sender, EventArgs e)
-        {
-            if (Control.ModifierKeys == Keys.Control && !configFile.Contains("Default.xml"))
-            {
-                File.Delete(configFile);
-                if (!String.IsNullOrEmpty(altConfigBox.Items[0].ToString()))
-                {// refresh our dropdown
-                    (sender as ComboBox).DroppedDown = false;
-                    altConfigBox.SelectedIndex = 0;
-                }
-            }
         }
 
         private void pilotsLogDataGrid_CellContextMenuStripNeeded(object sender, DataGridViewCellContextMenuStripNeededEventArgs e)

@@ -20,6 +20,7 @@ using System.Media;
 using System.Data.SQLite;
 using System.Collections;
 using System.Web.Security;
+using SharpConfig;
 
 namespace TDHelper
 {
@@ -29,13 +30,13 @@ namespace TDHelper
         // grab a static reference to the global settings
         public static TDSettings settingsRef = TDSettings.Instance;
 
-        public string remoteManifestPath = "https://bitbucket.org/WombatFromHell/trade-dangerous-helper/downloads/TDHelper.manifest";
+        public string remoteManifestPath = String.Empty; // "https://bitbucket.org/WombatFromHell/trade-dangerous-helper/downloads/TDHelper.manifest";
         public static string localDir = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
         public static string assemblyPath = System.Reflection.Assembly.GetEntryAssembly().Location;
-        public static string localManifestPath = localDir + "\\TDHelper.manifest.tmp";
+        public static string localManifestPath = Path.Combine(localDir, "TDHelper.manifest.tmp");
         public static string remoteArchiveLocalPath; // save the archive path
-        public static string configFileDefault = localDir + "\\Default.xml";
-        public static string updateLogPath = localDir + "\\update.log";
+        public static string configFileDefault = Path.Combine(localDir, "tdh.ini");
+        public static string updateLogPath = Path.Combine(localDir, "update.log");
 
         public static bool hasParsed = false, isActive = false, callForReset = false;
         public static double t_CrTonTally, t_meanDist;
@@ -77,17 +78,12 @@ namespace TDHelper
         #region SettingsRelated
         private void buildSettings()
         {
-            //
-            // Deserialize variables from our settings class
-            //
-
             // force InvariantCulture to prevent issues
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+
             // snag the newest data from the file if it exists
             if (checkIfFileOpens(configFile))
             {
-                //// Deserialize(configFile);
-
                 LoadSettingsFromIniFile();
                 currentMarkedStations = parseMarkedStations();
             }
@@ -125,11 +121,11 @@ namespace TDHelper
             SaveSettingsToIniFile();
 
             // call the parser to add new configs to the list
-            validConfigs = parseValidConfigs();
-            // refresh our datasource
-            altConfigBox.DataSource = null;
-            altConfigBox.DataSource = validConfigs[1];
-            altConfigBox.SelectedIndex = altConfigBox.Items.IndexOf(Path.GetFileNameWithoutExtension(configFile));
+            //validConfigs = parseValidConfigs();
+            //// refresh our datasource
+            //altConfigBox.DataSource = null;
+            //altConfigBox.DataSource = validConfigs[1];
+            //altConfigBox.SelectedIndex = altConfigBox.Items.IndexOf(Path.GetFileNameWithoutExtension(configFile));
         }
 
         private void loadSettings(string path)
@@ -143,11 +139,15 @@ namespace TDHelper
             // save our current used config file
             if (!String.IsNullOrEmpty(settingsRef.LastUsedConfig)
                 && settingsRef.LastUsedConfig.Contains("Default.xml"))
+            {
                 settingsRef.LastUsedConfig = localDir + "\\Default.xml";
+            }
             else
+            {
                 settingsRef.LastUsedConfig = configFile;
+            }
 
-            Serialize(configFileDefault, settingsRef.LastUsedConfig, "LastUsedConfig");
+            SaveSettingsToIniFile();
 
             buildSettings();
             validateSettings();
@@ -164,12 +164,12 @@ namespace TDHelper
             if (File.Exists(notesFile))
                 notesTextBox.LoadFile(notesFile, RichTextBoxStreamType.PlainText);
 
-            // call the parser to add new configs to the list
-            validConfigs = parseValidConfigs();
-            // refresh our datasource
-            altConfigBox.DataSource = null;
-            altConfigBox.DataSource = validConfigs[1];
-            altConfigBox.SelectedIndex = altConfigBox.Items.IndexOf(Path.GetFileNameWithoutExtension(configFile));
+            //// call the parser to add new configs to the list
+            //validConfigs = parseValidConfigs();
+            //// refresh our datasource
+            //altConfigBox.DataSource = null;
+            //altConfigBox.DataSource = validConfigs[1];
+            //altConfigBox.SelectedIndex = altConfigBox.Items.IndexOf(Path.GetFileNameWithoutExtension(configFile));
 
             // reset our selected command for safety
             methodDropDown.SelectedIndex = 0;
@@ -366,7 +366,7 @@ namespace TDHelper
                         // we have to create the item/ship paths again after the validation
                         t_itemListPath = settingsRef.TDPath + @"\data\Item.csv";
                         t_shipListPath = settingsRef.TDPath + @"\data\Ship.csv";
-                        Serialize(configFile, settingsRef.TDPath, "TDPath");
+                        SaveSettingsToIniFile();
                     }
                     else
                     {
@@ -376,7 +376,7 @@ namespace TDHelper
                             settingsRef.TDPath = localPath;
                             t_itemListPath = settingsRef.TDPath + @"\data\Item.csv";
                             t_shipListPath = settingsRef.TDPath + @"\data\Ship.csv";
-                            Serialize(configFile, settingsRef.TDPath, "TDPath");
+                            SaveSettingsToIniFile();
                         }
                         else
                             throw new Exception("TradeDangerous path is empty or invalid, cannot continue");
@@ -400,7 +400,7 @@ namespace TDHelper
                 if (x.ShowDialog() == DialogResult.OK)
                 {
                     settingsRef.EdcePath = Path.GetDirectoryName(x.FileName);
-                    Serialize(configFile, settingsRef.EdcePath, "EdcePath");
+                    SaveSettingsToIniFile();
                 }
                 else
                 {
@@ -408,7 +408,7 @@ namespace TDHelper
                     if (!String.IsNullOrEmpty(localPath) && checkIfFileOpens(localPath + "\\edce_client.py") || localPath.EndsWith(".py"))
                     {// if we have an alternate path, we can reset the variable here
                         settingsRef.EdcePath = localPath;
-                        Serialize(configFile, settingsRef.EdcePath, "EdcePath");
+                        SaveSettingsToIniFile();
                     }
                     else
                     {
@@ -432,7 +432,7 @@ namespace TDHelper
                 if (x.ShowDialog() == DialogResult.OK)
                 {
                     settingsRef.ImportPath = x.FileName;
-                    Serialize(configFile, settingsRef.ImportPath, "ImportPath");
+                    SaveSettingsToIniFile();
                 }
             }
         }
@@ -445,13 +445,15 @@ namespace TDHelper
                 x.Title = "Select a file to upload";
 
                 if (Directory.Exists(settingsRef.UploadPath))
+                {
                     x.InitialDirectory = settingsRef.UploadPath;
+                }
 
                 x.Filter = "Prices/CSV files|*.prices;*.csv|All files|*.*";
                 if (x.ShowDialog() == DialogResult.OK)
                 {
                     settingsRef.UploadPath = x.FileName;
-                    Serialize(configFile, settingsRef.ImportPath, "UploadPath");
+                    SaveSettingsToIniFile();
                 }
             }
         }
@@ -469,7 +471,7 @@ namespace TDHelper
                     {
                         t_AppConfigPath = x.FileName;
                         settingsRef.NetLogPath = Directory.GetParent(t_AppConfigPath) + "\\Logs"; // set the appropriate Logs folder
-                        Serialize(configFile); // serialize the whole class just in case
+                        SaveSettingsToIniFile();
                         validateVerboseLogging(); // always validate if verboselogging is enabled
                     }
                     else
@@ -478,14 +480,14 @@ namespace TDHelper
                         {
                             t_AppConfigPath = Directory.GetParent(altPath) + "\\AppConfigLocal.xml";
                             settingsRef.NetLogPath = altPath;
-                            Serialize(configFile); // serialize the whole class just in case
+                            SaveSettingsToIniFile();
                             validateVerboseLogging(); // always validate if verboselogging is enabled
                         }
                         else
                         {
                             DialogResult dialog2 = TopMostMessageBox.Show(true, true, "Cannot set NetLogPath to a valid directory.\r\nWe will disable scanning for recent systems, if you want to re-enable it, set a working path.", "Error", MessageBoxButtons.OK);
                             settingsRef.DisableNetLogs = true;
-                            Serialize(configFile);
+                            SaveSettingsToIniFile();
                         }
                     }
                 }
@@ -517,14 +519,14 @@ namespace TDHelper
                     if (checkIfFileOpens(x.FileName))
                     {
                         settingsRef.PythonPath = Path.GetFullPath(x.FileName);
-                        Serialize(configFile, settingsRef.PythonPath, "PythonPath");
+                        SaveSettingsToIniFile();
 
                         if (settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase))
                         {// we're running Trade Dangerous Installer, adjust the relative paths
                             settingsRef.TDPath = Directory.GetParent(settingsRef.PythonPath).ToString();
                             t_itemListPath = settingsRef.TDPath + @"\data\Item.csv";
                             t_shipListPath = settingsRef.TDPath + @"\data\Ship.csv";
-                            Serialize(configFile, settingsRef.TDPath, "TDPath");
+                            SaveSettingsToIniFile();
                         }
                     }
                     else
@@ -535,14 +537,14 @@ namespace TDHelper
                     if (checkIfFileOpens(altPath))
                     {
                         settingsRef.PythonPath = altPath;
-                        Serialize(configFile, settingsRef.PythonPath, "PythonPath");
+                        SaveSettingsToIniFile();
 
                         if (settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase))
                         {// we're running Trade Dangerous Installer, adjust the relative paths
                             settingsRef.TDPath = Directory.GetParent(settingsRef.PythonPath).ToString();
                             t_itemListPath = settingsRef.TDPath + @"\data\Item.csv";
                             t_shipListPath = settingsRef.TDPath + @"\data\Ship.csv";
-                            Serialize(configFile, settingsRef.TDPath, "TDPath");
+                            SaveSettingsToIniFile();
                         }
                     }
                     else
@@ -964,5 +966,43 @@ namespace TDHelper
                 mainform.Text += " : Commander " + Form1.settingsRef.CmdrName;
             }
         }
+
+        /// <summary>
+        /// Populate the list of available ships and set the current selection
+        /// and set the appropriate values.
+        /// </summary>
+        /// <param name="refreshList">Set to true to refresh the drop down list.</param>
+        public void SetShipList(bool refreshList = false)
+        {
+            if (refreshList)
+            {
+                validConfigs = SetAvailableShips();
+                altConfigBox.DataSource = null;
+                altConfigBox.DataSource = validConfigs;
+            }
+
+            TDSettings settings = Form1.settingsRef;
+
+            string lastUsed = settings.LastUsedConfig;
+
+            altConfigBox.SelectedIndex
+               = !string.IsNullOrEmpty(lastUsed)
+               ? altConfigBox.FindStringExact(lastUsed)
+               : 0;
+
+            Configuration config = Configuration.LoadFromFile(configFile);
+
+            settings.Capacity = config[lastUsed]["Capacity"].DecimalValue;
+            settings.Insurance = config[lastUsed]["Insurance"].DecimalValue;
+            settings.LadenLY = config[lastUsed]["LadenLY"].DecimalValue;
+            settings.Padsizes = config[lastUsed]["Padsizes"].StringValue;
+            settings.UnladenLY = config[lastUsed]["UnladenLY"].DecimalValue;
+ 
+            capacityBox.Value = settings.Capacity;
+            insuranceBox.Value = Math.Max(settings.Insurance, insuranceBox.Minimum);
+            ladenLYBox.Value = Math.Max(settings.LadenLY, ladenLYBox.Minimum);
+            padSizeBox.Text = settings.Padsizes;
+            unladenLYBox.Value = Math.Max(settings.UnladenLY, unladenLYBox.Minimum);
+       }
     }
 }

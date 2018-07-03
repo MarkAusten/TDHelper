@@ -89,6 +89,7 @@ namespace TDHelper
             instance.CopySystemToClipboard = false;
 
             instance.RebuyPercentage = 5;
+            instance.AvailableShips = string.Empty;
         }
 
 
@@ -192,6 +193,7 @@ namespace TDHelper
         }
 
         public decimal RebuyPercentage { get; set; }
+        public string AvailableShips { get; set; }
     }
     #endregion
 
@@ -371,87 +373,6 @@ namespace TDHelper
                 setVerboseLogging(foundPath); // try to create a valid file
         }
 
-        public static void Serialize(string path, object objectRef, string objectName)
-        {// pull data from an object, push to XML
-            if (validateConfigFile(path))
-            {
-                XDocument doc = XDocument.Load(path);
-                XElement root = doc.Descendants("TDSettings").FirstOrDefault();
-                XElement element = root.Elements(objectName).FirstOrDefault();
-
-                if (element != null)
-                {// it exists, let's change it
-                    // prevent errors by correcting booleans
-                    if (objectRef.GetType() == typeof(bool))
-                        element.Value = objectRef.ToString().ToLower();
-                    else
-                        element.Value = objectRef.ToString();
-
-                    doc.Save(path);
-                }
-                else
-                {// it doesn't exist, let's add it
-                    root.Add(new XElement(objectName, objectRef.ToString()));
-                    doc.Save(path);
-                }
-            }
-            else
-            {// retry after making a valid file
-                Serialize(path);
-                Serialize(path, objectRef, objectName);
-            }
-        }
-
-        public static void Serialize(string path)
-        {// pull data from the class struct, push to XML
-            XDocument doc = new XDocument();
-
-            using (var writer = doc.CreateWriter())
-            {
-                XmlSerializer x = new XmlSerializer(typeof(TDSettings));
-                XmlSerializerNamespaces nsi = new XmlSerializerNamespaces();
-                nsi.Add("", ""); // clear the namespace to be tidy
-                x.Serialize(writer, settingsRef, nsi);
-            }
-
-            XElement element = doc.Root;
-            element.Save(path);
-        }
-
-        private void Deserialize(string path)
-        {// pull data from XML, push to the class struct
-            if (validateConfigFile(path))
-            {
-                XmlSerializer x = new XmlSerializer(typeof(TDSettings));
-                StreamReader reader = new StreamReader(path);
-                settingsRef = (TDSettings)x.Deserialize(reader);
-                reader.Close();
-                reader.Dispose();
-
-                // push the filename (no ext) to the Name tag
-                this.Name = Path.GetFileNameWithoutExtension(path);
-            }
-            else
-                throw new Exception("Deserializer cannot open the given config file: " + path);
-        }
-
-        private void Deserialize(string path, object objectRef, string objectName)
-        {// pull object from XML, push to a class object
-            if (validateConfigFile(path))
-            {
-                XDocument doc = XDocument.Load(path, LoadOptions.PreserveWhitespace);
-                XElement element = doc.Descendants("TDSettings").Elements(objectName).FirstOrDefault();
-                if (element != null)
-                {
-                    objectRef = element;
-                }
-                else
-                    throw new Exception("Cannot find the referenced object [" + objectName + "] in the given config file: " + path);
-            }
-            else
-                throw new Exception("Deserializer cannot open the given config file: " + path);
-        }
-
         public static string saveWinSize(Form x)
         {// save window size
             string modWidth, modHeight;
@@ -526,65 +447,18 @@ namespace TDHelper
                 form.Top = SystemInformation.VirtualScreen.Bottom - form.Height;
         }
 
-        private List<List<string>> parseValidConfigs()
-        {
-            /*
-             * Check our local directory for valid files and return a nested list
-             * list [0] for the file path, list [1] for the config name
-             */
-
-            XDocument tempDoc = new XDocument();
-
-            // make a nested list so we can have 2 dimensions
-            List<List<string>> varMatrix = new List<List<string>>();
-            varMatrix.Add(new List<string>());
-            varMatrix.Add(new List<string>());
-
-            // check for a list of possible config xmls
-            string[] t_filePaths = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*.xml");
-
-            // populate our table after checking the files
-            foreach (String s in t_filePaths)
-            {// first the paths need names
-                if (checkIfFileOpens(s))
-                {
-                    if (validateConfigFile(s))
-                    {// first we check to make sure the config is valid
-                        varMatrix[0].Add(s); // filepath = [0]
-                        // then we pull the name from the filename of the config
-                        varMatrix[1].Add(Path.GetFileNameWithoutExtension(s)); // config name = [1]
-                    }
-                }
-            }
-
-            if (varMatrix[1].Contains("Default") && varMatrix[1].IndexOf("Default") != 0)
-            {// move the Default, if necessary, to the top of the stack
-                int i = varMatrix[1].IndexOf("Default");
-                string s = varMatrix[0][i]; // path
-                string t = varMatrix[1][i]; // name
-                varMatrix[0].RemoveAt(i);
-                varMatrix[1].RemoveAt(i);
-                varMatrix[0].Insert(0, s);
-                varMatrix[1].Insert(0, t);
-            }
-
-            return varMatrix;
-        }
-
         public static bool validateConfigFile(string filePath)
         {
-            if (File.Exists(filePath))
-            {
-                // try to open the xml file
-                XDocument configFile = XDocument.Load(filePath, LoadOptions.PreserveWhitespace);
+            bool fileIsValid = false;
 
-                if (configFile.Elements("TDSettings").FirstOrDefault() != null)
-                    return true;
-                else
-                    return false;
+            if (checkIfFileOpens(filePath))
+            {
+                Configuration config = Configuration.LoadFromFile(filePath);
+
+               fileIsValid = config.GetSectionsNamed("App").Count() == 1;
             }
-            else
-                return false;
+
+            return fileIsValid;
         }
 
         private bool containsPadSizes(string text)
@@ -688,9 +562,13 @@ namespace TDHelper
         /// <summary>
         /// Save the settings to the ini file.
         /// </summary>
-        private void SaveSettingsToIniFile()
+        public static void SaveSettingsToIniFile()
         {
-            Configuration config = new Configuration();
+            Configuration config 
+                = checkIfFileOpens(configFile)
+                ? Configuration.LoadFromFile(configFile)
+                : new Configuration();
+
             TDSettings settings = Form1.settingsRef;
 
             // Settgins used for trade route calculation.
@@ -727,13 +605,6 @@ namespace TDHelper
             config["Commander"]["Credits"].DecimalValue = settings.Credits;
             config["Commander"]["RebuyPercentage"].DecimalValue = settings.RebuyPercentage;
 
-            // Ship settings
-            config["Ship"]["Capacity"].DecimalValue = settings.Capacity;
-            config["Ship"]["Insurance"].DecimalValue = settings.Insurance;
-            config["Ship"]["LadenLY"].DecimalValue = settings.LadenLY;
-            config["Ship"]["Padsizes"].StringValue = settings.Padsizes ?? string.Empty;
-            config["Ship"]["UnladenLY"].DecimalValue = settings.UnladenLY;
-
             // TD Helper system settings.
             config["System"]["CopySystemToClipboard"].BoolValue = settings.CopySystemToClipboard;
             config["System"]["DisableNetLogs"].BoolValue = settings.DisableNetLogs;
@@ -753,18 +624,19 @@ namespace TDHelper
             config["System"]["TestSystems"].BoolValue = settings.TestSystems;
             config["System"]["TreeViewFont"].StringValue = settings.TreeViewFont ?? string.Empty;
             config["System"]["UploadPath"].StringValue = settings.UploadPath ?? string.Empty;
+            config["System"]["AvailableShips"].StringValue = settings.AvailableShips ?? string.Empty ;
 
-            config.SaveToFile("tdh.ini");
+            config.SaveToFile(configFile);
         }
 
         /// <summary>
         /// Load the setting from the inin file.
         /// </summary>
-        private void LoadSettingsFromIniFile()
+        public static void LoadSettingsFromIniFile()
         {
-            if (checkIfFileOpens("tdh.ini"))
+            if (checkIfFileOpens(configFile))
             {
-                Configuration config = Configuration.LoadFromFile("tdh.ini");
+                Configuration config = Configuration.LoadFromFile(configFile);
                 TDSettings settings = Form1.settingsRef;
 
                 settings.AbovePrice = config["App"]["AbovePrice"].DecimalValue;
@@ -800,13 +672,6 @@ namespace TDHelper
                 settings.Credits = config["Commander"]["Credits"].DecimalValue;
                 settings.RebuyPercentage = config["Commander"]["RebuyPercentage"].DecimalValue;
 
-                // Ship settings
-                settings.Capacity = config["Ship"]["Capacity"].DecimalValue;
-                settings.Insurance = config["Ship"]["Insurance"].DecimalValue;
-                settings.LadenLY = config["Ship"]["LadenLY"].DecimalValue;
-                settings.Padsizes = config["Ship"]["Padsizes"].StringValue;
-                settings.UnladenLY = config["Ship"]["UnladenLY"].DecimalValue;
-
                 // TD Helper system settings.
                 settings.CopySystemToClipboard = config["System"]["CopySystemToClipboard"].BoolValue;
                 settings.DisableNetLogs = config["System"]["DisableNetLogs"].BoolValue;
@@ -826,7 +691,24 @@ namespace TDHelper
                 settings.TestSystems = config["System"]["TestSystems"].BoolValue;
                 settings.TreeViewFont = config["System"]["TreeViewFont"].StringValue;
                 settings.UploadPath = config["System"]["UploadPath"].StringValue;
+                settings.AvailableShips = config["System"]["AvailableShips"].StringValue;
+
+                if (string.IsNullOrEmpty(settings.AvailableShips))
+                {
+                    settings.AvailableShips = "Default";
+                }
             }
+        }
+
+        /// <summary>
+        /// Get a list of available ships from the settings.
+        /// </summary>
+        /// <returns>A list of available ships.</returns>
+        public IList<string> SetAvailableShips()
+        {
+            string[] ships = Form1.settingsRef.AvailableShips.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+
+            return new List<string>(ships).OrderBy(x => x).ToList();
         }
     }
 }

@@ -60,7 +60,6 @@
             this.notesClearMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.selectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveSettingsButton = new System.Windows.Forms.Button();
             this.stationDropDown = new System.Windows.Forms.ComboBox();
             this.oneStopCheckBox = new System.Windows.Forms.CheckBox();
             this.directCheckBox = new System.Windows.Forms.CheckBox();
@@ -135,7 +134,6 @@
             this.itemsFilterCheckBox = new System.Windows.Forms.CheckBox();
             this.resetFilterButton = new System.Windows.Forms.Button();
             this.resetStationButton = new System.Windows.Forms.Button();
-            this.loadSettingsButton = new System.Windows.Forms.Button();
             this.confirmBox = new System.Windows.Forms.TextBox();
             this.swapButton = new System.Windows.Forms.Button();
             this.miniModeButton = new System.Windows.Forms.Button();
@@ -567,19 +565,6 @@
             this.selectMenuItem.Text = "Select All";
             this.selectMenuItem.Click += new System.EventHandler(this.selectMenuItem_Click);
             // 
-            // saveSettingsButton
-            // 
-            this.saveSettingsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.saveSettingsButton.Location = new System.Drawing.Point(731, 713);
-            this.saveSettingsButton.Name = "saveSettingsButton";
-            this.saveSettingsButton.Size = new System.Drawing.Size(82, 23);
-            this.saveSettingsButton.TabIndex = 28;
-            this.saveSettingsButton.TabStop = false;
-            this.saveSettingsButton.Text = "Save Settings";
-            this.toolTip1.SetToolTip(this.saveSettingsButton, "Ctrl+Click to choose a different settings file to save");
-            this.saveSettingsButton.UseVisualStyleBackColor = true;
-            this.saveSettingsButton.Click += new System.EventHandler(this.saveSettingsButton_Click);
-            // 
             // stationDropDown
             // 
             this.stationDropDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -811,11 +796,6 @@
             this.capacityBox.Location = new System.Drawing.Point(409, 54);
             this.capacityBox.Maximum = new decimal(new int[] {
             1000,
-            0,
-            0,
-            0});
-            this.capacityBox.Minimum = new decimal(new int[] {
-            1,
             0,
             0,
             0});
@@ -1592,19 +1572,6 @@
             this.resetStationButton.UseVisualStyleBackColor = true;
             this.resetStationButton.Click += new System.EventHandler(this.resetStationButton_Click);
             // 
-            // loadSettingsButton
-            // 
-            this.loadSettingsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.loadSettingsButton.Location = new System.Drawing.Point(642, 713);
-            this.loadSettingsButton.Name = "loadSettingsButton";
-            this.loadSettingsButton.Size = new System.Drawing.Size(83, 23);
-            this.loadSettingsButton.TabIndex = 27;
-            this.loadSettingsButton.TabStop = false;
-            this.loadSettingsButton.Text = "Load Settings";
-            this.toolTip1.SetToolTip(this.loadSettingsButton, "Ctrl+Click to choose a different settings file to load");
-            this.loadSettingsButton.UseVisualStyleBackColor = true;
-            this.loadSettingsButton.Click += new System.EventHandler(this.loadSettingsButton_Click);
-            // 
             // confirmBox
             // 
             this.confirmBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
@@ -1646,14 +1613,13 @@
             this.altConfigBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.altConfigBox.Location = new System.Drawing.Point(350, 43);
             this.altConfigBox.Name = "altConfigBox";
-            this.altConfigBox.Size = new System.Drawing.Size(82, 21);
+            this.altConfigBox.Size = new System.Drawing.Size(152, 21);
             this.altConfigBox.TabIndex = 56;
             this.altConfigBox.TabStop = false;
             this.toolTip1.SetToolTip(this.altConfigBox, "Select a previously used config file\r\n(Ctrl+Click a non-default config to delete " +
         "it)");
             this.altConfigBox.DropDown += new System.EventHandler(this.altConfigBox_DropDown);
             this.altConfigBox.SelectionChangeCommitted += new System.EventHandler(this.altConfigBox_SelectionChangeCommitted);
-            this.altConfigBox.Click += new System.EventHandler(this.altConfigBox_Click);
             // 
             // updateNotifyIcon
             // 
@@ -2749,11 +2715,9 @@
             this.Controls.Add(this.verboseLabel);
             this.Controls.Add(this.verbosityComboBox);
             this.Controls.Add(this.ageLabel);
-            this.Controls.Add(this.loadSettingsButton);
             this.Controls.Add(this.padSizeBox);
             this.Controls.Add(this.padSizeLabel);
             this.Controls.Add(this.updateButton);
-            this.Controls.Add(this.saveSettingsButton);
             this.Controls.Add(this.srcSysLabel);
             this.Controls.Add(this.srcSystemComboBox);
             this.Controls.Add(this.getSystemButton);
@@ -2846,13 +2810,11 @@
         private System.Windows.Forms.Label creditsLabel;
         private System.Windows.Forms.CheckBox towardsCheckBox;
         private System.Windows.Forms.CheckBox loopCheckBox;
-        private System.Windows.Forms.Button saveSettingsButton;
         private System.Windows.Forms.ComboBox commodityComboBox;
         private System.Windows.Forms.Label commodityLabel;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Label hopsLabel;
         private System.Windows.Forms.Button updateButton;
-        private System.Windows.Forms.Button loadSettingsButton;
         private System.Windows.Forms.CheckBox localNavCheckBox;
         private System.Windows.Forms.CheckBox bmktCheckBox;
         private System.Windows.Forms.Label avoidLabel;

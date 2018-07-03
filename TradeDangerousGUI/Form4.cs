@@ -77,29 +77,7 @@ namespace TDHelper
 
         private void FormValidator()
         {
-            // push our current form settings to the AppSettings()
-            Form1.settingsRef.ExtraRunParams = textBox1.Text;
-            Form1.settingsRef.DisableNetLogs = overrideDisableNetLogs.Checked;
-            Form1.settingsRef.DoNotUpdate = overrideDoNotUpdate.Checked;
-            Form1.settingsRef.CopySystemToClipboard = overrideCopySystemToClipboard.Checked;
-            Form1.settingsRef.RebuyPercentage = this.rebuyPercentage.Value;
-            Form1.settingsRef.EdcePath = this.edcePathBox.Text;
-
-            // save our misc settings to the config file
-            Form1.Serialize(Form1.configFile, Form1.settingsRef.DoNotUpdate, "DoNotUpdate");
-            Form1.Serialize(Form1.configFile, Form1.settingsRef.DisableNetLogs, "DisableNetLogs");
-            Form1.Serialize(Form1.configFile, Form1.settingsRef.CopySystemToClipboard, "CopySystemToClipboard");
-            Form1.Serialize(Form1.configFile, Form1.settingsRef.ExtraRunParams, "ExtraRunParams");
-            // save our paths as well
-            Form1.Serialize(Form1.configFile, Form1.settingsRef.PythonPath, "PythonPath");
-            Form1.Serialize(Form1.configFile, Form1.settingsRef.TDPath, "TDPath");
-            Form1.Serialize(Form1.configFile, Form1.settingsRef.NetLogPath, "NetLogPath");
-            Form1.Serialize(Form1.configFile, Form1.settingsRef.EdcePath, "EdcePath");
-            // save our font name/size for the treeview
-            if (!String.IsNullOrEmpty(Form1.settingsRef.TreeViewFont))
-                Form1.Serialize(Form1.configFile, Form1.settingsRef.TreeViewFont, "TreeViewFont");
-
-            Form1.Serialize(Form1.configFile, Form1.settingsRef.RebuyPercentage, "RebuyPercentage");
+            Form1.SaveSettingsToIniFile();
 
             this.Close();
         }

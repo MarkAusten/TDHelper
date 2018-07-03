@@ -13,6 +13,7 @@ using System.Xml.Linq;
 using System.Security.Cryptography;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SharpConfig;
 
 namespace TDHelper
 {
@@ -925,7 +926,7 @@ namespace TDHelper
 
             // change flag indicator and serialize it
             settingsRef.HasUpdated = true;
-            Serialize(configFileDefault, settingsRef.HasUpdated, "HasUpdated");
+            SaveSettingsToIniFile();
         }
 
         /// <summary>
@@ -946,18 +947,22 @@ namespace TDHelper
 
             JObject o = JObject.Parse(json);
 
+            // Set the commander name and credit balance.
             Form1.settingsRef.CmdrName = (string)o["profile"]["commander"]["name"];
             this.creditsBox.Value = (decimal)o["profile"]["commander"]["credits"];
 
+            // Determine the insurance of the current ship.
             decimal hullValue = (decimal)o["profile"]["ship"]["value"]["hull"];
             decimal modulesValue = (decimal)o["profile"]["ship"]["value"]["modules"];
             decimal rebuyPercentage = Form1.settingsRef.RebuyPercentage;
 
             this.insuranceBox.Value = (hullValue + modulesValue) * rebuyPercentage / 100;
+
+            // Determine the cargo capacity of the current ship.
             decimal capacity = 0;
             int stringLength = "Int_CargoRack_Size".Length;
 
-            foreach (var slot in o["profile"]["ship"]["modules"])
+            foreach (JToken slot in o["profile"]["ship"]["modules"])
             {
                 string module = (string)slot.First["module"]["name"];
 
@@ -977,7 +982,75 @@ namespace TDHelper
                 this.capacityBox.Value = capacity;
             }
 
+            // Set this ship as the currently selected ship.
+            string shipType = (string)o["profile"]["ship"]["name"];
+            string shipName = (string)o["profile"]["ship"]["shipName"] ?? string.Empty;
+
+            string currentlySelected = shipType + (!string.IsNullOrEmpty(shipName) ? " (" + shipName + ")" : string.Empty);
+
+            Form1.settingsRef.LastUsedConfig = currentlySelected;
+
+            // Get the details of all the commander's ships and set up the available ships.
+            Configuration config = Configuration.LoadFromFile(configFile);
+
+            string availableShips = string.Empty;
+
+            foreach (JToken ship in o["profile"]["ships"])
+            {
+                shipType = (string)ship.First["name"];
+                shipName = (string)ship.First["shipName"] ?? string.Empty;
+
+                string sectionName = shipType + (!string.IsNullOrEmpty(shipName) ? " (" + shipName + ")" : string.Empty);
+
+                availableShips += "," + sectionName;
+
+                decimal shipCapacity
+                    = sectionName == currentlySelected
+                    ? capacity
+                    : 0;
+
+                hullValue = (decimal)ship.First["value"]["hull"];
+                modulesValue = (decimal)ship.First["value"]["modules"];
+
+                Setting capacitySetting = config[sectionName]["Capacity"];
+
+                if (capacitySetting == null)
+                {
+                    // This is a new ship then set the capacity to the current ship capacity or zero as required.
+                    config[sectionName]["capacity"].DecimalValue = shipCapacity;
+                }
+                else if (shipCapacity > 0 && capacitySetting.DecimalValue != shipCapacity)
+                {
+                    capacitySetting.DecimalValue = shipCapacity;
+                }
+
+                config[sectionName]["hullValue"].DecimalValue = hullValue;
+                config[sectionName]["modulesValue"].DecimalValue = modulesValue;
+                config[sectionName]["Insurance"].DecimalValue = (hullValue + modulesValue) * rebuyPercentage / 100;
+                config[sectionName]["LadenLY"].DecimalValue = 1;
+                config[sectionName]["UnladenLY"].DecimalValue = 1;
+                config[sectionName]["Padsizes"].StringValue = "";
+            }
+
+            string currentShips = Form1.settingsRef.AvailableShips;
+            Form1.settingsRef.AvailableShips = availableShips.Substring(1);
+            config["System"]["AvailableShips"].StringValue = Form1.settingsRef.AvailableShips;
+
+            // Determine if any ships have been sold and remove if found.
+            IList<string> missingShips = DeterminMissingShips(currentShips, availableShips);
+
+            if (missingShips.Count > 0)
+            {
+                foreach(string ship in missingShips)
+                {
+                    config.RemoveAllNamed(ship);
+                }
+            }
+
+            config.SaveToFile(configFile);
+
             SetFormTitle(this);
+            SetShipList(true);
         }
 
         /// <summary>
@@ -1003,6 +1076,30 @@ namespace TDHelper
             }
 
             return json;
+        }
+
+        /// <summary>
+        /// Compare the two ship lists and find any in the first string that are not in the second.
+        /// </summary>
+        /// <param name="currentShips">The list of current ships.</param>
+        /// <param name="availableShips">The list of now available ships from the profile.</param>
+        /// <returns>A list of missing ships.</returns>
+        private IList<string> DeterminMissingShips(
+            string currentShips, 
+            string availableShips)
+        {
+            IList<string> available = new List<string>(availableShips.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries));
+            IList<string> missing = new List<string>();
+
+            foreach(string ship in currentShips.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                if ( ! available.Contains(ship))
+                {
+                    missing.Add(ship);
+                }
+            }
+
+            return missing;
         }
     }
 }

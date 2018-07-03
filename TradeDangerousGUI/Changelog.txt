@@ -6,6 +6,8 @@ v2.0.1.2
 * Added commander name to main form title.
 * Added read and write settings to ini configuration file.
 * Current settings save on closing TD Helper.
+* TD Helper now shows a message when loading the net logs.
+* Running the Cmdr Profile will build an entry for every ship the commander owns.
 
 v2.0.1.1
 --------
