@@ -120,6 +120,7 @@ namespace TDHelper
                 notesTextBox.SaveFile(notesFile, RichTextBoxStreamType.PlainText);
 
             Serialize(configFile);
+            SaveSettingsToIniFile();
 
             // call the parser to add new configs to the list
             validConfigs = parseValidConfigs();

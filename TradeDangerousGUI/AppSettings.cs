@@ -15,6 +15,7 @@ using System.Globalization;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Drawing;
+using SharpConfig;
 
 namespace TDHelper
 {
@@ -640,10 +641,7 @@ namespace TDHelper
 
         private bool isMarkedStation(string input, List<string> parentList)
         {
-            if (stringInList(input, parentList))
-                return true;
-            else
-                return false;
+            return stringInList(input, parentList);
         }
 
         private void addMarkedStation(string input, List<string> parentList)
@@ -685,6 +683,147 @@ namespace TDHelper
             }
             else
                 return "";
+        }
+
+        /// <summary>
+        /// Save the settings to the ini file.
+        /// </summary>
+        private void SaveSettingsToIniFile()
+        {
+            Configuration config = new Configuration();
+            TDSettings settings = Form1.settingsRef;
+
+            // Settgins used for trade route calculation.
+            config["App"]["AbovePrice"].DecimalValue = settings.AbovePrice;
+            config["App"]["Age"].DecimalValue = settings.Age;
+            config["App"]["Avoid"].StringValue = settings.Avoid ?? string.Empty;
+            config["App"]["BelowPrice"].DecimalValue = settings.BelowPrice;
+            config["App"]["Corrections"].BoolValue = settings.Corrections;
+            config["App"]["CSVSelect"].DecimalValue = settings.CSVSelect;
+            config["App"]["Demand"].DecimalValue = settings.Demand;
+            config["App"]["ExtraRunParams"].StringValue = settings.ExtraRunParams ?? string.Empty;
+            config["App"]["GPT"].DecimalValue = settings.GPT;
+            config["App"]["Hops"].DecimalValue = settings.Hops;
+            config["App"]["Jumps"].DecimalValue = settings.Jumps;
+            config["App"]["Limit"].DecimalValue = settings.Limit;
+            config["App"]["Loop"].BoolValue = settings.Loop;
+            config["App"]["LoopInt"].DecimalValue = settings.LoopInt;
+            config["App"]["LSPenalty"].DecimalValue = settings.LSPenalty;
+            config["App"]["Margin"].DecimalValue = settings.Margin;
+            config["App"]["MarkedStations"].StringValue = settings.MarkedStations ?? string.Empty;
+            config["App"]["MaxGPT"].DecimalValue = settings.MaxGPT;
+            config["App"]["MaxLSDistance"].DecimalValue = settings.MaxLSDistance;
+            config["App"]["PruneHops"].DecimalValue = settings.PruneHops;
+            config["App"]["PruneScore"].DecimalValue = settings.PruneScore;
+            config["App"]["ShowJumps"].BoolValue = settings.ShowJumps;
+            config["App"]["Stock"].DecimalValue = settings.Stock;
+            config["App"]["Towards"].BoolValue = settings.Towards;
+            config["App"]["Unique"].BoolValue = settings.Unique;
+            config["App"]["Verbosity"].DecimalValue = settings.Verbosity;
+            config["App"]["Via"].StringValue = settings.Via ?? string.Empty;
+
+            // Commander settings
+            config["Commander"]["CmdrName"].StringValue = settings.CmdrName ?? string.Empty;
+            config["Commander"]["Credits"].DecimalValue = settings.Credits;
+            config["Commander"]["RebuyPercentage"].DecimalValue = settings.RebuyPercentage;
+
+            // Ship settings
+            config["Ship"]["Capacity"].DecimalValue = settings.Capacity;
+            config["Ship"]["Insurance"].DecimalValue = settings.Insurance;
+            config["Ship"]["LadenLY"].DecimalValue = settings.LadenLY;
+            config["Ship"]["Padsizes"].StringValue = settings.Padsizes ?? string.Empty;
+            config["Ship"]["UnladenLY"].DecimalValue = settings.UnladenLY;
+
+            // TD Helper system settings.
+            config["System"]["CopySystemToClipboard"].BoolValue = settings.CopySystemToClipboard;
+            config["System"]["DisableNetLogs"].BoolValue = settings.DisableNetLogs;
+            config["System"]["DoNotUpdate"].BoolValue = settings.DoNotUpdate;
+            config["System"]["EdcePath"].StringValue = settings.EdcePath ?? string.Empty;
+            config["System"]["HasUpdated"].BoolValue = settings.HasUpdated;
+            config["System"]["ImportPath"].StringValue = settings.ImportPath ?? string.Empty;
+            config["System"]["LastUsedConfig"].StringValue = settings.LastUsedConfig ?? string.Empty;
+            config["System"]["LocationChild"].StringValue = settings.LocationChild ?? string.Empty;
+            config["System"]["LocationParent"].StringValue = settings.LocationParent ?? string.Empty;
+            config["System"]["MiniModeOnTop"].BoolValue = settings.MiniModeOnTop;
+            config["System"]["NetLogPath"].StringValue = settings.NetLogPath ?? string.Empty;
+            config["System"]["PythonPath"].StringValue = settings.PythonPath ?? string.Empty;
+            config["System"]["SizeChild"].StringValue = settings.SizeChild ?? string.Empty;
+            config["System"]["SizeParent"].StringValue = settings.SizeParent ?? string.Empty;
+            config["System"]["TDPath"].StringValue = settings.TDPath ?? string.Empty;
+            config["System"]["TestSystems"].BoolValue = settings.TestSystems;
+            config["System"]["TreeViewFont"].StringValue = settings.TreeViewFont ?? string.Empty;
+            config["System"]["UploadPath"].StringValue = settings.UploadPath ?? string.Empty;
+
+            config.SaveToFile("tdh.ini");
+        }
+
+        /// <summary>
+        /// Load the setting from the inin file.
+        /// </summary>
+        private void LoadSettingsFromIniFile()
+        {
+            Configuration config = Configuration.LoadFromFile("tdh.ini");
+            TDSettings settings = Form1.settingsRef;
+
+            settings.AbovePrice = config["App"]["AbovePrice"].DecimalValue;
+            settings.Age = config["App"]["Age"].DecimalValue;
+            settings.Avoid = config["App"]["Avoid"].StringValue;
+            settings.BelowPrice = config["App"]["BelowPrice"].DecimalValue;
+            settings.Corrections = config["App"]["Corrections"].BoolValue;
+            settings.CSVSelect = config["App"]["CSVSelect"].DecimalValue;
+            settings.Demand = config["App"]["Demand"].DecimalValue;
+            settings.ExtraRunParams = config["App"]["ExtraRunParams"].StringValue;
+            settings.GPT = config["App"]["GPT"].DecimalValue;
+            settings.Hops = config["App"]["Hops"].DecimalValue;
+            settings.Jumps = config["App"]["Jumps"].DecimalValue;
+            settings.Limit = config["App"]["Limit"].DecimalValue;
+            settings.Loop = config["App"]["Loop"].BoolValue;
+            settings.LoopInt = config["App"]["LoopInt"].DecimalValue;
+            settings.LSPenalty = config["App"]["LSPenalty"].DecimalValue;
+            settings.Margin = config["App"]["Margin"].DecimalValue;
+            settings.MarkedStations = config["App"]["MarkedStations"].StringValue;
+            settings.MaxGPT = config["App"]["MaxGPT"].DecimalValue;
+            settings.MaxLSDistance = config["App"]["MaxLSDistance"].DecimalValue;
+            settings.PruneHops = config["App"]["PruneHops"].DecimalValue;
+            settings.PruneScore = config["App"]["PruneScore"].DecimalValue;
+            settings.ShowJumps = config["App"]["ShowJumps"].BoolValue;
+            settings.Stock = config["App"]["Stock"].DecimalValue;
+            settings.Towards = config["App"]["Towards"].BoolValue;
+            settings.Unique = config["App"]["Unique"].BoolValue;
+            settings.Verbosity = config["App"]["Verbosity"].DecimalValue;
+            settings.Via = config["App"]["Via"].StringValue;
+
+            // Commander settings
+            settings.CmdrName = config["Commander"]["CmdrName"].StringValue;
+            settings.Credits = config["Commander"]["Credits"].DecimalValue;
+            settings.RebuyPercentage = config["Commander"]["RebuyPercentage"].DecimalValue;
+
+            // Ship settings
+            settings.Capacity = config["Ship"]["Capacity"].DecimalValue;
+            settings.Insurance = config["Ship"]["Insurance"].DecimalValue;
+            settings.LadenLY = config["Ship"]["LadenLY"].DecimalValue;
+            settings.Padsizes = config["Ship"]["Padsizes"].StringValue;
+            settings.UnladenLY = config["Ship"]["UnladenLY"].DecimalValue;
+
+            // TD Helper system settings.
+            settings.CopySystemToClipboard = config["System"]["CopySystemToClipboard"].BoolValue;
+            settings.DisableNetLogs = config["System"]["DisableNetLogs"].BoolValue;
+            settings.DoNotUpdate = config["System"]["DoNotUpdate"].BoolValue;
+            settings.EdcePath = config["System"]["EdcePath"].StringValue;
+            settings.HasUpdated = config["System"]["HasUpdated"].BoolValue;
+            settings.ImportPath = config["System"]["ImportPath"].StringValue;
+            settings.LastUsedConfig = config["System"]["LastUsedConfig"].StringValue;
+            settings.LocationChild = config["System"]["LocationChild"].StringValue;
+            settings.LocationParent = config["System"]["LocationParent"].StringValue;
+            settings.MiniModeOnTop = config["System"]["MiniModeOnTop"].BoolValue;
+            settings.NetLogPath = config["System"]["NetLogPath"].StringValue;
+            settings.PythonPath = config["System"]["PythonPath"].StringValue;
+            settings.SizeChild = config["System"]["SizeChild"].StringValue;
+            settings.SizeParent = config["System"]["SizeParent"].StringValue;
+            settings.TDPath = config["System"]["TDPath"].StringValue;
+            settings.TestSystems = config["System"]["TestSystems"].BoolValue;
+            settings.TreeViewFont = config["System"]["TreeViewFont"].StringValue;
+            settings.UploadPath = config["System"]["UploadPath"].StringValue;
         }
     }
 }

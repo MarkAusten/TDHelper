@@ -1,3 +1,9 @@
+v2.0.1.2
+--------
+* Fixed bug that left the run button with the cancel text after a cmdr profile.
+* Removed copyright message
+* Update stopwatch once a second and not ten times a second.
+
 v2.0.1.1
 --------
 * Remove hard coded file paths.
