@@ -86,7 +86,9 @@ namespace TDHelper
             // snag the newest data from the file if it exists
             if (checkIfFileOpens(configFile))
             {
-                Deserialize(configFile);
+                //// Deserialize(configFile);
+
+                LoadSettingsFromIniFile();
                 currentMarkedStations = parseMarkedStations();
             }
 
@@ -119,7 +121,8 @@ namespace TDHelper
             if (tabControl1.SelectedTab == tabControl1.TabPages["notesPage"])
                 notesTextBox.SaveFile(notesFile, RichTextBoxStreamType.PlainText);
 
-            Serialize(configFile);
+            //// Serialize(configFile);
+            SaveSettingsToIniFile();
 
             // call the parser to add new configs to the list
             validConfigs = parseValidConfigs();

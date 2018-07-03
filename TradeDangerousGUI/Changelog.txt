@@ -1,8 +1,11 @@
 v2.0.1.2
 --------
-* Fixed bug that left the run button with the cancel text after a cmdr profile.
+* Fixed bug that left the run button with the cancel text after a Cmdr profile.
 * Removed copyright message
 * Update stopwatch once a second and not ten times a second.
+* Added commander name to main form title.
+* Added read and write settings to ini configuration file.
+* Current settings save on closing TD Helper.
 
 v2.0.1.1
 --------

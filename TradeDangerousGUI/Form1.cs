@@ -157,10 +157,14 @@ namespace TDHelper
         {
             if (checkIfFileOpens(configFileDefault))
             {// serialize window data to the default config file
+                copySettingsFromForm();
                 settingsRef.LocationParent = saveWinLoc(this);
                 settingsRef.SizeParent = saveWinSize(this);
-                Serialize(configFileDefault, settingsRef.LocationParent, "LocationParent");
-                Serialize(configFileDefault, settingsRef.SizeParent, "SizeParent");
+
+                SaveSettingsToIniFile();
+
+                //// Serialize(configFileDefault, settingsRef.LocationParent, "LocationParent");
+                //// Serialize(configFileDefault, settingsRef.SizeParent, "SizeParent");
             }
         }
 
