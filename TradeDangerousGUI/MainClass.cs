@@ -30,7 +30,7 @@ namespace TDHelper
         // grab a static reference to the global settings
         public static TDSettings settingsRef = TDSettings.Instance;
 
-        public string remoteManifestPath = String.Empty; // "https://bitbucket.org/WombatFromHell/trade-dangerous-helper/downloads/TDHelper.manifest";
+        public string remoteManifestPath = @"http://markausten.info/files/TDHelper.manifest";
         public static string localDir = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
         public static string assemblyPath = System.Reflection.Assembly.GetEntryAssembly().Location;
         public static string localManifestPath = Path.Combine(localDir, "TDHelper.manifest.tmp");

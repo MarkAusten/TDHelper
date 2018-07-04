@@ -29,10 +29,12 @@ namespace TDHelper
         protected override WebRequest GetWebRequest(Uri address)
         {
             var request = base.GetWebRequest(address);
+
             if (request != null)
             {
                 request.Timeout = this.Timeout;
             }
+
             return request;
         }
     }
@@ -47,7 +49,9 @@ namespace TDHelper
 
             // make sure the log doesn't get too big (<1mb)
             if (fileRef.Exists && fileRef.Length > 1048576)
+            {
                 File.Delete(logPath);
+            }
 
             // if it exists--we append, if it doesn't--we create
             using (FileStream fs = new FileStream(logPath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
@@ -57,27 +61,37 @@ namespace TDHelper
             }
         }
 
-        public static void downloadFile(string url, string outputPath)
+        public static bool downloadFile(string url, string outputPath)
         {// generic file downloader with a timeout
+
+            bool result = false;
+
             try
             {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+
                 using (Downloader client = new Downloader())
                 {
                     client.DownloadFile(url, outputPath);
                 }
+
+                result = true;
             }
             catch (TimeoutException)
             {
                 DialogResult d = TopMostMessageBox.Show(true, true, "HTTP download request timed out, retry?", "Error", MessageBoxButtons.YesNo);
+
                 if (d == DialogResult.Yes)
                 {
-                    downloadFile(url, outputPath); // retry
+                    result = downloadFile(url, outputPath); // retry
                 }
             }
             catch (Exception e)
             {
-                writeToLog(Form1.updateLogPath, e.Message + " [URL: " + url + "]");
+                writeToLog(Form1.updateLogPath, e.Message + " [URL: " + url + "] " + (!string.IsNullOrEmpty(e.InnerException.Message) ? e.InnerException.Message : string.Empty));
             }
+
+            return result;
         }
 
         public static bool compareAssemblyToManifest(string manifest, string path)
@@ -92,17 +106,14 @@ namespace TDHelper
                 XDocument doc = XDocument.Load(manifest);
                 XElement root = doc.Element("Manifest").Element("Assembly");
                 String manifestAssemblyName = root.Attribute("Name").Value;
+                String localAssemblyPath = Path.Combine(path, manifestAssemblyName);
 
-                if (!String.IsNullOrEmpty(manifestAssemblyName) && File.Exists(path + "\\" + manifestAssemblyName))
+                if (!String.IsNullOrEmpty(manifestAssemblyName) && File.Exists(localAssemblyPath))
                 {// resolve the local path to the assembly mentioned in the manifest
-                    String localAssemblyPath = path + "\\" + manifestAssemblyName;
                     String manifestAssemblyHash = root.Element("MD5").Value;
                     String localAssemblyHash = calculateMD5(localAssemblyPath);
 
-                    if (!String.IsNullOrEmpty(manifestAssemblyHash) && localAssemblyHash.Equals(manifestAssemblyHash))
-                        return true;
-                    else
-                        return false;
+                    return (!String.IsNullOrEmpty(manifestAssemblyHash) && localAssemblyHash.Equals(manifestAssemblyHash));
                 }
                 else
                 {
@@ -111,7 +122,9 @@ namespace TDHelper
                 }
             }
             else
+            {
                 return false;
+            }
         }
 
         public static bool compareFileHashes(string path1, string path2)
@@ -121,13 +134,12 @@ namespace TDHelper
                 string firstHash = calculateMD5(path1);
                 string secondHash = calculateMD5(path2);
 
-                if (firstHash.Equals(secondHash))
-                    return true;
-                else
-                    return false;
+                return firstHash.Equals(secondHash);
             }
             else
+            {
                 return false;
+            }
         }
         
         public static bool validateManifest(string manifest)
@@ -138,13 +150,12 @@ namespace TDHelper
                 XElement root = doc.Descendants("Assembly").FirstOrDefault();
 
                 // assembly exists, file is probably okay
-                if (root != null)
-                    return true;
-                else
-                    return false;
+                return (root != null);
             }
             else
+            {
                 return false;
+            }
         }
 
         public static void generateManifest(string workingPath, string manifest, string URL)
@@ -163,7 +174,11 @@ namespace TDHelper
                 if (Directory.Exists(workingPath) && Directory.GetFiles(workingPath).Length > 0)
                 {
                     // only the non-debugging assembly
-                    String[] fileList = { "TDHelper.exe", "System.Data.SQLite.dll" };
+                    String[] fileList = {
+                        "TDHelper.exe",
+                        "System.Data.SQLite.dll",
+                        "Newtonsoft.Json.dll",
+                        "SharpConfig.dll" };
 
                     // put the assembly info first
                     if (!String.IsNullOrEmpty(fileList[0]))
@@ -184,19 +199,32 @@ namespace TDHelper
                             writeToLog(Form1.updateLogPath, "Possibly invalid manifest file, can't find URL tag in Assembly");
                         }
 
-                        string fileMD5 = calculateMD5(fileList[1]);
-                        string fileName = Path.GetFileName(fileList[1]);
+                        // Now the remaining files.
+                        for (int i = 1; i < fileList.Length; ++i)
+                        {
 
-                        root.Add(new XElement("Name", new XAttribute("Value", fileName), new XElement("MD5", fileMD5)));
+                            string fileMD5 = calculateMD5(fileList[i]);
+                            string fileName = Path.GetFileName(fileList[i]);
+
+                            root.Add(new XElement("Name", new XAttribute("Value", fileName), new XElement("MD5", fileMD5)));
+                        }
 
                         doc.Save(manifest);
                     }
                     else
+                    {
                         writeToLog(Form1.updateLogPath, "Cannot find an assembly in the working path: " + workingPath);
+                    }
                 }
                 else
                 {
-                    DialogResult d = TopMostMessageBox.Show(true, true, "The manifest input directory does not contain any files, or cannot be created.\r\nPlease create the following directory and then confirm: " + workingPath, "Error", MessageBoxButtons.OKCancel);
+                    DialogResult d = TopMostMessageBox.Show(
+                        true, 
+                        true, 
+                        "The manifest input directory does not contain any files, or cannot be created.\r\nPlease create the following directory and then confirm: " + workingPath, 
+                        "Error", 
+                        MessageBoxButtons.OKCancel);
+
                     if (d == DialogResult.OK)
                     {
                         generateManifest(workingPath, manifest, URL);
@@ -217,7 +245,7 @@ namespace TDHelper
                 {// overwrite all destination files to avoid errors
                     foreach (ZipArchiveEntry entry in archive.Entries)
                     {
-                        entry.ExtractToFile(outputPath + "\\" + entry.FullName, true);
+                        entry.ExtractToFile(Path.Combine(outputPath, entry.FullName), true);
                     }
                 }
             }
@@ -255,6 +283,7 @@ namespace TDHelper
                 using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Update))
                 {
                     ZipArchiveEntry entry = archive.GetEntry(fileToRead);
+
                     using (Stream stream = entry.Open())
                     using (MemoryStream memoryStream = new MemoryStream())
                     {
@@ -284,9 +313,13 @@ namespace TDHelper
         public static string getFileVersion(string filePath)
         {// return the file version of a given assembly
             if (File.Exists(filePath))
+            {
                 return AssemblyName.GetAssemblyName(filePath).Version.ToString();
+            }
             else
-                return "";
+            {
+                return string.Empty;
+            }
         }
 
         public static string manifestAssemblyVersion(string manifest)
@@ -304,15 +337,20 @@ namespace TDHelper
                         return (!String.IsNullOrEmpty(rootAttr)) ? rootAttr : "";
                     }
                     else
-                        return "";
+                    {
+                        return string.Empty;
+                    }
                 }
                 else
+                {
                     throw new FileNotFoundException("Cannot find or open the manifest at path: " + manifest);
+                }
             }
             catch (Exception e)
             {
                 writeToLog(Form1.updateLogPath, "Exception: " + e.Message);
-                return "";
+
+                return string.Empty;
             }
         }
 
@@ -328,7 +366,7 @@ namespace TDHelper
                     if (root != null)
                     {// it's an element
                         String value = root.Value;
-                        return (!String.IsNullOrEmpty(value)) ? value : "";
+                        return (!String.IsNullOrEmpty(value)) ? value : string.Empty;
                     }
                     else
                     {// it's an attribute
@@ -337,19 +375,23 @@ namespace TDHelper
                         if (rootAttr != null)
                         {
                             String value = rootAttr.Value;
-                            return (!String.IsNullOrEmpty(value)) ? value : "";
+                            return (!String.IsNullOrEmpty(value)) ? value : string.Empty;
                         }
                         else
-                            return ""; // couldn't find it
+                        {
+                            return string.Empty; // couldn't find it
+                        }
                     }
                 }
                 else
+                {
                     throw new FileNotFoundException("Cannot find or open the manifest at path: " + manifest);
+                }
             }
             catch (Exception e)
             {
                 writeToLog(Form1.updateLogPath, "Exception: " + e.Message);
-                return "";
+                return string.Empty;
             }
         }
 
@@ -373,13 +415,11 @@ namespace TDHelper
         public static bool isValidURLArchive(string URI)
         {
             Uri validURI = null;
+
             if (Uri.TryCreate(URI, UriKind.Absolute, out validURI)
                 && (validURI.Scheme == Uri.UriSchemeHttp || validURI.Scheme == Uri.UriSchemeHttps))
             {
-                if (URI.EndsWith(".zip", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    return true;
-                }
+                return URI.EndsWith(".zip", StringComparison.InvariantCultureIgnoreCase);
             }
 
             return false;
