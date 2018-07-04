@@ -67,14 +67,14 @@ namespace TDHelper
                     | ControlStyles.DoubleBuffer, true);
 
             // Build variables from config
-            buildSettings();
+            BuildSettings();
 
             // Let's change the title
             SetFormTitle(this);
 
             testSystemsTimer.AutoReset = false;
             testSystemsTimer.Interval = 10000;
-            testSystemsTimer.Elapsed += this.testSystemsTimer_Delegate;
+            testSystemsTimer.Elapsed += this.TestSystemsTimer_Delegate;
 
             this.creditsBox.Maximum = Decimal.MaxValue;
         }
@@ -110,13 +110,13 @@ namespace TDHelper
                 };
             }
 
-            validateSettings();
-            copySettingsFromConfig();
+            ValidateSettings();
+            CopySettingsFromConfig();
 
             // bind our alternate config files
             SetShipList(true);
 
-            if (!checkIfFileOpens(configFile))
+            if (!CheckIfFileOpens(configFile))
             {
                 SaveSettingsToIniFile();
             }
@@ -125,7 +125,7 @@ namespace TDHelper
             {// display the changelog for the user
                 settingsRef.HasUpdated = false; // we've updated
                 SaveSettingsToIniFile();
-                doHotSwapCleanup(); // call cleanup to remove unnecessary files if they exist
+                DoHotSwapCleanup(); // call cleanup to remove unnecessary files if they exist
 
                 // show the user the changelog after an update
                 if (File.Exists(localDir + "\\Changelog.txt"))
@@ -145,7 +145,7 @@ namespace TDHelper
                 && settingsRef.LastUsedConfig != configFile
                 && validateConfigFile(settingsRef.LastUsedConfig))
             {
-                loadSettings(settingsRef.LastUsedConfig);
+                LoadSettings(settingsRef.LastUsedConfig);
             }
         }
 
@@ -157,9 +157,9 @@ namespace TDHelper
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (checkIfFileOpens(configFileDefault))
+            if (CheckIfFileOpens(configFileDefault))
             {// serialize window data to the default config file
-                copySettingsFromForm();
+                CopySettingsFromForm();
                 settingsRef.LocationParent = saveWinLoc(this);
                 settingsRef.SizeParent = saveWinSize(this);
 
@@ -177,7 +177,7 @@ namespace TDHelper
         #endregion
 
         #region FormSettings
-        private void copySettingsFromConfig()
+        private void CopySettingsFromConfig()
         {
             //
             // Load controls in the form from variables in memory
@@ -355,17 +355,15 @@ namespace TDHelper
                 testSystemsCheckBox.Checked = settingsRef.TestSystems;
         }
 
-        private void copySettingsFromForm()
+        private void CopySettingsFromForm()
         {
             //
             // Load variables from text boxes in the form
             //
 
-            decimal t_Capacity, t_Credits, t_Insurance, t_lsPenalty, t_maxLSDistance, t_pruneHops, t_pruneScore, t_Margin, t_LoopInt, t_Age, t_GPT, t_MaxGPT, t_Limit, t_Hops, t_Jumps, t_abovePrice, t_belowPrice, t_unladenLY, t_Stock, t_Demand, t_MinAge;
-
             // make sure we strip the excess whitespace in src/dest
-            temp_src = removeExtraWhitespace(srcSystemComboBox.Text);
-            temp_dest = removeExtraWhitespace(destSystemComboBox.Text);
+            temp_src = RemoveExtraWhitespace(srcSystemComboBox.Text);
+            temp_dest = RemoveExtraWhitespace(destSystemComboBox.Text);
 
             temp_commod = commodityComboBox.Text;
             t_maxPadSize = stn_padSizeBox.Text;
@@ -390,7 +388,7 @@ namespace TDHelper
              * do this by parsing the unbrowsable Text property and copying that.
              */
 
-            if (decimal.TryParse(capacityBox.Text, out t_Capacity))
+            if (decimal.TryParse(capacityBox.Text, out decimal t_Capacity))
             {
                 capacityBox.Text = t_Capacity.ToString();
                 settingsRef.Capacity = t_Capacity;
@@ -401,7 +399,7 @@ namespace TDHelper
                 capacityBox.Text = settingsRef.Capacity.ToString();
             }
 
-            if (decimal.TryParse(creditsBox.Text, out t_Credits))
+            if (decimal.TryParse(creditsBox.Text, out decimal t_Credits))
             {
                 creditsBox.Text = t_Credits.ToString();
                 settingsRef.Credits = t_Credits;
@@ -412,7 +410,7 @@ namespace TDHelper
                 creditsBox.Text = settingsRef.Credits.ToString();
             }
 
-            if (decimal.TryParse(insuranceBox.Text, out t_Insurance))
+            if (decimal.TryParse(insuranceBox.Text, out decimal t_Insurance))
             {
                 insuranceBox.Text = t_Insurance.ToString();
                 settingsRef.Insurance = t_Insurance;
@@ -423,7 +421,7 @@ namespace TDHelper
                 insuranceBox.Text = settingsRef.Insurance.ToString();
             }
 
-            if (decimal.TryParse(lsPenaltyBox.Text, out t_lsPenalty))
+            if (decimal.TryParse(lsPenaltyBox.Text, out decimal t_lsPenalty))
             {
                 lsPenaltyBox.Text = t_lsPenalty.ToString();
                 settingsRef.LSPenalty = t_lsPenalty;
@@ -434,7 +432,7 @@ namespace TDHelper
                 lsPenaltyBox.Text = settingsRef.LSPenalty.ToString();
             }
 
-            if (decimal.TryParse(maxLSDistanceBox.Text, out t_maxLSDistance))
+            if (decimal.TryParse(maxLSDistanceBox.Text, out decimal t_maxLSDistance))
             {
                 maxLSDistanceBox.Text = t_maxLSDistance.ToString();
                 settingsRef.MaxLSDistance = t_maxLSDistance;
@@ -445,7 +443,7 @@ namespace TDHelper
                 maxLSDistanceBox.Text = settingsRef.MaxLSDistance.ToString();
             }
 
-            if (decimal.TryParse(loopIntBox.Text, out t_LoopInt))
+            if (decimal.TryParse(loopIntBox.Text, out decimal t_LoopInt))
             {
                 loopIntBox.Text = t_LoopInt.ToString();
                 settingsRef.LoopInt = t_LoopInt;
@@ -456,7 +454,7 @@ namespace TDHelper
                 loopIntBox.Text = settingsRef.LoopInt.ToString();
             }
 
-            if (decimal.TryParse(pruneHopsBox.Text, out t_pruneHops))
+            if (decimal.TryParse(pruneHopsBox.Text, out decimal t_pruneHops))
             {
                 pruneHopsBox.Text = t_pruneHops.ToString();
                 settingsRef.PruneHops = t_pruneHops;
@@ -467,7 +465,7 @@ namespace TDHelper
                 pruneHopsBox.Text = settingsRef.PruneHops.ToString();
             }
 
-            if (decimal.TryParse(pruneScoreBox.Text, out t_pruneScore))
+            if (decimal.TryParse(pruneScoreBox.Text, out decimal t_pruneScore))
             {
                 pruneScoreBox.Text = t_pruneScore.ToString();
                 settingsRef.PruneScore = t_pruneScore;
@@ -478,7 +476,7 @@ namespace TDHelper
                 pruneScoreBox.Text = settingsRef.PruneScore.ToString();
             }
 
-            if (decimal.TryParse(stockBox.Text, out t_Stock))
+            if (decimal.TryParse(stockBox.Text, out decimal t_Stock))
             {
                 stockBox.Text = t_Stock.ToString();
                 settingsRef.Stock = t_Stock;
@@ -489,7 +487,7 @@ namespace TDHelper
                 stockBox.Text = settingsRef.Stock.ToString();
             }
 
-            if (decimal.TryParse(demandBox.Text, out t_Demand))
+            if (decimal.TryParse(demandBox.Text, out decimal t_Demand))
             {
                 demandBox.Text = t_Demand.ToString();
                 settingsRef.Demand = t_Demand;
@@ -500,7 +498,7 @@ namespace TDHelper
                 demandBox.Text = settingsRef.Demand.ToString();
             }
 
-            if (decimal.TryParse(ageBox.Text, out t_Age))
+            if (decimal.TryParse(ageBox.Text, out decimal t_Age))
             {
                 ageBox.Text = t_Age.ToString();
                 settingsRef.Age = t_Age;
@@ -511,7 +509,7 @@ namespace TDHelper
                 ageBox.Text = settingsRef.Age.ToString();
             }
 
-            if (decimal.TryParse(gptBox.Text, out t_GPT))
+            if (decimal.TryParse(gptBox.Text, out decimal t_GPT))
             {
                 gptBox.Text = t_GPT.ToString();
                 settingsRef.GPT = t_GPT;
@@ -522,7 +520,7 @@ namespace TDHelper
                 gptBox.Text = settingsRef.GPT.ToString();
             }
 
-            if (decimal.TryParse(maxGPTBox.Text, out t_MaxGPT))
+            if (decimal.TryParse(maxGPTBox.Text, out decimal t_MaxGPT))
             {
                 maxGPTBox.Text = t_MaxGPT.ToString();
                 settingsRef.MaxGPT = t_MaxGPT;
@@ -533,7 +531,7 @@ namespace TDHelper
                 maxGPTBox.Text = settingsRef.MaxGPT.ToString();
             }
 
-            if (decimal.TryParse(limitBox.Text, out t_Limit))
+            if (decimal.TryParse(limitBox.Text, out decimal t_Limit))
             {
                 limitBox.Text = t_Limit.ToString();
                 settingsRef.Limit = t_Limit;
@@ -544,7 +542,7 @@ namespace TDHelper
                 limitBox.Text = settingsRef.Limit.ToString();
             }
 
-            if (decimal.TryParse(hopsBox.Text, out t_Hops))
+            if (decimal.TryParse(hopsBox.Text, out decimal t_Hops))
             {
                 hopsBox.Text = t_Hops.ToString();
                 settingsRef.Hops = t_Hops;
@@ -555,7 +553,7 @@ namespace TDHelper
                 hopsBox.Text = settingsRef.Hops.ToString();
             }
 
-            if (decimal.TryParse(jumpsBox.Text, out t_Jumps))
+            if (decimal.TryParse(jumpsBox.Text, out decimal t_Jumps))
             {
                 jumpsBox.Text = t_Jumps.ToString();
                 settingsRef.Jumps = t_Jumps;
@@ -590,7 +588,7 @@ namespace TDHelper
                 startJumpsBox.Text = t_StartJumps.ToString();
             }
 
-            if (decimal.TryParse(abovePriceBox.Text, out t_abovePrice))
+            if (decimal.TryParse(abovePriceBox.Text, out decimal t_abovePrice))
             {
                 abovePriceBox.Text = t_abovePrice.ToString();
                 settingsRef.AbovePrice = t_abovePrice;
@@ -612,7 +610,7 @@ namespace TDHelper
                 belowPriceBox.Text = settingsRef.BelowPrice.ToString();
             }
 
-            if (decimal.TryParse(minAgeUpDown.Text, out t_MinAge))
+            if (decimal.TryParse(minAgeUpDown.Text, out decimal t_MinAge))
             {
                 minAgeUpDown.Text = t_MinAge.ToString();
             }
@@ -631,22 +629,22 @@ namespace TDHelper
             oldDataRouteChecked = oldRoutesCheckBox.Checked;
 
             // convert the station checkstates to ints for our delegate
-            stn_blackmarketBoxChecked = getCheckBoxCheckState(blackMarketCheckBox.CheckState);
-            stn_shipyardBoxChecked = getCheckBoxCheckState(shipyardCheckBox.CheckState);
-            stn_marketBoxChecked = getCheckBoxCheckState(marketCheckBox.CheckState);
-            stn_repairBoxChecked = getCheckBoxCheckState(repairCheckBox.CheckState);
-            stn_rearmBoxChecked = getCheckBoxCheckState(rearmCheckBox.CheckState);
-            stn_refuelBoxChecked = getCheckBoxCheckState(refuelCheckBox.CheckState);
-            stn_outfitBoxChecked = getCheckBoxCheckState(outfitCheckBox.CheckState);
+            stn_blackmarketBoxChecked = GetCheckBoxCheckState(blackMarketCheckBox.CheckState);
+            stn_shipyardBoxChecked = GetCheckBoxCheckState(shipyardCheckBox.CheckState);
+            stn_marketBoxChecked = GetCheckBoxCheckState(marketCheckBox.CheckState);
+            stn_repairBoxChecked = GetCheckBoxCheckState(repairCheckBox.CheckState);
+            stn_rearmBoxChecked = GetCheckBoxCheckState(rearmCheckBox.CheckState);
+            stn_refuelBoxChecked = GetCheckBoxCheckState(refuelCheckBox.CheckState);
+            stn_outfitBoxChecked = GetCheckBoxCheckState(outfitCheckBox.CheckState);
 
             // convert the local checkstates to ints as well
-            blackmarketBoxChecked = getCheckBoxCheckState(bmktFilterCheckBox.CheckState);
-            shipyardBoxChecked = getCheckBoxCheckState(shipyardFilterCheckBox.CheckState);
-            marketBoxChecked = getCheckBoxCheckState(itemsFilterCheckBox.CheckState);
-            repairBoxChecked = getCheckBoxCheckState(repairFilterCheckBox.CheckState);
-            rearmBoxChecked = getCheckBoxCheckState(rearmFilterCheckBox.CheckState);
-            refuelBoxChecked = getCheckBoxCheckState(refuelFilterCheckBox.CheckState);
-            outfitBoxChecked = getCheckBoxCheckState(outfitFilterCheckBox.CheckState);
+            blackmarketBoxChecked = GetCheckBoxCheckState(bmktFilterCheckBox.CheckState);
+            shipyardBoxChecked = GetCheckBoxCheckState(shipyardFilterCheckBox.CheckState);
+            marketBoxChecked = GetCheckBoxCheckState(itemsFilterCheckBox.CheckState);
+            repairBoxChecked = GetCheckBoxCheckState(repairFilterCheckBox.CheckState);
+            rearmBoxChecked = GetCheckBoxCheckState(rearmFilterCheckBox.CheckState);
+            refuelBoxChecked = GetCheckBoxCheckState(refuelFilterCheckBox.CheckState);
+            outfitBoxChecked = GetCheckBoxCheckState(outfitFilterCheckBox.CheckState);
 
             //
             // exceptions
@@ -677,7 +675,7 @@ namespace TDHelper
             }
 
             // handle floats differently
-            if (decimal.TryParse(unladenLYBox.Text, out t_unladenLY))
+            if (decimal.TryParse(unladenLYBox.Text, out decimal t_unladenLY))
             {
                 if (methodIndex == 3)
                     r_unladenLY = decimal.Truncate(t_unladenLY * 100) / 100;
@@ -720,7 +718,7 @@ namespace TDHelper
                     t_ladenLY = decimal.Truncate(ladenLYBox.Minimum * 100) / 100;
             }
 
-            if (decimal.TryParse(marginBox.Text, out t_Margin))
+            if (decimal.TryParse(marginBox.Text, out decimal t_Margin))
             {
                 settingsRef.Margin = decimal.Truncate(t_Margin * 100) / 100;
                 marginBox.Text = settingsRef.Margin.ToString();
@@ -734,7 +732,7 @@ namespace TDHelper
         #endregion
 
         #region Delegates
-        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             /*
              * This worker delegate updates the commodities and recent systems lists
@@ -743,13 +741,13 @@ namespace TDHelper
             // let the refresh methods decide what to refresh
             this.Invoke(new Action(() =>
             {
-                buildOutput(buttonCaller == 16);
+                BuildOutput(buttonCaller == 16);
             }));
         }
 
-        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void BackgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            enableRunButtons();
+            EnableRunButtons();
 
             // we were called by getSystemButton
             if (buttonCaller == 2 && output_unclean.Count > 0)
@@ -767,7 +765,7 @@ namespace TDHelper
             buttonCaller = 0; // reset caller semaphore
         }
 
-        private void backgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
+        private void BackgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
         {
             /*
              * This worker delegate is the main work horse for the application--
@@ -843,7 +841,7 @@ namespace TDHelper
                 else
                 {
                     okayToRun = false;
-                    playAlert();
+                    PlayAlert();
                 }
             }
             else if (buttonCaller == 10)
@@ -853,7 +851,7 @@ namespace TDHelper
                 else
                 {
                     okayToRun = false;
-                    playAlert();
+                    PlayAlert();
                 }
             }
             else if (t_localNavEnabled)
@@ -878,7 +876,7 @@ namespace TDHelper
                 else
                 {
                     okayToRun = false;
-                    playAlert();
+                    PlayAlert();
                 }
             }
             else if (methodIndex == 9)
@@ -900,7 +898,7 @@ namespace TDHelper
                 else
                 {
                     okayToRun = false;
-                    playAlert();
+                    PlayAlert();
                 }
             }
             else if (methodIndex == 8)
@@ -918,7 +916,7 @@ namespace TDHelper
                 else
                 {
                     okayToRun = false;
-                    playAlert();
+                    PlayAlert();
                 }
             }
             else if ((methodIndex == 6 || methodIndex == 7) && t_csvExportCheckBox)
@@ -947,7 +945,7 @@ namespace TDHelper
                     if (!string.IsNullOrEmpty(temp_shipsSold) && stationIndex != 2)
                     {
                         // clean our ship input before passing
-                        string sanitizedInput = cleanShipVendorInput(temp_shipsSold);
+                        string sanitizedInput = CleanShipVendorInput(temp_shipsSold);
 
                         if (stationIndex == 0)
                         {// we're adding/updating (default)
@@ -967,7 +965,7 @@ namespace TDHelper
                 else
                 {
                     okayToRun = false;
-                    playAlert();
+                    PlayAlert();
                 }
             }
             else if (methodIndex == 6)
@@ -1031,7 +1029,7 @@ namespace TDHelper
                 else
                 {
                     okayToRun = false;
-                    playAlert();
+                    PlayAlert();
                 }
             }
             else if (methodIndex == 5)
@@ -1048,7 +1046,7 @@ namespace TDHelper
                 else
                 {
                     okayToRun = false;
-                    playAlert();
+                    PlayAlert();
                 }
             }
             else if (methodIndex == 4)
@@ -1062,7 +1060,7 @@ namespace TDHelper
                 else
                 {
                     okayToRun = false;
-                    playAlert();
+                    PlayAlert();
                 }
             }
             else if (methodIndex == 3)
@@ -1097,7 +1095,7 @@ namespace TDHelper
                 else
                 {
                     okayToRun = false;
-                    playAlert();
+                    PlayAlert();
                 }
             }
             else if (methodIndex == 2)
@@ -1205,10 +1203,10 @@ namespace TDHelper
 
             // pass the built command-line to the delegate
             if (okayToRun)
-                doTDProc(t_path);
+                DoTDProc(t_path);
         }
 
-        private void backgroundWorker2_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void BackgroundWorker2_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (!backgroundWorker2.IsBusy)
             {
@@ -1225,7 +1223,7 @@ namespace TDHelper
 
                 // assume we're coming from getUpdatedPricesFile()
                 if (!string.IsNullOrEmpty(settingsRef.ImportPath) && buttonCaller == 11)
-                    cleanUpdatedPricesFile();
+                    CleanUpdatedPricesFile();
                 else if (buttonCaller == 16)
                 {// force a db sync if we're marked
                     if (!backgroundWorker1.IsBusy)
@@ -1233,11 +1231,11 @@ namespace TDHelper
                 }
                 else if (buttonCaller == 17)
                 {// force a station/shipvendor panel update
-                    populateStationPanel(temp_src);
+                    PopulateStationPanel(temp_src);
                 }
 
                 // reenable after uncancellable task is done
-                enableRunButtons();
+                EnableRunButtons();
                 runButton.Font = new Font(runButton.Font, FontStyle.Regular);
                 runButton.Text = "&Run";
 
@@ -1245,7 +1243,7 @@ namespace TDHelper
 
                 // make a sound when we're done with a long operation (>10s)
                 if ((stopwatch.ElapsedMilliseconds > 10000 && buttonCaller != 5) || buttonCaller == 20)
-                    playAlert(); // when not marked as cancelled, or explicit
+                    PlayAlert(); // when not marked as cancelled, or explicit
 
                 if (buttonCaller != 4) // not if we're coming from Run
                 {
@@ -1253,9 +1251,9 @@ namespace TDHelper
                 }
                 else if (buttonCaller == 4)
                 {
-                    string filteredOutput = filterOutput(td_outputBox.Text);
+                    string filteredOutput = FilterOutput(td_outputBox.Text);
                     // validate the run output before we enable the mini-mode button
-                    runOutputState = isValidRunOutput(filteredOutput);
+                    runOutputState = IsValidRunOutput(filteredOutput);
 
                     if (runOutputState > -1)
                     {
@@ -1271,7 +1269,7 @@ namespace TDHelper
             }
         }
 
-        private void backgroundWorker3_DoWork(object sender, DoWorkEventArgs e)
+        private void BackgroundWorker3_DoWork(object sender, DoWorkEventArgs e)
         {
             /*
              * This worker delegate is just a thread for the background timer to run on
@@ -1289,7 +1287,7 @@ namespace TDHelper
             }
         }
 
-        private void backgroundWorker3_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void BackgroundWorker3_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             // when we get the !IsRunning signal, write out
             this.Invoke(new Action(() =>
@@ -1299,26 +1297,26 @@ namespace TDHelper
             }));
         }
 
-        private void backgroundWorker4_DoWork(object sender, DoWorkEventArgs e)
+        private void BackgroundWorker4_DoWork(object sender, DoWorkEventArgs e)
         {
             /*
              * This worker delegate is for the update process
              */
 
-            getDataUpdates(); // update conditionally
-            doTDProc(t_path); // pass this to the worker delegate
+            GetDataUpdates(); // update conditionally
+            DoTDProc(t_path); // pass this to the worker delegate
 
             t_path = string.Empty; // reset path for thread safety
         }
 
-        private void backgroundWorker4_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void BackgroundWorker4_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (!backgroundWorker4.IsBusy)
             {
                 stopwatch.Stop(); // stop the timer
                 circularBuffer = new System.Text.StringBuilder(2 * circularBufferSize);
 
-                enableRunButtons();
+                EnableRunButtons();
                 td_proc.Dispose();
 
                 // we have to update the comboboxes now
@@ -1330,21 +1328,21 @@ namespace TDHelper
 
                 // make a sound when we're done with a long operation (>10s)
                 if (stopwatch.ElapsedMilliseconds > 10000)
-                    playAlert();
+                    PlayAlert();
 
                 rebuildCache = false;
             }
         }
 
-        private void backgroundWorker5_DoWork(object sender, DoWorkEventArgs e)
+        private void BackgroundWorker5_DoWork(object sender, DoWorkEventArgs e)
         {// this background worker is for the auto-updater
             if (!settingsRef.DoNotUpdate && !Program.updateOverride)
             {// check for override before running a poll
-                doHotSwap();
+                DoHotSwap();
             }
         }
 
-        private void backgroundWorker5_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void BackgroundWorker5_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (settingsRef.HasUpdated)
             {// show the update notification
@@ -1353,10 +1351,10 @@ namespace TDHelper
             }
 
             // always wipe the temp files
-            doHotSwapCleanup();
+            DoHotSwapCleanup();
         }
 
-        private void backgroundWorker6_DoWork(object sender, DoWorkEventArgs e)
+        private void BackgroundWorker6_DoWork(object sender, DoWorkEventArgs e)
         {
             /*
              * This worker delegate is intended to update the system list every few seconds,
@@ -1364,14 +1362,14 @@ namespace TDHelper
              */
 
 
-            buildOutput(!hasRun);
+            BuildOutput(!hasRun);
 
             if (settingsRef.TestSystems)
             {
                 if (string.IsNullOrEmpty(t_lastSysCheck) && !string.IsNullOrEmpty(t_lastSystem)
-                    && !stringInList(t_lastSystem, outputSysStnNames))
+                    && !StringInList(t_lastSystem, outputSysStnNames))
                 {// alert the user if we're starting in an unknown system
-                    playUnknown();
+                    PlayUnknown();
                     this.Invoke(new Action(() =>
                     {// run this on the UI thread
                         this.td_outputBox.Text += "We're currently in an unrecognized system: " + t_lastSystem + "\r\n";
@@ -1380,10 +1378,10 @@ namespace TDHelper
                     t_lastSysCheck = t_lastSystem;
                 }
                 else if ((!string.IsNullOrEmpty(t_lastSysCheck) && !t_lastSysCheck.Equals(t_lastSystem)
-                    && !stringInList(t_lastSystem, outputSysStnNames)) || string.IsNullOrEmpty(t_lastSysCheck)
-                    && !stringInList(t_lastSystem, outputSysStnNames))
+                    && !StringInList(t_lastSystem, outputSysStnNames)) || string.IsNullOrEmpty(t_lastSysCheck)
+                    && !StringInList(t_lastSystem, outputSysStnNames))
                 {// if we've already checked a recent system, only check the newest entered system once
-                    playUnknown(); // alert the user
+                    PlayUnknown(); // alert the user
                     // only flash if the window isn't active
                     if (!isActive) { FlashWindow.BlinkStart(this); }
 
@@ -1398,12 +1396,12 @@ namespace TDHelper
             }
         }
 
-        private void backgroundWorker6_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void BackgroundWorker6_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             testSystemsTimer.Start(); // fire again after ~10s
         }
 
-        private void backgroundWorker7_DoWork(object sender, DoWorkEventArgs e)
+        private void BackgroundWorker7_DoWork(object sender, DoWorkEventArgs e)
         {
             /*
              * This worker delegate is for the Cmdr Profile process
@@ -1421,7 +1419,7 @@ namespace TDHelper
                 else
                 {
                     okayToRun = false;
-                    playAlert();
+                    PlayAlert();
                 }
             }
 
@@ -1436,7 +1434,7 @@ namespace TDHelper
                     td_proc = new Process();
                     td_proc.StartInfo.FileName = settingsRef.PythonPath;
 
-                    doTDProc(t_path);
+                    DoTDProc(t_path);
                 }
                 finally
                 {
@@ -1447,7 +1445,7 @@ namespace TDHelper
             t_path = string.Empty; // reset path for thread safety
         }
 
-        private void backgroundWorker7_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void BackgroundWorker7_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (!backgroundWorker7.IsBusy)
             {
@@ -1455,13 +1453,13 @@ namespace TDHelper
                 circularBuffer = new System.Text.StringBuilder(2 * circularBufferSize);
 
                 runButton.Text = "&Run";
-                enableRunButtons();
+                EnableRunButtons();
                 td_proc.Dispose();
 
                 // make a sound when we're done with a long operation (>10s)
                 if (stopwatch.ElapsedMilliseconds > 10000)
                 {
-                    playAlert();
+                    PlayAlert();
                 }
 
                 this.UpdateCommanderAndShipDetails();
@@ -1471,7 +1469,7 @@ namespace TDHelper
         #endregion
 
         #region FormHelpers
-        private int getCheckBoxCheckState(CheckState checkState)
+        private int GetCheckBoxCheckState(CheckState checkState)
         {
             switch (checkState)
             {
@@ -1487,7 +1485,7 @@ namespace TDHelper
             }
         }
 
-        private void methodSelectState()
+        private void MethodSelectState()
         {
             /*
              * We do our command state stuff here
@@ -1503,7 +1501,7 @@ namespace TDHelper
                 // handle index changes
                 if (methodIndex == 1 || methodIndex == 2)
                 {// buy/sell command
-                    stationEditorChangeState();
+                    StationEditorChangeState();
 
                     // show the secondary selection box
                     stationDropDown.Visible = true;
@@ -1567,7 +1565,7 @@ namespace TDHelper
                 }
                 else if (methodIndex == 3)
                 {// rares command
-                    stationEditorChangeState(); // more minimal default state
+                    StationEditorChangeState(); // more minimal default state
 
                     // show the secondary selection box
                     stationDropDown.Visible = true;
@@ -1606,12 +1604,12 @@ namespace TDHelper
                 }
                 else if (methodIndex == 4)
                 {// trade command
-                    runMethodResetState();
+                    RunMethodResetState();
                     methodFromIndex = 4;
                 }
                 else if (methodIndex == 5)
                 {// market command
-                    stationEditorChangeState();
+                    StationEditorChangeState();
 
                     // change the bmkt/direct checkboxes
                     bmktCheckBox.Text = "Buy";
@@ -1631,7 +1629,7 @@ namespace TDHelper
                 }
                 else if (methodIndex == 6)
                 {// station command
-                    stationEditorChangeState();
+                    StationEditorChangeState();
 
                     // show the secondary selection box
                     stationDropDown.Visible = true;
@@ -1650,7 +1648,7 @@ namespace TDHelper
                 }
                 else if (methodIndex == 7)
                 {// shipvendor command
-                    stationEditorChangeState();
+                    StationEditorChangeState();
 
                     // show the secondary selection box
                     stationDropDown.Visible = true;
@@ -1671,7 +1669,7 @@ namespace TDHelper
                 else if (methodIndex == 8)
                 {// nav command
                     // reset our state to the default for this method
-                    stationEditorChangeState();
+                    StationEditorChangeState();
 
                     // fix the tooltips
                     toolTip1.SetToolTip(methodDropDown, "Attempt to calculate navigation between source/destination systems");
@@ -1697,7 +1695,7 @@ namespace TDHelper
                 }
                 else if (methodIndex == 9)
                 {// olddata command
-                    stationEditorChangeState();
+                    StationEditorChangeState();
 
                     // point the user to the proper labels
                     ladenLYLabel.Font = new Font(ladenLYLabel.Font, FontStyle.Italic);
@@ -1716,14 +1714,14 @@ namespace TDHelper
                 }
                 else
                 {// run command
-                    runMethodResetState();
+                    RunMethodResetState();
                     toolTip1.SetToolTip(methodDropDown, "Calculates optimal trading routes from Source (Destination optional)");
                     methodFromIndex = 0;
                 }
             }
         }
 
-        private void runMethodResetState()
+        private void RunMethodResetState()
         {// we should use this method as an elevator for the form state
             panel1.Visible = true;
             panel2.Visible = false;
@@ -1978,9 +1976,9 @@ namespace TDHelper
             }
         }
 
-        private void stationEditorChangeState()
+        private void StationEditorChangeState()
         {// we should use this method to move to station editor form state
-            runMethodResetState(); // start from a working base
+            RunMethodResetState(); // start from a working base
 
             // exclusions
             if (methodIndex != 0)
@@ -2061,7 +2059,7 @@ namespace TDHelper
             }
         }
 
-        private void disableRunButtons()
+        private void DisableRunButtons()
         {
             // disable buttons during uncancellable operation
             updateButton.Enabled = false;
@@ -2073,7 +2071,7 @@ namespace TDHelper
                 runButton.Enabled = false;
         }
 
-        private void enableRunButtons()
+        private void EnableRunButtons()
         {
             // reenable other worker callers when done
             updateButton.Enabled = true;
@@ -2084,7 +2082,7 @@ namespace TDHelper
                 runButton.Enabled = true;
         }
 
-        private CheckState parseCheckState(string input)
+        private CheckState ParseCheckState(string input)
         {
             if (input == "?")
                 return CheckState.Indeterminate;
@@ -2096,7 +2094,7 @@ namespace TDHelper
                 return CheckState.Indeterminate;
         }
 
-        private void validateDestForEndJumps()
+        private void ValidateDestForEndJumps()
         {
             if (!string.IsNullOrEmpty(destSystemComboBox.Text) && methodIndex != 4)
             {
@@ -2112,9 +2110,9 @@ namespace TDHelper
         #endregion
 
         #region FormMembers
-        private void testSystemsTimer_Delegate(object sender, ElapsedEventArgs e)
+        private void TestSystemsTimer_Delegate(object sender, ElapsedEventArgs e)
         {
-            Debug.WriteLine(string.Format("testSystems Firing at: {0}", currentTimestamp()));
+            Debug.WriteLine(string.Format("testSystems Firing at: {0}", CurrentTimestamp()));
             if (!backgroundWorker6.IsBusy && !settingsRef.DisableNetLogs && !string.IsNullOrEmpty(settingsRef.NetLogPath))
             {
                 backgroundWorker6.RunWorkerAsync();
@@ -2133,31 +2131,34 @@ namespace TDHelper
             isActive = false;
         }
 
-        private void miscSettingsButton_Click(object sender, EventArgs e)
+        private void MiscSettingsButton_Click(object sender, EventArgs e)
         {
-            SettingsForm SettingsForm = new SettingsForm();
-            SettingsForm.StartPosition = FormStartPosition.CenterParent;
+            SettingsForm SettingsForm = new SettingsForm()
+            {
+                StartPosition = FormStartPosition.CenterParent
+            };
+
             SettingsForm.ShowDialog(this);
 
             if (callForReset)
             {// wipe our settings and reinitialize
                 File.Delete(configFile);
                 settingsRef.Reset(settingsRef);
-                validateSettings();
+                ValidateSettings();
                 SaveSettingsToIniFile();
-                copySettingsFromConfig();
+                CopySettingsFromConfig();
             }
         }
 
-        private void getSystemButton_Click(object sender, EventArgs e)
+        private void GetSystemButton_Click(object sender, EventArgs e)
         {
             buttonCaller = 2;
 
             if (Control.ModifierKeys == Keys.Control)
                 buttonCaller = 16; // mark us as needing a full refresh
 
-            validateSettings();
-            disableRunButtons();
+            ValidateSettings();
+            DisableRunButtons();
 
             if (!backgroundWorker1.IsBusy)
             {
@@ -2165,7 +2166,7 @@ namespace TDHelper
             }
         }
 
-        private void localNavBox_CheckedChanged(object sender, EventArgs e)
+        private void LocalNavBox_CheckedChanged(object sender, EventArgs e)
         {
             t_localNavEnabled = localNavCheckBox.Checked;
 
@@ -2219,28 +2220,28 @@ namespace TDHelper
                 }
 
                 buttonCaller = 18; // mark us as local override
-                methodSelectState(); // reset state
+                MethodSelectState(); // reset state
             }
         }
 
-        private void avoidBox_TextChanged(object sender, EventArgs e)
+        private void AvoidBox_TextChanged(object sender, EventArgs e)
         {
             // account for startJumpsBox
             if (startJumpsBox.Value > 0)
                 settingsRef.Avoid = avoidBox.Text;
         }
 
-        private void methodComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void MethodComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             methodIndex = methodDropDown.SelectedIndex;
-            methodSelectState();
+            MethodSelectState();
 
             methodDropDown.Enabled = true;
             localNavCheckBox.Enabled = true;
 
         }
 
-        private void td_outputBox_TextChanged(object sender, EventArgs e)
+        private void Td_outputBox_TextChanged(object sender, EventArgs e)
         {
             if (buttonCaller == 5)
             {// catch the database update button, we want to see its output
@@ -2250,28 +2251,28 @@ namespace TDHelper
             }
         }
 
-        private void updateButton_Click(object sender, EventArgs e)
+        private void UpdateButton_Click(object sender, EventArgs e)
         {
-            validateSettings();
+            ValidateSettings();
 
             if (!backgroundWorker4.IsBusy)
             { // UpdateDB Button
                 buttonCaller = 5;
-                disableRunButtons(); // disable buttons during uncancellable operations
+                DisableRunButtons(); // disable buttons during uncancellable operations
 
                 backgroundWorker4.RunWorkerAsync();
             }
         }
 
-        private void runButton_Click(object sender, EventArgs e)
+        private void RunButton_Click(object sender, EventArgs e)
         {
             // mark as run button
             buttonCaller = 1;
 
-            doRunEvent(); // externalized
+            DoRunEvent(); // externalized
         }
 
-        private void clearSaved1MenuItem_Click(object sender, EventArgs e)
+        private void ClearSaved1MenuItem_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(savedTextBox1.Text))
             {
@@ -2281,7 +2282,7 @@ namespace TDHelper
             }
         }
 
-        private void clearSaved2MenuItem_Click(object sender, EventArgs e)
+        private void ClearSaved2MenuItem_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(savedTextBox2.Text))
             {
@@ -2291,7 +2292,7 @@ namespace TDHelper
             }
         }
 
-        private void clearSaved3MenuItem_Click(object sender, EventArgs e)
+        private void ClearSaved3MenuItem_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(savedTextBox3.Text))
             {
@@ -2301,7 +2302,7 @@ namespace TDHelper
             }
         }
 
-        private void stn_padSizeBox_KeyPress(object sender, KeyPressEventArgs e)
+        private void Stn_padSizeBox_KeyPress(object sender, KeyPressEventArgs e)
         {// filter for valid chars
             if (e.KeyChar == 's'
                 || e.KeyChar == 'S'
@@ -2316,7 +2317,7 @@ namespace TDHelper
             }
         }
 
-        private void padSizeBox_KeyPress(object sender, KeyPressEventArgs e)
+        private void PadSizeBox_KeyPress(object sender, KeyPressEventArgs e)
         {// filter for valid chars
             if (e.KeyChar == 'm'
                 || e.KeyChar == 'M'
@@ -2344,7 +2345,7 @@ namespace TDHelper
             }
         }
 
-        private void stationDropDown_SelectedIndexChanged(object sender, EventArgs e)
+        private void StationDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
             stationIndex = stationDropDown.SelectedIndex;
 
@@ -2363,7 +2364,7 @@ namespace TDHelper
             }
         }
 
-        private void csvExportCheckBox_CheckedChanged(object sender, EventArgs e)
+        private void CsvExportCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             if (csvExportCheckBox.Checked)
             {
@@ -2379,7 +2380,7 @@ namespace TDHelper
             }
         }
 
-        private void bmktCheckBox_Click(object sender, EventArgs e)
+        private void BmktCheckBox_Click(object sender, EventArgs e)
         {
             // an exception for the market command
             if (methodIndex == 4 && directCheckBox.Checked)
@@ -2389,7 +2390,7 @@ namespace TDHelper
             }
         }
 
-        private void directCheckBox_Click(object sender, EventArgs e)
+        private void DirectCheckBox_Click(object sender, EventArgs e)
         {
             // an exception for the market command
             if (methodIndex == 4 && bmktCheckBox.Checked)
@@ -2399,7 +2400,7 @@ namespace TDHelper
             }
         }
 
-        private void csvExportComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void CsvExportComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (csvExportComboBox.SelectedIndex == 1)
                 exportIndex = 1;
@@ -2415,7 +2416,7 @@ namespace TDHelper
                 exportIndex = 0;
         }
 
-        private void resetFilterButton_Click(object sender, EventArgs e)
+        private void ResetFilterButton_Click(object sender, EventArgs e)
         {
             rearmFilterCheckBox.Checked = false;
             refuelFilterCheckBox.Checked = false;
@@ -2426,7 +2427,7 @@ namespace TDHelper
             shipyardFilterCheckBox.Checked = false;
         }
 
-        private void resetStationButton_Click(object sender, EventArgs e)
+        private void ResetStationButton_Click(object sender, EventArgs e)
         {
             rearmCheckBox.CheckState = CheckState.Indeterminate;
             refuelCheckBox.CheckState = CheckState.Indeterminate;
@@ -2441,40 +2442,40 @@ namespace TDHelper
             stn_padSizeBox.Text = "?";
         }
 
-        private void swapButton_Click(object sender, EventArgs e)
+        private void SwapButton_Click(object sender, EventArgs e)
         {// here we swap the contents of the boxes with some conditions
             if (!localFilterParentPanel.Visible && destSystemComboBox.Visible)
             {// don't swap if the destination box isn't visible (or covered)
                 if (!string.IsNullOrEmpty(srcSystemComboBox.Text)
                     && !string.IsNullOrEmpty(destSystemComboBox.Text))
                 {
-                    string temp = removeExtraWhitespace(destSystemComboBox.Text);
-                    destSystemComboBox.Text = removeExtraWhitespace(srcSystemComboBox.Text);
+                    string temp = RemoveExtraWhitespace(destSystemComboBox.Text);
+                    destSystemComboBox.Text = RemoveExtraWhitespace(srcSystemComboBox.Text);
                     srcSystemComboBox.Text = temp;
                 }
                 else if (!string.IsNullOrEmpty(srcSystemComboBox.Text)
                     && string.IsNullOrEmpty(destSystemComboBox.Text))
                 {// swap from source to destination
-                    string temp = removeExtraWhitespace(srcSystemComboBox.Text);
+                    string temp = RemoveExtraWhitespace(srcSystemComboBox.Text);
                     destSystemComboBox.Text = temp;
                     srcSystemComboBox.Text = string.Empty;
                 }
                 else if (string.IsNullOrEmpty(srcSystemComboBox.Text)
                     && !string.IsNullOrEmpty(destSystemComboBox.Text))
                 {// swap from destination to source
-                    string temp = removeExtraWhitespace(destSystemComboBox.Text);
+                    string temp = RemoveExtraWhitespace(destSystemComboBox.Text);
                     srcSystemComboBox.Text = temp;
                     destSystemComboBox.Text = string.Empty;
                 }
             }
         }
 
-        private void miniModeButton_Click(object sender, EventArgs e)
+        private void MiniModeButton_Click(object sender, EventArgs e)
         {
             TdMiniForm childForm = new TdMiniForm(this); // pass a reference from parentForm
 
             // populate the treeview from the last valid run output
-            parseRunOutput(tv_outputBox, childForm.treeViewBox);
+            ParseRunOutput(tv_outputBox, childForm.treeViewBox);
             childForm.Text = t_childTitle; // set our profit estimate
 
             // show our minimode
@@ -2485,7 +2486,7 @@ namespace TDHelper
             this.Show(); // restore when we return
         }
 
-        private void loopCheckBox_Click(object sender, EventArgs e)
+        private void LoopCheckBox_Click(object sender, EventArgs e)
         {
             if (shortenCheckBox.Checked)
             {
@@ -2500,7 +2501,7 @@ namespace TDHelper
             }
         }
 
-        private void selectMenuItem_Click(object sender, EventArgs e)
+        private void SelectMenuItem_Click(object sender, EventArgs e)
         {
             RichTextBox clickedControl = (RichTextBox)this.contextMenuStrip1.SourceControl;
 
@@ -2508,7 +2509,7 @@ namespace TDHelper
             clickedControl.SelectAll();
         }
 
-        private void cutMenuItem_Click(object sender, EventArgs e)
+        private void CutMenuItem_Click(object sender, EventArgs e)
         {
             RichTextBox clickedControl = (RichTextBox)this.contextMenuStrip1.SourceControl;
 
@@ -2516,7 +2517,7 @@ namespace TDHelper
             clickedControl.Cut();
         }
 
-        private void copyMenuItem_Click(object sender, EventArgs e)
+        private void CopyMenuItem_Click(object sender, EventArgs e)
         {
             RichTextBox clickedControl = (RichTextBox)this.contextMenuStrip1.SourceControl;
 
@@ -2524,7 +2525,7 @@ namespace TDHelper
             clickedControl.Copy();
         }
 
-        private void pasteMenuItem_Click(object sender, EventArgs e)
+        private void PasteMenuItem_Click(object sender, EventArgs e)
         {
             RichTextBox clickedControl = (RichTextBox)this.contextMenuStrip1.SourceControl;
 
@@ -2532,31 +2533,31 @@ namespace TDHelper
             clickedControl.Paste();
         }
 
-        private void savePage1MenuItem_Click(object sender, EventArgs e)
+        private void SavePage1MenuItem_Click(object sender, EventArgs e)
         {
             if (td_outputBox.SelectedText.Length > 0)
-                writeSavedPage(td_outputBox.SelectedText, savedFile1);
+                WriteSavedPage(td_outputBox.SelectedText, savedFile1);
             else
-                writeSavedPage(td_outputBox.Text, savedFile1);
+                WriteSavedPage(td_outputBox.Text, savedFile1);
         }
 
-        private void savePage2MenuItem_Click(object sender, EventArgs e)
+        private void SavePage2MenuItem_Click(object sender, EventArgs e)
         {
             if (td_outputBox.SelectedText.Length > 0)
-                writeSavedPage(td_outputBox.SelectedText, savedFile2);
+                WriteSavedPage(td_outputBox.SelectedText, savedFile2);
             else
-                writeSavedPage(td_outputBox.Text, savedFile2);
+                WriteSavedPage(td_outputBox.Text, savedFile2);
         }
 
-        private void savePage3MenuItem_Click(object sender, EventArgs e)
+        private void SavePage3MenuItem_Click(object sender, EventArgs e)
         {
             if (td_outputBox.SelectedText.Length > 0)
-                writeSavedPage(td_outputBox.SelectedText, savedFile3);
+                WriteSavedPage(td_outputBox.SelectedText, savedFile3);
             else
-                writeSavedPage(td_outputBox.Text, savedFile3);
+                WriteSavedPage(td_outputBox.Text, savedFile3);
         }
 
-        private void pushNotesMenuItem_Click(object sender, EventArgs e)
+        private void PushNotesMenuItem_Click(object sender, EventArgs e)
         {
             RichTextBox clickedControl = (RichTextBox)this.contextMenuStrip1.SourceControl;
             clickedControl.Focus();
@@ -2597,7 +2598,7 @@ namespace TDHelper
             }
         }
 
-        private void notesClearMenuItem_Click(object sender, EventArgs e)
+        private void NotesClearMenuItem_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(notesTextBox.Text))
             {
@@ -2607,7 +2608,7 @@ namespace TDHelper
             }
         }
 
-        private void deleteMenuItem_Click(object sender, EventArgs e)
+        private void DeleteMenuItem_Click(object sender, EventArgs e)
         {
             RichTextBox clickedControl = (RichTextBox)this.contextMenuStrip1.SourceControl;
 
@@ -2615,7 +2616,7 @@ namespace TDHelper
                 notesTextBox.SelectedText = string.Empty;
         }
 
-        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        private void TabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (fromPane == 5) { /* Pilot's Log tab */ }
             else if (fromPane == 4)
@@ -2625,8 +2626,8 @@ namespace TDHelper
 
             if (tabControl1.SelectedTab == tabControl1.TabPages["outputPage"] && !string.IsNullOrEmpty(td_outputBox.Text))
             {
-                string filteredOutput = filterOutput(td_outputBox.Text);
-                runOutputState = isValidRunOutput(filteredOutput);
+                string filteredOutput = FilterOutput(td_outputBox.Text);
+                runOutputState = IsValidRunOutput(filteredOutput);
 
                 // check for parsable Run output
                 if (runOutputState > -1)
@@ -2647,21 +2648,21 @@ namespace TDHelper
             {
                 fromPane = 5;
             }
-            else if (tabControl1.SelectedTab == tabControl1.TabPages["notesPage"] && checkIfFileOpens(notesFile))
+            else if (tabControl1.SelectedTab == tabControl1.TabPages["notesPage"] && CheckIfFileOpens(notesFile))
             {
                 notesTextBox.LoadFile(notesFile, RichTextBoxStreamType.PlainText);
 
                 notesTextBox.Focus();
                 fromPane = 4;
             }
-            else if (tabControl1.SelectedTab == tabControl1.TabPages["savedPage1"] && checkIfFileOpens(savedFile1))
+            else if (tabControl1.SelectedTab == tabControl1.TabPages["savedPage1"] && CheckIfFileOpens(savedFile1))
             {
                 savedTextBox1.Focus();
                 if (File.Exists(savedFile1))
                     savedTextBox1.LoadFile(savedFile1, RichTextBoxStreamType.PlainText);
 
-                string filteredOutput = filterOutput(savedTextBox1.Text);
-                runOutputState = isValidRunOutput(filteredOutput);
+                string filteredOutput = FilterOutput(savedTextBox1.Text);
+                runOutputState = IsValidRunOutput(filteredOutput);
 
                 // check for parsable Run output
                 if (runOutputState > -1)
@@ -2676,14 +2677,14 @@ namespace TDHelper
                 savedTextBox1.Focus();
                 fromPane = 1;
             }
-            else if (tabControl1.SelectedTab == tabControl1.TabPages["savedPage2"] && checkIfFileOpens(savedFile2))
+            else if (tabControl1.SelectedTab == tabControl1.TabPages["savedPage2"] && CheckIfFileOpens(savedFile2))
             {
                 savedTextBox2.Focus();
                 if (File.Exists(savedFile2))
                     savedTextBox2.LoadFile(savedFile2, RichTextBoxStreamType.PlainText);
 
-                string filteredOutput = filterOutput(savedTextBox2.Text);
-                runOutputState = isValidRunOutput(filteredOutput);
+                string filteredOutput = FilterOutput(savedTextBox2.Text);
+                runOutputState = IsValidRunOutput(filteredOutput);
 
                 // check for parsable Run output
                 if (runOutputState > -1)
@@ -2698,14 +2699,14 @@ namespace TDHelper
                 savedTextBox2.Focus();
                 fromPane = 2;
             }
-            else if (tabControl1.SelectedTab == tabControl1.TabPages["savedPage3"] && checkIfFileOpens(savedFile3))
+            else if (tabControl1.SelectedTab == tabControl1.TabPages["savedPage3"] && CheckIfFileOpens(savedFile3))
             {
                 savedTextBox3.Focus();
                 if (File.Exists(savedFile3))
                     savedTextBox3.LoadFile(savedFile3, RichTextBoxStreamType.PlainText);
 
-                string filteredOutput = filterOutput(savedTextBox3.Text);
-                runOutputState = isValidRunOutput(filteredOutput);
+                string filteredOutput = FilterOutput(savedTextBox3.Text);
+                runOutputState = IsValidRunOutput(filteredOutput);
 
                 // check for parsable Run output
                 if (runOutputState > -1)
@@ -2722,7 +2723,7 @@ namespace TDHelper
             }
         }
 
-        private void procOutputDataHandler(object sender, DataReceivedEventArgs output)
+        private void ProcOutputDataHandler(object sender, DataReceivedEventArgs output)
         {
             string[] exceptions = new string[] { "NOTE:", "####" };
             string filteredOutput = string.Empty;
@@ -2737,24 +2738,24 @@ namespace TDHelper
 
                 if (buttonCaller != 5 && buttonCaller != 12 && !exceptions.Any(output.Data.Contains) && !t_csvExportCheckBox || methodIndex != 5 || methodIndex != 6)
                 {// hide output if calculating
-                    stackCircularBuffer(filteredOutput);
+                    StackCircularBuffer(filteredOutput);
                 }
                 else if (t_csvExportCheckBox || methodIndex == 5 || methodIndex == 6 || buttonCaller == 5 || buttonCaller == 12)
                 {// don't hide any output if updating DB or exporting
-                    stackCircularBuffer(filteredOutput);
+                    StackCircularBuffer(filteredOutput);
                 }
             }
         }
 
-        private void procErrorDataHandler(object sender, DataReceivedEventArgs output)
+        private void ProcErrorDataHandler(object sender, DataReceivedEventArgs output)
         {
             if (output.Data != null)
             {
-                stackCircularBuffer(output.Data + "\n");
+                StackCircularBuffer(output.Data + "\n");
             }
         }
 
-        private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+        private void ContextMenuStrip1_Opening(object sender, CancelEventArgs e)
         {
             RichTextBox clickedControl = (RichTextBox)this.contextMenuStrip1.SourceControl;
 
@@ -2809,13 +2810,13 @@ namespace TDHelper
             }
         }
 
-        private void altConfigBox_SelectionChangeCommitted(object sender, EventArgs e)
+        private void AltConfigBox_SelectionChangeCommitted(object sender, EventArgs e)
         {
             settingsRef.LastUsedConfig = altConfigBox.Text;
             SetShipList();
         }
 
-        private void altConfigBox_DropDown(object sender, EventArgs e)
+        private void AltConfigBox_DropDown(object sender, EventArgs e)
         {
             // refresh our index
             //validConfigs = parseValidConfigs();
@@ -2823,23 +2824,23 @@ namespace TDHelper
             //altConfigBox.DataSource = validConfigs[1];
         }
 
-        private void numericUpDown_Enter(object sender, EventArgs e)
+        private void NumericUpDown_Enter(object sender, EventArgs e)
         {// fix for text selection upon focusing numericupdown controls
             (sender as NumericUpDown).Select(0, (sender as NumericUpDown).Text.Length);
         }
 
-        private void numericUpDown_MouseUp(object sender, MouseEventArgs e)
+        private void NumericUpDown_MouseUp(object sender, MouseEventArgs e)
         {
             (sender as NumericUpDown).Select(0, (sender as NumericUpDown).Text.Length);
         }
 
-        private void srcSystemComboBox_TextChanged(object sender, EventArgs e)
+        private void SrcSystemComboBox_TextChanged(object sender, EventArgs e)
         {
             // wait for the user to type a few characters
             if (srcSystemComboBox.Text.Length > 3 && methodIndex != 10)
             {
-                string filteredString = removeExtraWhitespace(srcSystemComboBox.Text);
-                populateStationPanel(filteredString);
+                string filteredString = RemoveExtraWhitespace(srcSystemComboBox.Text);
+                PopulateStationPanel(filteredString);
 
                 if (destSystemComboBox.Text.Length > 3)
                     towardsCheckBox.Enabled = true; // requires "--fr"
@@ -2852,27 +2853,27 @@ namespace TDHelper
             }
         }
 
-        private void srcSystemComboBox_KeyDown(object sender, KeyEventArgs e)
+        private void SrcSystemComboBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (methodIndex != 10)
             {
                 // make sure we filter unwanted characters from the string
-                string filteredString = removeExtraWhitespace(srcSystemComboBox.Text);
+                string filteredString = RemoveExtraWhitespace(srcSystemComboBox.Text);
 
                 if ((e.KeyCode == Keys.Enter & e.Modifiers == Keys.Control)
-                    && stringInList(filteredString, outputSysStnNames))
+                    && StringInList(filteredString, outputSysStnNames))
                 {// if ctrl+enter, is a known system/station, and not in our net log, mark it down
                     addMarkedStation(filteredString, currentMarkedStations);
-                    buildOutput(true);
+                    BuildOutput(true);
                     SaveSettingsToIniFile();
                     e.Handled = true;
                 }
                 else if ((e.KeyCode == Keys.Enter & e.Modifiers == Keys.Shift)
-                    && stringInList(filteredString, currentMarkedStations))
+                    && StringInList(filteredString, currentMarkedStations))
                 {// if shift+enter, item is in our list, remove it
                     removeMarkedStation(filteredString, currentMarkedStations);
-                    int index = indexInList(filteredString, output_unclean);
-                    buildOutput(true);
+                    int index = IndexInList(filteredString, output_unclean);
+                    BuildOutput(true);
                     SaveSettingsToIniFile();
                     e.Handled = true;
                 }
@@ -2894,24 +2895,24 @@ namespace TDHelper
             }
         }
 
-        private void destSystemComboBox_KeyDown(object sender, KeyEventArgs e)
+        private void DestSystemComboBox_KeyDown(object sender, KeyEventArgs e)
         {
-            string filteredString = removeExtraWhitespace(destSystemComboBox.Text);
+            string filteredString = RemoveExtraWhitespace(destSystemComboBox.Text);
 
             if ((e.KeyCode == Keys.Enter & e.Modifiers == Keys.Control)
-                && stringInList(filteredString, outputSysStnNames))
+                && StringInList(filteredString, outputSysStnNames))
             {// if ctrl+enter, is a known system/station, and not in our net log, mark it down
                 addMarkedStation(filteredString, currentMarkedStations);
-                buildOutput(true);
+                BuildOutput(true);
                 SaveSettingsToIniFile();
                 e.Handled = true;
             }
             else if ((e.KeyCode == Keys.Enter & e.Modifiers == Keys.Shift)
-                && stringInList(filteredString, currentMarkedStations))
+                && StringInList(filteredString, currentMarkedStations))
             {// if shift+enter, item is in our list, remove it
                 removeMarkedStation(filteredString, currentMarkedStations);
-                int index = indexInList(filteredString, output_unclean);
-                buildOutput(true);
+                int index = IndexInList(filteredString, output_unclean);
+                BuildOutput(true);
                 SaveSettingsToIniFile();
                 e.Handled = true;
             }
@@ -2932,13 +2933,13 @@ namespace TDHelper
             }
         }
 
-        private void destSystemComboBox_TextChanged(object sender, EventArgs e)
+        private void DestSystemComboBox_TextChanged(object sender, EventArgs e)
         {
             // wait for the user to type a few characters
             if (destSystemComboBox.Text.Length > 3)
             {
-                string filteredString = removeExtraWhitespace(destSystemComboBox.Text);
-                validateDestForEndJumps();
+                string filteredString = RemoveExtraWhitespace(destSystemComboBox.Text);
+                ValidateDestForEndJumps();
 
                 if (srcSystemComboBox.Text.Length > 3)
                     towardsCheckBox.Enabled = true;
@@ -2951,7 +2952,7 @@ namespace TDHelper
             }
         }
 
-        private void shipsSoldBox_KeyDown(object sender, KeyEventArgs e)
+        private void ShipsSoldBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
             {
@@ -2960,12 +2961,12 @@ namespace TDHelper
             }
         }
 
-        private void testSystemsCheckBox_CheckedChanged(object sender, EventArgs e)
+        private void TestSystemsCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             settingsRef.TestSystems = testSystemsCheckBox.Checked;
         }
 
-        private void towardsCheckBox_Click(object sender, EventArgs e)
+        private void TowardsCheckBox_Click(object sender, EventArgs e)
         {
             if (settingsRef.Loop || loopCheckBox.Checked)
             {
@@ -2988,7 +2989,7 @@ namespace TDHelper
                 towardsCheckBox.Checked = false;
         }
 
-        private void shortenCheckBox_Click(object sender, EventArgs e)
+        private void ShortenCheckBox_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(destSystemComboBox.Text))
             {
@@ -3012,34 +3013,35 @@ namespace TDHelper
             }
         }
 
-        private void trackerLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void TrackerLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/MarkAusten/TDHelper/issues/new");
         }
 
-        private void faqLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void FaqLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/MarkAusten/TDHelper/wiki/Home");
         }
 
-        private void comboBox_DropDown(object sender, EventArgs e)
+        private void ComboBox_DropDown(object sender, EventArgs e)
         {
             dropdownOpened = true;
         }
 
-        private void comboBox_DropDownClosed(object sender, EventArgs e)
+        private void ComboBox_DropDownClosed(object sender, EventArgs e)
         {
             dropdownOpened = false;
         }
 
-        private void pilotsLogDataGrid_CellContextMenuStripNeeded(object sender, DataGridViewCellContextMenuStripNeededEventArgs e)
+        private void PilotsLogDataGrid_CellContextMenuStripNeeded(object sender, DataGridViewCellContextMenuStripNeededEventArgs e)
         {
             // prevent OOR exception
             if (e.RowIndex == -1 || e.ColumnIndex == -1)
+            {
                 return;
+            }
 
-            DataGridView pDataGrid = sender as DataGridView;
-            if (pDataGrid != null)
+            if (sender != null)
             {// save the datasource index, and the datagrid index of the row
                 pilotsLogDataGrid.ClearSelection(); // prevent weirdness
                 pRowIndex = int.Parse(localTable.Rows[e.RowIndex][0].ToString());
@@ -3048,29 +3050,29 @@ namespace TDHelper
             }
         }
 
-        private void insertAtGridRow_Click(object sender, EventArgs e)
+        private void InsertAtGridRow_Click(object sender, EventArgs e)
         {
             if (pilotsLogDataGrid.Rows.Count > 0)
             {
                 // add a row with the timestamp of the selected row
                 // basically an insert-below-index when we use select(*)
                 string timestamp = pilotsLogDataGrid.Rows[dRowIndex].Cells["Timestamp"].Value.ToString();
-                addAtTimestampDBRow(tdhDBConn, generateRecentTimestamp(timestamp));
-                invalidatedRowUpdate(true, -1);
+                AddAtTimestampDBRow(tdhDBConn, GenerateRecentTimestamp(timestamp));
+                InvalidatedRowUpdate(true, -1);
             }
             else
             {// special case for an empty gridview
-                addAtTimestampDBRow(tdhDBConn, currentTimestamp());
-                invalidatedRowUpdate(true, -1);
+                AddAtTimestampDBRow(tdhDBConn, CurrentTimestamp());
+                InvalidatedRowUpdate(true, -1);
             }
         }
 
-        private void forceRefreshGridView_Click(object sender, EventArgs e)
+        private void ForceRefreshGridView_Click(object sender, EventArgs e)
         {
-            invalidatedRowUpdate(true, -1); // force an invalidate and reload
+            InvalidatedRowUpdate(true, -1); // force an invalidate and reload
         }
 
-        private void copySystemToSrc_Click(object sender, EventArgs e)
+        private void CopySystemToSrc_Click(object sender, EventArgs e)
         {
             if (pilotsLogDataGrid.Rows.Count > 0 && !string.IsNullOrEmpty(pilotsLogDataGrid.Rows[dRowIndex].Cells[2].Value.ToString()))
             {// grab the system from the system field, if it exists, copy to the src box
@@ -3079,7 +3081,7 @@ namespace TDHelper
             }
         }
 
-        private void copySystemToDest_Click(object sender, EventArgs e)
+        private void CopySystemToDest_Click(object sender, EventArgs e)
         {
             if (pilotsLogDataGrid.Rows.Count > 0 && !string.IsNullOrEmpty(pilotsLogDataGrid.Rows[dRowIndex].Cells[2].Value.ToString()))
             {// grab the system from the system field, if it exists, copy to the src box
@@ -3093,13 +3095,13 @@ namespace TDHelper
         /// </summary>
         /// <param name="sender">The object sender.</param>
         /// <param name="e">The event args.</param>
-        private void btnCmdrProfile_Click(object sender, EventArgs e)
+        private void BtnCmdrProfile_Click(object sender, EventArgs e)
         {
             if (!backgroundWorker7.IsBusy)
             {
                 // Cmdr Profile button.
                 buttonCaller = 22;
-                disableRunButtons(); // disable buttons during uncancellable operations
+                DisableRunButtons(); // disable buttons during uncancellable operations
 
                 backgroundWorker7.RunWorkerAsync();
             }
@@ -3110,22 +3112,23 @@ namespace TDHelper
         /// </summary>
         /// <param name="sender">The object sender.</param>
         /// <param name="e">The event args.</param>
-        private void btnSaveSettings_Click(object sender, EventArgs e)
+        private void BtnSaveSettings_Click(object sender, EventArgs e)
         {
             this.btnSaveSettings.Enabled = false;
 
+            CopySettingsFromForm();
             SaveSettingsToIniFile();
 
             this.btnSaveSettings.Enabled = true;
         }
 
-        private void pilotsLogDataGrid_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
+        private void PilotsLogDataGrid_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
         {
             if (e.RowIndex < retriever.RowCount && e.ColumnIndex < retriever.RowCount)
                 e.Value = memoryCache.RetrieveElement(e.RowIndex, e.ColumnIndex);
         }
 
-        private void pilotsLogDataGrid_CellValuePushed(object sender, DataGridViewCellValueEventArgs e)
+        private void PilotsLogDataGrid_CellValuePushed(object sender, DataGridViewCellValueEventArgs e)
         {
             if (e.RowIndex < retriever.RowCount && e.ColumnIndex < retriever.RowCount)
             {
@@ -3134,30 +3137,30 @@ namespace TDHelper
                 List<DataRow> row = new List<DataRow> { localTable.Rows[e.RowIndex] };
 
                 // update the physical DB and repaint
-                updateDBRow(tdhDBConn, row);
-                invalidatedRowUpdate(false, e.RowIndex);
+                UpdateDBRow(tdhDBConn, row);
+                InvalidatedRowUpdate(false, e.RowIndex);
             }
         }
 
-        private void removeAtGridRow_Click(object sender, EventArgs e)
+        private void RemoveAtGridRow_Click(object sender, EventArgs e)
         {
             if (pilotsLogDataGrid.Rows.Count > 0)
             {
-                removeDBRow(tdhDBConn, pRowIndex);
-                updateLocalTable(tdhDBConn);
+                RemoveDBRow(tdhDBConn, pRowIndex);
+                UpdateLocalTable(tdhDBConn);
                 memoryCache.RemoveRow(dRowIndex, pRowIndex);
                 pilotsLogDataGrid.InvalidateRow(dRowIndex);
             }
         }
 
-        private void forceResortMenuItem_Click(object sender, EventArgs e)
+        private void ForceResortMenuItem_Click(object sender, EventArgs e)
         {
             pilotsLogDataGrid.Columns["Timestamp"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             pilotsLogDataGrid.Columns["System"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             pilotsLogDataGrid.Columns["Notes"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
         }
 
-        private void pilotsLogDataGrid_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        private void PilotsLogDataGrid_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
             if (e.Row.Index < retriever.RowCount && e.Row.Index >= 0
                 && pilotsLogDataGrid.SelectedRows.Count > 0)
@@ -3169,8 +3172,8 @@ namespace TDHelper
                 {
                     if (pilotsLogDataGrid.SelectedRows.Count == 1)
                     {
-                        removeDBRow(tdhDBConn, rowIndex);
-                        updateLocalTable(tdhDBConn);
+                        RemoveDBRow(tdhDBConn, rowIndex);
+                        UpdateLocalTable(tdhDBConn);
                         memoryCache.RemoveRow(e.Row.Index, rowIndex);
                     }
                     else if (pilotsLogDataGrid.SelectedRows.Count > 1 && dgRowIDIndexer.Count == 0)
@@ -3190,8 +3193,8 @@ namespace TDHelper
 
                     if (dgRowIDIndexer.Count > 0 && batchedRowCount == 0)
                     {// we've got queued commits to remove (should trigger on the last removed row)
-                        removeDBRows(tdhDBConn, dgRowIDIndexer);
-                        updateLocalTable(tdhDBConn);
+                        RemoveDBRows(tdhDBConn, dgRowIDIndexer);
+                        UpdateLocalTable(tdhDBConn);
                         memoryCache.RemoveRows(dgRowIndexer, dgRowIDIndexer);
                         pilotsLogDataGrid.Visible = true; // re-enable retrieval
                     }

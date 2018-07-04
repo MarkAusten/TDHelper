@@ -74,13 +74,13 @@ namespace TDHelper
         #endregion
 
         #region SettingsRelated
-        private void buildSettings()
+        private void BuildSettings()
         {
             // force InvariantCulture to prevent issues
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
             // snag the newest data from the file if it exists
-            if (checkIfFileOpens(configFile))
+            if (CheckIfFileOpens(configFile))
             {
                 LoadSettingsFromIniFile();
                 currentMarkedStations = parseMarkedStations();
@@ -90,7 +90,7 @@ namespace TDHelper
             Thread.CurrentThread.CurrentCulture = userCulture;
         }
 
-        private void writeSettings()
+        private void WriteSettings()
         {
             /*
              * This method writes all the known variables to an xml file.
@@ -106,8 +106,8 @@ namespace TDHelper
                 settingsRef.LastUsedConfig = configFile;
 
             serializeMarkedStations(currentMarkedStations); // convert object to built string
-            copySettingsFromForm();
-            validateSettings();
+            CopySettingsFromForm();
+            ValidateSettings();
 
             settingsRef.LocationParent = saveWinLoc(this);
             settingsRef.SizeParent = saveWinSize(this);
@@ -126,12 +126,12 @@ namespace TDHelper
             //altConfigBox.SelectedIndex = altConfigBox.Items.IndexOf(Path.GetFileNameWithoutExtension(configFile));
         }
 
-        private void loadSettings(string path)
+        private void LoadSettings(string path)
         {
             // make sure to load our data as invariant
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
-            if (checkIfFileOpens(path) && validateConfigFile(path))
+            if (CheckIfFileOpens(path) && validateConfigFile(path))
                 configFile = path; // we've got a valid TDHelper config file
 
             // save our current used config file
@@ -147,15 +147,15 @@ namespace TDHelper
 
             SaveSettingsToIniFile();
 
-            buildSettings();
-            validateSettings();
-            copySettingsFromConfig();
+            BuildSettings();
+            ValidateSettings();
+            CopySettingsFromConfig();
 
             // don't populate if switching configs
             if (buttonCaller != 21)
             {
-                buildOutput(true);
-                buildPilotsLog();
+                BuildOutput(true);
+                BuildPilotsLog();
             }
 
             // populate the notes page
@@ -178,7 +178,7 @@ namespace TDHelper
         #endregion
 
         #region Validation
-        public void validateSettings()
+        public void ValidateSettings()
         {
             // sanity check our inputs
             if (settingsRef.Credits < creditsBox.Minimum)
@@ -319,14 +319,14 @@ namespace TDHelper
 
             // sanity check in case of invalid input paths
             if (buttonCaller == 14)
-                validateImportPath();
+                ValidateImportPath();
             else if (buttonCaller == 13)
-                validateUploadPath();
+                ValidateUploadPath();
 
-            validatePython(null);
-            validateTDPath(null);
-            validateEdcePath(null);
-            validateNetLogPath(null);
+            ValidatePython(null);
+            ValidateTDPath(null);
+            ValidateEdcePath(null);
+            ValidateNetLogPath(null);
 
             // default to Run command if unset
             methodDropDown.SelectedIndex = methodIndex;
@@ -345,14 +345,16 @@ namespace TDHelper
             this.btnCmdrProfile.Enabled = !string.IsNullOrEmpty(settingsRef.EdcePath);
         }
 
-        public static void validateTDPath(string altPath)
+        public static void ValidateTDPath(string altPath)
         {
             if (!string.IsNullOrEmpty(settingsRef.PythonPath) && !settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase))
             {// bypass this routine if the python path validator sets our path for us (due to Trade Dangerous Installer)
-                if (string.IsNullOrEmpty(settingsRef.TDPath) || !checkIfFileOpens(settingsRef.TDPath + "\\trade.py"))
+                if (string.IsNullOrEmpty(settingsRef.TDPath) || !CheckIfFileOpens(settingsRef.TDPath + "\\trade.py"))
                 {
-                    OpenFileDialog x = new OpenFileDialog();
-                    x.Title = "Select Trade.py from the Trade Dangerous directory";
+                    OpenFileDialog x = new OpenFileDialog()
+                    {
+                        Title = "Select Trade.py from the Trade Dangerous directory"
+                    };
 
                     if (Directory.Exists(settingsRef.TDPath))
                         x.InitialDirectory = settingsRef.TDPath;
@@ -369,7 +371,7 @@ namespace TDHelper
                     else
                     {
                         string localPath = altPath ?? ""; // prevent null
-                        if (!string.IsNullOrEmpty(localPath) && checkIfFileOpens(localPath + "\\trade.py") || localPath.EndsWith(".py"))
+                        if (!string.IsNullOrEmpty(localPath) && CheckIfFileOpens(localPath + "\\trade.py") || localPath.EndsWith(".py"))
                         {// if we have an alternate path, we can reset the variable here
                             settingsRef.TDPath = localPath;
                             t_itemListPath = settingsRef.TDPath + @"\data\Item.csv";
@@ -383,13 +385,15 @@ namespace TDHelper
             }
         }
 
-        public static void validateEdcePath(string altPath)
+        public static void ValidateEdcePath(string altPath)
         {
             // bypass this routine if the python path validator sets our path for us (due to Trade Dangerous Installer)
-            if (string.IsNullOrEmpty(settingsRef.EdcePath) || !checkIfFileOpens(settingsRef.EdcePath + "\\edce_client.py"))
+            if (string.IsNullOrEmpty(settingsRef.EdcePath) || !CheckIfFileOpens(settingsRef.EdcePath + "\\edce_client.py"))
             {
-                OpenFileDialog x = new OpenFileDialog();
-                x.Title = "Select edce_client.py from the EDCE directory";
+                OpenFileDialog x = new OpenFileDialog()
+                {
+                    Title = "Select edce_client.py from the EDCE directory"
+                };
 
                 if (Directory.Exists(settingsRef.EdcePath))
                     x.InitialDirectory = settingsRef.EdcePath;
@@ -403,7 +407,7 @@ namespace TDHelper
                 else
                 {
                     string localPath = altPath ?? ""; // prevent null
-                    if (!string.IsNullOrEmpty(localPath) && checkIfFileOpens(localPath + "\\edce_client.py") || localPath.EndsWith(".py"))
+                    if (!string.IsNullOrEmpty(localPath) && CheckIfFileOpens(localPath + "\\edce_client.py") || localPath.EndsWith(".py"))
                     {// if we have an alternate path, we can reset the variable here
                         settingsRef.EdcePath = localPath;
                         SaveSettingsToIniFile();
@@ -416,12 +420,14 @@ namespace TDHelper
             }
         }
 
-        private void validateImportPath()
+        private void ValidateImportPath()
         {
-            if (string.IsNullOrEmpty(settingsRef.ImportPath) || !checkIfFileOpens(settingsRef.ImportPath) && buttonCaller == 14)
+            if (string.IsNullOrEmpty(settingsRef.ImportPath) || !CheckIfFileOpens(settingsRef.ImportPath) && buttonCaller == 14)
             {// only execute if called from Import button
-                OpenFileDialog x = new OpenFileDialog();
-                x.Title = "Select a .prices file";
+                OpenFileDialog x = new OpenFileDialog()
+                {
+                    Title = "Select a .prices file"
+                };
 
                 if (Directory.Exists(settingsRef.ImportPath))
                     x.InitialDirectory = settingsRef.ImportPath;
@@ -435,12 +441,14 @@ namespace TDHelper
             }
         }
 
-        private void validateUploadPath()
+        private void ValidateUploadPath()
         {
-            if (string.IsNullOrEmpty(settingsRef.UploadPath) || !checkIfFileOpens(settingsRef.UploadPath) && buttonCaller == 13)
+            if (string.IsNullOrEmpty(settingsRef.UploadPath) || !CheckIfFileOpens(settingsRef.UploadPath) && buttonCaller == 13)
             {// only execute if called from Upload button
-                OpenFileDialog x = new OpenFileDialog();
-                x.Title = "Select a file to upload";
+                OpenFileDialog x = new OpenFileDialog()
+                {
+                    Title = "Select a file to upload"
+                };
 
                 if (Directory.Exists(settingsRef.UploadPath))
                 {
@@ -456,15 +464,18 @@ namespace TDHelper
             }
         }
 
-        public static void validateNetLogPath(string altPath)
+        public static void ValidateNetLogPath(string altPath)
         {// override to avoid net log logic
             if (!settingsRef.DisableNetLogs)
             {
-                if (string.IsNullOrEmpty(settingsRef.NetLogPath) || !checkIfFileOpens(Directory.GetParent(settingsRef.NetLogPath).ToString() + "\\AppConfigLocal.xml"))
+                if (string.IsNullOrEmpty(settingsRef.NetLogPath) || !CheckIfFileOpens(Directory.GetParent(settingsRef.NetLogPath).ToString() + "\\AppConfigLocal.xml"))
                 {// let's just ask the user where to look
-                    OpenFileDialog x = new OpenFileDialog();
-                    x.Title = "Select a valid Elite: Dangerous AppConfigLocal.xml";
-                    x.Filter = "AppConfigLocal.xml|*.xml";
+                    OpenFileDialog x = new OpenFileDialog()
+                    {
+                        Title = "Select a valid Elite: Dangerous AppConfigLocal.xml",
+                        Filter = "AppConfigLocal.xml|*.xml"
+                    };
+
                     if (x.ShowDialog() == DialogResult.OK)
                     {
                         t_AppConfigPath = x.FileName;
@@ -499,7 +510,7 @@ namespace TDHelper
             }
         }
 
-        public static void validatePython(string altPath)
+        public static void ValidatePython(string altPath)
         {
             /*
              * This method attempts to find python.exe by using 'where', and 
@@ -507,14 +518,17 @@ namespace TDHelper
              */
 
             // before we do anything else, check if the current path works
-            if (string.IsNullOrEmpty(settingsRef.PythonPath) || !checkIfFileOpens(settingsRef.PythonPath))
+            if (string.IsNullOrEmpty(settingsRef.PythonPath) || !CheckIfFileOpens(settingsRef.PythonPath))
             {
-                OpenFileDialog x = new OpenFileDialog();
-                x.Title = "Select your python.exe or trade.exe";
-                x.Filter = "Python Interpreter (*.exe)|*.exe";
+                OpenFileDialog x = new OpenFileDialog()
+                {
+                    Title = "Select your python.exe or trade.exe",
+                    Filter = "Python Interpreter (*.exe)|*.exe"
+                };
+
                 if (x.ShowDialog() == DialogResult.OK)
                 {
-                    if (checkIfFileOpens(x.FileName))
+                    if (CheckIfFileOpens(x.FileName))
                     {
                         settingsRef.PythonPath = Path.GetFullPath(x.FileName);
                         SaveSettingsToIniFile();
@@ -532,7 +546,7 @@ namespace TDHelper
                 }
                 else
                 {
-                    if (checkIfFileOpens(altPath))
+                    if (CheckIfFileOpens(altPath))
                     {
                         settingsRef.PythonPath = altPath;
                         SaveSettingsToIniFile();
@@ -562,7 +576,7 @@ namespace TDHelper
         #endregion
 
         #region HelpFuncs
-        public static bool checkIfFileOpens(string path)
+        public static bool CheckIfFileOpens(string path)
         {
             bool fileOpens = false;
 
@@ -586,7 +600,7 @@ namespace TDHelper
             return fileOpens;
         }
 
-        private bool stringInList(string input, List<string> listToSearch)
+        private bool StringInList(string input, List<string> listToSearch)
         {// check if a partial string exists inside a list of strings, stop at first match
             for (int i = 0; i < listToSearch.Count; i++)
             {
@@ -597,7 +611,7 @@ namespace TDHelper
             return false;
         }
 
-        private bool stringInListExact(string input, List<string> listToSearch)
+        private bool StringInListExact(string input, List<string> listToSearch)
         {
             for (int i = 0; i < listToSearch.Count; i++)
             {// go in reverse to hit a match faster with our particular dataset
@@ -608,7 +622,7 @@ namespace TDHelper
             return false;
         }
 
-        private bool stringInArray(string input, string[] stringsToSearch)
+        private bool StringInArray(string input, string[] stringsToSearch)
         {// true if partial string (insensitive) exists in a string array
             foreach (string s in stringsToSearch)
             {
@@ -619,7 +633,7 @@ namespace TDHelper
             return false;
         }
 
-        private int indexInList(string input, List<string> listToSearch)
+        private int IndexInList(string input, List<string> listToSearch)
         {// return only an index of the first partial match (insensitive)
             int index = listToSearch.IndexOf(input);
             if (index >= 0)
@@ -628,7 +642,7 @@ namespace TDHelper
                 return -1;
         }
 
-        private int indexInListExact(string input, List<string> listToSearch)
+        private int IndexInListExact(string input, List<string> listToSearch)
         {// return an index of the first exact match
             for (int i = listToSearch.Count - 1; i >= 0; i--)
             {// we should hit a match faster in reverse for our particular dataset
@@ -641,7 +655,7 @@ namespace TDHelper
             return -1;
         }
 
-        private bool listEqualsExact(List<string> list1, List<string> list2)
+        private bool ListEqualsExact(List<string> list1, List<string> list2)
         {// quick loop to check equality of two string lists
             if (list1.Count != list2.Count)
                 return false;
@@ -655,7 +669,7 @@ namespace TDHelper
             return true;
         }
 
-        private bool listInListDesc(List<string> list1, List<string> list2)
+        private bool ListInListDesc(List<string> list1, List<string> list2)
         {// check if list1 exists in list2, descending order
             for (int i = 0; i < list1.Count; i++)
             {// compare exact indexes
@@ -666,7 +680,7 @@ namespace TDHelper
             return true;
         }
 
-        private bool arrayContainsDuplicate(string[] inputArray)
+        private bool ArrayContainsDuplicate(string[] inputArray)
         {// compare the strings in the array to see if duplicates exist
             int count = 0;
             for (int i = 0; i < inputArray.Length; i++)
@@ -688,7 +702,7 @@ namespace TDHelper
             return false;
         }
 
-        private void populateStationPanel(string input)
+        private void PopulateStationPanel(string input)
         {
             // we need to split our system and station names to match with the DB
             if (!string.IsNullOrEmpty(input))
@@ -699,7 +713,7 @@ namespace TDHelper
                     string t_system = tokens[0];
                     string t_station = tokens[1];
                     if (!string.IsNullOrEmpty(t_system) && !string.IsNullOrEmpty(t_station))
-                        grabStationData(t_system, t_station);
+                        GrabStationData(t_system, t_station);
 
                     if (outputStationDetails.Count > 0)
                     {
@@ -717,37 +731,37 @@ namespace TDHelper
 
                         if (!string.IsNullOrEmpty(outputStationDetails[2]))
                         {
-                            rearmCheckBox.CheckState = parseCheckState(outputStationDetails[2]);
+                            rearmCheckBox.CheckState = ParseCheckState(outputStationDetails[2]);
                         }
 
                         if (!string.IsNullOrEmpty(outputStationDetails[3]))
                         {
-                            refuelCheckBox.CheckState = parseCheckState(outputStationDetails[3]);
+                            refuelCheckBox.CheckState = ParseCheckState(outputStationDetails[3]);
                         }
 
                         if (!string.IsNullOrEmpty(outputStationDetails[4]))
                         {
-                            repairCheckBox.CheckState = parseCheckState(outputStationDetails[4]);
+                            repairCheckBox.CheckState = ParseCheckState(outputStationDetails[4]);
                         }
 
                         if (!string.IsNullOrEmpty(outputStationDetails[5]))
                         {
-                            outfitCheckBox.CheckState = parseCheckState(outputStationDetails[5]);
+                            outfitCheckBox.CheckState = ParseCheckState(outputStationDetails[5]);
                         }
 
                         if (!string.IsNullOrEmpty(outputStationDetails[6]))
                         {
-                            shipyardCheckBox.CheckState = parseCheckState(outputStationDetails[6]);
+                            shipyardCheckBox.CheckState = ParseCheckState(outputStationDetails[6]);
                         }
 
                         if (!string.IsNullOrEmpty(outputStationDetails[7]))
                         {
-                            marketCheckBox.CheckState = parseCheckState(outputStationDetails[7]);
+                            marketCheckBox.CheckState = ParseCheckState(outputStationDetails[7]);
                         }
 
                         if (!string.IsNullOrEmpty(outputStationDetails[8]))
                         {
-                            blackMarketCheckBox.CheckState = parseCheckState(outputStationDetails[8]);
+                            blackMarketCheckBox.CheckState = ParseCheckState(outputStationDetails[8]);
                         }
                     }
 
@@ -763,13 +777,13 @@ namespace TDHelper
             }
         }
 
-        public static void playAlert()
+        public static void PlayAlert()
         {// a simple method for playing a custom beep.wav or the default system Beep
             SoundPlayer player = new SoundPlayer();
             Assembly thisExecutable = System.Reflection.Assembly.GetExecutingAssembly();
             string localSound = localDir + "\\notify.wav";
 
-            if (checkIfFileOpens(localSound))
+            if (CheckIfFileOpens(localSound))
             {
                 player.SoundLocation = localSound;
                 player.LoadAsync();
@@ -782,13 +796,13 @@ namespace TDHelper
             }
         }
 
-        public static void playUnknown()
+        public static void PlayUnknown()
         {// a simple method for playing a custom beep.wav or the default system Beep
             SoundPlayer player = new SoundPlayer();
             Assembly thisExecutable = System.Reflection.Assembly.GetExecutingAssembly();
             string localSound = localDir + "\\unknown.wav";
 
-            if (checkIfFileOpens(localSound))
+            if (CheckIfFileOpens(localSound))
             {
                 player.SoundLocation = localSound;
                 player.LoadAsync();
@@ -801,7 +815,7 @@ namespace TDHelper
             }
         }
 
-        private static string removeExtraWhitespace(string input)
+        private static string RemoveExtraWhitespace(string input)
         {
             // should work with most patterns, and favorite systems/stations
             string pattern = @"^\s*!|^\s*(?=\D)|(?!\S)[ ]+(?=\/)|(?<=\/)[ ]+(?=\S)|(?<=\S)[ ]+(?!\S)";
@@ -809,12 +823,12 @@ namespace TDHelper
             return sanitized;
         }
 
-        private string cleanShipVendorInput(string input)
+        private string CleanShipVendorInput(string input)
         {// just a simple method to clean invalid data from the shipvendor input
             return Regex.Replace(input, @"\s\[.*\]|(?<=\w)\,\s*(?!\w|\s+\w)|(?<=\s)\s+", "");
         }
 
-        private static string filterOutput(string input)
+        private static string FilterOutput(string input)
         {// make sure we remove junk from the run output
             string[] exceptions = new string[] { "Command line:", "NOTE:", "SORRY:", "####", "Entering" };
             string[] filteredLines = input
@@ -824,9 +838,9 @@ namespace TDHelper
             return result;
         }
 
-        private void writeSavedPage(string text, string file)
+        private void WriteSavedPage(string text, string file)
         {// this takes text as an input, filters it, and outputs to a file
-            string filteredOutput = filterOutput(text);
+            string filteredOutput = FilterOutput(text);
             if (!string.IsNullOrEmpty(filteredOutput))
             {
                 using (FileStream fs = new FileStream(file, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
@@ -837,7 +851,7 @@ namespace TDHelper
             }
         }
 
-        private void stackCircularBuffer(string input)
+        private void StackCircularBuffer(string input)
         {// here we generate our buffer to be consumed
             if (input.Length > circularBuffer.Capacity)
             {// if the input is bigger than our buffer size, toss what doesn't fit
@@ -852,10 +866,10 @@ namespace TDHelper
             else
                 circularBuffer.Append(input);
 
-            readCircularBuffer();
+            ReadCircularBuffer();
         }
 
-        private void readCircularBuffer()
+        private void ReadCircularBuffer()
         {// here we consume our buffer
             if (circularBuffer.Length > 0 && circularBuffer.Length <= circularBuffer.Capacity)
             {// if our buffer is full, display it
@@ -870,26 +884,24 @@ namespace TDHelper
             }
         }
 
-        private string currentTimestamp()
+        private string CurrentTimestamp()
         {
             return DateTime.Now.ToString("yy-MM-dd HH:mm:ss");
         }
 
-        private bool timestampIsNewer(string inputStamp1, string inputStamp2)
+        private bool TimestampIsNewer(string inputStamp1, string inputStamp2)
         {// true if timeStamp1 newer than timeStamp2, false if equal or older
-            DateTime parsedStamp1, parsedStamp2;
-            if (DateTime.TryParseExact(inputStamp1, "yy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedStamp1) && DateTime.TryParseExact(inputStamp2, "yy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedStamp2))
+            if (DateTime.TryParseExact(inputStamp1, "yy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedStamp1) && DateTime.TryParseExact(inputStamp2, "yy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedStamp2))
             {
-                if (parsedStamp1.CompareTo(parsedStamp2) > 0)
-                    return true;
-                else
-                    return false;
+                return parsedStamp1.CompareTo(parsedStamp2) > 0;
             }
             else
+            {
                 throw new ArgumentException("Unable to parse column timestamps for comparison");
+            }
         }
 
-        private string generateRecentTimestamp(string inputStamp)
+        private string GenerateRecentTimestamp(string inputStamp)
         {// we take an input timestamp string, and try to generate a new timestamp from it by removing a second
             DateTime parsedStamp = new DateTime(), outputStamp = new DateTime();
             string format = "yy-MM-dd HH:mm:ss";

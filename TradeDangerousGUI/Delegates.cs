@@ -23,7 +23,7 @@ namespace TDHelper
          * Mostly worker delegate related stuff goes here
          */
 
-        private int isValidRunOutput(string input)
+        private int IsValidRunOutput(string input)
         {// return an int if we recognize the input as valid Run output
             if (!string.IsNullOrEmpty(input) && input.Length > 1)
             {
@@ -89,7 +89,7 @@ namespace TDHelper
             return -1;
         }
 
-        private void parseRunOutput(string input, TreeView tvOutput)
+        private void ParseRunOutput(string input, TreeView tvOutput)
         {
             /*
              * This method parses the output of Run line by line and collects 
@@ -570,16 +570,18 @@ namespace TDHelper
             #endregion
 
             if (doc.Descendants("Route").FirstOrDefault() != null)
-                populateTreeView(doc, tvOutput); // pass to the next step
+                PopulateTreeView(doc, tvOutput); // pass to the next step
         }
 
-        private void populateTreeView(XDocument xmlInput, TreeView tvBox)
+        private void PopulateTreeView(XDocument xmlInput, TreeView tvBox)
         {// this takes an XDocument and parses to a TreeView
             XElement el = xmlInput.Descendants("Route").FirstOrDefault();
             if (el != null)
             {
-                TreeNode node = new TreeNode();
-                node.Text = el.Element("Summary").Value;
+                TreeNode node = new TreeNode()
+                {
+                    Text = el.Element("Summary").Value
+                };
 
                 // put details in a childnode
                 if (el.Element("SummaryDetails") != null)
@@ -635,7 +637,7 @@ namespace TDHelper
                 throw new Exception("Failure to parse the input XML to the TreeView");
         }
 
-        private void getUpdatedPricesFile()
+        private void GetUpdatedPricesFile()
         {
             buttonCaller = 11;  // mark us as coming from the commodities editor (ctrl+click)
             string pricesFilePath = settingsRef.TDPath + "\\prices.last";
@@ -647,13 +649,13 @@ namespace TDHelper
             // hop to the worker delegate to grab updated prices for a station
             if (!backgroundWorker2.IsBusy)
             {
-                disableRunButtons();
+                DisableRunButtons();
                 backgroundWorker2.RunWorkerAsync();
                 // head over to the worker delegate event RunWorkerCompleted for the next step
             }
         }
 
-        private void cleanUpdatedPricesFile()
+        private void CleanUpdatedPricesFile()
         {
             /*
                 * This should search for Buy/Sell price for each commodity and set them to 0
@@ -682,7 +684,7 @@ namespace TDHelper
                 throw new Exception("Cannot open the prices file for some reason");
         }
 
-        private void getDataUpdates()
+        private void GetDataUpdates()
         {
             /*
              * UPDATE DB BUTTON: called from Worker4
@@ -701,19 +703,19 @@ namespace TDHelper
             }
         }
 
-        private void doRunEvent()
+        private void DoRunEvent()
         {
             // before we do the thing
             // let's push all the boxes into variables
-            copySettingsFromForm();
+            CopySettingsFromForm();
             // sanity check inputs before running
-            validateSettings();
+            ValidateSettings();
 
             // Run button
             if (!backgroundWorker2.IsBusy)
             {
                 // disable other worker callers
-                disableRunButtons();
+                DisableRunButtons();
 
                 backgroundWorker2.RunWorkerAsync();
             }
@@ -729,7 +731,7 @@ namespace TDHelper
             }
         }
 
-        private void doTDProc(string path)
+        private void DoTDProc(string path)
         {
             //
             // Assume we are calling this from a non-UI thread
@@ -760,14 +762,14 @@ namespace TDHelper
                         td_proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
                     }
 
-                    td_proc.OutputDataReceived += new DataReceivedEventHandler(procOutputDataHandler);
-                    td_proc.ErrorDataReceived += new DataReceivedEventHandler(procErrorDataHandler);
+                    td_proc.OutputDataReceived += new DataReceivedEventHandler(ProcOutputDataHandler);
+                    td_proc.ErrorDataReceived += new DataReceivedEventHandler(ProcErrorDataHandler);
 
                     // pre-invoke
                     if (circularBuffer.Length == 0)
-                        stackCircularBuffer("Command line: " + path + "\n");
+                        StackCircularBuffer("Command line: " + path + "\n");
                     else
-                        stackCircularBuffer("\nCommand line: " + path + "\n");
+                        StackCircularBuffer("\nCommand line: " + path + "\n");
 
                     this.Invoke(new Action(() =>
                     {
@@ -826,19 +828,19 @@ namespace TDHelper
             {
                 if (hasUpdated == 0)
                 {
-                    stackCircularBuffer("\nData updated.");
+                    StackCircularBuffer("\nData updated.");
                 }
             }
             else if (buttonCaller == 11)
             {
                 if (procCode == 0) // exit code should be 0
-                    stackCircularBuffer("\nZero'ing all commodities in the prices.last file, and saving to: " + settingsRef.TDPath + "\\updated.prices\nNOTE: This will -NOT- import/upload the changes, you must do so manually.");
+                    StackCircularBuffer("\nZero'ing all commodities in the prices.last file, and saving to: " + settingsRef.TDPath + "\\updated.prices\nNOTE: This will -NOT- import/upload the changes, you must do so manually.");
             }
 
             t_path = ""; // reset the path for thread safety
         }
 
-        private void doHotSwap()
+        private void DoHotSwap()
         {
             /*
              * This delegate is for the auto-updater, it does the following:
@@ -866,7 +868,7 @@ namespace TDHelper
                         if (urlRoot != null)
                         {
                             string remoteArchiveURL = urlRoot.Value;
-                            decompressUpdate(remoteArchiveURL, localDir);
+                            DecompressUpdate(remoteArchiveURL, localDir);
                         }
                         else
                         {
@@ -882,7 +884,7 @@ namespace TDHelper
             }
         }
 
-        private void doHotSwapCleanup()
+        private void DoHotSwapCleanup()
         {// clean up the working directory after a doHotSwap()
             try
             {// we include replaced and tmp files just to be thorough
@@ -903,7 +905,7 @@ namespace TDHelper
             }
         }
 
-        private void decompressUpdate(string zipFileURL, string path)
+        private void DecompressUpdate(string zipFileURL, string path)
         {
             string filePattern = @"[\-A-za-z0-9_\.]+\.zip";
             // parse the archive name from the url given
@@ -975,9 +977,7 @@ namespace TDHelper
 
                 if (module.Length > stringLength && module.Substring(0, stringLength) == "Int_CargoRack_Size")
                 {
-                    int size;
-
-                    if (Int32.TryParse(module.Substring(stringLength, 1), out size))
+                    if (Int32.TryParse(module.Substring(stringLength, 1), out int size))
                     {
                         capacity += (decimal)Math.Pow(2, size);
                     }

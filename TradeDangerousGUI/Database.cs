@@ -40,24 +40,24 @@ namespace TDHelper
         #endregion
 
         #region RecentSystems
-        private void buildPilotsLog()
+        private void BuildPilotsLog()
         {// here we either build or load our database
             tdhDBConn = new SQLiteConnection("Data Source=" + pilotsLogDBPath + ";Version=3;");
 
             if (pilotsLogDataGrid.Rows.Count == 0)
             {
-                if (hasValidRows(tdhDBConn, "SystemLog"))
-                    invalidatedRowUpdate(true, -1);
+                if (HasValidRows(tdhDBConn, "SystemLog"))
+                    InvalidatedRowUpdate(true, -1);
                 else
-                    createPilotsLogDB(tdhDBConn); // make from scratch
+                    CreatePilotsLogDB(tdhDBConn); // make from scratch
             }
-            else if (hasValidRows(tdhDBConn, "SystemLog"))
+            else if (HasValidRows(tdhDBConn, "SystemLog"))
             {// load our physical database
-                invalidatedRowUpdate(true, -1);
+                InvalidatedRowUpdate(true, -1);
             }
         }
 
-        private bool updatePilotsLogDB(SQLiteConnection dbConn, List<KeyValuePair<string, string>> exceptKey)
+        private bool UpdatePilotsLogDB(SQLiteConnection dbConn, List<KeyValuePair<string, string>> exceptKey)
         {// here we take a non-intersect key to add systems to our DB
             int exceptCount = exceptKey.Count();
 
@@ -87,7 +87,7 @@ namespace TDHelper
 
                     transaction.Commit();
 
-                    invalidatedRowUpdate(true, 0);
+                    InvalidatedRowUpdate(true, 0);
 
                     return true; // success!
                 }
@@ -96,13 +96,13 @@ namespace TDHelper
             return false;
         }
 
-        private void loadPilotsLogDB(SQLiteConnection dbConn)
+        private void LoadPilotsLogDB(SQLiteConnection dbConn)
         {
-            if (hasValidColumn(dbConn, "SystemLog", "System"))
+            if (HasValidColumn(dbConn, "SystemLog", "System"))
             {
                 try
                 {
-                    updateLocalTable(tdhDBConn);
+                    UpdateLocalTable(tdhDBConn);
                     retriever = new DataRetriever(dbConn, "SystemLog");
 
                     this.Invoke(new Action(() =>
@@ -131,7 +131,7 @@ namespace TDHelper
             }
         }
 
-        private void vacuumPilotsLogDB(SQLiteConnection dbConn)
+        private void VacuumPilotsLogDB(SQLiteConnection dbConn)
         {// a simple method to vacuum our database
             try
             {
@@ -140,7 +140,7 @@ namespace TDHelper
 
                 using (SQLiteCommand cmd = dbConn.CreateCommand())
                 {
-                    if (hasValidRows(dbConn, "SystemLog"))
+                    if (HasValidRows(dbConn, "SystemLog"))
                     {// clean up after ourselves
                         cmd.CommandText = "VACUUM";
                         cmd.ExecuteNonQuery();
@@ -150,7 +150,7 @@ namespace TDHelper
             catch (Exception e) { throw new Exception(e.Message); }
         }
 
-        private void createPilotsLogDB(SQLiteConnection dbConn)
+        private void CreatePilotsLogDB(SQLiteConnection dbConn)
         {
             try
             {
@@ -159,7 +159,7 @@ namespace TDHelper
 
                 using (SQLiteCommand cmd = dbConn.CreateCommand())
                 {
-                    if (!hasValidColumn(dbConn, "SystemLog", "System"))
+                    if (!HasValidColumn(dbConn, "SystemLog", "System"))
                     {
                         // create our table first
                         cmd.CommandText = "CREATE TABLE SystemLog (ID INTEGER PRIMARY KEY AUTOINCREMENT, Timestamp NVARCHAR, System NVARCHAR, Notes NVARCHAR)";
@@ -169,7 +169,7 @@ namespace TDHelper
                         cmd.CommandText = "CREATE UNIQUE INDEX IF NOT EXISTS SystemTimestamp ON SystemLog (System, Timestamp)";
                         cmd.ExecuteNonQuery();
                     }
-                    else if (hasValidRows(dbConn, "SystemLog"))
+                    else if (HasValidRows(dbConn, "SystemLog"))
                     {
 /*
                         // wipe before inserting, ensures most recent records
@@ -217,7 +217,7 @@ namespace TDHelper
                             pilotsLogDataGrid.Columns.Add(c.ColumnName, c.ColumnName);
 
                         // setup the gridview
-                        updateLocalTable(tdhDBConn);
+                        UpdateLocalTable(tdhDBConn);
                         memoryCache = new Cache(retriever, 24);
 
                         pilotsLogDataGrid.RowCount = retriever.RowCount;
@@ -232,12 +232,12 @@ namespace TDHelper
             catch (Exception e) { throw new Exception(e.Message); }
         }
 
-        private void updateLocalTable(SQLiteConnection dbConn)
+        private void UpdateLocalTable(SQLiteConnection dbConn)
         {
             if (dbConn != null && dbConn.State == ConnectionState.Closed)
                 dbConn.Open();
 
-            if (hasValidColumn(dbConn, "SystemLog", "System"))
+            if (HasValidColumn(dbConn, "SystemLog", "System"))
             {
                 try
                 {
@@ -262,19 +262,19 @@ namespace TDHelper
             }
         }
 
-        private bool invalidatedRowUpdate(bool refreshMode, int rowIndex)
+        private bool InvalidatedRowUpdate(bool refreshMode, int rowIndex)
         {
             
             if (refreshMode)
             {// full refresh
                 if (rowIndex == -1)
                 {
-                    loadPilotsLogDB(tdhDBConn);
+                    LoadPilotsLogDB(tdhDBConn);
                     return true;
                 }
 
                 // invalidate the cache pages
-                updateLocalTable(tdhDBConn);
+                UpdateLocalTable(tdhDBConn);
                 retriever = new DataRetriever(tdhDBConn, "SystemLog");
                 memoryCache = new Cache(retriever, 24);
                 // force a refresh/repaint
@@ -286,7 +286,7 @@ namespace TDHelper
             }
             else
             {// partial refresh
-                updateLocalTable(tdhDBConn);
+                UpdateLocalTable(tdhDBConn);
                 retriever = new DataRetriever(tdhDBConn, "SystemLog");
                 memoryCache = new Cache(retriever, 24);
                 this.Invoke(new Action(() =>
@@ -299,13 +299,13 @@ namespace TDHelper
             return false;
         }
 
-        private bool addDBRow(SQLiteConnection dbConn)
+        private bool AddDBRow(SQLiteConnection dbConn)
         {// add a blank row with the current timestamp
             using (SQLiteCommand cmd = new SQLiteCommand("INSERT INTO SystemLog VALUES (null,@Timestamp,null,null)", dbConn))
             {
                 try
                 {
-                    string var1 = currentTimestamp();
+                    string var1 = CurrentTimestamp();
                     using (var transaction = dbConn.BeginTransaction())
                     {
                         cmd.Parameters.AddWithValue("@Timestamp", var1);
@@ -316,12 +316,12 @@ namespace TDHelper
                 }
                 catch { throw; }
 
-                loadPilotsLogDB(tdhDBConn); // need a full refresh
+                LoadPilotsLogDB(tdhDBConn); // need a full refresh
                 return true; // success!
             }
         }
 
-        private bool updateDBRow(SQLiteConnection dbConn, List<DataRow> rows)
+        private bool UpdateDBRow(SQLiteConnection dbConn, List<DataRow> rows)
         {// insert/update an existing set of rows
             if (rows.Count > 0)
             {
@@ -356,7 +356,7 @@ namespace TDHelper
                     }
                     catch (Exception) { throw; }
 
-                    updateLocalTable(tdhDBConn);
+                    UpdateLocalTable(tdhDBConn);
 
                     return true; // success!
                 }
@@ -365,7 +365,7 @@ namespace TDHelper
             return false;
         }
 
-        private bool removeDBRow(SQLiteConnection dbConn, int rowIndex)
+        private bool RemoveDBRow(SQLiteConnection dbConn, int rowIndex)
         {
             if (rowIndex >= 0)
             {
@@ -380,7 +380,7 @@ namespace TDHelper
                         cmd.Parameters.Clear();
                         transaction.Commit();
 
-                        vacuumPilotsLogDB(tdhDBConn);
+                        VacuumPilotsLogDB(tdhDBConn);
                     }
                     catch (Exception) { throw; }
                     return true; // success!
@@ -390,7 +390,7 @@ namespace TDHelper
             return false;
         }
 
-        private bool removeDBRows(SQLiteConnection dbConn, List<int> rowsIndex)
+        private bool RemoveDBRows(SQLiteConnection dbConn, List<int> rowsIndex)
         {// remove a batch of rows (faster than removeDBRow)
             if (rowsIndex.Count > 0)
             {
@@ -408,7 +408,7 @@ namespace TDHelper
                         }
                         transaction.Commit();
 
-                        vacuumPilotsLogDB(tdhDBConn);
+                        VacuumPilotsLogDB(tdhDBConn);
                     }
                     catch (Exception) { throw; }
                     return true; // success!
@@ -418,7 +418,7 @@ namespace TDHelper
             return false;
         }
 
-        private bool addAtTimestampDBRow(SQLiteConnection dbConn, string timestamp)
+        private bool AddAtTimestampDBRow(SQLiteConnection dbConn, string timestamp)
         {// add a blank row with the timestamp from a given row, basically an insert-below-index during select()
             using (SQLiteCommand cmd = new SQLiteCommand("INSERT INTO SystemLog VALUES (null,@Timestamp,null,null)", dbConn))
             {
@@ -447,7 +447,7 @@ namespace TDHelper
             return false;
         }
 
-        private List<string> loadSystemsFromDB(List<string> logPaths)
+        private List<string> LoadSystemsFromDB(List<string> logPaths)
         {// we should load from the DB if the newest entry is newer than the newest log file entry
             string pattern0 = @"^(\d\d\-\d\d\-\d\d).+?\((.+?)\sGMT"; // $1=Y, $2=M, $3=D; $4=GMT
             // grab the timestamp of this entry, and then the system name
@@ -478,15 +478,15 @@ namespace TDHelper
                     }
 
                     if (!string.IsNullOrEmpty(firstTimestamp) && !string.IsNullOrEmpty(firstSystem) 
-                        && !timestampIsNewer(firstTimestamp, localSystemList[0].Key) 
+                        && !TimestampIsNewer(firstTimestamp, localSystemList[0].Key) 
                         || localSystemList[0].Value.Equals(firstSystem))
                     {// we've got a database, let's pull from it instead of reading from the logs, for performance
-                        if (output_unclean.Count == 0 || !stringInListExact(firstSystem, output_unclean))
+                        if (output_unclean.Count == 0 || !StringInListExact(firstSystem, output_unclean))
                         {
                             for (int i = 0; i < localSystemList.Count; i++)
                             {
                                 var row = localSystemList[i];
-                                if (output.Count == 0 || !stringInListExact(row.Value, output) && output.Count < listLimit)
+                                if (output.Count == 0 || !StringInListExact(row.Value, output) && output.Count < listLimit)
                                     output.Add(row.Value);
                             }
                         }
@@ -500,7 +500,7 @@ namespace TDHelper
             return output;
         }
 
-        private List<string> loadSystemsFromLogs(bool refreshMode, List<string> filePaths)
+        private List<string> LoadSystemsFromLogs(bool refreshMode, List<string> filePaths)
         {
             // get the latest timestamp from the DB.
             string timestamp = this.GetLastTimestamp();
@@ -607,9 +607,9 @@ namespace TDHelper
 
                             if (!curSystem.Equals(lastOutput))
                             {// prevent consecutive duplicates, ensure the most recent is lowest on the list
-                                if (output.Count > 0 && stringInListExact(curSystem, output))
+                                if (output.Count > 0 && StringInListExact(curSystem, output))
                                 {// remove our older duplicate at its index before adding the newest
-                                    output.RemoveAt(indexInListExact(curSystem, output));
+                                    output.RemoveAt(IndexInListExact(curSystem, output));
                                 }
 
                                 if (output.Count + 1 > listLimit)
@@ -633,7 +633,7 @@ namespace TDHelper
                 {// if we're loaded, any older entries than the newest in the db get tossed
                     for (int i = netLogOutput.Count - 1; i >= 0; i--)
                     {// go in reverse to preserve the list
-                        if (!timestampIsNewer(netLogOutput[i].Key, localSystemList[0].Key))
+                        if (!TimestampIsNewer(netLogOutput[i].Key, localSystemList[0].Key))
                             netLogOutput.RemoveAt(i);
                     }
                 }
@@ -668,7 +668,7 @@ namespace TDHelper
                         if (output.Count == 0 && !curSystem.Equals(lastOutput) || !curSystem.Equals(firstEntry))
                         {
                             // replace any existing previous duplicate with the newest iteration
-                            int index = indexInListExact(curSystem, output);
+                            int index = IndexInListExact(curSystem, output);
                             if (index >= 0)
                                 output.RemoveAt(index);
 
@@ -683,7 +683,7 @@ namespace TDHelper
                     }
 
                     if (output.Count > 0 && output_unclean.Count > 0
-                        && listInListDesc(output, output_unclean))
+                        && ListInListDesc(output, output_unclean))
                     {// check if our exact output list exists in our target list
                         output.Clear(); // no changes
                     }
@@ -691,7 +691,7 @@ namespace TDHelper
                     {// our target list contains duplicates, but isn't an exact duplicate
                         for (int i = 0; i < output.Count; i++)
                         {// remove duplicates from the target list before we concat()
-                            int index = indexInListExact(output[i], output_unclean);
+                            int index = IndexInListExact(output[i], output_unclean);
                             if (index >= 0)
                                 output_unclean.RemoveAt(index);
                         }
@@ -719,11 +719,11 @@ namespace TDHelper
             }
 
             if (localSystemList.Count == 0 && netLogOutput.Count > 0)
-                updatePilotsLogDB(tdhDBConn, netLogOutput); // pass just the table, no diffs
+                UpdatePilotsLogDB(tdhDBConn, netLogOutput); // pass just the table, no diffs
             else if (netLogOutput.Count > 0)
             {
                 var exceptTable = netLogOutput.Except(localSystemList).ToList();
-                updatePilotsLogDB(tdhDBConn, exceptTable); // pass just the diffs, no table
+                UpdatePilotsLogDB(tdhDBConn, exceptTable); // pass just the diffs, no table
             }
 
             stopwatch.Stop();
@@ -740,7 +740,7 @@ namespace TDHelper
             return output; // return our finished list
         }
 
-        private void readNetLog(bool refreshMethod)
+        private void ReadNetLog(bool refreshMethod)
         {
             // override to avoid net log logic
             if (!settingsRef.DisableNetLogs)
@@ -751,7 +751,7 @@ namespace TDHelper
                 if (Directory.Exists(settingsRef.NetLogPath))
                 {
                     Splash splashForm = new Splash();
-                    validateNetLogPath(null); // check our Verbose flag and input files
+                    ValidateNetLogPath(null); // check our Verbose flag and input files
 
                     if (latestLogPaths != null && latestLogPaths.Count > 0)
                     {
@@ -772,7 +772,7 @@ namespace TDHelper
                                 }));
                             }
 
-                            checkBuffer = loadSystemsFromDB(latestLogPaths);
+                            checkBuffer = LoadSystemsFromDB(latestLogPaths);
 
                             if (loadedFromDB && checkBuffer.Count > 0)
                             {// we've got systems from the DB, push them to the dropdown
@@ -780,7 +780,7 @@ namespace TDHelper
                             }
                             else if (!hasLogLoaded && checkBuffer.Count == 0)
                             {// do the initial populate if we can't get systems from the DB
-                                checkBuffer = loadSystemsFromLogs(true, latestLogPaths);
+                                checkBuffer = LoadSystemsFromLogs(true, latestLogPaths);
                                 if (checkBuffer.Count > 0)
                                 {
                                     output_unclean.AddRange(checkBuffer);
@@ -789,7 +789,7 @@ namespace TDHelper
                         }
                         else
                         {// only refresh from the newest
-                            checkBuffer = loadSystemsFromLogs(false, latestLogPaths);
+                            checkBuffer = LoadSystemsFromLogs(false, latestLogPaths);
                             if (checkBuffer.Count > 0)
                             {
                                 output_unclean = checkBuffer.Concat(output_unclean).ToList();
@@ -829,7 +829,7 @@ namespace TDHelper
         #endregion
 
         #region HelperFuncs
-        public static List<string> collectLogPaths(string path, string pattern)
+        public static List<string> CollectLogPaths(string path, string pattern)
         {// only collect log paths that contain system names
             try
             {
@@ -876,12 +876,12 @@ namespace TDHelper
             return null; // should never reach this
         }
 
-        private bool validateDBPath()
+        private bool ValidateDBPath()
         {
             tdDBPath = settingsRef.TDPath + "\\data\\TradeDangerous.db";
             try
             {
-                if (checkIfFileOpens(tdDBPath))
+                if (CheckIfFileOpens(tdDBPath))
                     return true;
                 else
                     return false;
@@ -892,7 +892,7 @@ namespace TDHelper
             }
         }
 
-        private bool hasValidRows(SQLiteConnection dbConn, string tableName)
+        private bool HasValidRows(SQLiteConnection dbConn, string tableName)
         {// this method returns true if there are any valid rows
             using (SQLiteCommand query = new SQLiteCommand("SELECT COUNT(*) FROM SystemLog", dbConn))
             {
@@ -944,7 +944,7 @@ namespace TDHelper
             return timestamp;
         }
 
-        private bool hasValidColumn(SQLiteConnection dbConn, string tableName, string columnName)
+        private bool HasValidColumn(SQLiteConnection dbConn, string tableName, string columnName)
         {// this method returns true if a column exists
             using (SQLiteCommand query = new SQLiteCommand("PRAGMA table_info(" + tableName + ")", dbConn))
             using (DataTable results = new DataTable())
@@ -974,7 +974,7 @@ namespace TDHelper
             return false;
         }
 
-        private void parseItemCSV()
+        private void ParseItemCSV()
         {
             outputItems = new List<string>();
 
@@ -1031,7 +1031,7 @@ namespace TDHelper
             }
         }
 
-        private void buildOutput(bool refreshMethod)
+        private void BuildOutput(bool refreshMethod)
         {
             /* NOTE: This method should ALWAYS be called from the UI thread.
              * 
@@ -1047,11 +1047,11 @@ namespace TDHelper
                     // for forced refresh or starting up
                     if (buttonCaller == 16 || !hasRun)
                     {
-                        loadDatabase();
+                        LoadDatabase();
                         
                         this.Invoke(new Action(() =>
                         {
-                            refreshItems();
+                            RefreshItems();
                         }));
                         
                         hasLogLoaded = false;
@@ -1065,8 +1065,8 @@ namespace TDHelper
                     // let's rebind with fresh inputs
                     if (hasRun && refreshMethod)
                     {// a full clear() and refresh of comboboxes
-                        buildPilotsLog(); // always before loading the recents
-                        readNetLog(true); // load all logs
+                        BuildPilotsLog(); // always before loading the recents
+                        ReadNetLog(true); // load all logs
 
                         this.Invoke(new Action(() =>
                         {
@@ -1099,7 +1099,7 @@ namespace TDHelper
                     }
                     else if (hasRun && !refreshMethod && output_unclean.Count > 0)
                     {// non-destructively update with the newest system
-                        readNetLog(false);
+                        ReadNetLog(false);
 
                         if (hasRefreshedRecents)
                         {// only call if we have an update
@@ -1132,8 +1132,8 @@ namespace TDHelper
                     }
                     else if (!hasRun)
                     {// we're starting fresh so bind all the things
-                        buildPilotsLog();
-                        readNetLog(true);
+                        BuildPilotsLog();
+                        ReadNetLog(true);
 
                         this.Invoke(new Action(() =>
                         {
@@ -1168,7 +1168,7 @@ namespace TDHelper
             }
         }
 
-        private void refreshItems()
+        private void RefreshItems()
         {
             /*
              * NOTE: This method must be called on a UI thread in order
@@ -1179,7 +1179,7 @@ namespace TDHelper
 
             Stopwatch m_timer = Stopwatch.StartNew();
 
-            parseItemCSV(); // refresh the commodities
+            ParseItemCSV(); // refresh the commodities
 
             // avoid null
             if (outputItems.Count > 0 && hasRun)
@@ -1198,7 +1198,7 @@ namespace TDHelper
             m_timer.Stop();
         }
 
-        private void loadDatabase()
+        private void LoadDatabase()
         {
             /*
              * This method should grab systems and stations to an array and then
@@ -1206,7 +1206,7 @@ namespace TDHelper
              * station in a given system.
              */
 
-            if (validateDBPath())
+            if (ValidateDBPath())
             {
                 try
                 {
@@ -1244,7 +1244,7 @@ namespace TDHelper
                     }
 
                     outputSysStnNames = new List<string>(); // wipe before we fill
-                    filterDatabase(); // filter and fill our output
+                    FilterDatabase(); // filter and fill our output
                 }
                 catch (Exception e)
                 {
@@ -1253,14 +1253,14 @@ namespace TDHelper
             }
         }
 
-        private void grabStationData(string inputSystem, string inputStation)
+        private void GrabStationData(string inputSystem, string inputStation)
         {
             /*
              * We use this method to grab station data on the fly for the station
              * editor panel as a single row
              */
 
-            if (validateDBPath())
+            if (ValidateDBPath())
             {
                 try
                 {
@@ -1285,7 +1285,7 @@ namespace TDHelper
                          */
 
                         // check for one of the common columns
-                        if (hasValidColumn(db, "Station", "rearm"))
+                        if (HasValidColumn(db, "Station", "rearm"))
                         {
                             SQLiteCommand query = new SQLiteCommand(
                                 "SELECT Sys.name AS sys_name, Stn.name AS stn_name, Stn.ls_from_star AS stn_ls, Stn.max_pad_size AS stn_padsize, Stn.rearm AS stn_rearm, Stn.refuel AS stn_refuel, Stn.repair AS stn_repair, Stn.outfitting AS stn_outfit, Stn.shipyard AS stn_ship, Stn.market AS stn_items, Stn.blackmarket AS stn_bmkt FROM System as Sys, Station as Stn WHERE sys_name = \"" + inputSystem + "\" AND stn_name = \"" + inputStation + "\" AND Stn.system_id = Sys.system_id", db);
@@ -1305,7 +1305,7 @@ namespace TDHelper
 
                             outputStationDetails = new List<string>();
                             outputStationShips = new List<string>();
-                            filterStationData();
+                            FilterStationData();
 
                             Debug.WriteLine("grabStationData query took: " + m_timer.ElapsedMilliseconds + "ms");
                             m_timer.Stop();
@@ -1319,7 +1319,7 @@ namespace TDHelper
             }
         }
 
-        private void filterDatabase()
+        private void FilterDatabase()
         {
             /*
              * This method is only intended to repopulate the sorted/formatted output
@@ -1349,7 +1349,7 @@ namespace TDHelper
                 Debug.WriteLine("outputSysStnNames is empty, must be a DB path failure or access violation");
         }
 
-        private void filterStationData()
+        private void FilterStationData()
         {
             // first the station data itself
             if (stnship_table.Rows.Count > 0)

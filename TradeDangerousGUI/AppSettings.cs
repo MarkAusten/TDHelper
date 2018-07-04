@@ -249,7 +249,7 @@ namespace TDHelper
             }
 
             if (playAlert)
-                TDHelper.MainForm.playAlert(); // make noise to alert the user
+                TDHelper.MainForm.PlayAlert(); // make noise to alert the user
 
             DialogResult result = MessageBox.Show(topmostForm, message, title,
                 buttons);
@@ -309,7 +309,7 @@ namespace TDHelper
             }
 
             // refresh our path to the latest netlog
-            latestLogPaths = collectLogPaths(settingsRef.NetLogPath, "netLog*.log");
+            latestLogPaths = CollectLogPaths(settingsRef.NetLogPath, "netLog*.log");
             if (latestLogPaths != null && latestLogPaths.Count > 0)
                 recentLogPath = latestLogPaths[0];
             else
@@ -362,7 +362,7 @@ namespace TDHelper
                 else
                 {// it's already set, let's continue
                     // refresh our path to the first netlog
-                    latestLogPaths = collectLogPaths(settingsRef.NetLogPath, "netLog*.log");
+                    latestLogPaths = CollectLogPaths(settingsRef.NetLogPath, "netLog*.log");
                     if (latestLogPaths != null && latestLogPaths.Count > 0)
                         recentLogPath = latestLogPaths[0];
                     else
@@ -451,7 +451,7 @@ namespace TDHelper
         {
             bool fileIsValid = false;
 
-            if (checkIfFileOpens(filePath))
+            if (CheckIfFileOpens(filePath))
             {
                 Configuration config = Configuration.LoadFromFile(filePath);
 
@@ -515,13 +515,13 @@ namespace TDHelper
 
         private bool isMarkedStation(string input, List<string> parentList)
         {
-            return stringInList(input, parentList);
+            return StringInList(input, parentList);
         }
 
         private void addMarkedStation(string input, List<string> parentList)
         {
-            if (!isMarkedStation(input, parentList) && stringInList(input, outputSysStnNames) 
-                && !stringInList(input, parentList))
+            if (!isMarkedStation(input, parentList) && StringInList(input, outputSysStnNames) 
+                && !StringInList(input, parentList))
             {// insert at the top of the list
                 parentList.Insert(0, input);
                 settingsRef.MarkedStations = serializeMarkedStations(parentList);
@@ -530,7 +530,7 @@ namespace TDHelper
 
         private void removeMarkedStation(string input, List<string> parentList)
         {
-            int index = indexInList(input, parentList);
+            int index = IndexInList(input, parentList);
 
             // it's valid, grab the index
             if (isMarkedStation(input, parentList) && index >= 0)
@@ -543,7 +543,7 @@ namespace TDHelper
         private static List<string> parseMarkedStations()
         {
             if (!string.IsNullOrEmpty(settingsRef.MarkedStations))
-                return removeExtraWhitespace(settingsRef.MarkedStations).Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).ToList();
+                return RemoveExtraWhitespace(settingsRef.MarkedStations).Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).ToList();
             else
                 return new List<string>();
         }
@@ -565,7 +565,7 @@ namespace TDHelper
         public static void SaveSettingsToIniFile()
         {
             Configuration config 
-                = checkIfFileOpens(configFile)
+                = CheckIfFileOpens(configFile)
                 ? Configuration.LoadFromFile(configFile)
                 : new Configuration();
 
@@ -661,7 +661,7 @@ namespace TDHelper
         /// </summary>
         public static void LoadSettingsFromIniFile()
         {
-            if (checkIfFileOpens(configFile))
+            if (CheckIfFileOpens(configFile))
             {
                 Configuration config = Configuration.LoadFromFile(configFile);
                 TDSettings settings = MainForm.settingsRef;

@@ -137,19 +137,19 @@ namespace TDHelper
             string origTDPath = MainForm.settingsRef.TDPath;
 
             MainForm.settingsRef.PythonPath = "";
-            MainForm.validatePython(origPath);
+            MainForm.ValidatePython(origPath);
             
             // adjust for Trade Dangerous Installer
             if (MainForm.settingsRef.PythonPath.EndsWith("trade.exe"))
             {
-                MainForm.validateTDPath(origTDPath);
+                MainForm.ValidateTDPath(origTDPath);
                 tdPathBox.Text = MainForm.settingsRef.TDPath;
             }
             else if (MainForm.settingsRef.PythonPath.EndsWith("python.exe")
-                && !MainForm.checkIfFileOpens(MainForm.settingsRef.TDPath + "\\trade.py"))
+                && !MainForm.CheckIfFileOpens(MainForm.settingsRef.TDPath + "\\trade.py"))
             {
                 MainForm.settingsRef.TDPath = "";
-                MainForm.validateTDPath(origTDPath);
+                MainForm.ValidateTDPath(origTDPath);
                 tdPathBox.Text = MainForm.settingsRef.TDPath;
             }
 
@@ -166,11 +166,11 @@ namespace TDHelper
                 MainForm.settingsRef.PythonPath = "";
 
             MainForm.settingsRef.TDPath = "";
-            MainForm.validateTDPath(origPath);
+            MainForm.ValidateTDPath(origPath);
 
             if (origPyPath.EndsWith("trade.exe"))
             {
-                MainForm.validatePython(origPyPath);
+                MainForm.ValidatePython(origPyPath);
                 pythonPathBox.Text = MainForm.settingsRef.PythonPath;
             }
 
@@ -181,7 +181,7 @@ namespace TDHelper
         {
             string origPath = MainForm.settingsRef.NetLogPath;
             MainForm.settingsRef.NetLogPath = "";
-            MainForm.validateNetLogPath(origPath);
+            MainForm.ValidateNetLogPath(origPath);
             netLogsPathBox.Text = MainForm.settingsRef.NetLogPath;
         }
 
@@ -189,7 +189,7 @@ namespace TDHelper
         {
             string origPath = MainForm.settingsRef.EdcePath;
             MainForm.settingsRef.EdcePath = "";
-            MainForm.validateEdcePath(origPath);
+            MainForm.ValidateEdcePath(origPath);
             edcePathBox.Text = MainForm.settingsRef.EdcePath;
         }
 

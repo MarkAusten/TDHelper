@@ -254,7 +254,7 @@
             this.runButton.TabStop = false;
             this.runButton.Text = "&Run";
             this.runButton.UseVisualStyleBackColor = true;
-            this.runButton.Click += new System.EventHandler(this.runButton_Click);
+            this.runButton.Click += new System.EventHandler(this.RunButton_Click);
             // 
             // destSysLabel
             // 
@@ -270,8 +270,8 @@
             // 
             this.backgroundWorker1.WorkerReportsProgress = true;
             this.backgroundWorker1.WorkerSupportsCancellation = true;
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker1_DoWork);
+            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker1_RunWorkerCompleted);
             // 
             // destSystemComboBox
             // 
@@ -284,10 +284,10 @@
             this.toolTip1.SetToolTip(this.destSystemComboBox, "Destination point in the form of system or system/station\r\nCtrl+Enter adds a Syst" +
         "em/Station to the favorites\r\nShift+Enter removes a System/Station from the favor" +
         "ites");
-            this.destSystemComboBox.DropDown += new System.EventHandler(this.comboBox_DropDown);
-            this.destSystemComboBox.DropDownClosed += new System.EventHandler(this.comboBox_DropDownClosed);
-            this.destSystemComboBox.TextChanged += new System.EventHandler(this.destSystemComboBox_TextChanged);
-            this.destSystemComboBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.destSystemComboBox_KeyDown);
+            this.destSystemComboBox.DropDown += new System.EventHandler(this.ComboBox_DropDown);
+            this.destSystemComboBox.DropDownClosed += new System.EventHandler(this.ComboBox_DropDownClosed);
+            this.destSystemComboBox.TextChanged += new System.EventHandler(this.DestSystemComboBox_TextChanged);
+            this.destSystemComboBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DestSystemComboBox_KeyDown);
             // 
             // stopWatchLabel
             // 
@@ -303,8 +303,8 @@
             // 
             this.backgroundWorker2.WorkerReportsProgress = true;
             this.backgroundWorker2.WorkerSupportsCancellation = true;
-            this.backgroundWorker2.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker2_DoWork);
-            this.backgroundWorker2.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker2_RunWorkerCompleted);
+            this.backgroundWorker2.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker2_DoWork);
+            this.backgroundWorker2.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker2_RunWorkerCompleted);
             // 
             // creditsLabel
             // 
@@ -367,7 +367,7 @@
             this.toolTip1.SetToolTip(this.towardsCheckBox, "Favors distance covered over profit generated during routing (requires a Destinat" +
         "ion)");
             this.towardsCheckBox.UseVisualStyleBackColor = true;
-            this.towardsCheckBox.Click += new System.EventHandler(this.towardsCheckBox_Click);
+            this.towardsCheckBox.Click += new System.EventHandler(this.TowardsCheckBox_Click);
             // 
             // loopCheckBox
             // 
@@ -381,7 +381,7 @@
             this.loopCheckBox.Text = "Loop";
             this.toolTip1.SetToolTip(this.loopCheckBox, "Attempts to get a round-trip route");
             this.loopCheckBox.UseVisualStyleBackColor = true;
-            this.loopCheckBox.Click += new System.EventHandler(this.loopCheckBox_Click);
+            this.loopCheckBox.Click += new System.EventHandler(this.LoopCheckBox_Click);
             // 
             // contextMenuStrip1
             // 
@@ -406,7 +406,7 @@
             this.contextMenuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.contextMenuStrip1.ShowImageMargin = false;
             this.contextMenuStrip1.Size = new System.Drawing.Size(123, 308);
-            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
+            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenuStrip1_Opening);
             // 
             // cutMenuItem
             // 
@@ -414,14 +414,14 @@
             this.cutMenuItem.Name = "cutMenuItem";
             this.cutMenuItem.Size = new System.Drawing.Size(122, 22);
             this.cutMenuItem.Text = "Cut";
-            this.cutMenuItem.Click += new System.EventHandler(this.cutMenuItem_Click);
+            this.cutMenuItem.Click += new System.EventHandler(this.CutMenuItem_Click);
             // 
             // copyMenuItem
             // 
             this.copyMenuItem.Name = "copyMenuItem";
             this.copyMenuItem.Size = new System.Drawing.Size(122, 22);
             this.copyMenuItem.Text = "Copy";
-            this.copyMenuItem.Click += new System.EventHandler(this.copyMenuItem_Click);
+            this.copyMenuItem.Click += new System.EventHandler(this.CopyMenuItem_Click);
             // 
             // pasteMenuItem
             // 
@@ -429,7 +429,7 @@
             this.pasteMenuItem.Name = "pasteMenuItem";
             this.pasteMenuItem.Size = new System.Drawing.Size(122, 22);
             this.pasteMenuItem.Text = "Paste";
-            this.pasteMenuItem.Click += new System.EventHandler(this.pasteMenuItem_Click);
+            this.pasteMenuItem.Click += new System.EventHandler(this.PasteMenuItem_Click);
             // 
             // deleteMenuItem
             // 
@@ -437,7 +437,7 @@
             this.deleteMenuItem.Name = "deleteMenuItem";
             this.deleteMenuItem.Size = new System.Drawing.Size(122, 22);
             this.deleteMenuItem.Text = "Delete";
-            this.deleteMenuItem.Click += new System.EventHandler(this.deleteMenuItem_Click);
+            this.deleteMenuItem.Click += new System.EventHandler(this.DeleteMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
@@ -450,7 +450,7 @@
             this.savePage1MenuItem.Name = "savePage1MenuItem";
             this.savePage1MenuItem.Size = new System.Drawing.Size(122, 22);
             this.savePage1MenuItem.Text = "Save to #1";
-            this.savePage1MenuItem.Click += new System.EventHandler(this.savePage1MenuItem_Click);
+            this.savePage1MenuItem.Click += new System.EventHandler(this.SavePage1MenuItem_Click);
             // 
             // clearSaved1MenuItem
             // 
@@ -458,7 +458,7 @@
             this.clearSaved1MenuItem.Size = new System.Drawing.Size(122, 22);
             this.clearSaved1MenuItem.Text = "Clear #1";
             this.clearSaved1MenuItem.Visible = false;
-            this.clearSaved1MenuItem.Click += new System.EventHandler(this.clearSaved1MenuItem_Click);
+            this.clearSaved1MenuItem.Click += new System.EventHandler(this.ClearSaved1MenuItem_Click);
             // 
             // savePage2MenuItem
             // 
@@ -466,7 +466,7 @@
             this.savePage2MenuItem.Name = "savePage2MenuItem";
             this.savePage2MenuItem.Size = new System.Drawing.Size(122, 22);
             this.savePage2MenuItem.Text = "Save to #2";
-            this.savePage2MenuItem.Click += new System.EventHandler(this.savePage2MenuItem_Click);
+            this.savePage2MenuItem.Click += new System.EventHandler(this.SavePage2MenuItem_Click);
             // 
             // clearSaved2MenuItem
             // 
@@ -474,7 +474,7 @@
             this.clearSaved2MenuItem.Size = new System.Drawing.Size(122, 22);
             this.clearSaved2MenuItem.Text = "Clear #2";
             this.clearSaved2MenuItem.Visible = false;
-            this.clearSaved2MenuItem.Click += new System.EventHandler(this.clearSaved2MenuItem_Click);
+            this.clearSaved2MenuItem.Click += new System.EventHandler(this.ClearSaved2MenuItem_Click);
             // 
             // savePage3MenuItem
             // 
@@ -482,7 +482,7 @@
             this.savePage3MenuItem.Name = "savePage3MenuItem";
             this.savePage3MenuItem.Size = new System.Drawing.Size(122, 22);
             this.savePage3MenuItem.Text = "Save to #3";
-            this.savePage3MenuItem.Click += new System.EventHandler(this.savePage3MenuItem_Click);
+            this.savePage3MenuItem.Click += new System.EventHandler(this.SavePage3MenuItem_Click);
             // 
             // clearSaved3MenuItem
             // 
@@ -490,7 +490,7 @@
             this.clearSaved3MenuItem.Size = new System.Drawing.Size(122, 22);
             this.clearSaved3MenuItem.Text = "Clear #3";
             this.clearSaved3MenuItem.Visible = false;
-            this.clearSaved3MenuItem.Click += new System.EventHandler(this.clearSaved3MenuItem_Click);
+            this.clearSaved3MenuItem.Click += new System.EventHandler(this.ClearSaved3MenuItem_Click);
             // 
             // toolStripSeparator2
             // 
@@ -502,7 +502,7 @@
             this.pushNotesMenuItem.Name = "pushNotesMenuItem";
             this.pushNotesMenuItem.Size = new System.Drawing.Size(122, 22);
             this.pushNotesMenuItem.Text = "Add To Notes";
-            this.pushNotesMenuItem.Click += new System.EventHandler(this.pushNotesMenuItem_Click);
+            this.pushNotesMenuItem.Click += new System.EventHandler(this.PushNotesMenuItem_Click);
             // 
             // notesClearMenuItem
             // 
@@ -510,7 +510,7 @@
             this.notesClearMenuItem.Size = new System.Drawing.Size(122, 22);
             this.notesClearMenuItem.Text = "Clear Notes";
             this.notesClearMenuItem.Visible = false;
-            this.notesClearMenuItem.Click += new System.EventHandler(this.notesClearMenuItem_Click);
+            this.notesClearMenuItem.Click += new System.EventHandler(this.NotesClearMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
@@ -522,7 +522,7 @@
             this.selectMenuItem.Name = "selectMenuItem";
             this.selectMenuItem.Size = new System.Drawing.Size(122, 22);
             this.selectMenuItem.Text = "Select All";
-            this.selectMenuItem.Click += new System.EventHandler(this.selectMenuItem_Click);
+            this.selectMenuItem.Click += new System.EventHandler(this.SelectMenuItem_Click);
             // 
             // stationDropDown
             // 
@@ -539,7 +539,7 @@
             this.stationDropDown.TabStop = false;
             this.toolTip1.SetToolTip(this.stationDropDown, "Select a mode for station editing");
             this.stationDropDown.Visible = false;
-            this.stationDropDown.SelectedIndexChanged += new System.EventHandler(this.stationDropDown_SelectedIndexChanged);
+            this.stationDropDown.SelectedIndexChanged += new System.EventHandler(this.StationDropDown_SelectedIndexChanged);
             // 
             // oneStopCheckBox
             // 
@@ -565,7 +565,7 @@
             this.directCheckBox.Text = "Direct";
             this.toolTip1.SetToolTip(this.directCheckBox, "Attempts to calculate a 1 hop route, ignoring distance (volatile)");
             this.directCheckBox.UseVisualStyleBackColor = true;
-            this.directCheckBox.Click += new System.EventHandler(this.directCheckBox_Click);
+            this.directCheckBox.Click += new System.EventHandler(this.DirectCheckBox_Click);
             // 
             // belowPriceBox
             // 
@@ -581,8 +581,8 @@
             this.belowPriceBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.belowPriceBox.ThousandsSeparator = true;
             this.toolTip1.SetToolTip(this.belowPriceBox, "Generates this many routes for a Run");
-            this.belowPriceBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.belowPriceBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.belowPriceBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.belowPriceBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // abovePriceBox
             // 
@@ -598,8 +598,8 @@
             this.abovePriceBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.abovePriceBox.ThousandsSeparator = true;
             this.toolTip1.SetToolTip(this.abovePriceBox, "Commodities above this price are filtered out");
-            this.abovePriceBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.abovePriceBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.abovePriceBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.abovePriceBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // endJumpsBox
             // 
@@ -610,8 +610,8 @@
             this.endJumpsBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.endJumpsBox, "Try to finish this many jumps away from the destination, this requires a destinat" +
         "ion (volatile)");
-            this.endJumpsBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.endJumpsBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.endJumpsBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.endJumpsBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // startJumpsBox
             // 
@@ -622,8 +622,8 @@
             this.startJumpsBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.startJumpsBox, "Try to route starting from this many jumps away from the source system (volatile)" +
         "");
-            this.startJumpsBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.startJumpsBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.startJumpsBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.startJumpsBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // limitBox
             // 
@@ -638,8 +638,8 @@
             this.limitBox.TabIndex = 11;
             this.limitBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.limitBox, "Limit each commodity purchased to this amount on a hop");
-            this.limitBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.limitBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.limitBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.limitBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // pruneHopsBox
             // 
@@ -650,8 +650,8 @@
             this.pruneHopsBox.TabIndex = 16;
             this.pruneHopsBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.pruneHopsBox, "Number of hops before pruning starts, to enable set >=2");
-            this.pruneHopsBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.pruneHopsBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.pruneHopsBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.pruneHopsBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // pruneScoreBox
             // 
@@ -667,8 +667,8 @@
             this.pruneScoreBox.TabIndex = 17;
             this.pruneScoreBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.pruneScoreBox, "Percentage of route score change, below which pruning occurs");
-            this.pruneScoreBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.pruneScoreBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.pruneScoreBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.pruneScoreBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // lsPenaltyBox
             // 
@@ -684,8 +684,8 @@
             this.lsPenaltyBox.TabIndex = 13;
             this.lsPenaltyBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.lsPenaltyBox, "Scoring penalty per LS traveled to station");
-            this.lsPenaltyBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.lsPenaltyBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.lsPenaltyBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.lsPenaltyBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // maxLSDistanceBox
             // 
@@ -700,8 +700,8 @@
             this.maxLSDistanceBox.TabIndex = 14;
             this.maxLSDistanceBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.maxLSDistanceBox, "Maximum distance station can be from system drop");
-            this.maxLSDistanceBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.maxLSDistanceBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.maxLSDistanceBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.maxLSDistanceBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // gptBox
             // 
@@ -717,8 +717,8 @@
             this.gptBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.gptBox.ThousandsSeparator = true;
             this.toolTip1.SetToolTip(this.gptBox, "Minimum profit in credits per ton on any hop");
-            this.gptBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.gptBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.gptBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.gptBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // uniqueCheckBox
             // 
@@ -747,8 +747,8 @@
             this.insuranceBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.insuranceBox.ThousandsSeparator = true;
             this.toolTip1.SetToolTip(this.insuranceBox, "Keep at least this much in credits during routing");
-            this.insuranceBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.insuranceBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.insuranceBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.insuranceBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // capacityBox
             // 
@@ -768,8 +768,8 @@
             0,
             0,
             0});
-            this.capacityBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.capacityBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.capacityBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.capacityBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // jumpsBox
             // 
@@ -779,8 +779,8 @@
             this.jumpsBox.TabIndex = 1;
             this.jumpsBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.jumpsBox, "A jump is any system between two hops");
-            this.jumpsBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.jumpsBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.jumpsBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.jumpsBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // hopsBox
             // 
@@ -790,8 +790,8 @@
             this.hopsBox.TabIndex = 0;
             this.hopsBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.hopsBox, "A hop is a station to load/unload from");
-            this.hopsBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.hopsBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.hopsBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.hopsBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // creditsBox
             // 
@@ -812,8 +812,8 @@
             0,
             0,
             0});
-            this.creditsBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.creditsBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.creditsBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.creditsBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // unladenLYBox
             // 
@@ -829,8 +829,8 @@
             this.unladenLYBox.TabIndex = 4;
             this.unladenLYBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.unladenLYBox, "Distance that can be travelled while unladen (including fuel)");
-            this.unladenLYBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.unladenLYBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.unladenLYBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.unladenLYBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // ladenLYBox
             // 
@@ -856,8 +856,8 @@
             0,
             0,
             0});
-            this.ladenLYBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.ladenLYBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.ladenLYBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.ladenLYBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // belowPriceLabel
             // 
@@ -901,7 +901,7 @@
             this.methodDropDown.TabIndex = 1;
             this.methodDropDown.TabStop = false;
             this.toolTip1.SetToolTip(this.methodDropDown, "Select the command to run");
-            this.methodDropDown.SelectedIndexChanged += new System.EventHandler(this.methodComboBox_SelectedIndexChanged);
+            this.methodDropDown.SelectedIndexChanged += new System.EventHandler(this.MethodComboBox_SelectedIndexChanged);
             // 
             // commodityComboBox
             // 
@@ -912,8 +912,8 @@
             this.commodityComboBox.Size = new System.Drawing.Size(172, 21);
             this.commodityComboBox.TabIndex = 3;
             this.toolTip1.SetToolTip(this.commodityComboBox, "Commodities to search for using Buy/Sell, and can be delimited by comma");
-            this.commodityComboBox.DropDown += new System.EventHandler(this.comboBox_DropDown);
-            this.commodityComboBox.DropDownClosed += new System.EventHandler(this.comboBox_DropDownClosed);
+            this.commodityComboBox.DropDown += new System.EventHandler(this.ComboBox_DropDown);
+            this.commodityComboBox.DropDownClosed += new System.EventHandler(this.ComboBox_DropDownClosed);
             // 
             // commodityLabel
             // 
@@ -978,7 +978,7 @@
             this.avoidBox.TabIndex = 18;
             this.avoidBox.TabStop = false;
             this.toolTip1.SetToolTip(this.avoidBox, "Avoids can include system/station and items delimited by comma");
-            this.avoidBox.TextChanged += new System.EventHandler(this.avoidBox_TextChanged);
+            this.avoidBox.TextChanged += new System.EventHandler(this.AvoidBox_TextChanged);
             // 
             // avoidLabel
             // 
@@ -1003,7 +1003,7 @@
             this.bmktCheckBox.Text = "BMkt";
             this.toolTip1.SetToolTip(this.bmktCheckBox, "Require stations with a black market");
             this.bmktCheckBox.UseVisualStyleBackColor = true;
-            this.bmktCheckBox.Click += new System.EventHandler(this.bmktCheckBox_Click);
+            this.bmktCheckBox.Click += new System.EventHandler(this.BmktCheckBox_Click);
             // 
             // localNavCheckBox
             // 
@@ -1017,7 +1017,7 @@
             this.localNavCheckBox.Text = "&Local";
             this.toolTip1.SetToolTip(this.localNavCheckBox, "Enable this for a local station check (volatile)");
             this.localNavCheckBox.UseVisualStyleBackColor = true;
-            this.localNavCheckBox.CheckedChanged += new System.EventHandler(this.localNavBox_CheckedChanged);
+            this.localNavCheckBox.CheckedChanged += new System.EventHandler(this.LocalNavBox_CheckedChanged);
             // 
             // hopsLabel
             // 
@@ -1042,7 +1042,7 @@
             this.updateButton.Text = "Update DB";
             this.toolTip1.SetToolTip(this.updateButton, "Update the database based on time from previous update");
             this.updateButton.UseVisualStyleBackColor = true;
-            this.updateButton.Click += new System.EventHandler(this.updateButton_Click);
+            this.updateButton.Click += new System.EventHandler(this.UpdateButton_Click);
             // 
             // getSystemButton
             // 
@@ -1055,7 +1055,7 @@
             this.toolTip1.SetToolTip(this.getSystemButton, "Get the most recent systems from the network logs (Ctrl+Click for a full refresh)" +
         "");
             this.getSystemButton.UseVisualStyleBackColor = true;
-            this.getSystemButton.Click += new System.EventHandler(this.getSystemButton_Click);
+            this.getSystemButton.Click += new System.EventHandler(this.GetSystemButton_Click);
             // 
             // srcSysLabel
             // 
@@ -1089,7 +1089,7 @@
             this.padSizeBox.Text = "?";
             this.padSizeBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.toolTip1.SetToolTip(this.padSizeBox, "Minimum pad sizes to consider a hop, can be M, L, and/or ?");
-            this.padSizeBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.padSizeBox_KeyPress);
+            this.padSizeBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.PadSizeBox_KeyPress);
             // 
             // ageLabel
             // 
@@ -1127,8 +1127,8 @@
             this.ageBox.TabIndex = 2;
             this.ageBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.ageBox, "Filter any hops based on the age of their recent data, up to 30 days");
-            this.ageBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.ageBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.ageBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.ageBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // gptLabel
             // 
@@ -1176,8 +1176,8 @@
             this.lsFromStarBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.lsFromStarBox.ThousandsSeparator = true;
             this.toolTip1.SetToolTip(this.lsFromStarBox, "Number of light seconds between station and star");
-            this.lsFromStarBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.lsFromStarBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.lsFromStarBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.lsFromStarBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // blackMarketCheckBox
             // 
@@ -1234,7 +1234,7 @@
             this.stn_padSizeBox.Text = "?";
             this.stn_padSizeBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.toolTip1.SetToolTip(this.stn_padSizeBox, "Maximum supported padsize (S/M/L/?)");
-            this.stn_padSizeBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.stn_padSizeBox_KeyPress);
+            this.stn_padSizeBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Stn_padSizeBox_KeyPress);
             // 
             // shipsSoldLabel
             // 
@@ -1258,10 +1258,10 @@
             this.toolTip1.SetToolTip(this.srcSystemComboBox, "Starting point in the form of system or system/station\r\nCtrl+Enter adds a System/" +
         "Station to the favorites\r\nShift+Enter removes a System/Station from the favorite" +
         "s");
-            this.srcSystemComboBox.DropDown += new System.EventHandler(this.comboBox_DropDown);
-            this.srcSystemComboBox.DropDownClosed += new System.EventHandler(this.comboBox_DropDownClosed);
-            this.srcSystemComboBox.TextChanged += new System.EventHandler(this.srcSystemComboBox_TextChanged);
-            this.srcSystemComboBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.srcSystemComboBox_KeyDown);
+            this.srcSystemComboBox.DropDown += new System.EventHandler(this.ComboBox_DropDown);
+            this.srcSystemComboBox.DropDownClosed += new System.EventHandler(this.ComboBox_DropDownClosed);
+            this.srcSystemComboBox.TextChanged += new System.EventHandler(this.SrcSystemComboBox_TextChanged);
+            this.srcSystemComboBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SrcSystemComboBox_KeyDown);
             // 
             // csvExportCheckBox
             // 
@@ -1275,7 +1275,7 @@
             this.csvExportCheckBox.Text = "Export to CSV";
             this.toolTip1.SetToolTip(this.csvExportCheckBox, "(Override) Export all tables to CSV (volatile)");
             this.csvExportCheckBox.UseVisualStyleBackColor = true;
-            this.csvExportCheckBox.CheckedChanged += new System.EventHandler(this.csvExportCheckBox_CheckedChanged);
+            this.csvExportCheckBox.CheckedChanged += new System.EventHandler(this.CsvExportCheckBox_CheckedChanged);
             // 
             // csvExportComboBox
             // 
@@ -1292,7 +1292,7 @@
             this.csvExportComboBox.TabIndex = 57;
             this.csvExportComboBox.TabStop = false;
             this.toolTip1.SetToolTip(this.csvExportComboBox, "Optional: Select a specific table to export to CSV");
-            this.csvExportComboBox.SelectedIndexChanged += new System.EventHandler(this.csvExportComboBox_SelectedIndexChanged);
+            this.csvExportComboBox.SelectedIndexChanged += new System.EventHandler(this.CsvExportComboBox_SelectedIndexChanged);
             // 
             // marginLabel
             // 
@@ -1320,8 +1320,8 @@
             this.marginBox.TabIndex = 15;
             this.marginBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.marginBox, "Profit margin variance (<1.00)");
-            this.marginBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.marginBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.marginBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.marginBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // limitLabel
             // 
@@ -1359,8 +1359,8 @@
             this.maxGPTBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.maxGPTBox.ThousandsSeparator = true;
             this.toolTip1.SetToolTip(this.maxGPTBox, "Maximum profit in credits per ton on any hop");
-            this.maxGPTBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.maxGPTBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.maxGPTBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.maxGPTBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // rearmCheckBox
             // 
@@ -1516,7 +1516,7 @@
             this.resetFilterButton.Text = "R";
             this.toolTip1.SetToolTip(this.resetFilterButton, "Reset filters");
             this.resetFilterButton.UseVisualStyleBackColor = true;
-            this.resetFilterButton.Click += new System.EventHandler(this.resetFilterButton_Click);
+            this.resetFilterButton.Click += new System.EventHandler(this.ResetFilterButton_Click);
             // 
             // resetStationButton
             // 
@@ -1528,7 +1528,7 @@
             this.resetStationButton.Text = "R";
             this.toolTip1.SetToolTip(this.resetStationButton, "Reset");
             this.resetStationButton.UseVisualStyleBackColor = true;
-            this.resetStationButton.Click += new System.EventHandler(this.resetStationButton_Click);
+            this.resetStationButton.Click += new System.EventHandler(this.ResetStationButton_Click);
             // 
             // confirmBox
             // 
@@ -1550,7 +1550,7 @@
             this.swapButton.Text = "S";
             this.toolTip1.SetToolTip(this.swapButton, "Swap the contents of Source/Destination");
             this.swapButton.UseVisualStyleBackColor = true;
-            this.swapButton.Click += new System.EventHandler(this.swapButton_Click);
+            this.swapButton.Click += new System.EventHandler(this.SwapButton_Click);
             // 
             // miniModeButton
             // 
@@ -1563,7 +1563,7 @@
             this.miniModeButton.Text = "&T";
             this.toolTip1.SetToolTip(this.miniModeButton, "Switch to a minimal TreeView mode for Run output (ESC to exit)");
             this.miniModeButton.UseVisualStyleBackColor = true;
-            this.miniModeButton.Click += new System.EventHandler(this.miniModeButton_Click);
+            this.miniModeButton.Click += new System.EventHandler(this.MiniModeButton_Click);
             // 
             // altConfigBox
             // 
@@ -1576,8 +1576,8 @@
             this.altConfigBox.TabStop = false;
             this.toolTip1.SetToolTip(this.altConfigBox, "Select a previously used config file\r\n(Ctrl+Click a non-default config to delete " +
         "it)");
-            this.altConfigBox.DropDown += new System.EventHandler(this.altConfigBox_DropDown);
-            this.altConfigBox.SelectionChangeCommitted += new System.EventHandler(this.altConfigBox_SelectionChangeCommitted);
+            this.altConfigBox.DropDown += new System.EventHandler(this.AltConfigBox_DropDown);
+            this.altConfigBox.SelectionChangeCommitted += new System.EventHandler(this.AltConfigBox_SelectionChangeCommitted);
             // 
             // updateNotifyIcon
             // 
@@ -1604,8 +1604,8 @@
             this.stockBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.stockBox.ThousandsSeparator = true;
             this.toolTip1.SetToolTip(this.stockBox, "Filter hops below this level of stock");
-            this.stockBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.stockBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.stockBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.stockBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // stockLabel
             // 
@@ -1627,7 +1627,7 @@
             this.testSystemsCheckBox.TabStop = false;
             this.toolTip1.SetToolTip(this.testSystemsCheckBox, "Notify when entering unknown systems");
             this.testSystemsCheckBox.UseVisualStyleBackColor = true;
-            this.testSystemsCheckBox.CheckedChanged += new System.EventHandler(this.testSystemsCheckBox_CheckedChanged);
+            this.testSystemsCheckBox.CheckedChanged += new System.EventHandler(this.TestSystemsCheckBox_CheckedChanged);
             // 
             // stationsFilterCheckBox
             // 
@@ -1652,8 +1652,8 @@
             this.minAgeUpDown.TabIndex = 61;
             this.toolTip1.SetToolTip(this.minAgeUpDown, "Minimum age in days to filter by");
             this.minAgeUpDown.Visible = false;
-            this.minAgeUpDown.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.minAgeUpDown.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.minAgeUpDown.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.minAgeUpDown.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // minAgeLabel
             // 
@@ -1698,8 +1698,8 @@
             this.loopIntBox.TabIndex = 10;
             this.loopIntBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.loopIntBox, "Minimum hops between visiting the same station");
-            this.loopIntBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.loopIntBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.loopIntBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.loopIntBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // shortenCheckBox
             // 
@@ -1713,7 +1713,7 @@
             this.shortenCheckBox.Text = "Shorten";
             this.toolTip1.SetToolTip(this.shortenCheckBox, "Finds the highest gainful route with the least hops (requires a Destination)");
             this.shortenCheckBox.UseVisualStyleBackColor = true;
-            this.shortenCheckBox.Click += new System.EventHandler(this.shortenCheckBox_Click);
+            this.shortenCheckBox.Click += new System.EventHandler(this.ShortenCheckBox_Click);
             // 
             // shipsSoldBox
             // 
@@ -1737,8 +1737,8 @@
             this.demandBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.demandBox.ThousandsSeparator = true;
             this.toolTip1.SetToolTip(this.demandBox, "Filter hops below this level of demand");
-            this.demandBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.demandBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
+            this.demandBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.demandBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // demandLabel
             // 
@@ -1772,7 +1772,7 @@
             this.miscSettingsButton.TabStop = false;
             this.toolTip1.SetToolTip(this.miscSettingsButton, "Modify additional configuration settings");
             this.miscSettingsButton.UseVisualStyleBackColor = true;
-            this.miscSettingsButton.Click += new System.EventHandler(this.miscSettingsButton_Click);
+            this.miscSettingsButton.Click += new System.EventHandler(this.MiscSettingsButton_Click);
             // 
             // btnCmdrProfile
             // 
@@ -1785,7 +1785,7 @@
             this.btnCmdrProfile.Text = "Cmdr Profile";
             this.toolTip1.SetToolTip(this.btnCmdrProfile, "Update the database based on time from previous update");
             this.btnCmdrProfile.UseVisualStyleBackColor = true;
-            this.btnCmdrProfile.Click += new System.EventHandler(this.btnCmdrProfile_Click);
+            this.btnCmdrProfile.Click += new System.EventHandler(this.BtnCmdrProfile_Click);
             // 
             // verbosityComboBox
             // 
@@ -1804,13 +1804,13 @@
             // 
             // backgroundWorker3
             // 
-            this.backgroundWorker3.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker3_DoWork);
-            this.backgroundWorker3.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker3_RunWorkerCompleted);
+            this.backgroundWorker3.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker3_DoWork);
+            this.backgroundWorker3.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker3_RunWorkerCompleted);
             // 
             // backgroundWorker4
             // 
-            this.backgroundWorker4.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker4_DoWork);
-            this.backgroundWorker4.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker4_RunWorkerCompleted);
+            this.backgroundWorker4.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker4_DoWork);
+            this.backgroundWorker4.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker4_RunWorkerCompleted);
             // 
             // panel1
             // 
@@ -1897,7 +1897,7 @@
             this.tabControl1.Size = new System.Drawing.Size(801, 468);
             this.tabControl1.TabIndex = 23;
             this.tabControl1.TabStop = false;
-            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
+            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.TabControl1_SelectedIndexChanged);
             // 
             // outputPage
             // 
@@ -1924,7 +1924,7 @@
             this.td_outputBox.TabIndex = 0;
             this.td_outputBox.TabStop = false;
             this.td_outputBox.Text = "";
-            this.td_outputBox.TextChanged += new System.EventHandler(this.td_outputBox_TextChanged);
+            this.td_outputBox.TextChanged += new System.EventHandler(this.Td_outputBox_TextChanged);
             // 
             // savedPage1
             // 
@@ -2055,10 +2055,10 @@
             this.pilotsLogDataGrid.Size = new System.Drawing.Size(787, 436);
             this.pilotsLogDataGrid.TabIndex = 0;
             this.pilotsLogDataGrid.VirtualMode = true;
-            this.pilotsLogDataGrid.CellContextMenuStripNeeded += new System.Windows.Forms.DataGridViewCellContextMenuStripNeededEventHandler(this.pilotsLogDataGrid_CellContextMenuStripNeeded);
-            this.pilotsLogDataGrid.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.pilotsLogDataGrid_CellValueNeeded);
-            this.pilotsLogDataGrid.CellValuePushed += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.pilotsLogDataGrid_CellValuePushed);
-            this.pilotsLogDataGrid.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.pilotsLogDataGrid_UserDeletingRow);
+            this.pilotsLogDataGrid.CellContextMenuStripNeeded += new System.Windows.Forms.DataGridViewCellContextMenuStripNeededEventHandler(this.PilotsLogDataGrid_CellContextMenuStripNeeded);
+            this.pilotsLogDataGrid.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.PilotsLogDataGrid_CellValueNeeded);
+            this.pilotsLogDataGrid.CellValuePushed += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.PilotsLogDataGrid_CellValuePushed);
+            this.pilotsLogDataGrid.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.PilotsLogDataGrid_UserDeletingRow);
             // 
             // contextMenuStrip2
             // 
@@ -2079,14 +2079,14 @@
             this.insertAtGridRow.Name = "insertAtGridRow";
             this.insertAtGridRow.Size = new System.Drawing.Size(188, 22);
             this.insertAtGridRow.Text = "Insert Row";
-            this.insertAtGridRow.Click += new System.EventHandler(this.insertAtGridRow_Click);
+            this.insertAtGridRow.Click += new System.EventHandler(this.InsertAtGridRow_Click);
             // 
             // removeAtGridRow
             // 
             this.removeAtGridRow.Name = "removeAtGridRow";
             this.removeAtGridRow.Size = new System.Drawing.Size(188, 22);
             this.removeAtGridRow.Text = "Remove Row";
-            this.removeAtGridRow.Click += new System.EventHandler(this.removeAtGridRow_Click);
+            this.removeAtGridRow.Click += new System.EventHandler(this.RemoveAtGridRow_Click);
             // 
             // toolStripSeparator4
             // 
@@ -2098,14 +2098,14 @@
             this.forceRefreshGridView.Name = "forceRefreshGridView";
             this.forceRefreshGridView.Size = new System.Drawing.Size(188, 22);
             this.forceRefreshGridView.Text = "Force Refresh";
-            this.forceRefreshGridView.Click += new System.EventHandler(this.forceRefreshGridView_Click);
+            this.forceRefreshGridView.Click += new System.EventHandler(this.ForceRefreshGridView_Click);
             // 
             // forceResortMenuItem
             // 
             this.forceResortMenuItem.Name = "forceResortMenuItem";
             this.forceResortMenuItem.Size = new System.Drawing.Size(188, 22);
             this.forceResortMenuItem.Text = "Force Re-sort";
-            this.forceResortMenuItem.Click += new System.EventHandler(this.forceResortMenuItem_Click);
+            this.forceResortMenuItem.Click += new System.EventHandler(this.ForceResortMenuItem_Click);
             // 
             // toolStripSeparator5
             // 
@@ -2117,14 +2117,14 @@
             this.copySystemToSrc.Name = "copySystemToSrc";
             this.copySystemToSrc.Size = new System.Drawing.Size(188, 22);
             this.copySystemToSrc.Text = "Copy System to Src";
-            this.copySystemToSrc.Click += new System.EventHandler(this.copySystemToSrc_Click);
+            this.copySystemToSrc.Click += new System.EventHandler(this.CopySystemToSrc_Click);
             // 
             // copySystemToDest
             // 
             this.copySystemToDest.Name = "copySystemToDest";
             this.copySystemToDest.Size = new System.Drawing.Size(188, 22);
             this.copySystemToDest.Text = "Copy System to Dest";
-            this.copySystemToDest.Click += new System.EventHandler(this.copySystemToDest_Click);
+            this.copySystemToDest.Click += new System.EventHandler(this.CopySystemToDest_Click);
             // 
             // jumpsLabel
             // 
@@ -2293,15 +2293,15 @@
             // 
             this.backgroundWorker5.WorkerReportsProgress = true;
             this.backgroundWorker5.WorkerSupportsCancellation = true;
-            this.backgroundWorker5.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker5_DoWork);
-            this.backgroundWorker5.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker5_RunWorkerCompleted);
+            this.backgroundWorker5.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker5_DoWork);
+            this.backgroundWorker5.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker5_RunWorkerCompleted);
             // 
             // backgroundWorker6
             // 
             this.backgroundWorker6.WorkerReportsProgress = true;
             this.backgroundWorker6.WorkerSupportsCancellation = true;
-            this.backgroundWorker6.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker6_DoWork);
-            this.backgroundWorker6.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker6_RunWorkerCompleted);
+            this.backgroundWorker6.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker6_DoWork);
+            this.backgroundWorker6.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker6_RunWorkerCompleted);
             // 
             // trackerLinkLabel
             // 
@@ -2314,7 +2314,7 @@
             this.trackerLinkLabel.TabStop = true;
             this.trackerLinkLabel.Text = "Report bugs/issues";
             this.trackerLinkLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.trackerLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.trackerLinkLabel_LinkClicked);
+            this.trackerLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.TrackerLinkLabel_LinkClicked);
             // 
             // faqLinkLabel
             // 
@@ -2326,14 +2326,14 @@
             this.faqLinkLabel.TabIndex = 67;
             this.faqLinkLabel.TabStop = true;
             this.faqLinkLabel.Text = "Help/FAQ";
-            this.faqLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.faqLinkLabel_LinkClicked);
+            this.faqLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.FaqLinkLabel_LinkClicked);
             // 
             // backgroundWorker7
             // 
             this.backgroundWorker7.WorkerReportsProgress = true;
             this.backgroundWorker7.WorkerSupportsCancellation = true;
-            this.backgroundWorker7.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker7_DoWork);
-            this.backgroundWorker7.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker7_RunWorkerCompleted);
+            this.backgroundWorker7.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker7_DoWork);
+            this.backgroundWorker7.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker7_RunWorkerCompleted);
             // 
             // btnSaveSettings
             // 
@@ -2346,7 +2346,7 @@
             this.btnSaveSettings.Text = "Save Settings";
             this.toolTip1.SetToolTip(this.btnSaveSettings, "Save the settings immediately.");
             this.btnSaveSettings.UseVisualStyleBackColor = true;
-            this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_Click);
+            this.btnSaveSettings.Click += new System.EventHandler(this.BtnSaveSettings_Click);
             // 
             // MainForm
             // 
