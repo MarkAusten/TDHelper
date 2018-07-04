@@ -851,34 +851,35 @@ namespace TDHelper
              * 8) Cleans up when done
              */
             // grab the remote manifest to a tmp file
-            /*            UpdateClass.downloadFile(remoteManifestPath, localManifestPath);
+            UpdateClass.downloadFile(remoteManifestPath, localManifestPath);
 
-                        if (File.Exists(localManifestPath))
-                        {// only grab new archive if assembly doesn't match
-                            if (!UpdateClass.compareAssemblyToManifest(localManifestPath, localDir))
-                            {
-                                DialogResult d = TopMostMessageBox.Show(true, true, "An update is available, should we download it?", "Confirmation", MessageBoxButtons.YesNo);
-                                if (d == DialogResult.Yes)
-                                {
-                                    XDocument doc = XDocument.Load(localManifestPath);
-                                    XElement urlRoot = doc.Element("Manifest").Element("Assembly").Element("URL");
+            if (File.Exists(localManifestPath))
+            {// only grab new archive if assembly doesn't match
+                if (!UpdateClass.compareAssemblyToManifest(localManifestPath, localDir))
+                {
+                    DialogResult d = TopMostMessageBox.Show(true, true, "An update is available, should we download it?", "Confirmation", MessageBoxButtons.YesNo);
+                    if (d == DialogResult.Yes)
+                    {
+                        XDocument doc = XDocument.Load(localManifestPath);
+                        XElement urlRoot = doc.Element("Manifest").Element("Assembly").Element("URL");
 
-                                    if (urlRoot != null)
-                                    {
-                                        string remoteArchiveURL = urlRoot.Value;
-                                        decompressUpdate(remoteArchiveURL, localDir);
-                                    }
-                                    else
-                                    {
-                                        Debug.WriteLine(doc.ToString());
-                                        UpdateClass.writeToLog(Form1.updateLogPath, "The manifest does not contain a URL tag, cannot parse for remote archive");
-                                    }
-                                }
-                                else
-                                    UpdateClass.writeToLog(Form1.updateLogPath, "The user cancelled the auto-update download");
-                            }
+                        if (urlRoot != null)
+                        {
+                            string remoteArchiveURL = urlRoot.Value;
+                            decompressUpdate(remoteArchiveURL, localDir);
                         }
-            */
+                        else
+                        {
+                            Debug.WriteLine(doc.ToString());
+                            UpdateClass.writeToLog(Form1.updateLogPath, "The manifest does not contain a URL tag, cannot parse for remote archive");
+                        }
+                    }
+                    else
+                    {
+                        UpdateClass.writeToLog(Form1.updateLogPath, "The user cancelled the auto-update download");
+                    }
+                }
+            }
         }
 
         private void doHotSwapCleanup()
@@ -890,7 +891,9 @@ namespace TDHelper
                 foreach (String s in cleanupFiles)
                 {
                     if (File.Exists(s))
+                    {
                         File.Delete(s);
+                    }
                 }
             }
             catch (UnauthorizedAccessException) { /* eat it */ }
@@ -902,31 +905,35 @@ namespace TDHelper
 
         private void decompressUpdate(string zipFileURL, string path)
         {
-            string filePattern = @"(?<=\w\/)[A-za-z0-9_\.]+\.zip";
+            string filePattern = @"[\-A-za-z0-9_\.]+\.zip";
             // parse the archive name from the url given
             string remoteArchiveName = Regex.Match(zipFileURL, filePattern).ToString();
-            remoteArchiveLocalPath = Form1.localDir + "\\" + remoteArchiveName + ".tmp";
+            remoteArchiveLocalPath = Path.Combine(Form1.localDir, remoteArchiveName + ".tmp");
 
             // download the archive mentioned in the manifest
-            UpdateClass.downloadFile(zipFileURL, remoteArchiveLocalPath);
-            UpdateClass.writeToLog(Form1.updateLogPath, "Downloaded a dependent archive from URL: " + zipFileURL);
-
-            // rename our conflicting files by making a list then enumerating
-            foreach (String s in UpdateClass.manifestFileList(localManifestPath))
+            if (UpdateClass.downloadFile(zipFileURL, remoteArchiveLocalPath))
             {
-                string localFilePath = localDir + "\\" + s;
-                string localFileRenamed = localFilePath + ".REMOVE";
+                UpdateClass.writeToLog(Form1.updateLogPath, "Downloaded a dependent archive from URL: " + zipFileURL);
 
-                if (File.Exists(localFilePath))
-                    File.Move(localFilePath, localFileRenamed);
+                // rename our conflicting files by making a list then enumerating
+                foreach (String s in UpdateClass.manifestFileList(localManifestPath))
+                {
+                    string localFilePath = Path.Combine(localDir, s);
+                    string localFileRenamed = localFilePath + ".REMOVE";
+
+                    if (File.Exists(localFilePath))
+                    {
+                        File.Move(localFilePath, localFileRenamed);
+                    }
+                }
+
+                UpdateClass.decompressZip(remoteArchiveLocalPath, localDir);
+                UpdateClass.writeToLog(Form1.updateLogPath, "Attempted decompression of " + Path.GetFileName(remoteArchiveName) + " to our working directory: " + localDir);
+
+                // change flag indicator and serialize it
+                settingsRef.HasUpdated = true;
+                SaveSettingsToIniFile();
             }
-
-            UpdateClass.decompressZip(remoteArchiveLocalPath, localDir);
-            UpdateClass.writeToLog(Form1.updateLogPath, "Attempted decompression of " + Path.GetFileName(remoteArchiveName) + " to our working directory: " + localDir);
-
-            // change flag indicator and serialize it
-            settingsRef.HasUpdated = true;
-            SaveSettingsToIniFile();
         }
 
         /// <summary>
