@@ -123,7 +123,6 @@ namespace TDHelper
 
             if (settingsRef.HasUpdated)
             {// display the changelog for the user
-                Form3 changelogForm = new Form3();
                 settingsRef.HasUpdated = false; // we've updated
                 SaveSettingsToIniFile();
                 doHotSwapCleanup(); // call cleanup to remove unnecessary files if they exist
@@ -131,12 +130,15 @@ namespace TDHelper
                 // show the user the changelog after an update
                 if (File.Exists(localDir + "\\Changelog.txt"))
                 {
+                    Form3 changelogForm = new Form3();
                     changelogForm.ShowDialog(this); // modal
                     changelogForm.Dispose();
                 }
             }
             else
+            {
                 backgroundWorker5.RunWorkerAsync(); // start the auto-updater delegate
+            }
 
             // load our last saved config
             if (!String.IsNullOrEmpty(settingsRef.LastUsedConfig)
@@ -1582,9 +1584,13 @@ namespace TDHelper
 
                     // use the correct index
                     if (methodIndex == 1)
+                    {
                         methodFromIndex = 1;
+                    }
                     else if (methodIndex == 2)
+                    {
                         methodFromIndex = 2;
+                    }
                 }
                 else if (methodIndex == 3)
                 {// rares command
@@ -2288,7 +2294,9 @@ namespace TDHelper
 
                 // disable most of the run options
                 foreach (Control ctrl in runOptionsPanel.Controls)
+                {
                     ctrl.Enabled = false;
+                }
 
                 ladenLYLabel.Font = new Font(ladenLYLabel.Font, FontStyle.Italic);
                 ladenLYLabel.Text = "  Near LY:";
@@ -2302,6 +2310,7 @@ namespace TDHelper
 
                 toolTip1.SetToolTip(ladenLYLabel, "Distance to search for local system/station info.");
                 ladenLYBox.Enabled = true;
+                localNavCheckBox.Enabled = true;
             }
             else
             {// we're unchecked
@@ -2331,6 +2340,10 @@ namespace TDHelper
         {
             methodIndex = methodDropDown.SelectedIndex;
             methodSelectState();
+
+            methodDropDown.Enabled = true;
+            localNavCheckBox.Enabled = true;
+
         }
 
         private void td_outputBox_TextChanged(object sender, EventArgs e)

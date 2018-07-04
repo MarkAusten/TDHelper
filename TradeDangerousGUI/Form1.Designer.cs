@@ -280,7 +280,7 @@
             // 
             this.runButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.runButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.runButton.Location = new System.Drawing.Point(735, 11);
+            this.runButton.Location = new System.Drawing.Point(735, 7);
             this.runButton.Name = "runButton";
             this.runButton.Size = new System.Drawing.Size(78, 22);
             this.runButton.TabIndex = 1;
@@ -344,7 +344,7 @@
             this.creditsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.creditsLabel.AutoSize = true;
-            this.creditsLabel.Location = new System.Drawing.Point(198, 33);
+            this.creditsLabel.Location = new System.Drawing.Point(569, 12);
             this.creditsLabel.Name = "creditsLabel";
             this.creditsLabel.Size = new System.Drawing.Size(42, 13);
             this.creditsLabel.TabIndex = 0;
@@ -356,7 +356,7 @@
             this.capacityLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.capacityLabel.AutoSize = true;
-            this.capacityLabel.Location = new System.Drawing.Point(357, 56);
+            this.capacityLabel.Location = new System.Drawing.Point(251, 35);
             this.capacityLabel.Name = "capacityLabel";
             this.capacityLabel.Size = new System.Drawing.Size(51, 13);
             this.capacityLabel.TabIndex = 1;
@@ -368,7 +368,7 @@
             this.unladenLYLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.unladenLYLabel.AutoSize = true;
-            this.unladenLYLabel.Location = new System.Drawing.Point(342, 33);
+            this.unladenLYLabel.Location = new System.Drawing.Point(121, 35);
             this.unladenLYLabel.Name = "unladenLYLabel";
             this.unladenLYLabel.Size = new System.Drawing.Size(66, 13);
             this.unladenLYLabel.TabIndex = 3;
@@ -380,7 +380,7 @@
             this.ladenLYLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ladenLYLabel.AutoSize = true;
-            this.ladenLYLabel.Location = new System.Drawing.Point(352, 10);
+            this.ladenLYLabel.Location = new System.Drawing.Point(3, 35);
             this.ladenLYLabel.Name = "ladenLYLabel";
             this.ladenLYLabel.Size = new System.Drawing.Size(56, 13);
             this.ladenLYLabel.TabIndex = 2;
@@ -573,7 +573,7 @@
             "Update",
             "Add",
             "Remove"});
-            this.stationDropDown.Location = new System.Drawing.Point(10, 54);
+            this.stationDropDown.Location = new System.Drawing.Point(4, 88);
             this.stationDropDown.Name = "stationDropDown";
             this.stationDropDown.Size = new System.Drawing.Size(82, 21);
             this.stationDropDown.TabIndex = 17;
@@ -668,14 +668,14 @@
             // 
             // limitBox
             // 
-            this.limitBox.Location = new System.Drawing.Point(286, 100);
+            this.limitBox.Location = new System.Drawing.Point(271, 124);
             this.limitBox.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
             this.limitBox.Name = "limitBox";
-            this.limitBox.Size = new System.Drawing.Size(55, 20);
+            this.limitBox.Size = new System.Drawing.Size(71, 20);
             this.limitBox.TabIndex = 11;
             this.limitBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.limitBox, "Limit each commodity purchased to this amount on a hop");
@@ -685,7 +685,7 @@
             // pruneHopsBox
             // 
             this.pruneHopsBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pruneHopsBox.Location = new System.Drawing.Point(82, 147);
+            this.pruneHopsBox.Location = new System.Drawing.Point(165, 59);
             this.pruneHopsBox.Name = "pruneHopsBox";
             this.pruneHopsBox.Size = new System.Drawing.Size(46, 20);
             this.pruneHopsBox.TabIndex = 16;
@@ -697,7 +697,7 @@
             // pruneScoreBox
             // 
             this.pruneScoreBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pruneScoreBox.Location = new System.Drawing.Point(82, 170);
+            this.pruneScoreBox.Location = new System.Drawing.Point(165, 81);
             this.pruneScoreBox.Maximum = new decimal(new int[] {
             99,
             0,
@@ -714,14 +714,14 @@
             // lsPenaltyBox
             // 
             this.lsPenaltyBox.DecimalPlaces = 1;
-            this.lsPenaltyBox.Location = new System.Drawing.Point(163, 123);
+            this.lsPenaltyBox.Location = new System.Drawing.Point(271, 147);
             this.lsPenaltyBox.Maximum = new decimal(new int[] {
             20000,
             0,
             0,
             0});
             this.lsPenaltyBox.Name = "lsPenaltyBox";
-            this.lsPenaltyBox.Size = new System.Drawing.Size(55, 20);
+            this.lsPenaltyBox.Size = new System.Drawing.Size(71, 20);
             this.lsPenaltyBox.TabIndex = 13;
             this.lsPenaltyBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.lsPenaltyBox, "Scoring penalty per LS traveled to station");
@@ -730,14 +730,14 @@
             // 
             // maxLSDistanceBox
             // 
-            this.maxLSDistanceBox.Location = new System.Drawing.Point(286, 123);
+            this.maxLSDistanceBox.Location = new System.Drawing.Point(405, 144);
             this.maxLSDistanceBox.Maximum = new decimal(new int[] {
             20000,
             0,
             0,
             0});
             this.maxLSDistanceBox.Name = "maxLSDistanceBox";
-            this.maxLSDistanceBox.Size = new System.Drawing.Size(55, 20);
+            this.maxLSDistanceBox.Size = new System.Drawing.Size(60, 20);
             this.maxLSDistanceBox.TabIndex = 14;
             this.maxLSDistanceBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.maxLSDistanceBox, "Maximum distance station can be from system drop");
@@ -746,7 +746,7 @@
             // 
             // gptBox
             // 
-            this.gptBox.Location = new System.Drawing.Point(409, 77);
+            this.gptBox.Location = new System.Drawing.Point(405, 81);
             this.gptBox.Maximum = new decimal(new int[] {
             20000,
             0,
@@ -776,7 +776,7 @@
             // 
             // insuranceBox
             // 
-            this.insuranceBox.Location = new System.Drawing.Point(241, 54);
+            this.insuranceBox.Location = new System.Drawing.Point(365, 4);
             this.insuranceBox.Maximum = new decimal(new int[] {
             -2147483648,
             2,
@@ -793,7 +793,7 @@
             // 
             // capacityBox
             // 
-            this.capacityBox.Location = new System.Drawing.Point(409, 54);
+            this.capacityBox.Location = new System.Drawing.Point(308, 32);
             this.capacityBox.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -814,9 +814,9 @@
             // 
             // jumpsBox
             // 
-            this.jumpsBox.Location = new System.Drawing.Point(295, 8);
+            this.jumpsBox.Location = new System.Drawing.Point(405, 60);
             this.jumpsBox.Name = "jumpsBox";
-            this.jumpsBox.Size = new System.Drawing.Size(46, 20);
+            this.jumpsBox.Size = new System.Drawing.Size(60, 20);
             this.jumpsBox.TabIndex = 1;
             this.jumpsBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.jumpsBox, "A jump is any system between two hops");
@@ -825,9 +825,9 @@
             // 
             // hopsBox
             // 
-            this.hopsBox.Location = new System.Drawing.Point(197, 8);
+            this.hopsBox.Location = new System.Drawing.Point(271, 59);
             this.hopsBox.Name = "hopsBox";
-            this.hopsBox.Size = new System.Drawing.Size(46, 20);
+            this.hopsBox.Size = new System.Drawing.Size(71, 20);
             this.hopsBox.TabIndex = 0;
             this.hopsBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.hopsBox, "A hop is a station to load/unload from");
@@ -836,14 +836,14 @@
             // 
             // creditsBox
             // 
-            this.creditsBox.Location = new System.Drawing.Point(241, 31);
+            this.creditsBox.Location = new System.Drawing.Point(612, 9);
             this.creditsBox.Minimum = new decimal(new int[] {
             100,
             0,
             0,
             0});
             this.creditsBox.Name = "creditsBox";
-            this.creditsBox.Size = new System.Drawing.Size(100, 20);
+            this.creditsBox.Size = new System.Drawing.Size(114, 20);
             this.creditsBox.TabIndex = 3;
             this.creditsBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.creditsBox.ThousandsSeparator = true;
@@ -859,14 +859,14 @@
             // unladenLYBox
             // 
             this.unladenLYBox.DecimalPlaces = 2;
-            this.unladenLYBox.Location = new System.Drawing.Point(409, 31);
+            this.unladenLYBox.Location = new System.Drawing.Point(187, 32);
             this.unladenLYBox.Maximum = new decimal(new int[] {
             100000,
             0,
             0,
             131072});
             this.unladenLYBox.Name = "unladenLYBox";
-            this.unladenLYBox.Size = new System.Drawing.Size(60, 20);
+            this.unladenLYBox.Size = new System.Drawing.Size(53, 20);
             this.unladenLYBox.TabIndex = 4;
             this.unladenLYBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.unladenLYBox, "Distance that can be travelled while unladen (including fuel)");
@@ -876,7 +876,7 @@
             // ladenLYBox
             // 
             this.ladenLYBox.DecimalPlaces = 2;
-            this.ladenLYBox.Location = new System.Drawing.Point(409, 8);
+            this.ladenLYBox.Location = new System.Drawing.Point(59, 31);
             this.ladenLYBox.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -888,7 +888,7 @@
             0,
             0});
             this.ladenLYBox.Name = "ladenLYBox";
-            this.ladenLYBox.Size = new System.Drawing.Size(60, 20);
+            this.ladenLYBox.Size = new System.Drawing.Size(53, 20);
             this.ladenLYBox.TabIndex = 2;
             this.ladenLYBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.ladenLYBox, "Distance that can be travelled while fully laden (including fuel)");
@@ -937,7 +937,7 @@
             "Navigation",
             "OldData",
             "EDSC"});
-            this.methodDropDown.Location = new System.Drawing.Point(350, 66);
+            this.methodDropDown.Location = new System.Drawing.Point(4, 61);
             this.methodDropDown.Name = "methodDropDown";
             this.methodDropDown.Size = new System.Drawing.Size(82, 21);
             this.methodDropDown.TabIndex = 1;
@@ -970,9 +970,9 @@
             // 
             // viaBox
             // 
-            this.viaBox.Location = new System.Drawing.Point(227, 169);
+            this.viaBox.Location = new System.Drawing.Point(271, 171);
             this.viaBox.Name = "viaBox";
-            this.viaBox.Size = new System.Drawing.Size(242, 20);
+            this.viaBox.Size = new System.Drawing.Size(194, 20);
             this.viaBox.TabIndex = 19;
             this.viaBox.TabStop = false;
             this.toolTip1.SetToolTip(this.viaBox, "Attempt to route through these systems, delimited by comma");
@@ -982,7 +982,7 @@
             this.viaLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.viaLabel.AutoSize = true;
-            this.viaLabel.Location = new System.Drawing.Point(196, 174);
+            this.viaLabel.Location = new System.Drawing.Point(241, 174);
             this.viaLabel.Name = "viaLabel";
             this.viaLabel.Size = new System.Drawing.Size(25, 13);
             this.viaLabel.TabIndex = 45;
@@ -1014,9 +1014,9 @@
             // 
             // avoidBox
             // 
-            this.avoidBox.Location = new System.Drawing.Point(227, 146);
+            this.avoidBox.Location = new System.Drawing.Point(41, 171);
             this.avoidBox.Name = "avoidBox";
-            this.avoidBox.Size = new System.Drawing.Size(242, 20);
+            this.avoidBox.Size = new System.Drawing.Size(194, 20);
             this.avoidBox.TabIndex = 18;
             this.avoidBox.TabStop = false;
             this.toolTip1.SetToolTip(this.avoidBox, "Avoids can include system/station and items delimited by comma");
@@ -1027,7 +1027,7 @@
             this.avoidLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.avoidLabel.AutoSize = true;
-            this.avoidLabel.Location = new System.Drawing.Point(184, 149);
+            this.avoidLabel.Location = new System.Drawing.Point(-2, 174);
             this.avoidLabel.Name = "avoidLabel";
             this.avoidLabel.Size = new System.Drawing.Size(37, 13);
             this.avoidLabel.TabIndex = 39;
@@ -1051,7 +1051,7 @@
             // 
             this.localNavCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.localNavCheckBox.AutoSize = true;
-            this.localNavCheckBox.Location = new System.Drawing.Point(367, 114);
+            this.localNavCheckBox.Location = new System.Drawing.Point(4, 115);
             this.localNavCheckBox.Name = "localNavCheckBox";
             this.localNavCheckBox.Size = new System.Drawing.Size(52, 17);
             this.localNavCheckBox.TabIndex = 2;
@@ -1066,7 +1066,7 @@
             this.hopsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.hopsLabel.AutoSize = true;
-            this.hopsLabel.Location = new System.Drawing.Point(161, 10);
+            this.hopsLabel.Location = new System.Drawing.Point(231, 61);
             this.hopsLabel.Name = "hopsLabel";
             this.hopsLabel.Size = new System.Drawing.Size(35, 13);
             this.hopsLabel.TabIndex = 29;
@@ -1088,7 +1088,7 @@
             // 
             // getSystemButton
             // 
-            this.getSystemButton.Location = new System.Drawing.Point(320, 13);
+            this.getSystemButton.Location = new System.Drawing.Point(320, 9);
             this.getSystemButton.Name = "getSystemButton";
             this.getSystemButton.Size = new System.Drawing.Size(21, 21);
             this.getSystemButton.TabIndex = 7;
@@ -1102,7 +1102,7 @@
             // srcSysLabel
             // 
             this.srcSysLabel.AutoSize = true;
-            this.srcSysLabel.Location = new System.Drawing.Point(43, 16);
+            this.srcSysLabel.Location = new System.Drawing.Point(43, 12);
             this.srcSysLabel.Name = "srcSysLabel";
             this.srcSysLabel.Size = new System.Drawing.Size(44, 13);
             this.srcSysLabel.TabIndex = 2;
@@ -1113,7 +1113,7 @@
             // 
             this.padSizeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.padSizeLabel.AutoSize = true;
-            this.padSizeLabel.Location = new System.Drawing.Point(641, 15);
+            this.padSizeLabel.Location = new System.Drawing.Point(377, 34);
             this.padSizeLabel.Name = "padSizeLabel";
             this.padSizeLabel.Size = new System.Drawing.Size(52, 13);
             this.padSizeLabel.TabIndex = 34;
@@ -1123,7 +1123,7 @@
             // padSizeBox
             // 
             this.padSizeBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.padSizeBox.Location = new System.Drawing.Point(693, 12);
+            this.padSizeBox.Location = new System.Drawing.Point(433, 32);
             this.padSizeBox.MaxLength = 3;
             this.padSizeBox.Name = "padSizeBox";
             this.padSizeBox.Size = new System.Drawing.Size(32, 20);
@@ -1137,7 +1137,7 @@
             // 
             this.ageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ageLabel.AutoSize = true;
-            this.ageLabel.Location = new System.Drawing.Point(554, 15);
+            this.ageLabel.Location = new System.Drawing.Point(493, 11);
             this.ageLabel.Name = "ageLabel";
             this.ageLabel.Size = new System.Drawing.Size(29, 13);
             this.ageLabel.TabIndex = 51;
@@ -1148,7 +1148,7 @@
             // 
             this.verboseLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.verboseLabel.AutoSize = true;
-            this.verboseLabel.Location = new System.Drawing.Point(438, 16);
+            this.verboseLabel.Location = new System.Drawing.Point(391, 12);
             this.verboseLabel.Name = "verboseLabel";
             this.verboseLabel.Size = new System.Drawing.Size(53, 13);
             this.verboseLabel.TabIndex = 55;
@@ -1158,7 +1158,7 @@
             // ageBox
             // 
             this.ageBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.ageBox.Location = new System.Drawing.Point(583, 13);
+            this.ageBox.Location = new System.Drawing.Point(519, 8);
             this.ageBox.Maximum = new decimal(new int[] {
             30,
             0,
@@ -1177,7 +1177,7 @@
             this.gptLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.gptLabel.AutoSize = true;
-            this.gptLabel.Location = new System.Drawing.Point(356, 79);
+            this.gptLabel.Location = new System.Drawing.Point(350, 83);
             this.gptLabel.Name = "gptLabel";
             this.gptLabel.Size = new System.Drawing.Size(52, 13);
             this.gptLabel.TabIndex = 27;
@@ -1187,7 +1187,7 @@
             // lsFromStarLabel
             // 
             this.lsFromStarLabel.AutoSize = true;
-            this.lsFromStarLabel.Location = new System.Drawing.Point(25, 12);
+            this.lsFromStarLabel.Location = new System.Drawing.Point(8, 12);
             this.lsFromStarLabel.Name = "lsFromStarLabel";
             this.lsFromStarLabel.Size = new System.Drawing.Size(68, 13);
             this.lsFromStarLabel.TabIndex = 0;
@@ -1197,7 +1197,7 @@
             // maxPadSizeLabel
             // 
             this.maxPadSizeLabel.AutoSize = true;
-            this.maxPadSizeLabel.Location = new System.Drawing.Point(203, 12);
+            this.maxPadSizeLabel.Location = new System.Drawing.Point(186, 12);
             this.maxPadSizeLabel.Name = "maxPadSizeLabel";
             this.maxPadSizeLabel.Size = new System.Drawing.Size(70, 13);
             this.maxPadSizeLabel.TabIndex = 4;
@@ -1206,7 +1206,7 @@
             // 
             // lsFromStarBox
             // 
-            this.lsFromStarBox.Location = new System.Drawing.Point(99, 9);
+            this.lsFromStarBox.Location = new System.Drawing.Point(82, 9);
             this.lsFromStarBox.Maximum = new decimal(new int[] {
             2000000,
             0,
@@ -1268,7 +1268,7 @@
             // 
             // stn_padSizeBox
             // 
-            this.stn_padSizeBox.Location = new System.Drawing.Point(278, 9);
+            this.stn_padSizeBox.Location = new System.Drawing.Point(261, 9);
             this.stn_padSizeBox.MaxLength = 1;
             this.stn_padSizeBox.Name = "stn_padSizeBox";
             this.stn_padSizeBox.Size = new System.Drawing.Size(27, 20);
@@ -1282,7 +1282,7 @@
             // 
             this.shipsSoldLabel.AutoSize = true;
             this.shipsSoldLabel.Enabled = false;
-            this.shipsSoldLabel.Location = new System.Drawing.Point(25, 136);
+            this.shipsSoldLabel.Location = new System.Drawing.Point(8, 136);
             this.shipsSoldLabel.Name = "shipsSoldLabel";
             this.shipsSoldLabel.Size = new System.Drawing.Size(60, 13);
             this.shipsSoldLabel.TabIndex = 12;
@@ -1293,7 +1293,7 @@
             // 
             this.srcSystemComboBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.srcSystemComboBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-            this.srcSystemComboBox.Location = new System.Drawing.Point(87, 13);
+            this.srcSystemComboBox.Location = new System.Drawing.Point(87, 9);
             this.srcSystemComboBox.Name = "srcSystemComboBox";
             this.srcSystemComboBox.Size = new System.Drawing.Size(230, 21);
             this.srcSystemComboBox.TabIndex = 0;
@@ -1309,7 +1309,7 @@
             // 
             this.csvExportCheckBox.AutoSize = true;
             this.csvExportCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.csvExportCheckBox.Location = new System.Drawing.Point(213, 37);
+            this.csvExportCheckBox.Location = new System.Drawing.Point(196, 37);
             this.csvExportCheckBox.Name = "csvExportCheckBox";
             this.csvExportCheckBox.Size = new System.Drawing.Size(92, 17);
             this.csvExportCheckBox.TabIndex = 14;
@@ -1328,7 +1328,7 @@
             "System",
             "Station",
             "ShipVendor"});
-            this.csvExportComboBox.Location = new System.Drawing.Point(218, 61);
+            this.csvExportComboBox.Location = new System.Drawing.Point(201, 61);
             this.csvExportComboBox.Name = "csvExportComboBox";
             this.csvExportComboBox.Size = new System.Drawing.Size(87, 21);
             this.csvExportComboBox.TabIndex = 57;
@@ -1341,7 +1341,7 @@
             this.marginLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.marginLabel.AutoSize = true;
-            this.marginLabel.Location = new System.Drawing.Point(366, 125);
+            this.marginLabel.Location = new System.Drawing.Point(360, 125);
             this.marginLabel.Name = "marginLabel";
             this.marginLabel.Size = new System.Drawing.Size(42, 13);
             this.marginLabel.TabIndex = 53;
@@ -1351,7 +1351,7 @@
             // marginBox
             // 
             this.marginBox.DecimalPlaces = 2;
-            this.marginBox.Location = new System.Drawing.Point(409, 123);
+            this.marginBox.Location = new System.Drawing.Point(405, 123);
             this.marginBox.Maximum = new decimal(new int[] {
             99,
             0,
@@ -1368,7 +1368,7 @@
             // limitLabel
             // 
             this.limitLabel.AutoSize = true;
-            this.limitLabel.Location = new System.Drawing.Point(223, 102);
+            this.limitLabel.Location = new System.Drawing.Point(208, 126);
             this.limitLabel.Name = "limitLabel";
             this.limitLabel.Size = new System.Drawing.Size(62, 13);
             this.limitLabel.TabIndex = 13;
@@ -1380,7 +1380,7 @@
             this.maxGPTLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.maxGPTLabel.AutoSize = true;
-            this.maxGPTLabel.Location = new System.Drawing.Point(353, 102);
+            this.maxGPTLabel.Location = new System.Drawing.Point(347, 104);
             this.maxGPTLabel.Name = "maxGPTLabel";
             this.maxGPTLabel.Size = new System.Drawing.Size(55, 13);
             this.maxGPTLabel.TabIndex = 55;
@@ -1389,7 +1389,7 @@
             // 
             // maxGPTBox
             // 
-            this.maxGPTBox.Location = new System.Drawing.Point(409, 100);
+            this.maxGPTBox.Location = new System.Drawing.Point(405, 102);
             this.maxGPTBox.Maximum = new decimal(new int[] {
             20000,
             0,
@@ -1562,7 +1562,7 @@
             // 
             // resetStationButton
             // 
-            this.resetStationButton.Location = new System.Drawing.Point(286, 112);
+            this.resetStationButton.Location = new System.Drawing.Point(269, 112);
             this.resetStationButton.Name = "resetStationButton";
             this.resetStationButton.Size = new System.Drawing.Size(19, 20);
             this.resetStationButton.TabIndex = 60;
@@ -1584,7 +1584,7 @@
             // 
             // swapButton
             // 
-            this.swapButton.Location = new System.Drawing.Point(12, 12);
+            this.swapButton.Location = new System.Drawing.Point(12, 8);
             this.swapButton.Name = "swapButton";
             this.swapButton.Size = new System.Drawing.Size(21, 21);
             this.swapButton.TabIndex = 63;
@@ -1597,7 +1597,7 @@
             // miniModeButton
             // 
             this.miniModeButton.Enabled = false;
-            this.miniModeButton.Location = new System.Drawing.Point(366, 13);
+            this.miniModeButton.Location = new System.Drawing.Point(349, 8);
             this.miniModeButton.Name = "miniModeButton";
             this.miniModeButton.Size = new System.Drawing.Size(21, 21);
             this.miniModeButton.TabIndex = 1;
@@ -1611,9 +1611,9 @@
             // 
             this.altConfigBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.altConfigBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.altConfigBox.Location = new System.Drawing.Point(350, 43);
+            this.altConfigBox.Location = new System.Drawing.Point(8, 5);
             this.altConfigBox.Name = "altConfigBox";
-            this.altConfigBox.Size = new System.Drawing.Size(152, 21);
+            this.altConfigBox.Size = new System.Drawing.Size(295, 21);
             this.altConfigBox.TabIndex = 56;
             this.altConfigBox.TabStop = false;
             this.toolTip1.SetToolTip(this.altConfigBox, "Select a previously used config file\r\n(Ctrl+Click a non-default config to delete " +
@@ -1624,9 +1624,9 @@
             // updateNotifyIcon
             // 
             this.updateNotifyIcon.Image = global::TDHelper.Properties.Resources.LightningBolt;
-            this.updateNotifyIcon.Location = new System.Drawing.Point(9, 140);
+            this.updateNotifyIcon.Location = new System.Drawing.Point(357, 238);
             this.updateNotifyIcon.Name = "updateNotifyIcon";
-            this.updateNotifyIcon.Size = new System.Drawing.Size(16, 16);
+            this.updateNotifyIcon.Size = new System.Drawing.Size(21, 21);
             this.updateNotifyIcon.TabIndex = 59;
             this.updateNotifyIcon.TabStop = false;
             this.toolTip1.SetToolTip(this.updateNotifyIcon, "An update to TDHelper is available! Restart to update.");
@@ -1634,7 +1634,7 @@
             // 
             // stockBox
             // 
-            this.stockBox.Location = new System.Drawing.Point(270, 77);
+            this.stockBox.Location = new System.Drawing.Point(271, 80);
             this.stockBox.Maximum = new decimal(new int[] {
             9999999,
             0,
@@ -1652,7 +1652,7 @@
             // stockLabel
             // 
             this.stockLabel.AutoSize = true;
-            this.stockLabel.Location = new System.Drawing.Point(219, 79);
+            this.stockLabel.Location = new System.Drawing.Point(216, 82);
             this.stockLabel.Name = "stockLabel";
             this.stockLabel.Size = new System.Drawing.Size(50, 13);
             this.stockLabel.TabIndex = 57;
@@ -1662,7 +1662,7 @@
             // testSystemsCheckBox
             // 
             this.testSystemsCheckBox.AutoSize = true;
-            this.testSystemsCheckBox.Location = new System.Drawing.Point(391, 16);
+            this.testSystemsCheckBox.Location = new System.Drawing.Point(374, 11);
             this.testSystemsCheckBox.Name = "testSystemsCheckBox";
             this.testSystemsCheckBox.Size = new System.Drawing.Size(15, 14);
             this.testSystemsCheckBox.TabIndex = 58;
@@ -1683,7 +1683,7 @@
             // 
             // minAgeUpDown
             // 
-            this.minAgeUpDown.Location = new System.Drawing.Point(265, 86);
+            this.minAgeUpDown.Location = new System.Drawing.Point(248, 86);
             this.minAgeUpDown.Maximum = new decimal(new int[] {
             365,
             0,
@@ -1700,7 +1700,7 @@
             // minAgeLabel
             // 
             this.minAgeLabel.AutoSize = true;
-            this.minAgeLabel.Location = new System.Drawing.Point(215, 88);
+            this.minAgeLabel.Location = new System.Drawing.Point(198, 88);
             this.minAgeLabel.Name = "minAgeLabel";
             this.minAgeLabel.Size = new System.Drawing.Size(46, 13);
             this.minAgeLabel.TabIndex = 62;
@@ -1711,7 +1711,7 @@
             // oldRoutesCheckBox
             // 
             this.oldRoutesCheckBox.AutoSize = true;
-            this.oldRoutesCheckBox.Location = new System.Drawing.Point(218, 115);
+            this.oldRoutesCheckBox.Location = new System.Drawing.Point(201, 115);
             this.oldRoutesCheckBox.Name = "oldRoutesCheckBox";
             this.oldRoutesCheckBox.Size = new System.Drawing.Size(55, 17);
             this.oldRoutesCheckBox.TabIndex = 63;
@@ -1883,7 +1883,7 @@
             this.loopIntLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.loopIntLabel.AutoSize = true;
-            this.loopIntLabel.Location = new System.Drawing.Point(113, 102);
+            this.loopIntLabel.Location = new System.Drawing.Point(113, 108);
             this.loopIntLabel.Name = "loopIntLabel";
             this.loopIntLabel.Size = new System.Drawing.Size(49, 13);
             this.loopIntLabel.TabIndex = 59;
@@ -1892,9 +1892,9 @@
             // 
             // loopIntBox
             // 
-            this.loopIntBox.Location = new System.Drawing.Point(163, 100);
+            this.loopIntBox.Location = new System.Drawing.Point(165, 104);
             this.loopIntBox.Name = "loopIntBox";
-            this.loopIntBox.Size = new System.Drawing.Size(55, 20);
+            this.loopIntBox.Size = new System.Drawing.Size(46, 20);
             this.loopIntBox.TabIndex = 10;
             this.loopIntBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.loopIntBox, "Minimum hops between visiting the same station");
@@ -2002,7 +2002,7 @@
             // 
             // shipsSoldBox
             // 
-            this.shipsSoldBox.Location = new System.Drawing.Point(91, 133);
+            this.shipsSoldBox.Location = new System.Drawing.Point(74, 133);
             this.shipsSoldBox.Name = "shipsSoldBox";
             this.shipsSoldBox.Size = new System.Drawing.Size(214, 21);
             this.shipsSoldBox.TabIndex = 8;
@@ -2046,7 +2046,7 @@
             // 
             // demandBox
             // 
-            this.demandBox.Location = new System.Drawing.Point(147, 77);
+            this.demandBox.Location = new System.Drawing.Point(271, 101);
             this.demandBox.Maximum = new decimal(new int[] {
             9999999,
             0,
@@ -2064,7 +2064,7 @@
             // demandLabel
             // 
             this.demandLabel.AutoSize = true;
-            this.demandLabel.Location = new System.Drawing.Point(96, 79);
+            this.demandLabel.Location = new System.Drawing.Point(220, 103);
             this.demandLabel.Name = "demandLabel";
             this.demandLabel.Size = new System.Drawing.Size(50, 13);
             this.demandLabel.TabIndex = 61;
@@ -2117,7 +2117,7 @@
             "-v",
             "-vv",
             "-vvv"});
-            this.verbosityComboBox.Location = new System.Drawing.Point(491, 12);
+            this.verbosityComboBox.Location = new System.Drawing.Point(444, 8);
             this.verbosityComboBox.Name = "verbosityComboBox";
             this.verbosityComboBox.Size = new System.Drawing.Size(46, 21);
             this.verbosityComboBox.TabIndex = 9;
@@ -2135,11 +2135,10 @@
             // 
             // panel1
             // 
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.miscSettingsButton);
             this.panel1.Controls.Add(this.showJumpsCheckBox);
             this.panel1.Controls.Add(this.shortenCheckBox);
-            this.panel1.Controls.Add(this.updateNotifyLabel);
-            this.panel1.Controls.Add(this.updateNotifyIcon);
             this.panel1.Controls.Add(this.destSysLabel);
             this.panel1.Controls.Add(this.bmktCheckBox);
             this.panel1.Controls.Add(this.oneStopCheckBox);
@@ -2158,27 +2157,29 @@
             this.panel1.Controls.Add(this.belowPriceLabel);
             this.panel1.Controls.Add(this.destSystemComboBox);
             this.panel1.Controls.Add(this.uniqueCheckBox);
-            this.panel1.Location = new System.Drawing.Point(12, 35);
+            this.panel1.Location = new System.Drawing.Point(11, 35);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(312, 159);
+            this.panel1.Size = new System.Drawing.Size(312, 198);
             this.panel1.TabIndex = 1;
             // 
             // updateNotifyLabel
             // 
             this.updateNotifyLabel.AutoSize = true;
-            this.updateNotifyLabel.Location = new System.Drawing.Point(31, 142);
+            this.updateNotifyLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.updateNotifyLabel.ForeColor = System.Drawing.Color.Red;
+            this.updateNotifyLabel.Location = new System.Drawing.Point(386, 240);
             this.updateNotifyLabel.Name = "updateNotifyLabel";
-            this.updateNotifyLabel.Size = new System.Drawing.Size(263, 13);
+            this.updateNotifyLabel.Size = new System.Drawing.Size(421, 15);
             this.updateNotifyLabel.TabIndex = 60;
-            this.updateNotifyLabel.Text = "An update to TDHelper is available! Restart to update.";
+            this.updateNotifyLabel.Text = "TDHelper has been updated. Please restart to complete process.";
             this.updateNotifyLabel.Visible = false;
             // 
             // localFilterParentPanel
             // 
             this.localFilterParentPanel.Controls.Add(this.localFilterGroupBox);
-            this.localFilterParentPanel.Location = new System.Drawing.Point(12, 35);
+            this.localFilterParentPanel.Location = new System.Drawing.Point(11, 35);
             this.localFilterParentPanel.Name = "localFilterParentPanel";
-            this.localFilterParentPanel.Size = new System.Drawing.Size(312, 159);
+            this.localFilterParentPanel.Size = new System.Drawing.Size(312, 154);
             this.localFilterParentPanel.TabIndex = 60;
             this.localFilterParentPanel.Visible = false;
             // 
@@ -2193,7 +2194,7 @@
             this.localFilterGroupBox.Controls.Add(this.bmktFilterCheckBox);
             this.localFilterGroupBox.Controls.Add(this.refuelFilterCheckBox);
             this.localFilterGroupBox.Controls.Add(this.shipyardFilterCheckBox);
-            this.localFilterGroupBox.Location = new System.Drawing.Point(75, 8);
+            this.localFilterGroupBox.Location = new System.Drawing.Point(64, 15);
             this.localFilterGroupBox.Name = "localFilterGroupBox";
             this.localFilterGroupBox.Size = new System.Drawing.Size(163, 121);
             this.localFilterGroupBox.TabIndex = 59;
@@ -2211,10 +2212,10 @@
             this.tabControl1.Controls.Add(this.savedPage3);
             this.tabControl1.Controls.Add(this.notesPage);
             this.tabControl1.Controls.Add(this.logPage);
-            this.tabControl1.Location = new System.Drawing.Point(12, 209);
+            this.tabControl1.Location = new System.Drawing.Point(12, 239);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(801, 498);
+            this.tabControl1.Size = new System.Drawing.Size(801, 468);
             this.tabControl1.TabIndex = 23;
             this.tabControl1.TabStop = false;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
@@ -2225,7 +2226,7 @@
             this.outputPage.Location = new System.Drawing.Point(4, 22);
             this.outputPage.Name = "outputPage";
             this.outputPage.Padding = new System.Windows.Forms.Padding(3);
-            this.outputPage.Size = new System.Drawing.Size(793, 472);
+            this.outputPage.Size = new System.Drawing.Size(793, 442);
             this.outputPage.TabIndex = 0;
             this.outputPage.Text = "Output";
             this.outputPage.UseVisualStyleBackColor = true;
@@ -2237,10 +2238,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.td_outputBox.ContextMenuStrip = this.contextMenuStrip1;
             this.td_outputBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.td_outputBox.Location = new System.Drawing.Point(3, 3);
+            this.td_outputBox.Location = new System.Drawing.Point(3, 6);
             this.td_outputBox.Name = "td_outputBox";
             this.td_outputBox.ReadOnly = true;
-            this.td_outputBox.Size = new System.Drawing.Size(787, 466);
+            this.td_outputBox.Size = new System.Drawing.Size(787, 433);
             this.td_outputBox.TabIndex = 0;
             this.td_outputBox.TabStop = false;
             this.td_outputBox.Text = "";
@@ -2328,7 +2329,7 @@
             this.notesPage.Location = new System.Drawing.Point(4, 22);
             this.notesPage.Name = "notesPage";
             this.notesPage.Padding = new System.Windows.Forms.Padding(3);
-            this.notesPage.Size = new System.Drawing.Size(793, 472);
+            this.notesPage.Size = new System.Drawing.Size(793, 442);
             this.notesPage.TabIndex = 4;
             this.notesPage.Text = "Notes";
             this.notesPage.UseVisualStyleBackColor = true;
@@ -2354,7 +2355,7 @@
             this.logPage.Location = new System.Drawing.Point(4, 22);
             this.logPage.Name = "logPage";
             this.logPage.Padding = new System.Windows.Forms.Padding(3);
-            this.logPage.Size = new System.Drawing.Size(793, 472);
+            this.logPage.Size = new System.Drawing.Size(793, 442);
             this.logPage.TabIndex = 5;
             this.logPage.Text = "Pilot\'s Log";
             this.logPage.UseVisualStyleBackColor = true;
@@ -2372,7 +2373,7 @@
             this.pilotsLogDataGrid.ContextMenuStrip = this.contextMenuStrip2;
             this.pilotsLogDataGrid.Location = new System.Drawing.Point(3, 3);
             this.pilotsLogDataGrid.Name = "pilotsLogDataGrid";
-            this.pilotsLogDataGrid.Size = new System.Drawing.Size(787, 466);
+            this.pilotsLogDataGrid.Size = new System.Drawing.Size(787, 436);
             this.pilotsLogDataGrid.TabIndex = 0;
             this.pilotsLogDataGrid.VirtualMode = true;
             this.pilotsLogDataGrid.CellContextMenuStripNeeded += new System.Windows.Forms.DataGridViewCellContextMenuStripNeededEventHandler(this.pilotsLogDataGrid_CellContextMenuStripNeeded);
@@ -2459,7 +2460,7 @@
             this.jumpsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.jumpsLabel.AutoSize = true;
-            this.jumpsLabel.Location = new System.Drawing.Point(254, 10);
+            this.jumpsLabel.Location = new System.Drawing.Point(362, 62);
             this.jumpsLabel.Name = "jumpsLabel";
             this.jumpsLabel.Size = new System.Drawing.Size(40, 13);
             this.jumpsLabel.TabIndex = 31;
@@ -2470,7 +2471,7 @@
             this.maxLSLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.maxLSLabel.AutoSize = true;
-            this.maxLSLabel.Location = new System.Drawing.Point(239, 125);
+            this.maxLSLabel.Location = new System.Drawing.Point(356, 146);
             this.maxLSLabel.Name = "maxLSLabel";
             this.maxLSLabel.Size = new System.Drawing.Size(46, 13);
             this.maxLSLabel.TabIndex = 10;
@@ -2480,7 +2481,7 @@
             // 
             this.pruneHopsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pruneHopsLabel.AutoSize = true;
-            this.pruneHopsLabel.Location = new System.Drawing.Point(10, 149);
+            this.pruneHopsLabel.Location = new System.Drawing.Point(96, 60);
             this.pruneHopsLabel.Name = "pruneHopsLabel";
             this.pruneHopsLabel.Size = new System.Drawing.Size(66, 13);
             this.pruneHopsLabel.TabIndex = 15;
@@ -2490,7 +2491,7 @@
             // 
             this.pruneScoreLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pruneScoreLabel.AutoSize = true;
-            this.pruneScoreLabel.Location = new System.Drawing.Point(7, 172);
+            this.pruneScoreLabel.Location = new System.Drawing.Point(93, 83);
             this.pruneScoreLabel.Name = "pruneScoreLabel";
             this.pruneScoreLabel.Size = new System.Drawing.Size(69, 13);
             this.pruneScoreLabel.TabIndex = 49;
@@ -2501,7 +2502,7 @@
             this.lsPenaltyLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lsPenaltyLabel.AutoSize = true;
-            this.lsPenaltyLabel.Location = new System.Drawing.Point(101, 125);
+            this.lsPenaltyLabel.Location = new System.Drawing.Point(209, 146);
             this.lsPenaltyLabel.Name = "lsPenaltyLabel";
             this.lsPenaltyLabel.Size = new System.Drawing.Size(61, 13);
             this.lsPenaltyLabel.TabIndex = 8;
@@ -2512,7 +2513,7 @@
             this.insuranceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.insuranceLabel.AutoSize = true;
-            this.insuranceLabel.Location = new System.Drawing.Point(183, 56);
+            this.insuranceLabel.Location = new System.Drawing.Point(311, 5);
             this.insuranceLabel.Name = "insuranceLabel";
             this.insuranceLabel.Size = new System.Drawing.Size(57, 13);
             this.insuranceLabel.TabIndex = 51;
@@ -2520,6 +2521,7 @@
             // 
             // panel2
             // 
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel2.Controls.Add(this.shipsSoldBox);
             this.panel2.Controls.Add(this.oldRoutesCheckBox);
             this.panel2.Controls.Add(this.minAgeLabel);
@@ -2533,9 +2535,9 @@
             this.panel2.Controls.Add(this.lsFromStarBox);
             this.panel2.Controls.Add(this.maxPadSizeLabel);
             this.panel2.Controls.Add(this.lsFromStarLabel);
-            this.panel2.Location = new System.Drawing.Point(12, 35);
+            this.panel2.Location = new System.Drawing.Point(11, 35);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(312, 159);
+            this.panel2.Size = new System.Drawing.Size(312, 198);
             this.panel2.TabIndex = 3;
             // 
             // panelLocalOverrideChild
@@ -2549,7 +2551,7 @@
             this.panelLocalOverrideChild.Controls.Add(this.shipyardCheckBox);
             this.panelLocalOverrideChild.Controls.Add(this.blackMarketCheckBox);
             this.panelLocalOverrideChild.Controls.Add(this.marketCheckBox);
-            this.panelLocalOverrideChild.Location = new System.Drawing.Point(28, 33);
+            this.panelLocalOverrideChild.Location = new System.Drawing.Point(11, 33);
             this.panelLocalOverrideChild.Name = "panelLocalOverrideChild";
             this.panelLocalOverrideChild.Size = new System.Drawing.Size(185, 100);
             this.panelLocalOverrideChild.TabIndex = 59;
@@ -2566,6 +2568,7 @@
             // runOptionsPanel
             // 
             this.runOptionsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.runOptionsPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.runOptionsPanel.Controls.Add(this.demandBox);
             this.runOptionsPanel.Controls.Add(this.demandLabel);
             this.runOptionsPanel.Controls.Add(this.loopIntLabel);
@@ -2576,12 +2579,17 @@
             this.runOptionsPanel.Controls.Add(this.maxGPTBox);
             this.runOptionsPanel.Controls.Add(this.marginLabel);
             this.runOptionsPanel.Controls.Add(this.marginBox);
+            this.runOptionsPanel.Controls.Add(this.altConfigBox);
             this.runOptionsPanel.Controls.Add(this.hopsLabel);
+            this.runOptionsPanel.Controls.Add(this.localNavCheckBox);
             this.runOptionsPanel.Controls.Add(this.stationDropDown);
+            this.runOptionsPanel.Controls.Add(this.methodDropDown);
             this.runOptionsPanel.Controls.Add(this.avoidLabel);
             this.runOptionsPanel.Controls.Add(this.jumpsLabel);
             this.runOptionsPanel.Controls.Add(this.avoidBox);
+            this.runOptionsPanel.Controls.Add(this.padSizeBox);
             this.runOptionsPanel.Controls.Add(this.gptLabel);
+            this.runOptionsPanel.Controls.Add(this.padSizeLabel);
             this.runOptionsPanel.Controls.Add(this.viaLabel);
             this.runOptionsPanel.Controls.Add(this.ladenLYLabel);
             this.runOptionsPanel.Controls.Add(this.viaBox);
@@ -2595,13 +2603,11 @@
             this.runOptionsPanel.Controls.Add(this.unladenLYLabel);
             this.runOptionsPanel.Controls.Add(this.limitLabel);
             this.runOptionsPanel.Controls.Add(this.pruneScoreBox);
-            this.runOptionsPanel.Controls.Add(this.creditsLabel);
             this.runOptionsPanel.Controls.Add(this.capacityLabel);
             this.runOptionsPanel.Controls.Add(this.lsPenaltyBox);
             this.runOptionsPanel.Controls.Add(this.ladenLYBox);
             this.runOptionsPanel.Controls.Add(this.unladenLYBox);
             this.runOptionsPanel.Controls.Add(this.maxLSDistanceBox);
-            this.runOptionsPanel.Controls.Add(this.creditsBox);
             this.runOptionsPanel.Controls.Add(this.hopsBox);
             this.runOptionsPanel.Controls.Add(this.gptBox);
             this.runOptionsPanel.Controls.Add(this.jumpsBox);
@@ -2609,7 +2615,7 @@
             this.runOptionsPanel.Controls.Add(this.insuranceBox);
             this.runOptionsPanel.Location = new System.Drawing.Point(340, 35);
             this.runOptionsPanel.Name = "runOptionsPanel";
-            this.runOptionsPanel.Size = new System.Drawing.Size(473, 193);
+            this.runOptionsPanel.Size = new System.Drawing.Size(473, 198);
             this.runOptionsPanel.TabIndex = 56;
             // 
             // backgroundWorker5
@@ -2628,6 +2634,7 @@
             // 
             // edscPanel
             // 
+            this.edscPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.edscPanel.Controls.Add(this.crFilterUpDown);
             this.edscPanel.Controls.Add(this.crFilterLabel);
             this.edscPanel.Controls.Add(this.edscLYBox5);
@@ -2652,9 +2659,9 @@
             this.edscPanel.Controls.Add(this.edscLYLabel1);
             this.edscPanel.Controls.Add(this.refSysTextBox1);
             this.edscPanel.Controls.Add(this.refSysLabel1);
-            this.edscPanel.Location = new System.Drawing.Point(12, 35);
+            this.edscPanel.Location = new System.Drawing.Point(11, 35);
             this.edscPanel.Name = "edscPanel";
-            this.edscPanel.Size = new System.Drawing.Size(312, 159);
+            this.edscPanel.Size = new System.Drawing.Size(312, 198);
             this.edscPanel.TabIndex = 65;
             this.edscPanel.Visible = false;
             // 
@@ -2696,17 +2703,15 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(826, 759);
+            this.Controls.Add(this.updateNotifyLabel);
+            this.Controls.Add(this.updateNotifyIcon);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.localFilterParentPanel);
             this.Controls.Add(this.btnCmdrProfile);
             this.Controls.Add(this.faqLinkLabel);
             this.Controls.Add(this.trackerLinkLabel);
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.panel2);
             this.Controls.Add(this.edscPanel);
-            this.Controls.Add(this.localFilterParentPanel);
             this.Controls.Add(this.testSystemsCheckBox);
-            this.Controls.Add(this.localNavCheckBox);
-            this.Controls.Add(this.methodDropDown);
-            this.Controls.Add(this.altConfigBox);
             this.Controls.Add(this.miniModeButton);
             this.Controls.Add(this.swapButton);
             this.Controls.Add(this.runOptionsPanel);
@@ -2715,14 +2720,15 @@
             this.Controls.Add(this.verboseLabel);
             this.Controls.Add(this.verbosityComboBox);
             this.Controls.Add(this.ageLabel);
-            this.Controls.Add(this.padSizeBox);
-            this.Controls.Add(this.padSizeLabel);
             this.Controls.Add(this.updateButton);
             this.Controls.Add(this.srcSysLabel);
             this.Controls.Add(this.srcSystemComboBox);
             this.Controls.Add(this.getSystemButton);
             this.Controls.Add(this.runButton);
             this.Controls.Add(this.stopWatchLabel);
+            this.Controls.Add(this.creditsBox);
+            this.Controls.Add(this.creditsLabel);
+            this.Controls.Add(this.panel2);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
