@@ -10,76 +10,76 @@ using System.Windows.Forms;
 
 namespace TDHelper
 {
-    public partial class Form4 : Form
+    public partial class SettingsForm : Form
     {
-        public Form4()
+        public SettingsForm()
         {
             InitializeComponent();
         }
 
-        private void Form4_Load(object sender, EventArgs e)
+        private void SettingsForm_Load(object sender, EventArgs e)
         {// load our current settings from the config
-            if (!String.IsNullOrEmpty(Form1.settingsRef.ExtraRunParams))
+            if (!string.IsNullOrEmpty(MainForm.settingsRef.ExtraRunParams))
             {
-                extraRunParameters.Text = Form1.settingsRef.ExtraRunParams;
+                extraRunParameters.Text = MainForm.settingsRef.ExtraRunParams;
             }
 
-            if (Form1.settingsRef.DisableNetLogs)
+            if (MainForm.settingsRef.DisableNetLogs)
             {
                 overrideDisableNetLogs.Checked = true;
             }
 
-            if (Form1.settingsRef.DoNotUpdate)
+            if (MainForm.settingsRef.DoNotUpdate)
             {
                 overrideDoNotUpdate.Checked = true;
             }
 
-            if (Form1.settingsRef.CopySystemToClipboard)
+            if (MainForm.settingsRef.CopySystemToClipboard)
             {
                 overrideCopySystemToClipboard.Checked = true;
             }
 
-            if (!String.IsNullOrEmpty(Form1.settingsRef.PythonPath))
+            if (!string.IsNullOrEmpty(MainForm.settingsRef.PythonPath))
             {
-                pythonPathBox.Text = Form1.settingsRef.PythonPath;
+                pythonPathBox.Text = MainForm.settingsRef.PythonPath;
             }
 
-            if (!String.IsNullOrEmpty(Form1.settingsRef.TDPath))
+            if (!string.IsNullOrEmpty(MainForm.settingsRef.TDPath))
             {
-                tdPathBox.Text = Form1.settingsRef.TDPath;
+                tdPathBox.Text = MainForm.settingsRef.TDPath;
             }
 
-            if (!String.IsNullOrEmpty(Form1.settingsRef.NetLogPath))
+            if (!string.IsNullOrEmpty(MainForm.settingsRef.NetLogPath))
             {
-                netLogsPathBox.Text = Form1.settingsRef.NetLogPath;
+                netLogsPathBox.Text = MainForm.settingsRef.NetLogPath;
             }
 
-            if (!String.IsNullOrEmpty(Form1.settingsRef.EdcePath))
+            if (!string.IsNullOrEmpty(MainForm.settingsRef.EdcePath))
             {
-                edcePathBox.Text = Form1.settingsRef.EdcePath;
+                edcePathBox.Text = MainForm.settingsRef.EdcePath;
             }
 
-            if (!String.IsNullOrEmpty(Form1.settingsRef.TreeViewFont))
+            if (!string.IsNullOrEmpty(MainForm.settingsRef.TreeViewFont))
             {// set our selected font and text box to what we've set in our config
-                Font savedFont = Form1.settingsRef.convertFromMemberFont();
+                Font savedFont = MainForm.settingsRef.convertFromMemberFont();
                 FontConverter fontToString = new FontConverter();
-                currentTVFontBox.Text = String.Format("{0}", fontToString.ConvertToInvariantString(savedFont));
+                currentTVFontBox.Text = string.Format("{0}", fontToString.ConvertToInvariantString(savedFont));
             }
             else
             {// set to a global default
                 Font tvDefaultFont = new Font("Consolas", 8.25f);
-                currentTVFontBox.Text = String.Format("{0}", Form1.settingsRef.convertToFontString(tvDefaultFont));
-                Form1.settingsRef.TreeViewFont = Form1.settingsRef.convertToFontString(tvDefaultFont);
+                currentTVFontBox.Text = string.Format("{0}", MainForm.settingsRef.convertToFontString(tvDefaultFont));
+                MainForm.settingsRef.TreeViewFont = MainForm.settingsRef.convertToFontString(tvDefaultFont);
             }
 
-            this.rebuyPercentage.Value = Form1.settingsRef.RebuyPercentage;
+            this.rebuyPercentage.Value = MainForm.settingsRef.RebuyPercentage;
         }
 
         private void FormValidator()
         {
             this.CopyValuesToSettings();
 
-            Form1.SaveSettingsToIniFile();
+            MainForm.SaveSettingsToIniFile();
 
             this.Close();
         }
@@ -89,7 +89,7 @@ namespace TDHelper
         /// </summary>
         private void CopyValuesToSettings()
         {
-            TDSettings settings = Form1.settingsRef;
+            TDSettings settings = MainForm.settingsRef;
 
             settings.DisableNetLogs = this.overrideDisableNetLogs.Checked;
             settings.DoNotUpdate = this.overrideDoNotUpdate.Checked;
@@ -133,64 +133,64 @@ namespace TDHelper
 
         private void validatePythonPath_Click(object sender, EventArgs e)
         {
-            string origPath = Form1.settingsRef.PythonPath;
-            string origTDPath = Form1.settingsRef.TDPath;
+            string origPath = MainForm.settingsRef.PythonPath;
+            string origTDPath = MainForm.settingsRef.TDPath;
 
-            Form1.settingsRef.PythonPath = "";
-            Form1.validatePython(origPath);
+            MainForm.settingsRef.PythonPath = "";
+            MainForm.validatePython(origPath);
             
             // adjust for Trade Dangerous Installer
-            if (Form1.settingsRef.PythonPath.EndsWith("trade.exe"))
+            if (MainForm.settingsRef.PythonPath.EndsWith("trade.exe"))
             {
-                Form1.validateTDPath(origTDPath);
-                tdPathBox.Text = Form1.settingsRef.TDPath;
+                MainForm.validateTDPath(origTDPath);
+                tdPathBox.Text = MainForm.settingsRef.TDPath;
             }
-            else if (Form1.settingsRef.PythonPath.EndsWith("python.exe")
-                && !Form1.checkIfFileOpens(Form1.settingsRef.TDPath + "\\trade.py"))
+            else if (MainForm.settingsRef.PythonPath.EndsWith("python.exe")
+                && !MainForm.checkIfFileOpens(MainForm.settingsRef.TDPath + "\\trade.py"))
             {
-                Form1.settingsRef.TDPath = "";
-                Form1.validateTDPath(origTDPath);
-                tdPathBox.Text = Form1.settingsRef.TDPath;
+                MainForm.settingsRef.TDPath = "";
+                MainForm.validateTDPath(origTDPath);
+                tdPathBox.Text = MainForm.settingsRef.TDPath;
             }
 
-            pythonPathBox.Text = Form1.settingsRef.PythonPath;
+            pythonPathBox.Text = MainForm.settingsRef.PythonPath;
         }
 
         private void validateTDPath_Click(object sender, EventArgs e)
         {
-            string origPath = Form1.settingsRef.TDPath;
-            string origPyPath = Form1.settingsRef.PythonPath;
+            string origPath = MainForm.settingsRef.TDPath;
+            string origPyPath = MainForm.settingsRef.PythonPath;
 
             // if we're using Trade Dangerous Installer, wipe our interpreter path first
             if (origPyPath.EndsWith("trade.exe"))
-                Form1.settingsRef.PythonPath = "";
+                MainForm.settingsRef.PythonPath = "";
 
-            Form1.settingsRef.TDPath = "";
-            Form1.validateTDPath(origPath);
+            MainForm.settingsRef.TDPath = "";
+            MainForm.validateTDPath(origPath);
 
             if (origPyPath.EndsWith("trade.exe"))
             {
-                Form1.validatePython(origPyPath);
-                pythonPathBox.Text = Form1.settingsRef.PythonPath;
+                MainForm.validatePython(origPyPath);
+                pythonPathBox.Text = MainForm.settingsRef.PythonPath;
             }
 
-            tdPathBox.Text = Form1.settingsRef.TDPath;
+            tdPathBox.Text = MainForm.settingsRef.TDPath;
         }
 
         private void validateNetLogsPath_Click(object sender, EventArgs e)
         {
-            string origPath = Form1.settingsRef.NetLogPath;
-            Form1.settingsRef.NetLogPath = "";
-            Form1.validateNetLogPath(origPath);
-            netLogsPathBox.Text = Form1.settingsRef.NetLogPath;
+            string origPath = MainForm.settingsRef.NetLogPath;
+            MainForm.settingsRef.NetLogPath = "";
+            MainForm.validateNetLogPath(origPath);
+            netLogsPathBox.Text = MainForm.settingsRef.NetLogPath;
         }
 
         private void validateEdcePath_Click(object sender, EventArgs e)
         {
-            string origPath = Form1.settingsRef.EdcePath;
-            Form1.settingsRef.EdcePath = "";
-            Form1.validateEdcePath(origPath);
-            edcePathBox.Text = Form1.settingsRef.EdcePath;
+            string origPath = MainForm.settingsRef.EdcePath;
+            MainForm.settingsRef.EdcePath = "";
+            MainForm.validateEdcePath(origPath);
+            edcePathBox.Text = MainForm.settingsRef.EdcePath;
         }
 
         private void resetButton_Click(object sender, EventArgs e)
@@ -199,7 +199,7 @@ namespace TDHelper
 
             if (d == DialogResult.Yes)
             {
-                Form1.callForReset = true;
+                MainForm.callForReset = true;
                 this.Dispose();
             }
         }
@@ -215,23 +215,23 @@ namespace TDHelper
 
             if (Control.ModifierKeys == Keys.Control)
             {// reset our font to a preset default with a Ctrl+Click
-                Form1.settingsRef.TreeViewFont = Form1.settingsRef.convertToFontString(tvDefaultFont);
+                MainForm.settingsRef.TreeViewFont = MainForm.settingsRef.convertToFontString(tvDefaultFont);
             }
 
             if (fontDialog.ShowDialog(this) == DialogResult.OK)
             {
                 localFontObject = fontDialog.Font;
-                Form1.settingsRef.TreeViewFont = Form1.settingsRef.convertToFontString(localFontObject);
-                currentTVFontBox.Text = String.Format("{0}", Form1.settingsRef.TreeViewFont);
+                MainForm.settingsRef.TreeViewFont = MainForm.settingsRef.convertToFontString(localFontObject);
+                currentTVFontBox.Text = string.Format("{0}", MainForm.settingsRef.TreeViewFont);
             }
             else
             {// set to our saved default, if that's null, set to the global default
-                if (Form1.settingsRef.TreeViewFont != null)
-                    localFontObject = Form1.settingsRef.convertFromMemberFont();
+                if (MainForm.settingsRef.TreeViewFont != null)
+                    localFontObject = MainForm.settingsRef.convertFromMemberFont();
                 else
                     localFontObject = tvDefaultFont;
 
-                currentTVFontBox.Text = String.Format("{0}", Form1.settingsRef.convertToFontString(localFontObject));
+                currentTVFontBox.Text = string.Format("{0}", MainForm.settingsRef.convertToFontString(localFontObject));
             }
         }
     }

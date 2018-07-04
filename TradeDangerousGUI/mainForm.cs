@@ -19,7 +19,7 @@ using System.Text;
 
 namespace TDHelper
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         #region FormProps
         string appVersion = "v" + Application.ProductVersion;
@@ -41,7 +41,7 @@ namespace TDHelper
 
         #region Snap-To-Edge
         private const int SnapDist = 10;
-        private void Form1_LocationChanged(object sender, EventArgs e)
+        private void MainForm_LocationChanged(object sender, EventArgs e)
         {
             Rectangle workingArea = Screen.FromControl(this).WorkingArea;
 
@@ -58,7 +58,7 @@ namespace TDHelper
         #endregion
 
         #region FormStuff
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
 
@@ -79,7 +79,7 @@ namespace TDHelper
             this.creditsBox.Maximum = Decimal.MaxValue;
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void MainForm_Load(object sender, EventArgs e)
         {
             Screen screen = Screen.FromControl(this);
             Rectangle workingArea = screen.WorkingArea;
@@ -99,7 +99,7 @@ namespace TDHelper
             {
                 this.Location = new Point(winLoc[0], winLoc[1]);
                 // if we're restoring the location, let's force it to be visible on screen
-                Form1.forceFormOnScreen(this);
+                MainForm.forceFormOnScreen(this);
             }
             else
             {
@@ -130,7 +130,7 @@ namespace TDHelper
                 // show the user the changelog after an update
                 if (File.Exists(localDir + "\\Changelog.txt"))
                 {
-                    Form3 changelogForm = new Form3();
+                    ChangeLogForm changelogForm = new ChangeLogForm();
                     changelogForm.ShowDialog(this); // modal
                     changelogForm.Dispose();
                 }
@@ -141,7 +141,7 @@ namespace TDHelper
             }
 
             // load our last saved config
-            if (!String.IsNullOrEmpty(settingsRef.LastUsedConfig)
+            if (!string.IsNullOrEmpty(settingsRef.LastUsedConfig)
                 && settingsRef.LastUsedConfig != configFile
                 && validateConfigFile(settingsRef.LastUsedConfig))
             {
@@ -149,13 +149,13 @@ namespace TDHelper
             }
         }
 
-        private void Form1_Shown(object sender, EventArgs e)
+        private void MainForm_Shown(object sender, EventArgs e)
         {
             // start the database uploader
             backgroundWorker6.RunWorkerAsync();
         }
 
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (checkIfFileOpens(configFileDefault))
             {// serialize window data to the default config file
@@ -167,7 +167,7 @@ namespace TDHelper
             }
         }
 
-        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             // forcefully shutdown the process handler first
             td_proc.Close();
@@ -185,7 +185,6 @@ namespace TDHelper
 
             avoidBox.Text = settingsRef.Avoid;
             viaBox.Text = settingsRef.Via;
-            cmdrNameTextBox.Text = settingsRef.CmdrName;
 
             if (settingsRef.Capacity > capacityBox.Minimum && settingsRef.Capacity <= capacityBox.Maximum)
                 capacityBox.Value = settingsRef.Capacity;
@@ -376,9 +375,6 @@ namespace TDHelper
                 temp_shipsSold = string.Empty;
             else
                 temp_shipsSold = shipsSoldBox.Text;
-
-            if (!String.IsNullOrEmpty(cmdrNameTextBox.Text))
-                settingsRef.CmdrName = cmdrNameTextBox.Text;
 
             if (methodIndex == 3)
                 r_fromBox = avoidBox.Text;
@@ -831,7 +827,7 @@ namespace TDHelper
 
             if (buttonCaller == 14)
             {// we're coming from shift+import button
-                if (!String.IsNullOrEmpty(settingsRef.ImportPath))
+                if (!string.IsNullOrEmpty(settingsRef.ImportPath))
                     t_path += "import \"" + settingsRef.ImportPath + "\"";
                 else
                     okayToRun = false;
@@ -842,7 +838,7 @@ namespace TDHelper
             }
             else if (buttonCaller == 11)
             {// we're coming from getUpdatedPricesFile()
-                if (!String.IsNullOrEmpty(temp_src))
+                if (!string.IsNullOrEmpty(temp_src))
                     t_path += "update -A -D --editor=\"nul\" \"" + temp_src + "\"";
                 else
                 {
@@ -852,7 +848,7 @@ namespace TDHelper
             }
             else if (buttonCaller == 10)
             {// we're coming from station commodities editor
-                if (!String.IsNullOrEmpty(temp_src))
+                if (!string.IsNullOrEmpty(temp_src))
                     t_path += "update -A -D -G \"" + temp_src + "\"";
                 else
                 {
@@ -862,7 +858,7 @@ namespace TDHelper
             }
             else if (t_localNavEnabled)
             {// local is a global override, let's catch it first
-                if (!String.IsNullOrEmpty(temp_src))
+                if (!string.IsNullOrEmpty(temp_src))
                 {
                     t_path += "local --ly " + t_ladenLY;
 
@@ -875,7 +871,7 @@ namespace TDHelper
                     if (outfitBoxChecked == 1) { t_path += " --outfitting"; }
                     if (stationsFilterChecked) { t_path += " --stations"; }
 
-                    if (!String.IsNullOrEmpty(settingsRef.Padsizes)) { t_path += " --pad=" + settingsRef.Padsizes; }
+                    if (!string.IsNullOrEmpty(settingsRef.Padsizes)) { t_path += " --pad=" + settingsRef.Padsizes; }
                     if (settingsRef.Verbosity > 0) { t_path += " " + t_outputVerbosity; }
                     t_path += " \"" + temp_src + "\"";
                 }
@@ -885,32 +881,9 @@ namespace TDHelper
                     playAlert();
                 }
             }
-            else if (methodIndex == 10)
-            {// coming from the EDSC command (Submit)
-                // make sure we only use a system name (not system/station), and that it doesn't already exist
-                if (!String.IsNullOrEmpty(temp_src) && temp_src.IndexOf("/") >= 0)
-                    temp_src = temp_src.Substring(0, temp_src.IndexOf("/")); // remove station
-
-                if (stationIndex == 0 && validateEDSCInput())
-                {
-                    SubmitSystem(temp_src, refSysTextBox1.Text, t_refDist1, refSysTextBox2.Text, t_refDist2, refSysTextBox3.Text, t_refDist3, refSysTextBox4.Text, t_refDist4, refSysTextBox5.Text, t_refDist5, cmdrNameTextBox.Text);
-
-                    // save our cmdrname to our config for next time
-                    SaveSettingsToIniFile();
-                }
-                else if (stationIndex > 0)
-                {// coming from the EDSC command (Lookup/Recent)
-                    if (!GetSystems(temp_src, (int)crFilterUpDown.Value))
-                        buttonCaller = 20; // mark us for a notification
-                }
-                else
-                    buttonCaller = 20;
-
-                okayToRun = false;
-            }
             else if (methodIndex == 9)
             {// mark us as coming from the olddata command
-                if (!String.IsNullOrEmpty(temp_src))
+                if (!string.IsNullOrEmpty(temp_src))
                 {
                     t_path += "olddata";
 
@@ -932,12 +905,12 @@ namespace TDHelper
             }
             else if (methodIndex == 8)
             {// mark us as coming from the nav command
-                if (!String.IsNullOrEmpty(temp_src) && !String.IsNullOrEmpty(temp_dest))
+                if (!string.IsNullOrEmpty(temp_src) && !string.IsNullOrEmpty(temp_dest))
                 {
                     t_path += "nav";
 
-                    if (!String.IsNullOrEmpty(settingsRef.Via)) { t_path += " --via=\"" + settingsRef.Via + "\""; }
-                    if (!String.IsNullOrEmpty(settingsRef.Avoid)) { t_path += " --avoid=\"" + settingsRef.Avoid + "\""; }
+                    if (!string.IsNullOrEmpty(settingsRef.Via)) { t_path += " --via=\"" + settingsRef.Via + "\""; }
+                    if (!string.IsNullOrEmpty(settingsRef.Avoid)) { t_path += " --avoid=\"" + settingsRef.Avoid + "\""; }
                     if (settingsRef.LadenLY > 0) { t_path += " --ly=" + settingsRef.LadenLY; }
                     if (settingsRef.Verbosity > 0) { t_path += " " + t_outputVerbosity; }
                     t_path += " \"" + temp_src + "\" " + "\"" + temp_dest + "\"";
@@ -969,9 +942,9 @@ namespace TDHelper
             }
             else if (methodIndex == 7)
             {// mark us as coming from the shipvendor editor
-                if (!String.IsNullOrEmpty(temp_src))
+                if (!string.IsNullOrEmpty(temp_src))
                 {
-                    if (!String.IsNullOrEmpty(temp_shipsSold) && stationIndex != 2)
+                    if (!string.IsNullOrEmpty(temp_shipsSold) && stationIndex != 2)
                     {
                         // clean our ship input before passing
                         string sanitizedInput = cleanShipVendorInput(temp_shipsSold);
@@ -999,7 +972,7 @@ namespace TDHelper
             }
             else if (methodIndex == 6)
             {// mark us as coming from the station editor
-                if (!String.IsNullOrEmpty(temp_src))
+                if (!string.IsNullOrEmpty(temp_src))
                 {
                     t_path += "station ";
 
@@ -1043,14 +1016,14 @@ namespace TDHelper
                         else if (stn_outfitBoxChecked == 0) { t_path += " --outfitting=" + "\"N\""; }
 
                         if (t_lsFromStar > 0) { t_path += " --ls-from-star=" + t_lsFromStar; }
-                        if (!String.IsNullOrEmpty(t_maxPadSize)) { t_path += " --pad-size=\"" + t_maxPadSize + "\""; }
-                        if (!String.IsNullOrEmpty(t_confirmCode)) { t_path += " --confirm=" + t_confirmCode; }
+                        if (!string.IsNullOrEmpty(t_maxPadSize)) { t_path += " --pad-size=\"" + t_maxPadSize + "\""; }
+                        if (!string.IsNullOrEmpty(t_confirmCode)) { t_path += " --confirm=" + t_confirmCode; }
                         t_path += " \"" + temp_src + "\"";
                     }
                     else if (stationIndex == 2)
                     {// removing
                         t_path += "-rm";
-                        if (!String.IsNullOrEmpty(t_confirmCode)) { t_path += " --confirm=" + t_confirmCode; }
+                        if (!string.IsNullOrEmpty(t_confirmCode)) { t_path += " --confirm=" + t_confirmCode; }
                         t_path += " \"" + temp_src + "\"";
                         buttonCaller = 16; // mark us as forcing a db update
                     }
@@ -1063,7 +1036,7 @@ namespace TDHelper
             }
             else if (methodIndex == 5)
             { // Market command
-                if (!String.IsNullOrEmpty(temp_src))
+                if (!string.IsNullOrEmpty(temp_src))
                 {
                     t_path += "market";
 
@@ -1080,7 +1053,7 @@ namespace TDHelper
             }
             else if (methodIndex == 4)
             {// mark us as coming from the trade command
-                if (!String.IsNullOrEmpty(temp_src) && !String.IsNullOrEmpty(temp_dest))
+                if (!string.IsNullOrEmpty(temp_src) && !string.IsNullOrEmpty(temp_dest))
                 {
                     t_path += "trade";
 
@@ -1094,7 +1067,7 @@ namespace TDHelper
             }
             else if (methodIndex == 3)
             { // Rares command
-                if (!String.IsNullOrEmpty(temp_src))
+                if (!string.IsNullOrEmpty(temp_src))
                 {
                     t_path += "rares";
 
@@ -1103,9 +1076,9 @@ namespace TDHelper
                     if (stationIndex == 1) { t_path += " --legal"; }
                     else if (stationIndex == 2) { t_path += " --illegal"; }
 
-                    if (!String.IsNullOrEmpty(settingsRef.Padsizes)) { t_path += " --pad=" + settingsRef.Padsizes; }
-                    if (r_unladenLY > 0 && !String.IsNullOrEmpty(r_fromBox)) { t_path += " --away=" + r_unladenLY; }
-                    if (!String.IsNullOrEmpty(r_fromBox) && r_unladenLY > 0)
+                    if (!string.IsNullOrEmpty(settingsRef.Padsizes)) { t_path += " --pad=" + settingsRef.Padsizes; }
+                    if (r_unladenLY > 0 && !string.IsNullOrEmpty(r_fromBox)) { t_path += " --away=" + r_unladenLY; }
+                    if (!string.IsNullOrEmpty(r_fromBox) && r_unladenLY > 0)
                     {
                         // break from systems into separate pieces
                         // delimited by commas, removing whitespace
@@ -1131,19 +1104,19 @@ namespace TDHelper
             { // Sell command
                 t_path += "sell";
 
-                if (!String.IsNullOrEmpty(temp_src)) { t_path += " --near=\"" + temp_src + "\""; }
+                if (!string.IsNullOrEmpty(temp_src)) { t_path += " --near=\"" + temp_src + "\""; }
                 if (t2_ladenLY > 0) { t_path += " --ly=" + t2_ladenLY; }
                 if (settingsRef.AbovePrice > 0) { t_path += " --gt=" + settingsRef.AbovePrice; }
                 if (settingsRef.BelowPrice > 0) { t_path += " --ls=" + settingsRef.BelowPrice; }
                 if (demandBox.Value > 0) { t_path += " --demand=" + demandBox.Value; }
                 if (bmktCheckBox.Checked) { t_path += " --bm"; }
-                if (!String.IsNullOrEmpty(settingsRef.Padsizes)) { t_path += " --pad=" + settingsRef.Padsizes; }
-                if (!String.IsNullOrEmpty(settingsRef.Avoid)) { t_path += " --avoid=\"" + settingsRef.Avoid + "\""; }
-                if (stationIndex == 1 && !String.IsNullOrEmpty(temp_src)) { t_path += " --price-sort"; }
+                if (!string.IsNullOrEmpty(settingsRef.Padsizes)) { t_path += " --pad=" + settingsRef.Padsizes; }
+                if (!string.IsNullOrEmpty(settingsRef.Avoid)) { t_path += " --avoid=\"" + settingsRef.Avoid + "\""; }
+                if (stationIndex == 1 && !string.IsNullOrEmpty(temp_src)) { t_path += " --price-sort"; }
                 if (settingsRef.Verbosity > 0) { t_path += " " + t_outputVerbosity; }
                 t_path += " --lim=50";
 
-                if (!String.IsNullOrEmpty(temp_commod))
+                if (!string.IsNullOrEmpty(temp_commod))
                 {
                     t_path += " \"" + temp_commod + "\"";
                 }
@@ -1152,23 +1125,23 @@ namespace TDHelper
             { // Buy command
                 t_path += "buy";
 
-                if (!String.IsNullOrEmpty(temp_src)) { t_path += " --near=\"" + temp_src + "\""; }
+                if (!string.IsNullOrEmpty(temp_src)) { t_path += " --near=\"" + temp_src + "\""; }
                 if (t1_ladenLY > 0) { t_path += " --ly=" + t1_ladenLY; }
                 if (stockBox.Value > 0) { t_path += " --supply=" + stockBox.Value; }
                 if (settingsRef.AbovePrice > 0) { t_path += " --gt=" + settingsRef.AbovePrice; }
                 if (settingsRef.BelowPrice > 0) { t_path += " --lt=" + settingsRef.BelowPrice; }
                 if (oneStopCheckBox.Checked) { t_path += " -1"; }
                 if (bmktCheckBox.Checked) { t_path += " --bm"; }
-                if (!String.IsNullOrEmpty(settingsRef.Padsizes)) { t_path += " --pad=" + settingsRef.Padsizes; }
-                if (!String.IsNullOrEmpty(settingsRef.Avoid)) { t_path += " --avoid=\"" + settingsRef.Avoid + "\""; }
+                if (!string.IsNullOrEmpty(settingsRef.Padsizes)) { t_path += " --pad=" + settingsRef.Padsizes; }
+                if (!string.IsNullOrEmpty(settingsRef.Avoid)) { t_path += " --avoid=\"" + settingsRef.Avoid + "\""; }
 
-                if (stationIndex == 1 && !String.IsNullOrEmpty(temp_src)) { t_path += " --price-sort"; }
+                if (stationIndex == 1 && !string.IsNullOrEmpty(temp_src)) { t_path += " --price-sort"; }
                 else if (stationIndex == 2) { t_path += " --units-sort"; }
 
                 if (settingsRef.Verbosity > 0) { t_path += " " + t_outputVerbosity; }
                 t_path += " --lim=50";
 
-                if (!String.IsNullOrEmpty(temp_commod))
+                if (!string.IsNullOrEmpty(temp_commod))
                 {
                     t_path += " \"" + temp_commod + "\"";
                 }
@@ -1177,16 +1150,16 @@ namespace TDHelper
             { // Run command
                 t_path += "run";
 
-                if (!String.IsNullOrEmpty(temp_src))
+                if (!string.IsNullOrEmpty(temp_src))
                 {
                     t_path += " --fr=\"" + temp_src + "\"";
 
                     // towards requires a source
-                    if (!String.IsNullOrEmpty(temp_dest) && settingsRef.Towards)
+                    if (!string.IsNullOrEmpty(temp_dest) && settingsRef.Towards)
                         t_path += " --towards=\"" + temp_dest + "\"";
                 }
 
-                if (!String.IsNullOrEmpty(temp_dest) && !settingsRef.Towards && !settingsRef.Loop)
+                if (!string.IsNullOrEmpty(temp_dest) && !settingsRef.Towards && !settingsRef.Loop)
                 {// allow a destination without a source for anonymous Runs
                     t_path += " --to=\"" + temp_dest + "\"";
                     if (t_EndJumps > 0) { t_path += " --end=" + t_EndJumps; }
@@ -1200,7 +1173,7 @@ namespace TDHelper
                 if (settingsRef.Credits > 0) { t_path += " --cr=" + settingsRef.Credits; }
                 if (settingsRef.LadenLY > 0.00m) { t_path += " --ly=" + settingsRef.LadenLY; }
                 if (settingsRef.UnladenLY > 0.00m) { t_path += " --empty=" + settingsRef.UnladenLY; }
-                if (!String.IsNullOrEmpty(settingsRef.Padsizes)) { t_path += " --pad=" + settingsRef.Padsizes; }
+                if (!string.IsNullOrEmpty(settingsRef.Padsizes)) { t_path += " --pad=" + settingsRef.Padsizes; }
                 if (settingsRef.GPT > 0) { t_path += " --gpt=" + settingsRef.GPT; }
                 if (settingsRef.MaxGPT > 0) { t_path += " --mgpt=" + settingsRef.MaxGPT; }
                 if (settingsRef.Stock > 0) { t_path += " --supply=" + settingsRef.Stock; }
@@ -1218,13 +1191,13 @@ namespace TDHelper
                 if (directCheckBox.Checked) { t_path += " --direct"; }
                 if (shortenCheckBox.Checked) { t_path += " --shorten"; }
                 if (settingsRef.Unique) { t_path += " --unique"; }
-                if (!String.IsNullOrEmpty(settingsRef.Avoid)) { t_path += " --avoid=\"" + settingsRef.Avoid + "\""; }
-                if (!String.IsNullOrEmpty(settingsRef.Via)) { t_path += " --via=\"" + settingsRef.Via + "\""; }
+                if (!string.IsNullOrEmpty(settingsRef.Avoid)) { t_path += " --avoid=\"" + settingsRef.Avoid + "\""; }
+                if (!string.IsNullOrEmpty(settingsRef.Via)) { t_path += " --via=\"" + settingsRef.Via + "\""; }
                 if (settingsRef.Loop) { t_path += " --loop"; }
                 if (settingsRef.LoopInt > 0) { t_path += " --loop-int=" + settingsRef.LoopInt; }
                 if (belowPriceBox.Value > 0) { t_path += " --routes=" + belowPriceBox.Value; }
                 if (settingsRef.ShowJumps) { t_path += " -J"; }
-                if (!String.IsNullOrEmpty(settingsRef.ExtraRunParams)) { t_path += " " + settingsRef.ExtraRunParams; }
+                if (!string.IsNullOrEmpty(settingsRef.ExtraRunParams)) { t_path += " " + settingsRef.ExtraRunParams; }
                 if (settingsRef.Verbosity > 0) { t_path += " " + t_outputVerbosity; }
 
                 buttonCaller = 4; // mark as Run command
@@ -1244,14 +1217,14 @@ namespace TDHelper
 
                 // turn off checkboxes where sensible
                 if (t_csvExportCheckBox) { csvExportCheckBox.Checked = false; }
-                if (!String.IsNullOrEmpty(confirmBox.Text)) { confirmBox.Text = string.Empty; }
+                if (!string.IsNullOrEmpty(confirmBox.Text)) { confirmBox.Text = string.Empty; }
 
                 // let's alert the user that the Output pane has changed
-                if (!String.IsNullOrEmpty(td_outputBox.Text) && tabControl1.SelectedTab != outputPage)
+                if (!string.IsNullOrEmpty(td_outputBox.Text) && tabControl1.SelectedTab != outputPage)
                     tabControl1.SelectedTab = outputPage;
 
                 // assume we're coming from getUpdatedPricesFile()
-                if (!String.IsNullOrEmpty(settingsRef.ImportPath) && buttonCaller == 11)
+                if (!string.IsNullOrEmpty(settingsRef.ImportPath) && buttonCaller == 11)
                     cleanUpdatedPricesFile();
                 else if (buttonCaller == 16)
                 {// force a db sync if we're marked
@@ -1395,7 +1368,7 @@ namespace TDHelper
 
             if (settingsRef.TestSystems)
             {
-                if (String.IsNullOrEmpty(t_lastSysCheck) && !String.IsNullOrEmpty(t_lastSystem)
+                if (string.IsNullOrEmpty(t_lastSysCheck) && !string.IsNullOrEmpty(t_lastSystem)
                     && !stringInList(t_lastSystem, outputSysStnNames))
                 {// alert the user if we're starting in an unknown system
                     playUnknown();
@@ -1406,8 +1379,8 @@ namespace TDHelper
                     }));
                     t_lastSysCheck = t_lastSystem;
                 }
-                else if ((!String.IsNullOrEmpty(t_lastSysCheck) && !t_lastSysCheck.Equals(t_lastSystem)
-                    && !stringInList(t_lastSystem, outputSysStnNames)) || String.IsNullOrEmpty(t_lastSysCheck)
+                else if ((!string.IsNullOrEmpty(t_lastSysCheck) && !t_lastSysCheck.Equals(t_lastSystem)
+                    && !stringInList(t_lastSystem, outputSysStnNames)) || string.IsNullOrEmpty(t_lastSysCheck)
                     && !stringInList(t_lastSystem, outputSysStnNames))
                 {// if we've already checked a recent system, only check the newest entered system once
                     playUnknown(); // alert the user
@@ -1443,7 +1416,7 @@ namespace TDHelper
                 if (this.ValidateEdce())
                 {
                     // EDCE is valid so set up the call.
-                    t_path = Path.Combine(Form1.settingsRef.EdcePath, "edce_client.py");
+                    t_path = Path.Combine(MainForm.settingsRef.EdcePath, "edce_client.py");
                 }
                 else
                 {
@@ -1456,7 +1429,7 @@ namespace TDHelper
             if (okayToRun)
             {
                 string currentFolder = Directory.GetCurrentDirectory();
-                Directory.SetCurrentDirectory(Form1.settingsRef.EdcePath);
+                Directory.SetCurrentDirectory(MainForm.settingsRef.EdcePath);
 
                 try
                 {
@@ -1741,20 +1714,6 @@ namespace TDHelper
 
                     methodFromIndex = 9; // mark olddata
                 }
-                else if (methodIndex == 10)
-                {// edsc command
-                    stationEditorChangeState();
-
-                    // set "submit" as the default
-                    List<string> shipVendorDrop = new List<string>(new string[] { "Submit", "Lookup", "Recent" });
-                    stationDropDown.DataSource = shipVendorDrop;
-
-                    // fix tooltips
-                    toolTip1.SetToolTip(methodDropDown, "Submit/Check systems against EDSC database");
-                    toolTip1.SetToolTip(srcSystemComboBox, "System name must be exact and cannot exist in our database for proper submission to EDSC");
-
-                    methodFromIndex = 10; // mark edsc
-                }
                 else
                 {// run command
                     runMethodResetState();
@@ -1770,12 +1729,10 @@ namespace TDHelper
             panel2.Visible = false;
             stationDropDown.Visible = false;
             localFilterParentPanel.Visible = false;
-            edscPanel.Visible = false;
 
             srcSystemComboBox.Enabled = true;
             panel1.Enabled = true;
             panel2.Enabled = false;
-            edscPanel.Enabled = false;
 
             // make an exception for the padsizebox when applicable
             if (methodIndex <= 3 && methodIndex >= 0)
@@ -1788,9 +1745,6 @@ namespace TDHelper
                 padSizeBox.Enabled = false;
                 padSizeLabel.Enabled = false;
             }
-
-            // disable the push context menu option
-            pushEDSCToCSV.Visible = false;
 
             // save some previous values before overwriting
             if (methodFromIndex == 0 && belowPriceBox.Value > 0)
@@ -1973,7 +1927,7 @@ namespace TDHelper
             localNavCheckBox.Checked = false;
 
             // an exception for switching from another command with a valid dest
-            if (methodFromIndex != 0 && !String.IsNullOrEmpty(destSystemComboBox.Text))
+            if (methodFromIndex != 0 && !string.IsNullOrEmpty(destSystemComboBox.Text))
                 endJumpsBox.Enabled = true;
             else
                 endJumpsBox.Enabled = false;
@@ -2007,7 +1961,7 @@ namespace TDHelper
                 settingsRef.Avoid = avoidBox.Text; // save Avoid list
 
                 // restore the contents if it exists
-                if (!String.IsNullOrEmpty(r_fromBox))
+                if (!string.IsNullOrEmpty(r_fromBox))
                     avoidBox.Text = r_fromBox;
                 else
                     avoidBox.Text = string.Empty;
@@ -2017,7 +1971,7 @@ namespace TDHelper
                 r_fromBox = avoidBox.Text; // save From list
 
                 // restore our contents from global
-                if (!String.IsNullOrEmpty(settingsRef.Avoid))
+                if (!string.IsNullOrEmpty(settingsRef.Avoid))
                     avoidBox.Text = settingsRef.Avoid;
                 else
                     avoidBox.Text = string.Empty;
@@ -2040,7 +1994,6 @@ namespace TDHelper
             { // shipvendor
                 panel1.Enabled = false;
                 panel2.Enabled = true;
-                edscPanel.Enabled = false;
 
                 panel1.Visible = false;
                 panel2.Visible = true;
@@ -2059,7 +2012,6 @@ namespace TDHelper
             { // station
                 panel1.Enabled = false;
                 panel2.Enabled = true;
-                edscPanel.Enabled = false;
 
                 panel1.Visible = false;
                 panel2.Visible = true;
@@ -2077,7 +2029,6 @@ namespace TDHelper
             {
                 panel1.Enabled = false;
                 panel2.Enabled = true;
-                edscPanel.Enabled = false;
 
                 // we don't need most panel1 controls
                 foreach (Control ctrl in panel2.Controls)
@@ -2098,46 +2049,6 @@ namespace TDHelper
 
                 oldRoutesCheckBox.Enabled = true;
                 oldRoutesCheckBox.Visible = true;
-            }
-            else if (methodIndex == 10)
-            {// edsc panel
-                panel1.Enabled = false;
-                panel2.Enabled = false;
-                edscPanel.Enabled = true;
-
-                // disable the push context menu option
-                pushEDSCToCSV.Visible = true;
-
-                toolTip1.SetToolTip(stationDropDown, "Select an EDSC command mode");
-
-                if (stationIndex == 0)
-                {
-                    // disable most controls in this panel
-                    foreach (Control ctrl in edscPanel.Controls)
-                        ctrl.Enabled = true;
-
-                    crFilterUpDown.Enabled = false;
-                    crFilterLabel.Enabled = false;
-                    edscPanel.Visible = true;
-                    edscPanel.BringToFront();
-                    stationDropDown.Visible = true;
-                    stationDropDown.Enabled = true;
-                }
-                else if (stationIndex > 0)
-                {
-                    if (stationIndex == 2) { srcSystemComboBox.Enabled = false; }
-
-                    // disable most controls in this panel
-                    foreach (Control ctrl in edscPanel.Controls)
-                        ctrl.Enabled = false;
-
-                    crFilterUpDown.Enabled = true;
-                    crFilterLabel.Enabled = true;
-                    edscPanel.Visible = true;
-                    edscPanel.BringToFront();
-                    stationDropDown.Visible = true;
-                    stationDropDown.Enabled = true;
-                }
             }
             else
             {
@@ -2187,7 +2098,7 @@ namespace TDHelper
 
         private void validateDestForEndJumps()
         {
-            if (!String.IsNullOrEmpty(destSystemComboBox.Text) && methodIndex != 4)
+            if (!string.IsNullOrEmpty(destSystemComboBox.Text) && methodIndex != 4)
             {
                 endJumpsBox.Enabled = true;
                 endJumpsLabel.Enabled = true;
@@ -2198,52 +2109,35 @@ namespace TDHelper
                 endJumpsLabel.Enabled = false;
             }
         }
-
-        private bool validateDistance(string input, string output)
-        {// this is our generic validator for a distance (in LY) in the EDSC panel
-            double t_Distance = 0.00f;
-
-            // we require our distances to be 2 decimal places at all times
-            if (double.TryParse(input, out t_Distance) && t_Distance > 0.00f && t_Distance <= 500.00f)
-            {
-                output = String.Format("{0:0.00}", t_Distance);
-                return true;
-            }
-            else
-            {
-                output = "0.00";
-                return false;
-            }
-        }
         #endregion
 
         #region FormMembers
         private void testSystemsTimer_Delegate(object sender, ElapsedEventArgs e)
         {
-            Debug.WriteLine(String.Format("testSystems Firing at: {0}", currentTimestamp()));
-            if (!backgroundWorker6.IsBusy && !settingsRef.DisableNetLogs && !String.IsNullOrEmpty(settingsRef.NetLogPath))
+            Debug.WriteLine(string.Format("testSystems Firing at: {0}", currentTimestamp()));
+            if (!backgroundWorker6.IsBusy && !settingsRef.DisableNetLogs && !string.IsNullOrEmpty(settingsRef.NetLogPath))
             {
                 backgroundWorker6.RunWorkerAsync();
             }
         }
 
-        private void Form1_Activated(object sender, EventArgs e)
+        private void MainForm_Activated(object sender, EventArgs e)
         {
             isActive = true;
 
             FlashWindow.Stop(this); // stop flashing when we activate the window
         }
 
-        private void Form1_Deactivate(object sender, EventArgs e)
+        private void MainForm_Deactivate(object sender, EventArgs e)
         {
             isActive = false;
         }
 
         private void miscSettingsButton_Click(object sender, EventArgs e)
         {
-            Form4 form4 = new Form4();
-            form4.StartPosition = FormStartPosition.CenterParent;
-            form4.ShowDialog(this);
+            SettingsForm SettingsForm = new SettingsForm();
+            SettingsForm.StartPosition = FormStartPosition.CenterParent;
+            SettingsForm.ShowDialog(this);
 
             if (callForReset)
             {// wipe our settings and reinitialize
@@ -2379,7 +2273,7 @@ namespace TDHelper
 
         private void clearSaved1MenuItem_Click(object sender, EventArgs e)
         {
-            if (!String.IsNullOrEmpty(savedTextBox1.Text))
+            if (!string.IsNullOrEmpty(savedTextBox1.Text))
             {
                 savedTextBox1.Text = string.Empty;
                 if (File.Exists(savedFile1))
@@ -2389,7 +2283,7 @@ namespace TDHelper
 
         private void clearSaved2MenuItem_Click(object sender, EventArgs e)
         {
-            if (!String.IsNullOrEmpty(savedTextBox2.Text))
+            if (!string.IsNullOrEmpty(savedTextBox2.Text))
             {
                 savedTextBox2.Text = string.Empty;
                 if (File.Exists(savedFile2))
@@ -2399,7 +2293,7 @@ namespace TDHelper
 
         private void clearSaved3MenuItem_Click(object sender, EventArgs e)
         {
-            if (!String.IsNullOrEmpty(savedTextBox3.Text))
+            if (!string.IsNullOrEmpty(savedTextBox3.Text))
             {
                 savedTextBox3.Text = string.Empty;
                 if (File.Exists(savedFile3))
@@ -2454,11 +2348,7 @@ namespace TDHelper
         {
             stationIndex = stationDropDown.SelectedIndex;
 
-            if (methodIndex == 10)
-            {// if we're in EDSC mode
-                stationEditorChangeState(); // call our state change
-            }
-            else if (methodIndex == 7)
+            if (methodIndex == 7)
             {// if we're in ShipVendor mode
                 if (stationIndex == 2)
                 {// disable when list'ing
@@ -2555,22 +2445,22 @@ namespace TDHelper
         {// here we swap the contents of the boxes with some conditions
             if (!localFilterParentPanel.Visible && destSystemComboBox.Visible)
             {// don't swap if the destination box isn't visible (or covered)
-                if (!String.IsNullOrEmpty(srcSystemComboBox.Text)
-                    && !String.IsNullOrEmpty(destSystemComboBox.Text))
+                if (!string.IsNullOrEmpty(srcSystemComboBox.Text)
+                    && !string.IsNullOrEmpty(destSystemComboBox.Text))
                 {
                     string temp = removeExtraWhitespace(destSystemComboBox.Text);
                     destSystemComboBox.Text = removeExtraWhitespace(srcSystemComboBox.Text);
                     srcSystemComboBox.Text = temp;
                 }
-                else if (!String.IsNullOrEmpty(srcSystemComboBox.Text)
-                    && String.IsNullOrEmpty(destSystemComboBox.Text))
+                else if (!string.IsNullOrEmpty(srcSystemComboBox.Text)
+                    && string.IsNullOrEmpty(destSystemComboBox.Text))
                 {// swap from source to destination
                     string temp = removeExtraWhitespace(srcSystemComboBox.Text);
                     destSystemComboBox.Text = temp;
                     srcSystemComboBox.Text = string.Empty;
                 }
-                else if (String.IsNullOrEmpty(srcSystemComboBox.Text)
-                    && !String.IsNullOrEmpty(destSystemComboBox.Text))
+                else if (string.IsNullOrEmpty(srcSystemComboBox.Text)
+                    && !string.IsNullOrEmpty(destSystemComboBox.Text))
                 {// swap from destination to source
                     string temp = removeExtraWhitespace(destSystemComboBox.Text);
                     srcSystemComboBox.Text = temp;
@@ -2581,7 +2471,7 @@ namespace TDHelper
 
         private void miniModeButton_Click(object sender, EventArgs e)
         {
-            Form2 childForm = new Form2(this); // pass a reference from parentForm
+            TdMiniForm childForm = new TdMiniForm(this); // pass a reference from parentForm
 
             // populate the treeview from the last valid run output
             parseRunOutput(tv_outputBox, childForm.treeViewBox);
@@ -2709,7 +2599,7 @@ namespace TDHelper
 
         private void notesClearMenuItem_Click(object sender, EventArgs e)
         {
-            if (!String.IsNullOrEmpty(notesTextBox.Text))
+            if (!string.IsNullOrEmpty(notesTextBox.Text))
             {
                 notesTextBox.Text = string.Empty;
                 if (File.Exists(notesFile))
@@ -2733,7 +2623,7 @@ namespace TDHelper
                 notesTextBox.SaveFile(notesFile, RichTextBoxStreamType.PlainText);
             }
 
-            if (tabControl1.SelectedTab == tabControl1.TabPages["outputPage"] && !String.IsNullOrEmpty(td_outputBox.Text))
+            if (tabControl1.SelectedTab == tabControl1.TabPages["outputPage"] && !string.IsNullOrEmpty(td_outputBox.Text))
             {
                 string filteredOutput = filterOutput(td_outputBox.Text);
                 runOutputState = isValidRunOutput(filteredOutput);
@@ -2987,7 +2877,7 @@ namespace TDHelper
                     e.Handled = true;
                 }
                 else if (e.KeyCode == Keys.Escape
-                    && !String.IsNullOrEmpty(filteredString))
+                    && !string.IsNullOrEmpty(filteredString))
                 {// wipe our box selectively if we hit escape
                     //first wipe until the delimiter
                     string[] tokens = filteredString.Split(new string[] { "/" }, StringSplitOptions.None);
@@ -3026,7 +2916,7 @@ namespace TDHelper
                 e.Handled = true;
             }
             else if (e.KeyCode == Keys.Escape
-                && !String.IsNullOrEmpty(destSystemComboBox.Text))
+                && !string.IsNullOrEmpty(destSystemComboBox.Text))
             {// wipe our box selectively if we hit escape
                 //first wipe until the delimiter
                 string[] tokens = destSystemComboBox.Text.Split(new string[] { "/" }, StringSplitOptions.None);
@@ -3082,7 +2972,7 @@ namespace TDHelper
                 settingsRef.Loop = false;
                 loopCheckBox.Checked = false;
             }
-            else if (!String.IsNullOrEmpty(destSystemComboBox.Text))
+            else if (!string.IsNullOrEmpty(destSystemComboBox.Text))
             {
                 if (!towardsCheckBox.Checked)
                 {
@@ -3100,7 +2990,7 @@ namespace TDHelper
 
         private void shortenCheckBox_Click(object sender, EventArgs e)
         {
-            if (!String.IsNullOrEmpty(destSystemComboBox.Text))
+            if (!string.IsNullOrEmpty(destSystemComboBox.Text))
             {
                 if (!shortenCheckBox.Checked)
                 {
@@ -3182,7 +3072,7 @@ namespace TDHelper
 
         private void copySystemToSrc_Click(object sender, EventArgs e)
         {
-            if (pilotsLogDataGrid.Rows.Count > 0 && !String.IsNullOrEmpty(pilotsLogDataGrid.Rows[dRowIndex].Cells[2].Value.ToString()))
+            if (pilotsLogDataGrid.Rows.Count > 0 && !string.IsNullOrEmpty(pilotsLogDataGrid.Rows[dRowIndex].Cells[2].Value.ToString()))
             {// grab the system from the system field, if it exists, copy to the src box
                 string dbSys = pilotsLogDataGrid.Rows[dRowIndex].Cells[2].Value.ToString();
                 srcSystemComboBox.Text = dbSys;
@@ -3191,13 +3081,18 @@ namespace TDHelper
 
         private void copySystemToDest_Click(object sender, EventArgs e)
         {
-            if (pilotsLogDataGrid.Rows.Count > 0 && !String.IsNullOrEmpty(pilotsLogDataGrid.Rows[dRowIndex].Cells[2].Value.ToString()))
+            if (pilotsLogDataGrid.Rows.Count > 0 && !string.IsNullOrEmpty(pilotsLogDataGrid.Rows[dRowIndex].Cells[2].Value.ToString()))
             {// grab the system from the system field, if it exists, copy to the src box
                 string dbSys = pilotsLogDataGrid.Rows[dRowIndex].Cells[2].Value.ToString();
                 destSystemComboBox.Text = dbSys;
             }
         }
 
+        /// <summary>
+        /// Handle the Cmdr Profile functionality.
+        /// </summary>
+        /// <param name="sender">The object sender.</param>
+        /// <param name="e">The event args.</param>
         private void btnCmdrProfile_Click(object sender, EventArgs e)
         {
             if (!backgroundWorker7.IsBusy)
@@ -3210,16 +3105,18 @@ namespace TDHelper
             }
         }
 
-        private void copySystemToEDSC_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Handle the save settings functionality.
+        /// </summary>
+        /// <param name="sender">The object sender.</param>
+        /// <param name="e">The event args.</param>
+        private void btnSaveSettings_Click(object sender, EventArgs e)
         {
-            // forcefully switch our panel to the EDSC method
-            methodDropDown.SelectedIndex = 10;
+            this.btnSaveSettings.Enabled = false;
 
-            if (pilotsLogDataGrid.Rows.Count > 0 && !String.IsNullOrEmpty(pilotsLogDataGrid.Rows[dRowIndex].Cells[2].Value.ToString()))
-            {// grab the system from the system field, if it exists, copy to the src box
-                string dbSys = pilotsLogDataGrid.Rows[dRowIndex].Cells[2].Value.ToString();
-                srcSystemComboBox.Text = dbSys;
-            }
+            SaveSettingsToIniFile();
+
+            this.btnSaveSettings.Enabled = true;
         }
 
         private void pilotsLogDataGrid_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)

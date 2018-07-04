@@ -12,7 +12,8 @@ v2.0.2.0
 * Visible ship type shown instead of internal ship type.
 * Fixed bug where method drop down box was disabled.
 * Fixed bug where local check box was disabled.
-* Changed layout
+* Changed layout.
+* Removed all EDSC controls and code as EDSC does not seem to be avilable any longer.
 
 v2.0.1.1
 --------

@@ -45,7 +45,7 @@ namespace TDHelper
         {
             DateTime currentTime = DateTime.Now.ToLocalTime();
             FileInfo fileRef = new FileInfo(logPath);
-            String outputString = String.Format("[{0}] {1}\r\n", currentTime, message);
+            string outputString = string.Format("[{0}] {1}\r\n", currentTime, message);
 
             // make sure the log doesn't get too big (<1mb)
             if (fileRef.Exists && fileRef.Length > 1048576)
@@ -88,7 +88,7 @@ namespace TDHelper
             }
             catch (Exception e)
             {
-                writeToLog(Form1.updateLogPath, e.Message + " [URL: " + url + "] " + (!string.IsNullOrEmpty(e.InnerException.Message) ? e.InnerException.Message : string.Empty));
+                writeToLog(MainForm.updateLogPath, e.Message + " [URL: " + url + "] " + (!string.IsNullOrEmpty(e.InnerException.Message) ? e.InnerException.Message : string.Empty));
             }
 
             return result;
@@ -105,19 +105,19 @@ namespace TDHelper
             {
                 XDocument doc = XDocument.Load(manifest);
                 XElement root = doc.Element("Manifest").Element("Assembly");
-                String manifestAssemblyName = root.Attribute("Name").Value;
-                String localAssemblyPath = Path.Combine(path, manifestAssemblyName);
+                string manifestAssemblyName = root.Attribute("Name").Value;
+                string localAssemblyPath = Path.Combine(path, manifestAssemblyName);
 
-                if (!String.IsNullOrEmpty(manifestAssemblyName) && File.Exists(localAssemblyPath))
+                if (!string.IsNullOrEmpty(manifestAssemblyName) && File.Exists(localAssemblyPath))
                 {// resolve the local path to the assembly mentioned in the manifest
-                    String manifestAssemblyHash = root.Element("MD5").Value;
-                    String localAssemblyHash = calculateMD5(localAssemblyPath);
+                    string manifestAssemblyHash = root.Element("MD5").Value;
+                    string localAssemblyHash = calculateMD5(localAssemblyPath);
 
-                    return (!String.IsNullOrEmpty(manifestAssemblyHash) && localAssemblyHash.Equals(manifestAssemblyHash));
+                    return (!string.IsNullOrEmpty(manifestAssemblyHash) && localAssemblyHash.Equals(manifestAssemblyHash));
                 }
                 else
                 {
-                    writeToLog(Form1.updateLogPath, "The assembly mentioned in the manifest cannot be found: " + manifestAssemblyName);
+                    writeToLog(MainForm.updateLogPath, "The assembly mentioned in the manifest cannot be found: " + manifestAssemblyName);
                     return false;
                 }
             }
@@ -174,14 +174,14 @@ namespace TDHelper
                 if (Directory.Exists(workingPath) && Directory.GetFiles(workingPath).Length > 0)
                 {
                     // only the non-debugging assembly
-                    String[] fileList = {
+                    string[] fileList = {
                         "TDHelper.exe",
                         "System.Data.SQLite.dll",
                         "Newtonsoft.Json.dll",
                         "SharpConfig.dll" };
 
                     // put the assembly info first
-                    if (!String.IsNullOrEmpty(fileList[0]))
+                    if (!string.IsNullOrEmpty(fileList[0]))
                     {
                         string assemblyVersion = getFileVersion(fileList[0]);
                         string assemblyMD5 = calculateMD5(fileList[0]);
@@ -189,14 +189,14 @@ namespace TDHelper
 
                         root.Add(new XElement("Assembly", new XAttribute("Name", assemblyExeName), new XElement("Version", assemblyVersion), new XElement("MD5", assemblyMD5)));
 
-                        if (!String.IsNullOrEmpty(URL))
+                        if (!string.IsNullOrEmpty(URL))
                         {
                             XElement el = root.Element("Assembly");
                             el.Add(new XElement("URL", URL));
                         }
                         else
                         {
-                            writeToLog(Form1.updateLogPath, "Possibly invalid manifest file, can't find URL tag in Assembly");
+                            writeToLog(MainForm.updateLogPath, "Possibly invalid manifest file, can't find URL tag in Assembly");
                         }
 
                         // Now the remaining files.
@@ -213,7 +213,7 @@ namespace TDHelper
                     }
                     else
                     {
-                        writeToLog(Form1.updateLogPath, "Cannot find an assembly in the working path: " + workingPath);
+                        writeToLog(MainForm.updateLogPath, "Cannot find an assembly in the working path: " + workingPath);
                     }
                 }
                 else
@@ -233,7 +233,7 @@ namespace TDHelper
             }
             catch (Exception e)
             {
-                writeToLog(Form1.updateLogPath, e.Message);
+                writeToLog(MainForm.updateLogPath, e.Message);
             }
         }
 
@@ -251,11 +251,11 @@ namespace TDHelper
             }
             catch (IOException e)
             {
-                writeToLog(Form1.updateLogPath, "IOException: " + e.Message);
+                writeToLog(MainForm.updateLogPath, "IOException: " + e.Message);
             }
             catch (Exception e)
             {
-                writeToLog(Form1.updateLogPath, "Exception: " + e.Message);
+                writeToLog(MainForm.updateLogPath, "Exception: " + e.Message);
             }
         }
 
@@ -272,7 +272,7 @@ namespace TDHelper
             }
             catch (Exception e)
             {
-                writeToLog(Form1.updateLogPath, "Exception: " + e.Message);
+                writeToLog(MainForm.updateLogPath, "Exception: " + e.Message);
             }
         }
 
@@ -294,7 +294,7 @@ namespace TDHelper
             }
             catch (Exception e)
             {
-                writeToLog(Form1.updateLogPath, "Exception: " + e.Message);
+                writeToLog(MainForm.updateLogPath, "Exception: " + e.Message);
                 return null;
             }
         }
@@ -333,8 +333,8 @@ namespace TDHelper
 
                     if (root != null)
                     {
-                        String rootAttr = root.Attribute("Name").Value;
-                        return (!String.IsNullOrEmpty(rootAttr)) ? rootAttr : "";
+                        string rootAttr = root.Attribute("Name").Value;
+                        return (!string.IsNullOrEmpty(rootAttr)) ? rootAttr : "";
                     }
                     else
                     {
@@ -348,7 +348,7 @@ namespace TDHelper
             }
             catch (Exception e)
             {
-                writeToLog(Form1.updateLogPath, "Exception: " + e.Message);
+                writeToLog(MainForm.updateLogPath, "Exception: " + e.Message);
 
                 return string.Empty;
             }
@@ -365,8 +365,8 @@ namespace TDHelper
 
                     if (root != null)
                     {// it's an element
-                        String value = root.Value;
-                        return (!String.IsNullOrEmpty(value)) ? value : string.Empty;
+                        string value = root.Value;
+                        return (!string.IsNullOrEmpty(value)) ? value : string.Empty;
                     }
                     else
                     {// it's an attribute
@@ -374,8 +374,8 @@ namespace TDHelper
                         XAttribute rootAttr = doc.Element("Manifest").Element("Assembly").Attribute(key);
                         if (rootAttr != null)
                         {
-                            String value = rootAttr.Value;
-                            return (!String.IsNullOrEmpty(value)) ? value : string.Empty;
+                            string value = rootAttr.Value;
+                            return (!string.IsNullOrEmpty(value)) ? value : string.Empty;
                         }
                         else
                         {
@@ -390,7 +390,7 @@ namespace TDHelper
             }
             catch (Exception e)
             {
-                writeToLog(Form1.updateLogPath, "Exception: " + e.Message);
+                writeToLog(MainForm.updateLogPath, "Exception: " + e.Message);
                 return string.Empty;
             }
         }

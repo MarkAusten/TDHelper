@@ -11,9 +11,9 @@ using System.Windows.Forms;
 
 namespace TDHelper
 {
-    public partial class Form3 : Form
+    public partial class ChangeLogForm : Form
     {
-        public Form3()
+        public ChangeLogForm()
         {
             InitializeComponent();
         }
@@ -28,9 +28,9 @@ namespace TDHelper
             Application.Exit();
         }
 
-        private void Form3_Load(object sender, EventArgs e)
+        private void ChangeLogForm_Load(object sender, EventArgs e)
         {
-            string changelogPath = Form1.localDir + "\\Changelog.txt";
+            string changelogPath = MainForm.localDir + "\\Changelog.txt";
             if (File.Exists(changelogPath))
             {
                 changelogTextBox.Text = File.ReadAllText(changelogPath);

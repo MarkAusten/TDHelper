@@ -1,6 +1,6 @@
 ﻿namespace TDHelper
 {
-    partial class Form2
+    partial class TdMiniForm
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TdMiniForm));
             this.treeView = new System.Windows.Forms.TreeView();
             this.pinButton = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -74,7 +74,7 @@
             this.pinButton.Click += new System.EventHandler(this.pinButton_Click);
             this.pinButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.pinButton_KeyDown);
             // 
-            // Form2
+            // TdMiniForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -86,12 +86,12 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(175, 90);
-            this.Name = "Form2";
+            this.Name = "TdMiniForm";
             this.Text = "TDHelper (mini)";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form2_FormClosing);
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form2_FormClosed);
-            this.Load += new System.EventHandler(this.Form2_Load);
-            this.LocationChanged += new System.EventHandler(this.Form2_LocationChanged);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TdMiniForm_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.TdMiniForm_FormClosed);
+            this.Load += new System.EventHandler(this.TdMiniForm_Load);
+            this.LocationChanged += new System.EventHandler(this.TdMiniForm_LocationChanged);
             this.ResumeLayout(false);
 
         }

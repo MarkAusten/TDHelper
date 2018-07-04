@@ -24,7 +24,7 @@ using SharpConfig;
 
 namespace TDHelper
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         #region Props
         // grab a static reference to the global settings
@@ -49,12 +49,10 @@ namespace TDHelper
             stn_rearmBoxChecked, stn_refuelBoxChecked, stn_outfitBoxChecked;
         public int marketBoxChecked, blackmarketBoxChecked, shipyardBoxChecked, repairBoxChecked, rearmBoxChecked, refuelBoxChecked, outfitBoxChecked, fromPane = -1, runOutputState = -1;
 
-        // for EDSC support
-        private double t_refDist1 = 0.00f, t_refDist2 = 0.00f, t_refDist3 = 0.00f, t_refDist4 = 0.00f, t_refDist5 = 0.00f;
         public static List<string> latestLogPaths;
         public List<string> outputItems, currentMarkedStations;
         public static string t_itemListPath, t_shipListPath, t_AppConfigPath, recentLogPath, authCode;
-        public String temp_src, temp_dest, temp_commod, temp_shipsSold, t_path, t_maxPadSize;
+        public string temp_src, temp_dest, temp_commod, temp_shipsSold, t_path, t_maxPadSize;
         public Stopwatch stopwatch = new Stopwatch();
         public Process td_proc = new Process(); // put this outside so we can kill the process
 
@@ -101,7 +99,7 @@ namespace TDHelper
              */
 
             // save the path for reload on startup
-            if (!String.IsNullOrEmpty(settingsRef.LastUsedConfig) 
+            if (!string.IsNullOrEmpty(settingsRef.LastUsedConfig) 
                 && settingsRef.LastUsedConfig.Contains("Default.xml"))
                 settingsRef.LastUsedConfig = localDir + "\\Default.xml";
             else
@@ -137,7 +135,7 @@ namespace TDHelper
                 configFile = path; // we've got a valid TDHelper config file
 
             // save our current used config file
-            if (!String.IsNullOrEmpty(settingsRef.LastUsedConfig)
+            if (!string.IsNullOrEmpty(settingsRef.LastUsedConfig)
                 && settingsRef.LastUsedConfig.Contains("Default.xml"))
             {
                 settingsRef.LastUsedConfig = localDir + "\\Default.xml";
@@ -310,13 +308,13 @@ namespace TDHelper
             if (!containsPadSizes(settingsRef.Padsizes))
                 settingsRef.Padsizes = "";
 
-            if (String.IsNullOrEmpty(confirmBox.Text))
+            if (string.IsNullOrEmpty(confirmBox.Text))
                 t_confirmCode = "";
 
             // an exception is made for checkboxes, we shouldn't ever get here
             if (settingsRef.Towards && settingsRef.Loop)
                 settingsRef.Loop = false;
-            else if (settingsRef.Towards && String.IsNullOrEmpty(temp_dest))
+            else if (settingsRef.Towards && string.IsNullOrEmpty(temp_dest))
                 settingsRef.Towards = false;
 
             // sanity check in case of invalid input paths
@@ -334,8 +332,8 @@ namespace TDHelper
             methodDropDown.SelectedIndex = methodIndex;
 
             // make sure we pull CSV paths after we validate our inputs
-            if (!String.IsNullOrEmpty(settingsRef.TDPath)) { t_itemListPath = settingsRef.TDPath + @"\data\Item.csv"; }
-            if (!String.IsNullOrEmpty(settingsRef.TDPath)) { t_shipListPath = settingsRef.TDPath + @"\data\Ship.csv"; }
+            if (!string.IsNullOrEmpty(settingsRef.TDPath)) { t_itemListPath = settingsRef.TDPath + @"\data\Item.csv"; }
+            if (!string.IsNullOrEmpty(settingsRef.TDPath)) { t_shipListPath = settingsRef.TDPath + @"\data\Ship.csv"; }
 
             // Set the default rebuy percentage to 5%.
             if ( settingsRef.RebuyPercentage == 0)
@@ -344,14 +342,14 @@ namespace TDHelper
             }
 
             // Disable the Cmdr Profile button if EDCE is not set.
-            this.btnCmdrProfile.Enabled = !String.IsNullOrEmpty(settingsRef.EdcePath);
+            this.btnCmdrProfile.Enabled = !string.IsNullOrEmpty(settingsRef.EdcePath);
         }
 
         public static void validateTDPath(string altPath)
         {
-            if (!String.IsNullOrEmpty(settingsRef.PythonPath) && !settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(settingsRef.PythonPath) && !settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase))
             {// bypass this routine if the python path validator sets our path for us (due to Trade Dangerous Installer)
-                if (String.IsNullOrEmpty(settingsRef.TDPath) || !checkIfFileOpens(settingsRef.TDPath + "\\trade.py"))
+                if (string.IsNullOrEmpty(settingsRef.TDPath) || !checkIfFileOpens(settingsRef.TDPath + "\\trade.py"))
                 {
                     OpenFileDialog x = new OpenFileDialog();
                     x.Title = "Select Trade.py from the Trade Dangerous directory";
@@ -371,7 +369,7 @@ namespace TDHelper
                     else
                     {
                         string localPath = altPath ?? ""; // prevent null
-                        if (!String.IsNullOrEmpty(localPath) && checkIfFileOpens(localPath + "\\trade.py") || localPath.EndsWith(".py"))
+                        if (!string.IsNullOrEmpty(localPath) && checkIfFileOpens(localPath + "\\trade.py") || localPath.EndsWith(".py"))
                         {// if we have an alternate path, we can reset the variable here
                             settingsRef.TDPath = localPath;
                             t_itemListPath = settingsRef.TDPath + @"\data\Item.csv";
@@ -388,7 +386,7 @@ namespace TDHelper
         public static void validateEdcePath(string altPath)
         {
             // bypass this routine if the python path validator sets our path for us (due to Trade Dangerous Installer)
-            if (String.IsNullOrEmpty(settingsRef.EdcePath) || !checkIfFileOpens(settingsRef.EdcePath + "\\edce_client.py"))
+            if (string.IsNullOrEmpty(settingsRef.EdcePath) || !checkIfFileOpens(settingsRef.EdcePath + "\\edce_client.py"))
             {
                 OpenFileDialog x = new OpenFileDialog();
                 x.Title = "Select edce_client.py from the EDCE directory";
@@ -405,7 +403,7 @@ namespace TDHelper
                 else
                 {
                     string localPath = altPath ?? ""; // prevent null
-                    if (!String.IsNullOrEmpty(localPath) && checkIfFileOpens(localPath + "\\edce_client.py") || localPath.EndsWith(".py"))
+                    if (!string.IsNullOrEmpty(localPath) && checkIfFileOpens(localPath + "\\edce_client.py") || localPath.EndsWith(".py"))
                     {// if we have an alternate path, we can reset the variable here
                         settingsRef.EdcePath = localPath;
                         SaveSettingsToIniFile();
@@ -420,7 +418,7 @@ namespace TDHelper
 
         private void validateImportPath()
         {
-            if (String.IsNullOrEmpty(settingsRef.ImportPath) || !checkIfFileOpens(settingsRef.ImportPath) && buttonCaller == 14)
+            if (string.IsNullOrEmpty(settingsRef.ImportPath) || !checkIfFileOpens(settingsRef.ImportPath) && buttonCaller == 14)
             {// only execute if called from Import button
                 OpenFileDialog x = new OpenFileDialog();
                 x.Title = "Select a .prices file";
@@ -439,7 +437,7 @@ namespace TDHelper
 
         private void validateUploadPath()
         {
-            if (String.IsNullOrEmpty(settingsRef.UploadPath) || !checkIfFileOpens(settingsRef.UploadPath) && buttonCaller == 13)
+            if (string.IsNullOrEmpty(settingsRef.UploadPath) || !checkIfFileOpens(settingsRef.UploadPath) && buttonCaller == 13)
             {// only execute if called from Upload button
                 OpenFileDialog x = new OpenFileDialog();
                 x.Title = "Select a file to upload";
@@ -462,7 +460,7 @@ namespace TDHelper
         {// override to avoid net log logic
             if (!settingsRef.DisableNetLogs)
             {
-                if (String.IsNullOrEmpty(settingsRef.NetLogPath) || !checkIfFileOpens(Directory.GetParent(settingsRef.NetLogPath).ToString() + "\\AppConfigLocal.xml"))
+                if (string.IsNullOrEmpty(settingsRef.NetLogPath) || !checkIfFileOpens(Directory.GetParent(settingsRef.NetLogPath).ToString() + "\\AppConfigLocal.xml"))
                 {// let's just ask the user where to look
                     OpenFileDialog x = new OpenFileDialog();
                     x.Title = "Select a valid Elite: Dangerous AppConfigLocal.xml";
@@ -476,7 +474,7 @@ namespace TDHelper
                     }
                     else
                     {
-                        if (!String.IsNullOrEmpty(altPath) && Directory.Exists(settingsRef.NetLogPath) && settingsRef.NetLogPath.EndsWith("Logs"))
+                        if (!string.IsNullOrEmpty(altPath) && Directory.Exists(settingsRef.NetLogPath) && settingsRef.NetLogPath.EndsWith("Logs"))
                         {
                             t_AppConfigPath = Directory.GetParent(altPath) + "\\AppConfigLocal.xml";
                             settingsRef.NetLogPath = altPath;
@@ -509,7 +507,7 @@ namespace TDHelper
              */
 
             // before we do anything else, check if the current path works
-            if (String.IsNullOrEmpty(settingsRef.PythonPath) || !checkIfFileOpens(settingsRef.PythonPath))
+            if (string.IsNullOrEmpty(settingsRef.PythonPath) || !checkIfFileOpens(settingsRef.PythonPath))
             {
                 OpenFileDialog x = new OpenFileDialog();
                 x.Title = "Select your python.exe or trade.exe";
@@ -553,7 +551,7 @@ namespace TDHelper
             }
             else
             {
-                if (!String.IsNullOrEmpty(settingsRef.PythonPath) && settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase))
+                if (!string.IsNullOrEmpty(settingsRef.PythonPath) && settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase))
                 {// make sure we adjust relative paths to CSVs if we need to
                     settingsRef.TDPath = Directory.GetParent(settingsRef.PythonPath).ToString();
                     t_itemListPath = settingsRef.TDPath + @"\data\Item.csv";
@@ -561,42 +559,10 @@ namespace TDHelper
                 }
             }
         }
-
-        private bool validateEDSCInput()
-        {
-            if (!String.IsNullOrEmpty(refSysTextBox1.Text) && !String.IsNullOrEmpty(refSysTextBox2.Text) && !String.IsNullOrEmpty(refSysTextBox3.Text)
-                && !String.IsNullOrEmpty(refSysTextBox4.Text) && !String.IsNullOrEmpty(refSysTextBox5.Text))
-            {
-                string[] refSystemInputs = new string[] { refSysTextBox1.Text, refSysTextBox2.Text, refSysTextBox3.Text, refSysTextBox4.Text, refSysTextBox5.Text};
-
-                if (stringInList(temp_src, outputSysStnNames))
-                    return false;
-
-                // make sure none of the reference systems match each other in any way
-                if (arrayContainsDuplicate(refSystemInputs))
-                    return false; // if we have any duplicates, bail
-
-                // check our distances to make sure they're sane
-                if (!double.TryParse(edscLYBox1.Text, out t_refDist1) && t_refDist1 > 0.00f && t_refDist1 <= 999.99f)
-                    return false; // if we hit insanity, bail
-                if (!double.TryParse(edscLYBox2.Text, out t_refDist2) && t_refDist2 > 0.00f && t_refDist2 <= 999.99f)
-                    return false;
-                if (!double.TryParse(edscLYBox3.Text, out t_refDist3) && t_refDist3 > 0.00f && t_refDist3 <= 999.99f)
-                    return false;
-                if (!double.TryParse(edscLYBox4.Text, out t_refDist4) && t_refDist4 > 0.00f && t_refDist4 <= 999.99f)
-                    return false;
-                if (!double.TryParse(edscLYBox5.Text, out t_refDist5) && t_refDist5 > 0.00f && t_refDist5 <= 999.99f)
-                    return false;
-
-                return true; // success!
-            }
-
-            return false;
-        }
         #endregion
 
         #region HelpFuncs
-        public static bool checkIfFileOpens(String path)
+        public static bool checkIfFileOpens(string path)
         {
             bool fileOpens = false;
 
@@ -644,7 +610,7 @@ namespace TDHelper
 
         private bool stringInArray(string input, string[] stringsToSearch)
         {// true if partial string (insensitive) exists in a string array
-            foreach (String s in stringsToSearch)
+            foreach (string s in stringsToSearch)
             {
                 if (s.IndexOf(input, StringComparison.OrdinalIgnoreCase) >= 0)
                     return true;
@@ -725,14 +691,14 @@ namespace TDHelper
         private void populateStationPanel(string input)
         {
             // we need to split our system and station names to match with the DB
-            if (!String.IsNullOrEmpty(input))
+            if (!string.IsNullOrEmpty(input))
             {
                 string[] tokens = input.Split(new string[] { "/" }, StringSplitOptions.None);
                 if (tokens != null && tokens.Length == 2)
                 {// has both system and station
                     string t_system = tokens[0];
                     string t_station = tokens[1];
-                    if (!String.IsNullOrEmpty(t_system) && !String.IsNullOrEmpty(t_station))
+                    if (!string.IsNullOrEmpty(t_system) && !string.IsNullOrEmpty(t_station))
                         grabStationData(t_system, t_station);
 
                     if (outputStationDetails.Count > 0)
@@ -749,37 +715,37 @@ namespace TDHelper
                             stn_padSizeBox.Text = outputStationDetails[1];
                         }
 
-                        if (!String.IsNullOrEmpty(outputStationDetails[2]))
+                        if (!string.IsNullOrEmpty(outputStationDetails[2]))
                         {
                             rearmCheckBox.CheckState = parseCheckState(outputStationDetails[2]);
                         }
 
-                        if (!String.IsNullOrEmpty(outputStationDetails[3]))
+                        if (!string.IsNullOrEmpty(outputStationDetails[3]))
                         {
                             refuelCheckBox.CheckState = parseCheckState(outputStationDetails[3]);
                         }
 
-                        if (!String.IsNullOrEmpty(outputStationDetails[4]))
+                        if (!string.IsNullOrEmpty(outputStationDetails[4]))
                         {
                             repairCheckBox.CheckState = parseCheckState(outputStationDetails[4]);
                         }
 
-                        if (!String.IsNullOrEmpty(outputStationDetails[5]))
+                        if (!string.IsNullOrEmpty(outputStationDetails[5]))
                         {
                             outfitCheckBox.CheckState = parseCheckState(outputStationDetails[5]);
                         }
 
-                        if (!String.IsNullOrEmpty(outputStationDetails[6]))
+                        if (!string.IsNullOrEmpty(outputStationDetails[6]))
                         {
                             shipyardCheckBox.CheckState = parseCheckState(outputStationDetails[6]);
                         }
 
-                        if (!String.IsNullOrEmpty(outputStationDetails[7]))
+                        if (!string.IsNullOrEmpty(outputStationDetails[7]))
                         {
                             marketCheckBox.CheckState = parseCheckState(outputStationDetails[7]);
                         }
 
-                        if (!String.IsNullOrEmpty(outputStationDetails[8]))
+                        if (!string.IsNullOrEmpty(outputStationDetails[8]))
                         {
                             blackMarketCheckBox.CheckState = parseCheckState(outputStationDetails[8]);
                         }
@@ -838,8 +804,8 @@ namespace TDHelper
         private static string removeExtraWhitespace(string input)
         {
             // should work with most patterns, and favorite systems/stations
-            String pattern = @"^\s*!|^\s*(?=\D)|(?!\S)[ ]+(?=\/)|(?<=\/)[ ]+(?=\S)|(?<=\S)[ ]+(?!\S)";
-            String sanitized = Regex.Replace(input, pattern, "", RegexOptions.Compiled);
+            string pattern = @"^\s*!|^\s*(?=\D)|(?!\S)[ ]+(?=\/)|(?<=\/)[ ]+(?=\S)|(?<=\S)[ ]+(?!\S)";
+            string sanitized = Regex.Replace(input, pattern, "", RegexOptions.Compiled);
             return sanitized;
         }
 
@@ -861,7 +827,7 @@ namespace TDHelper
         private void writeSavedPage(string text, string file)
         {// this takes text as an input, filters it, and outputs to a file
             string filteredOutput = filterOutput(text);
-            if (!String.IsNullOrEmpty(filteredOutput))
+            if (!string.IsNullOrEmpty(filteredOutput))
             {
                 using (FileStream fs = new FileStream(file, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                 using (StreamWriter stream = new StreamWriter(fs))
@@ -961,9 +927,9 @@ namespace TDHelper
             mainform.Text = "TDHelper " + appVersion;
 
             // Plus the commander name if set.
-            if (!string.IsNullOrEmpty(Form1.settingsRef.CmdrName))
+            if (!string.IsNullOrEmpty(MainForm.settingsRef.CmdrName))
             {
-                mainform.Text += " : Commander " + Form1.settingsRef.CmdrName;
+                mainform.Text += " : Commander " + MainForm.settingsRef.CmdrName;
             }
         }
 
@@ -981,7 +947,7 @@ namespace TDHelper
                 altConfigBox.DataSource = validConfigs;
             }
 
-            TDSettings settings = Form1.settingsRef;
+            TDSettings settings = MainForm.settingsRef;
 
             string lastUsed = settings.LastUsedConfig;
 

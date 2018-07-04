@@ -249,7 +249,7 @@ namespace TDHelper
             }
 
             if (playAlert)
-                TDHelper.Form1.playAlert(); // make noise to alert the user
+                TDHelper.MainForm.playAlert(); // make noise to alert the user
 
             DialogResult result = MessageBox.Show(topmostForm, message, title,
                 buttons);
@@ -260,21 +260,21 @@ namespace TDHelper
     }
     #endregion
 
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         public static string AssemblyGuid
         {
             get
             {
                 object[] attributes = Assembly.GetEntryAssembly().GetCustomAttributes(typeof(GuidAttribute), false);
-                if (attributes.Length == 0) { return String.Empty; }
+                if (attributes.Length == 0) { return string.Empty; }
                 return ((System.Runtime.InteropServices.GuidAttribute)attributes[0]).Value.ToUpper();
             }
         }
 
         public static void setVerboseLogging(string path)
         {// we should save our new XML to AppConfigLocal.xml
-            String savePath = Path.GetDirectoryName(path) + "\\AppConfigLocal.xml";
+            string savePath = Path.GetDirectoryName(path) + "\\AppConfigLocal.xml";
 
             XDocument file;
             // if our file exists, load it, if not create a fresh one
@@ -328,8 +328,8 @@ namespace TDHelper
 
         public static void validateVerboseLogging()
         {
-            String path = t_AppConfigPath, foundPath = "";
-            String altPath = Directory.GetParent(path) + "\\AppConfigLocal.xml";
+            string path = t_AppConfigPath, foundPath = "";
+            string altPath = Directory.GetParent(path) + "\\AppConfigLocal.xml";
 
             // test AppConfigLocal.xml first, then AppConfigLocal.xml
             if (File.Exists(altPath))
@@ -388,14 +388,14 @@ namespace TDHelper
             else
                 modHeight = x.Size.Height.ToString();
 
-            return String.Format("{0},{1}", modWidth, modHeight);
+            return string.Format("{0},{1}", modWidth, modHeight);
         }
 
         public static int[] loadWinSize(string objRef)
         {// load window size
             int[] winSize = new int[] { };
 
-            if (!String.IsNullOrEmpty(objRef))
+            if (!string.IsNullOrEmpty(objRef))
             {
                 string[] t_winSize = objRef.Split(',').ToArray();
                 winSize = new int[2];
@@ -414,14 +414,14 @@ namespace TDHelper
 
         public static string saveWinLoc(Form x)
         {// save winLoc to a given variable object
-            return String.Format("{0},{1}", x.Location.X, x.Location.Y);
+            return string.Format("{0},{1}", x.Location.X, x.Location.Y);
         }
 
         public static int[] loadWinLoc(string objRef)
         {// load winLoc from a given variable object
             int[] winLoc = new int[] { };
 
-            if (!String.IsNullOrEmpty(objRef))
+            if (!string.IsNullOrEmpty(objRef))
             {
                 string[] t_winLoc = objRef.Split(',').ToArray();
                 winLoc = new int[2];
@@ -464,7 +464,7 @@ namespace TDHelper
         private bool containsPadSizes(string text)
         {
             // we only want one of each from the key
-            if (!String.IsNullOrEmpty(text))
+            if (!string.IsNullOrEmpty(text))
             {
                 char[] c = new char[] { 'M', 'L', '?' };
                 char[] z = text.ToUpperInvariant().ToCharArray();
@@ -489,7 +489,7 @@ namespace TDHelper
              */
 
             // to be safe we force uppercase for the comparison
-            if (!String.IsNullOrEmpty(input.ToUpper()))
+            if (!string.IsNullOrEmpty(input.ToUpper()))
             {// must be only 4 characters
                 char[] chars = input.ToUpper().ToCharArray();
                 if (chars.Length < 5 && chars.Length > 0)
@@ -542,7 +542,7 @@ namespace TDHelper
 
         private static List<string> parseMarkedStations()
         {
-            if (!String.IsNullOrEmpty(settingsRef.MarkedStations))
+            if (!string.IsNullOrEmpty(settingsRef.MarkedStations))
                 return removeExtraWhitespace(settingsRef.MarkedStations).Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).ToList();
             else
                 return new List<string>();
@@ -552,7 +552,7 @@ namespace TDHelper
         {
             if (parentList.Count > 0)
             {
-                string builtString = String.Join(",", parentList);
+                string builtString = string.Join(",", parentList);
                 return builtString;
             }
             else
@@ -569,7 +569,7 @@ namespace TDHelper
                 ? Configuration.LoadFromFile(configFile)
                 : new Configuration();
 
-            TDSettings settings = Form1.settingsRef;
+            TDSettings settings = MainForm.settingsRef;
 
             // Settgins used for trade route calculation.
             config["App"]["AbovePrice"].DecimalValue = settings.AbovePrice;
@@ -664,7 +664,7 @@ namespace TDHelper
             if (checkIfFileOpens(configFile))
             {
                 Configuration config = Configuration.LoadFromFile(configFile);
-                TDSettings settings = Form1.settingsRef;
+                TDSettings settings = MainForm.settingsRef;
 
                 settings.AbovePrice = config["App"]["AbovePrice"].DecimalValue;
                 settings.Age = config["App"]["Age"].DecimalValue;
@@ -733,7 +733,7 @@ namespace TDHelper
         /// <returns>A list of available ships.</returns>
         public IList<string> SetAvailableShips()
         {
-            string[] ships = Form1.settingsRef.AvailableShips.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+            string[] ships = MainForm.settingsRef.AvailableShips.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
 
             return new List<string>(ships).OrderBy(x => x).ToList();
         }

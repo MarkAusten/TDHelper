@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 
 namespace TDHelper
 {
-    public partial class Form2 : Form
+    public partial class TdMiniForm : Form
     {
         #region FormProps
         public TreeView treeViewBox
@@ -25,7 +25,7 @@ namespace TDHelper
             get { return this.Text; }
             set 
             {
-                if (Form1.t_CrTonTally > 0)
+                if (MainForm.t_CrTonTally > 0)
                     this.Text = value;
                 else
                     this.Text = "TDHelper (mini-mode)";
@@ -38,7 +38,7 @@ namespace TDHelper
 
         #region Snap-To-Edge
         private const int SnapDist = 10;
-        private void Form2_LocationChanged(object sender, EventArgs e)
+        private void TdMiniForm_LocationChanged(object sender, EventArgs e)
         {
             Rectangle workingArea = Screen.FromControl(this).WorkingArea;
 
@@ -55,39 +55,39 @@ namespace TDHelper
         #endregion
 
         #region FormStuff
-        public Form2(Form1 instance)
+        public TdMiniForm(MainForm instance)
         {
             InitializeComponent();
         }
 
-        private void Form2_Load(object sender, EventArgs e)
+        private void TdMiniForm_Load(object sender, EventArgs e)
         {
             Screen screen = Screen.FromControl(this);
             Rectangle workingArea = screen.WorkingArea;
-            int[] winLoc = Form1.loadWinLoc(Form1.settingsRef.LocationChild);
-            int[] winSize = Form1.loadWinSize(Form1.settingsRef.SizeChild);
+            int[] winLoc = MainForm.loadWinLoc(MainForm.settingsRef.LocationChild);
+            int[] winSize = MainForm.loadWinSize(MainForm.settingsRef.SizeChild);
 
             // if we've saved a fontname and fontsize, use them, otherwise use default
-            if (Form1.settingsRef.TreeViewFont != null)
-                this.treeView.Font = Form1.settingsRef.convertFromMemberFont();
+            if (MainForm.settingsRef.TreeViewFont != null)
+                this.treeView.Font = MainForm.settingsRef.convertFromMemberFont();
 
             // only resize on our first parsing
-            if (!Form1.hasParsed)
+            if (!MainForm.hasParsed)
             {// try to remember and restore the window size
                 if (winSize.Length != 0 && winSize != null)
                     compensateNodeLength(winSize); // check our width and compensate
                 else
                 {// load our default size
-                    Form1.settingsRef.SizeChild = Form1.saveWinSize(this);
-                    int[] t_winSize = Form1.loadWinSize(Form1.settingsRef.SizeChild);
+                    MainForm.settingsRef.SizeChild = MainForm.saveWinSize(this);
+                    int[] t_winSize = MainForm.loadWinSize(MainForm.settingsRef.SizeChild);
 
                     // check width
                     compensateNodeLength(t_winSize); // check our width and compensate
                 }
 
-                Form1.hasParsed = true;
+                MainForm.hasParsed = true;
             }
-            else if (Form1.hasParsed && winSize.Length != 0 && winSize != null)
+            else if (MainForm.hasParsed && winSize.Length != 0 && winSize != null)
             {// just restore our size without compensating
                 this.Size = new Size(winSize[0], winSize[1]);
             }
@@ -98,7 +98,7 @@ namespace TDHelper
                 this.Location = new Point(winLoc[0], winLoc[1]);
 
                 // if we're restoring the location, let's force it to be visible on screen
-                Form1.forceFormOnScreen(this);
+                MainForm.forceFormOnScreen(this);
             }
             else
             {
@@ -110,7 +110,7 @@ namespace TDHelper
             }
 
             // remember our on-top state before passing to pinButton
-            if (Form1.settingsRef.MiniModeOnTop)
+            if (MainForm.settingsRef.MiniModeOnTop)
                 this.TopMost = false;
             else
                 this.TopMost = true;
@@ -118,13 +118,13 @@ namespace TDHelper
             pinButton_Click(this, null);
         }
 
-        private void Form2_FormClosing(object sender, FormClosingEventArgs e)
+        private void TdMiniForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Form1.settingsRef.LocationChild = Form1.saveWinLoc(this);
-            Form1.settingsRef.SizeChild = Form1.saveWinSize(this);
+            MainForm.settingsRef.LocationChild = MainForm.saveWinLoc(this);
+            MainForm.settingsRef.SizeChild = MainForm.saveWinSize(this);
         }
 
-        private void Form2_FormClosed(object sender, FormClosedEventArgs e)
+        private void TdMiniForm_FormClosed(object sender, FormClosedEventArgs e)
         {
         }
         #endregion
@@ -134,8 +134,8 @@ namespace TDHelper
         {// toggle on-top
             if (!this.TopMost)
             {// bold the button text as an indicator
-                if (!Form1.settingsRef.MiniModeOnTop)
-                    Form1.settingsRef.MiniModeOnTop = true;
+                if (!MainForm.settingsRef.MiniModeOnTop)
+                    MainForm.settingsRef.MiniModeOnTop = true;
 
                 pinButton.BackColor = Color.FromArgb(50, 50, 50);
                 pinButton.FlatAppearance.BorderColor = Color.FromArgb(50, 50, 50);
@@ -151,7 +151,7 @@ namespace TDHelper
                 pinButton.ForeColor = Color.DimGray;
                 pinButton.Font = new Font(pinButton.Font, FontStyle.Regular);
                 toolTip1.SetToolTip(pinButton, "Enable on-top mode for this window");
-                Form1.settingsRef.MiniModeOnTop = false;
+                MainForm.settingsRef.MiniModeOnTop = false;
                 this.TopMost = false;
             }
         }
@@ -167,7 +167,7 @@ namespace TDHelper
             {
                 snipSystem = treeView.SelectedNode.Text;
                 string resultLabel = Regex.Replace(snipSystem, @"(?:Unload|Load|^)\s\@\s(.+?(?=\n|\s\[\d|$)).*", "$1").ToString();
-                if (!String.IsNullOrEmpty(resultLabel))
+                if (!string.IsNullOrEmpty(resultLabel))
                     Clipboard.SetText(resultLabel);
 
                 e.SuppressKeyPress = true;
@@ -178,7 +178,7 @@ namespace TDHelper
                 //(?:(?:Load|Unload)\s@\s|\d+x\s|^)(.+?(?=\/)|.+).*
                 snipSystem = treeView.SelectedNode.Text;
                 string resultLabel = Regex.Replace(snipSystem, @"(?:Unload|Load|^)\s\@\s(.+?(?=\/)).*", "$1").ToString();
-                if (!String.IsNullOrEmpty(resultLabel))
+                if (!string.IsNullOrEmpty(resultLabel))
                     Clipboard.SetText(resultLabel);
 
                 e.SuppressKeyPress = true;

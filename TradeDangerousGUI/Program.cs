@@ -23,7 +23,7 @@ namespace TDHelper
         {
             try
             {
-                using (Mutex mutex = new Mutex(false, "Global\\" + Form1.AssemblyGuid))
+                using (Mutex mutex = new Mutex(false, "Global\\" + MainForm.AssemblyGuid))
                 {
                     if (!mutex.WaitOne(0, false))
                         return;
@@ -44,7 +44,7 @@ namespace TDHelper
                             DialogResult d = TopMostMessageBox.Show(true, true, "We will now generate a manifest file in the current directory.", "Confirm", MessageBoxButtons.OKCancel);
                             if (d == DialogResult.OK)
                             {
-                                UpdateClass.generateManifest(Form1.localDir, Form1.localDir + "\\TDHelper.manifest", args[1]);
+                                UpdateClass.generateManifest(MainForm.localDir, MainForm.localDir + "\\TDHelper.manifest", args[1]);
                                 return;
                             }
                         }
@@ -57,7 +57,7 @@ namespace TDHelper
 
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
-                    Application.Run(new Form1());
+                    Application.Run(new MainForm());
                 }
             }
             catch (Exception e) { throw e; }

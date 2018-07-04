@@ -16,10 +16,10 @@ using System.Drawing;
 
 namespace TDHelper
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         #region Props
-        String tdDBPath = "";
+        string tdDBPath = "";
 
         private DataTable localTable = new DataTable();
         SQLiteConnection tdhDBConn;
@@ -423,7 +423,7 @@ namespace TDHelper
             using (SQLiteCommand cmd = new SQLiteCommand("INSERT INTO SystemLog VALUES (null,@Timestamp,null,null)", dbConn))
             {
                 DateTime tempTimestamp = new DateTime();
-                if (!String.IsNullOrEmpty(timestamp)
+                if (!string.IsNullOrEmpty(timestamp)
                     && DateTime.TryParseExact(timestamp, "yy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out tempTimestamp))
                 {
                     string var1 = timestamp; // we were successful in parsing the timestamp, probably safe
@@ -447,37 +447,37 @@ namespace TDHelper
             return false;
         }
 
-        private List<String> loadSystemsFromDB(List<string> logPaths)
+        private List<string> loadSystemsFromDB(List<string> logPaths)
         {// we should load from the DB if the newest entry is newer than the newest log file entry
-            String pattern0 = @"^(\d\d\-\d\d\-\d\d).+?\((.+?)\sGMT"; // $1=Y, $2=M, $3=D; $4=GMT
+            string pattern0 = @"^(\d\d\-\d\d\-\d\d).+?\((.+?)\sGMT"; // $1=Y, $2=M, $3=D; $4=GMT
             // grab the timestamp of this entry, and then the system name
-            String pattern1 = @"\{(.*?)\}\sSystem.+?\((.*?)\)"; // $1=localtime, $2=system
+            string pattern1 = @"\{(.*?)\}\sSystem.+?\((.*?)\)"; // $1=localtime, $2=system
             List<string> output = new List<string>(); // a list for our system names
-            String logDatestamp = "";
+            string logDatestamp = "";
 
-            if (logPaths.Count > 0 && !String.IsNullOrEmpty(logPaths.Last())
+            if (logPaths.Count > 0 && !string.IsNullOrEmpty(logPaths.Last())
                 && !hasLogLoaded && !loadedFromDB && localSystemList.Count > 0)
             {// only process the very newest logfile if the database also exists
                 using (FileStream fs = new FileStream(logPaths.Last(), FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 using (BufferedStream bs = new BufferedStream(fs))
                 using (StreamReader stream = new StreamReader(bs, Encoding.UTF8, true, 65536))
                 {
-                    String fileBuffer = stream.ReadToEnd();
+                    string fileBuffer = stream.ReadToEnd();
                     Match match0 = Regex.Match(fileBuffer, pattern0, RegexOptions.Compiled);
                     Match match1 = Regex.Match(fileBuffer, pattern1, RegexOptions.Compiled);
                     // pull some variables for comparison
-                    String firstTimestamp = "", firstSystem = "";
+                    string firstTimestamp = "", firstSystem = "";
 
-                    if (!String.IsNullOrEmpty(match0.Groups[0].Value)
-                        && !String.IsNullOrEmpty(match1.Groups[1].Value)
-                        && !String.IsNullOrEmpty(match1.Groups[2].Value))
+                    if (!string.IsNullOrEmpty(match0.Groups[0].Value)
+                        && !string.IsNullOrEmpty(match1.Groups[1].Value)
+                        && !string.IsNullOrEmpty(match1.Groups[2].Value))
                     {// grab our first timestamped entry
                         logDatestamp = match0.Groups[1].Value;
                         firstTimestamp = logDatestamp + " " + match1.Groups[1].Value.ToString();
                         firstSystem = match1.Groups[2].Value.Replace("\r\n", "").Replace("\r", "").Replace("\n", "").ToString().ToUpper();
                     }
 
-                    if (!String.IsNullOrEmpty(firstTimestamp) && !String.IsNullOrEmpty(firstSystem) 
+                    if (!string.IsNullOrEmpty(firstTimestamp) && !string.IsNullOrEmpty(firstSystem) 
                         && !timestampIsNewer(firstTimestamp, localSystemList[0].Key) 
                         || localSystemList[0].Value.Equals(firstSystem))
                     {// we've got a database, let's pull from it instead of reading from the logs, for performance
@@ -500,7 +500,7 @@ namespace TDHelper
             return output;
         }
 
-        private List<String> loadSystemsFromLogs(bool refreshMode, List<string> filePaths)
+        private List<string> loadSystemsFromLogs(bool refreshMode, List<string> filePaths)
         {
             // get the latest timestamp from the DB.
             string timestamp = this.GetLastTimestamp();
@@ -541,15 +541,15 @@ namespace TDHelper
             // this method initially populates the recent systems and pilot's log in the absence of a DB
             // grab the timestamp of this particular netlog
             string fileBuffer = "";
-            String pattern0 = @"(\d{2,4}\-\d\d\-\d\d)[\s\-](\d\d:\d\d)\sGMT"; // $1=Y, $2=M, $3=D; $4=GMT
+            string pattern0 = @"(\d{2,4}\-\d\d\-\d\d)[\s\-](\d\d:\d\d)\sGMT"; // $1=Y, $2=M, $3=D; $4=GMT
 
             // grab the timestamp of this entry, and then the system name
-            String pattern1 = @"\{(\d\d:\d\d:\d\d).+System:""(.+)"""; // $1=localtime, $2=system
+            string pattern1 = @"\{(\d\d:\d\d:\d\d).+System:""(.+)"""; // $1=localtime, $2=system
             List<string> output = new List<string>(); // a list for our system names
             List<KeyValuePair<string, string>> netLogOutput = new List<KeyValuePair<string, string>>();
-            String logDatestamp = "";
+            string logDatestamp = "";
 
-            if (filePaths.Count > 0 && !String.IsNullOrEmpty(filePaths[0]) && refreshMode)
+            if (filePaths.Count > 0 && !string.IsNullOrEmpty(filePaths[0]) && refreshMode)
             {// compile a list of all unique systems last visited in all valid log files, oldest to newest
                 // Count the number of files that are later than the timestamp and add one.
                 fileCount = latestLogPaths
@@ -589,7 +589,7 @@ namespace TDHelper
                         Match matchCollector0 = Regex.Match(fileBuffer, pattern0, RegexOptions.Compiled);
                         MatchCollection matchCollector1 = Regex.Matches(fileBuffer, pattern1, RegexOptions.Compiled | RegexOptions.Multiline);
 
-                        if (!String.IsNullOrEmpty(matchCollector0.Groups[0].Value))
+                        if (!string.IsNullOrEmpty(matchCollector0.Groups[0].Value))
                         {// grab our datestamp from the header
                             logDatestamp = matchCollector0.Groups[1].Value;
 
@@ -641,7 +641,7 @@ namespace TDHelper
                 output.Reverse();
                 output = output.Distinct().ToList();
             }
-            else if (filePaths.Count > 0 && !String.IsNullOrEmpty(filePaths.Last()) && !refreshMode)
+            else if (filePaths.Count > 0 && !string.IsNullOrEmpty(filePaths.Last()) && !refreshMode)
             {// only grab systems from the newest log file, assume we've got systems already
                 using (FileStream fs = new FileStream(filePaths.Last(), FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 using (BufferedStream bs = new BufferedStream(fs))
@@ -651,7 +651,7 @@ namespace TDHelper
                     Match matchCollector0 = Regex.Match(fileBuffer, pattern0, RegexOptions.Compiled);
                     MatchCollection matchCollector1 = Regex.Matches(fileBuffer, pattern1, RegexOptions.Compiled | RegexOptions.Multiline);
 
-                    if (!String.IsNullOrEmpty(matchCollector0.Groups[0].Value))
+                    if (!string.IsNullOrEmpty(matchCollector0.Groups[0].Value))
                     {// grab our datestamp from the header
                         logDatestamp = matchCollector0.Groups[1].Value;
                     }
@@ -800,7 +800,7 @@ namespace TDHelper
 
 
                     // our most recently entered system is always on top
-                    if (output_unclean.Count > 0 && !String.IsNullOrEmpty(output_unclean[0]))
+                    if (output_unclean.Count > 0 && !string.IsNullOrEmpty(output_unclean[0]))
                     {
                         t_lastSystem = output_unclean[0];
                         Debug.WriteLine("Last entered system name: " + t_lastSystem);
@@ -976,41 +976,59 @@ namespace TDHelper
 
         private void parseItemCSV()
         {
-            // read items from csv files
-            var reader1 = new StreamReader(File.OpenRead(t_itemListPath));
-            var reader2 = new StreamReader(File.OpenRead(t_shipListPath));
-
-            if (!reader1.EndOfStream) { reader1.ReadLine(); } // skip the first line of the item csv
-            if (!reader2.EndOfStream) { reader2.ReadLine(); } // skip the first line of the ship csv
-
             outputItems = new List<string>();
-            while (!reader1.EndOfStream)
-            {//do the item list first
-                String line = reader1.ReadLine();
-                String[] values = line.Split(',');
-                String output = Convert.ToString(values[1]).Trim(new char[] { '\'', '\"' });
 
-                outputItems.Add(output);
+            // read items from csv files
+            using (StreamReader reader1 = new StreamReader(File.OpenRead(t_itemListPath)))
+            {
+                // skip the first line of the item csv
+                if (!reader1.EndOfStream)
+                {
+                    reader1.ReadLine();
+                } 
+
+                // Read in the item list first
+                while (!reader1.EndOfStream)
+                {
+                    string line = reader1.ReadLine();
+                    string[] values = line.Split(',');
+                    string output = Convert.ToString(values[1]).Trim(new char[] { '\'', '\"' });
+
+                    outputItems.Add(output);
+                }
+
             }
 
-            while (!reader2.EndOfStream)
-            {// then the ship list
-                String line = reader2.ReadLine();
-                String[] values = line.Split(',');
-                String output = Convert.ToString(values[0]).Trim(new char[] { '\'', '\"' });
+            using (var reader2 = new StreamReader(File.OpenRead(t_shipListPath)))
+            {
+                // skip the first line of the ship csv
+                if (!reader2.EndOfStream)
+                {
+                    reader2.ReadLine();
+                } 
+                
+                // Read in the ship list
+                while (!reader2.EndOfStream)
+                {
+                    string line = reader2.ReadLine();
+                    string[] values = line.Split(',');
+                    string output = Convert.ToString(values[1]).Trim(new char[] { '\'', '\"' });
 
-                outputItems.Add(output);
+                    outputItems.Add(output);
+                }
             }
 
             if (outputItems.Count != 0)
-                outputItems = outputItems.OrderBy(x => x).ToList(); // sort alphabetically
+            {
+                // sort alphabetically
+                outputItems = outputItems
+                    .OrderBy(x => x)
+                    .ToList();
+            }
             else
+            {
                 Debug.WriteLine("outputItems is empty, must be a path or access failure");
-
-            reader1.Close();
-            reader1.Dispose();
-            reader2.Close();
-            reader2.Dispose();
+            }
         }
 
         private void buildOutput(bool refreshMethod)
@@ -1353,7 +1371,7 @@ namespace TDHelper
                 for (int i = 0; i < ship_table.Rows.Count; i++)
                 {
                     // save the ship cost, and display in an invariant format
-                    string temp_cost = String.Format("{0:#,##0}", decimal.Parse(ship_table.Rows[i]["ship_cost"].ToString()));
+                    string temp_cost = string.Format("{0:#,##0}", decimal.Parse(ship_table.Rows[i]["ship_cost"].ToString()));
                     outputStationShips.Add(ship_table.Rows[i]["ship_name"].ToString() + " [" + temp_cost + "cr]");
                 }
             }

@@ -1,6 +1,6 @@
 ﻿namespace TDHelper
 {
-    partial class Form4
+    partial class SettingsForm
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form4));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             this.extraRunParameters = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.okButton = new System.Windows.Forms.Button();
@@ -339,7 +339,7 @@
             this.lblRebuyPercentage.TabIndex = 2;
             this.lblRebuyPercentage.Text = "Rebuy Percentage:";
             // 
-            // Form4
+            // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -353,10 +353,10 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "Form4";
+            this.Name = "SettingsForm";
             this.ShowIcon = false;
             this.Text = "Misc. Settings";
-            this.Load += new System.EventHandler(this.Form4_Load);
+            this.Load += new System.EventHandler(this.SettingsForm_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.generic_KeyDown);
             this.overrideGroupBox.ResumeLayout(false);
             this.overrideGroupBox.PerformLayout();

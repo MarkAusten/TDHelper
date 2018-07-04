@@ -17,15 +17,15 @@ using SharpConfig;
 
 namespace TDHelper
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         /*
          * Mostly worker delegate related stuff goes here
          */
 
-        private int isValidRunOutput(String input)
+        private int isValidRunOutput(string input)
         {// return an int if we recognize the input as valid Run output
-            if (!String.IsNullOrEmpty(input) && input.Length > 1)
+            if (!string.IsNullOrEmpty(input) && input.Length > 1)
             {
                 // test for -vvv
                 string pattern1 = @"(.+?)\s->\s(.+?)\s\("; // route summary
@@ -89,7 +89,7 @@ namespace TDHelper
             return -1;
         }
 
-        private void parseRunOutput(String input, TreeView tvOutput)
+        private void parseRunOutput(string input, TreeView tvOutput)
         {
             /*
              * This method parses the output of Run line by line and collects 
@@ -131,12 +131,12 @@ namespace TDHelper
                 MatchCollection matches5 = Regex.Matches(input, pattern5, RegexOptions.Compiled);
 
                 // Now we compile the output into XML
-                doc = new XDocument(new XElement("Route", new XElement("Summary", String.Format("{0} -> {1}", matches1[0].Groups[1].Value, matches1[0].Groups[2].Value))));
+                doc = new XDocument(new XElement("Route", new XElement("Summary", string.Format("{0} -> {1}", matches1[0].Groups[1].Value, matches1[0].Groups[2].Value))));
 
                 XElement element = doc.Descendants("Route").FirstOrDefault(); // move to our list root
 
                 // put our details in a child node
-                element.Add(new XElement("SummaryDetails", String.Format("Gain: {0}cr", matches2[0].Groups[1].Value)));
+                element.Add(new XElement("SummaryDetails", string.Format("Gain: {0}cr", matches2[0].Groups[1].Value)));
 
                 int j = 0, k = 0, l = 1; // external incrementers
                 for (int i = 0; i < matches4.Count; i++)
@@ -145,13 +145,13 @@ namespace TDHelper
                     {
                         element.Add(new XElement("Hop"));
                         element = doc.Descendants("Hop").Last();
-                        element.Add(new XElement("LoadAt", String.Format("Load @ {0}", matches3[j].Groups[1].Value)));
+                        element.Add(new XElement("LoadAt", string.Format("Load @ {0}", matches3[j].Groups[1].Value)));
                         j++;
                     }
 
                     while (i < matches4.Count && matches4[i].Index < matches3[k + 1].Index)
                     {
-                        element.Add(new XElement("Load", String.Format("{0}x {1}", matches4[i].Groups[1].Value, matches4[i].Groups[2].Value)));
+                        element.Add(new XElement("Load", string.Format("{0}x {1}", matches4[i].Groups[1].Value, matches4[i].Groups[2].Value)));
 
                         t_Capacity += int.Parse(matches4[i].Groups[1].Value);
 
@@ -169,7 +169,7 @@ namespace TDHelper
 
                         while (matches5[l].Index < matches3[k + 1].Index)
                         {
-                            element.Add(new XElement("Jump", String.Format("{0}", matches5[l].Groups[1].Value)));
+                            element.Add(new XElement("Jump", string.Format("{0}", matches5[l].Groups[1].Value)));
 
                             if (l + 1 < matches5.Count)
                                 l++;
@@ -181,7 +181,7 @@ namespace TDHelper
                     if (k < matches3.Count && matches3[k + 1].Index > matches4[i].Index)
                     {// only print if we're beyond the last commodity statement
                         element = doc.Descendants("Hop").Last();
-                        element.Add(new XElement("UnloadAt", String.Format("Unload @ {0}", matches3[k + 1].Groups[1].Value)));
+                        element.Add(new XElement("UnloadAt", string.Format("Unload @ {0}", matches3[k + 1].Groups[1].Value)));
 
                         if (k + 1 < matches3.Count)
                             k++;
@@ -195,7 +195,7 @@ namespace TDHelper
                 double savedGain = int.Parse(matches2[0].Groups[1].Value.Replace(",", "").Replace(".", "").Replace("cr", ""));
                 double savedCapacity = Math.Round(t_Capacity / ((double)matches3.Count - 1));
                 t_CrTonTally = savedGain / savedCapacity / (matches3.Count - 1);
-                t_childTitle = String.Format("Est. Profit: {0:n0}cr/t", t_CrTonTally);
+                t_childTitle = string.Format("Est. Profit: {0:n0}cr/t", t_CrTonTally);
             }
             #endregion
             #region verbosity1
@@ -236,12 +236,12 @@ namespace TDHelper
                 MatchCollection matches6 = Regex.Matches(input, pattern6, RegexOptions.Compiled);
 
                 // Now we compile the output into XML
-                doc = new XDocument(new XElement("Route", new XElement("Summary", String.Format("{0} -> {1}", matches1[0].Groups[1].Value, matches1[0].Groups[2].Value))));
+                doc = new XDocument(new XElement("Route", new XElement("Summary", string.Format("{0} -> {1}", matches1[0].Groups[1].Value, matches1[0].Groups[2].Value))));
 
                 XElement element = doc.Descendants("Route").FirstOrDefault(); // move to our list root
 
                 // put our details in a child node
-                element.Add(new XElement("SummaryDetails", String.Format("Gain: {0} -> {1}", matches2[0].Groups[2].Value, matches2[0].Groups[3].Value)));
+                element.Add(new XElement("SummaryDetails", string.Format("Gain: {0} -> {1}", matches2[0].Groups[2].Value, matches2[0].Groups[3].Value)));
 
                 int j = 0, k = 0, l = 0; // external incrementers
                 for (int i = 0; i < matches4.Count; i++)
@@ -250,13 +250,13 @@ namespace TDHelper
                     {// make an entry for this hop
                         element.Add(new XElement("Hop"));
                         element = doc.Descendants("Hop").Last();
-                        element.Add(new XElement("LoadAt", String.Format("Load @ {0}", matches3[j].Groups[1].Value)));
+                        element.Add(new XElement("LoadAt", string.Format("Load @ {0}", matches3[j].Groups[1].Value)));
                         j++;
                     }
 
                     while (i < matches4.Count && matches4[i].Index < matches5[k].Index)
                     {// process the commodities
-                        element.Add(new XElement("Load", String.Format("{0}x {1} @ {2}", matches4[i].Groups[1].Value, matches4[i].Groups[2].Value, matches4[i].Groups[3].Value)));
+                        element.Add(new XElement("Load", string.Format("{0}x {1} @ {2}", matches4[i].Groups[1].Value, matches4[i].Groups[2].Value, matches4[i].Groups[3].Value)));
 
                         t_Capacity += int.Parse(matches4[i].Groups[1].Value);
 
@@ -274,7 +274,7 @@ namespace TDHelper
 
                         while (l < matches6.Count && matches6[l].Index < matches5[k].Index)
                         {
-                            element.Add(new XElement("Jump", String.Format("{0} [{1}]", matches6[l].Groups[2].Value, matches6[l].Groups[1].Value)));
+                            element.Add(new XElement("Jump", string.Format("{0} [{1}]", matches6[l].Groups[2].Value, matches6[l].Groups[1].Value)));
 
                             l++;
                         }
@@ -283,7 +283,7 @@ namespace TDHelper
                     if (k < matches5.Count && matches5[k].Index > matches4[i].Index)
                     {// make an entry for the destination
                         element = doc.Descendants("Hop").Last();
-                        element.Add(new XElement("UnloadAt", String.Format("Unload @ {0}", matches5[k].Groups[1].Value)));
+                        element.Add(new XElement("UnloadAt", string.Format("Unload @ {0}", matches5[k].Groups[1].Value)));
 
                         if (k + 1 < matches5.Count)
                             k++;
@@ -297,7 +297,7 @@ namespace TDHelper
                 double savedGain = int.Parse(matches2[0].Groups[2].Value.Replace(",", "").Replace(".", "").Replace("cr", ""));
                 double savedCapacity = Math.Round(t_Capacity / (double)matches5.Count);
                 t_CrTonTally = savedGain / savedCapacity / matches5.Count;
-                t_childTitle = String.Format("Est. Profit: {0:n0}cr/t", t_CrTonTally);
+                t_childTitle = string.Format("Est. Profit: {0:n0}cr/t", t_CrTonTally);
             }
             #endregion
             #region verbosity2
@@ -337,11 +337,11 @@ namespace TDHelper
                 MatchCollection matches6 = Regex.Matches(input, pattern6, RegexOptions.Compiled);
 
                 // Now we compile the output into XML
-                doc = new XDocument(new XElement("Route", new XElement("Summary", String.Format("{0} -> {1}", matches1[0].Groups[1].Value, matches1[0].Groups[2].Value))));
+                doc = new XDocument(new XElement("Route", new XElement("Summary", string.Format("{0} -> {1}", matches1[0].Groups[1].Value, matches1[0].Groups[2].Value))));
 
                 XElement element = doc.Descendants("Route").FirstOrDefault();
 
-                element.Add(new XElement("SummaryDetails", String.Format("Gain: {0} -> est. {1}", matches2[0].Groups[1].Value, matches2[0].Groups[2].Value)));
+                element.Add(new XElement("SummaryDetails", string.Format("Gain: {0} -> est. {1}", matches2[0].Groups[1].Value, matches2[0].Groups[2].Value)));
 
                 int j = 0, k = 0, l = 0;
                 for (int i = 0; i < matches4.Count; i++)
@@ -350,8 +350,8 @@ namespace TDHelper
                     {
                         element.Add(new XElement("Hop"));
                         element = doc.Descendants("Hop").Last();
-                        element.Add(new XElement("LoadAt", String.Format("Load @ {0} [{1}]", matches3[j].Groups[1].Value, matches3[j].Groups[2].Value)));
-                        element.Add(new XElement("LoadDetails", String.Format("{0}", matches3[j].Groups[3].Value)));
+                        element.Add(new XElement("LoadAt", string.Format("Load @ {0} [{1}]", matches3[j].Groups[1].Value, matches3[j].Groups[2].Value)));
+                        element.Add(new XElement("LoadDetails", string.Format("{0}", matches3[j].Groups[3].Value)));
                         j++;
                     }
 
@@ -360,9 +360,9 @@ namespace TDHelper
                         // collect the working capacity of the run
                         t_Capacity += int.Parse(matches4[i].Groups[1].Value);
 
-                        if (!String.IsNullOrEmpty(matches4[i].Groups[9].Value))
+                        if (!string.IsNullOrEmpty(matches4[i].Groups[9].Value))
                         {// we're missing the dest. time, let's match based on src. time
-                            element.Add(new XElement("Load", String.Format("{0}x {1} @ {2}/{3} [{4}{5}]", matches4[i].Groups[1].Value, matches4[i].Groups[2].Value, matches4[i].Groups[3].Value, matches4[i].Groups[4].Value, matches4[i].Groups[9].Value, matches4[i].Groups[10].Value)));
+                            element.Add(new XElement("Load", string.Format("{0}x {1} @ {2}/{3} [{4}{5}]", matches4[i].Groups[1].Value, matches4[i].Groups[2].Value, matches4[i].Groups[3].Value, matches4[i].Groups[4].Value, matches4[i].Groups[9].Value, matches4[i].Groups[10].Value)));
 
                             // intelligently increment to next match index
                             if (i + 1 < matches4.Count && matches4[i + 1].Index < matches5[k].Index)
@@ -372,7 +372,7 @@ namespace TDHelper
                         }
                         else
                         {
-                            element.Add(new XElement("Load", String.Format("{0}x {1} @ {2}/{3} [{4}{5}|{6}{7}]", matches4[i].Groups[1].Value, matches4[i].Groups[2].Value, matches4[i].Groups[3].Value, matches4[i].Groups[4].Value, matches4[i].Groups[5].Value, matches4[i].Groups[6].Value, matches4[i].Groups[7].Value, matches4[i].Groups[8].Value)));
+                            element.Add(new XElement("Load", string.Format("{0}x {1} @ {2}/{3} [{4}{5}|{6}{7}]", matches4[i].Groups[1].Value, matches4[i].Groups[2].Value, matches4[i].Groups[3].Value, matches4[i].Groups[4].Value, matches4[i].Groups[5].Value, matches4[i].Groups[6].Value, matches4[i].Groups[7].Value, matches4[i].Groups[8].Value)));
 
                             if (i + 1 < matches4.Count && matches4[i + 1].Index < matches5[k].Index)
                                 i++;
@@ -388,7 +388,7 @@ namespace TDHelper
 
                         while (l < matches6.Count && matches6[l].Index < matches5[k].Index)
                         {
-                            element.Add(new XElement("Jump", String.Format("{0} [{1}]", matches6[l].Groups[2].Value, matches6[l].Groups[1].Value)));
+                            element.Add(new XElement("Jump", string.Format("{0} [{1}]", matches6[l].Groups[2].Value, matches6[l].Groups[1].Value)));
 
                             l++;
                         }
@@ -397,7 +397,7 @@ namespace TDHelper
                     if (k < matches5.Count && matches5[k].Index > matches4[i].Index)
                     {
                         element = doc.Descendants("Hop").Last();
-                        element.Add(new XElement("UnloadAt", String.Format("Unload @ {0} [{1}] [G:{2}cr/t|{3}]", matches5[k].Groups[1].Value, matches5[k].Groups[2].Value, matches5[k].Groups[5].Value, matches5[k].Groups[4].Value)));
+                        element.Add(new XElement("UnloadAt", string.Format("Unload @ {0} [{1}] [G:{2}cr/t|{3}]", matches5[k].Groups[1].Value, matches5[k].Groups[2].Value, matches5[k].Groups[5].Value, matches5[k].Groups[4].Value)));
 
                         // account for Kls and ls, make sure values are whole numbers
                         if (matches5[k].Groups[2].Value.IndexOf("Kls") >= 0)
@@ -412,7 +412,7 @@ namespace TDHelper
 
                         if (k == matches5.Count - 1)
                         {// if this is our last station
-                            element.Add(new XElement("UnloadDetails", String.Format("{0}", matches5[k].Groups[3].Value)));
+                            element.Add(new XElement("UnloadDetails", string.Format("{0}", matches5[k].Groups[3].Value)));
                         }
 
                         k++;
@@ -437,7 +437,7 @@ namespace TDHelper
                 double multiplier = 3600 / ((135 * matches5.Count) + (t_meanDist / 5.28)) / 2;
                 double savedCapacity = Math.Round(t_Capacity / (double)matches5.Count);
                 t_CrTonTally = Math.Round(savedGain / savedCapacity * multiplier); // should be approx. cr/t/hr.
-                t_childTitle = String.Format("Est. Profit: {0:n0}cr/t/hr", t_CrTonTally);
+                t_childTitle = string.Format("Est. Profit: {0:n0}cr/t/hr", t_CrTonTally);
             }
             #endregion
             #region verbosity3
@@ -476,11 +476,11 @@ namespace TDHelper
                 MatchCollection matches6 = Regex.Matches(input, pattern6, RegexOptions.Compiled);
 
                 // Now we compile the output into XML
-                doc = new XDocument(new XElement("Route", new XElement("Summary", String.Format("{0} -> {1}", matches1[0].Groups[1].Value, matches1[0].Groups[2].Value))));
+                doc = new XDocument(new XElement("Route", new XElement("Summary", string.Format("{0} -> {1}", matches1[0].Groups[1].Value, matches1[0].Groups[2].Value))));
 
                 XElement element = doc.Descendants("Route").FirstOrDefault();
 
-                element.Add(new XElement("SummaryDetails", String.Format("Gain: {0} -> est. {1}", matches2[0].Groups[1].Value, matches2[0].Groups[2].Value)));
+                element.Add(new XElement("SummaryDetails", string.Format("Gain: {0} -> est. {1}", matches2[0].Groups[1].Value, matches2[0].Groups[2].Value)));
 
                 int j = 0, k = 0, l = 0;
                 for (int i = 0; i < matches4.Count; i++)
@@ -489,8 +489,8 @@ namespace TDHelper
                     {
                         element.Add(new XElement("Hop"));
                         element = doc.Descendants("Hop").Last();
-                        element.Add(new XElement("LoadAt", String.Format("Load @ {0} [{1}]", matches3[j].Groups[1].Value, matches3[j].Groups[2].Value)));
-                        element.Add(new XElement("LoadDetails", String.Format("{0}", matches3[j].Groups[3].Value)));
+                        element.Add(new XElement("LoadAt", string.Format("Load @ {0} [{1}]", matches3[j].Groups[1].Value, matches3[j].Groups[2].Value)));
+                        element.Add(new XElement("LoadDetails", string.Format("{0}", matches3[j].Groups[3].Value)));
                         j++;
                     }
 
@@ -499,9 +499,9 @@ namespace TDHelper
                         // collect the working capacity of the run
                         t_Capacity += int.Parse(matches4[i].Groups[1].Value);
 
-                        if (!String.IsNullOrEmpty(matches4[i].Groups[10].Value))
+                        if (!string.IsNullOrEmpty(matches4[i].Groups[10].Value))
                         {// we're missing the dest. time, let's match based on src. time
-                            element.Add(new XElement("Load", String.Format("{0}x {1} @ {2}/{3} [{4}{5}] [{6}]", matches4[i].Groups[1].Value, matches4[i].Groups[2].Value, matches4[i].Groups[3].Value, matches4[i].Groups[4].Value, matches4[i].Groups[5].Value, matches4[i].Groups[6].Value, matches4[i].Groups[10].Value)));
+                            element.Add(new XElement("Load", string.Format("{0}x {1} @ {2}/{3} [{4}{5}] [{6}]", matches4[i].Groups[1].Value, matches4[i].Groups[2].Value, matches4[i].Groups[3].Value, matches4[i].Groups[4].Value, matches4[i].Groups[5].Value, matches4[i].Groups[6].Value, matches4[i].Groups[10].Value)));
 
                             // intelligently increment to next match index
                             if (i + 1 < matches4.Count && matches4[i + 1].Index < matches5[k].Index)
@@ -511,7 +511,7 @@ namespace TDHelper
                         }
                         else
                         {
-                            element.Add(new XElement("Load", String.Format("{0}x {1} @ {2}/{3} [{4}{5}|{6}{7}] [{8}]", matches4[i].Groups[1].Value, matches4[i].Groups[2].Value, matches4[i].Groups[3].Value, matches4[i].Groups[4].Value, matches4[i].Groups[5].Value, matches4[i].Groups[6].Value, matches4[i].Groups[7].Value, matches4[i].Groups[8].Value, matches4[i].Groups[9].Value)));
+                            element.Add(new XElement("Load", string.Format("{0}x {1} @ {2}/{3} [{4}{5}|{6}{7}] [{8}]", matches4[i].Groups[1].Value, matches4[i].Groups[2].Value, matches4[i].Groups[3].Value, matches4[i].Groups[4].Value, matches4[i].Groups[5].Value, matches4[i].Groups[6].Value, matches4[i].Groups[7].Value, matches4[i].Groups[8].Value, matches4[i].Groups[9].Value)));
 
                             if (i + 1 < matches4.Count && matches4[i + 1].Index < matches5[k].Index)
                                 i++;
@@ -527,7 +527,7 @@ namespace TDHelper
 
                         while (l < matches6.Count && matches6[l].Index < matches5[k].Index)
                         {
-                            element.Add(new XElement("Jump", String.Format("{0} [{1}]", matches6[l].Groups[2].Value, matches6[l].Groups[1].Value)));
+                            element.Add(new XElement("Jump", string.Format("{0} [{1}]", matches6[l].Groups[2].Value, matches6[l].Groups[1].Value)));
 
                             l++;
                         }
@@ -536,7 +536,7 @@ namespace TDHelper
                     if (k < matches5.Count && matches5[k].Index > matches4[i].Index)
                     {
                         element = doc.Descendants("Hop").Last();
-                        element.Add(new XElement("UnloadAt", String.Format("Unload @ {0} [{1}] [G:{2}cr/t|{3}]", matches5[k].Groups[1].Value, matches5[k].Groups[2].Value, matches5[k].Groups[5].Value, matches5[k].Groups[4].Value)));
+                        element.Add(new XElement("UnloadAt", string.Format("Unload @ {0} [{1}] [G:{2}cr/t|{3}]", matches5[k].Groups[1].Value, matches5[k].Groups[2].Value, matches5[k].Groups[5].Value, matches5[k].Groups[4].Value)));
 
                         // account for Kls and ls, make sure values are whole numbers
                         if (matches5[k].Groups[2].Value.IndexOf("Kls") >= 0)
@@ -551,7 +551,7 @@ namespace TDHelper
 
                         if (k == matches5.Count - 1)
                         {// if this is our last station
-                            element.Add(new XElement("UnloadDetails", String.Format("{0}", matches5[k].Groups[3].Value)));
+                            element.Add(new XElement("UnloadDetails", string.Format("{0}", matches5[k].Groups[3].Value)));
                         }
 
                         k++;
@@ -565,7 +565,7 @@ namespace TDHelper
                 double multiplier = 3600 / ((135 * matches5.Count) + (t_meanDist / 5.28)) / 2;
                 double savedCapacity = Math.Round(t_Capacity / (double)matches5.Count);
                 t_CrTonTally = Math.Round(savedGain / savedCapacity * multiplier); // should be approx. cr/t/hr.
-                t_childTitle = String.Format("Est. Profit: {0:n0}cr/t/hr", t_CrTonTally);
+                t_childTitle = string.Format("Est. Profit: {0:n0}cr/t/hr", t_CrTonTally);
             }
             #endregion
 
@@ -638,7 +638,7 @@ namespace TDHelper
         private void getUpdatedPricesFile()
         {
             buttonCaller = 11;  // mark us as coming from the commodities editor (ctrl+click)
-            String pricesFilePath = settingsRef.TDPath + "\\prices.last";
+            string pricesFilePath = settingsRef.TDPath + "\\prices.last";
 
             // first check if the input prices.last file already exists, if so delete it
             if (File.Exists(pricesFilePath))
@@ -659,11 +659,11 @@ namespace TDHelper
                 * This should search for Buy/Sell price for each commodity and set them to 0
                 */
 
-            String pricesFilePath = settingsRef.TDPath + "\\prices.last";
-            String pricesFileOutputPath = settingsRef.TDPath + "\\prices.updated";
-            String match = @"(\d+)\s+(\d+)\s+";
-            String replace = "0        0        ";
-            String contents = "";
+            string pricesFilePath = settingsRef.TDPath + "\\prices.last";
+            string pricesFileOutputPath = settingsRef.TDPath + "\\prices.updated";
+            string match = @"(\d+)\s+(\d+)\s+";
+            string replace = "0        0        ";
+            string contents = "";
 
             if (File.Exists(pricesFilePath))
             {
@@ -736,7 +736,7 @@ namespace TDHelper
             //
 
             // only run the delegate if we have a path
-            if (!String.IsNullOrEmpty(path))
+            if (!string.IsNullOrEmpty(path))
             {
                 try
                 {
@@ -871,12 +871,12 @@ namespace TDHelper
                         else
                         {
                             Debug.WriteLine(doc.ToString());
-                            UpdateClass.writeToLog(Form1.updateLogPath, "The manifest does not contain a URL tag, cannot parse for remote archive");
+                            UpdateClass.writeToLog(MainForm.updateLogPath, "The manifest does not contain a URL tag, cannot parse for remote archive");
                         }
                     }
                     else
                     {
-                        UpdateClass.writeToLog(Form1.updateLogPath, "The user cancelled the auto-update download");
+                        UpdateClass.writeToLog(MainForm.updateLogPath, "The user cancelled the auto-update download");
                     }
                 }
             }
@@ -888,7 +888,7 @@ namespace TDHelper
             {// we include replaced and tmp files just to be thorough
                 string[] cleanupFiles = Directory.EnumerateFiles(localDir, "*.*").Where(x => x.EndsWith(".tmp") || x.EndsWith(".REMOVE")).Reverse().ToArray();
 
-                foreach (String s in cleanupFiles)
+                foreach (string s in cleanupFiles)
                 {
                     if (File.Exists(s))
                     {
@@ -908,15 +908,15 @@ namespace TDHelper
             string filePattern = @"[\-A-za-z0-9_\.]+\.zip";
             // parse the archive name from the url given
             string remoteArchiveName = Regex.Match(zipFileURL, filePattern).ToString();
-            remoteArchiveLocalPath = Path.Combine(Form1.localDir, remoteArchiveName + ".tmp");
+            remoteArchiveLocalPath = Path.Combine(MainForm.localDir, remoteArchiveName + ".tmp");
 
             // download the archive mentioned in the manifest
             if (UpdateClass.downloadFile(zipFileURL, remoteArchiveLocalPath))
             {
-                UpdateClass.writeToLog(Form1.updateLogPath, "Downloaded a dependent archive from URL: " + zipFileURL);
+                UpdateClass.writeToLog(MainForm.updateLogPath, "Downloaded a dependent archive from URL: " + zipFileURL);
 
                 // rename our conflicting files by making a list then enumerating
-                foreach (String s in UpdateClass.manifestFileList(localManifestPath))
+                foreach (string s in UpdateClass.manifestFileList(localManifestPath))
                 {
                     string localFilePath = Path.Combine(localDir, s);
                     string localFileRenamed = localFilePath + ".REMOVE";
@@ -928,7 +928,7 @@ namespace TDHelper
                 }
 
                 UpdateClass.decompressZip(remoteArchiveLocalPath, localDir);
-                UpdateClass.writeToLog(Form1.updateLogPath, "Attempted decompression of " + Path.GetFileName(remoteArchiveName) + " to our working directory: " + localDir);
+                UpdateClass.writeToLog(MainForm.updateLogPath, "Attempted decompression of " + Path.GetFileName(remoteArchiveName) + " to our working directory: " + localDir);
 
                 // change flag indicator and serialize it
                 settingsRef.HasUpdated = true;
@@ -955,13 +955,13 @@ namespace TDHelper
             JObject o = JObject.Parse(json);
 
             // Set the commander name and credit balance.
-            Form1.settingsRef.CmdrName = (string)o["profile"]["commander"]["name"];
+            MainForm.settingsRef.CmdrName = (string)o["profile"]["commander"]["name"];
             this.creditsBox.Value = (decimal)o["profile"]["commander"]["credits"];
 
             // Determine the insurance of the current ship.
             decimal hullValue = (decimal)o["profile"]["ship"]["value"]["hull"];
             decimal modulesValue = (decimal)o["profile"]["ship"]["value"]["modules"];
-            decimal rebuyPercentage = Form1.settingsRef.RebuyPercentage;
+            decimal rebuyPercentage = MainForm.settingsRef.RebuyPercentage;
 
             this.insuranceBox.Value = (hullValue + modulesValue) * rebuyPercentage / 100;
 
@@ -997,7 +997,7 @@ namespace TDHelper
                 = this.TranslateShipType(shipType) 
                 + (!string.IsNullOrEmpty(shipName) ? " (" + shipName + ")" : string.Empty);
 
-            Form1.settingsRef.LastUsedConfig = currentlySelected;
+            MainForm.settingsRef.LastUsedConfig = currentlySelected;
 
             // Get the details of all the commander's ships and set up the available ships.
             Configuration config = Configuration.LoadFromFile(configFile);
@@ -1045,9 +1045,9 @@ namespace TDHelper
                 config[sectionName]["Padsizes"].StringValue = this.GetPadSizes(shipType);
             }
 
-            string currentShips = Form1.settingsRef.AvailableShips;
-            Form1.settingsRef.AvailableShips = availableShips.Substring(1);
-            config["System"]["AvailableShips"].StringValue = Form1.settingsRef.AvailableShips;
+            string currentShips = MainForm.settingsRef.AvailableShips;
+            MainForm.settingsRef.AvailableShips = availableShips.Substring(1);
+            config["System"]["AvailableShips"].StringValue = MainForm.settingsRef.AvailableShips;
 
             // Determine if any ships have been sold and remove if found.
             IList<string> missingShips = DeterminMissingShips(currentShips, availableShips);
@@ -1071,7 +1071,7 @@ namespace TDHelper
         /// </summary>
         private string RetrieveCommanderProfile()
         {
-            string fileName = Path.Combine(Form1.settingsRef.EdcePath, "last.json");
+            string fileName = Path.Combine(MainForm.settingsRef.EdcePath, "last.json");
             string json = string.Empty;
 
             // If the file exists read it into the return string.

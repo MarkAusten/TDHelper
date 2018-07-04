@@ -1,6 +1,6 @@
 ﻿namespace TDHelper
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.runButton = new System.Windows.Forms.Button();
             this.destSysLabel = new System.Windows.Forms.Label();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
@@ -56,7 +56,6 @@
             this.clearSaved3MenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.pushNotesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pushEDSCToCSV = new System.Windows.Forms.ToolStripMenuItem();
             this.notesClearMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.selectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -146,34 +145,10 @@
             this.minAgeUpDown = new System.Windows.Forms.NumericUpDown();
             this.minAgeLabel = new System.Windows.Forms.Label();
             this.oldRoutesCheckBox = new System.Windows.Forms.CheckBox();
-            this.edscLYLabel5 = new System.Windows.Forms.Label();
-            this.edscLYLabel4 = new System.Windows.Forms.Label();
-            this.edscLYLabel3 = new System.Windows.Forms.Label();
-            this.edscLYLabel2 = new System.Windows.Forms.Label();
-            this.refSysTextBox5 = new System.Windows.Forms.TextBox();
-            this.refSysLabel5 = new System.Windows.Forms.Label();
-            this.refSysTextBox4 = new System.Windows.Forms.TextBox();
-            this.refSysLabel4 = new System.Windows.Forms.Label();
-            this.refSysTextBox3 = new System.Windows.Forms.TextBox();
-            this.refSysLabel3 = new System.Windows.Forms.Label();
-            this.refSysTextBox2 = new System.Windows.Forms.TextBox();
-            this.refSysLabel2 = new System.Windows.Forms.Label();
-            this.edscLYLabel1 = new System.Windows.Forms.Label();
-            this.refSysTextBox1 = new System.Windows.Forms.TextBox();
-            this.refSysLabel1 = new System.Windows.Forms.Label();
-            this.cmdrNameLabel = new System.Windows.Forms.Label();
-            this.cmdrNameTextBox = new System.Windows.Forms.TextBox();
             this.loopIntLabel = new System.Windows.Forms.Label();
             this.loopIntBox = new System.Windows.Forms.NumericUpDown();
-            this.edscLYBox1 = new System.Windows.Forms.NumericUpDown();
-            this.edscLYBox2 = new System.Windows.Forms.NumericUpDown();
-            this.edscLYBox3 = new System.Windows.Forms.NumericUpDown();
-            this.edscLYBox4 = new System.Windows.Forms.NumericUpDown();
-            this.edscLYBox5 = new System.Windows.Forms.NumericUpDown();
             this.shortenCheckBox = new System.Windows.Forms.CheckBox();
             this.shipsSoldBox = new System.Windows.Forms.ComboBox();
-            this.crFilterLabel = new System.Windows.Forms.Label();
-            this.crFilterUpDown = new System.Windows.Forms.NumericUpDown();
             this.demandBox = new System.Windows.Forms.NumericUpDown();
             this.demandLabel = new System.Windows.Forms.Label();
             this.showJumpsCheckBox = new System.Windows.Forms.CheckBox();
@@ -208,7 +183,6 @@
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.copySystemToSrc = new System.Windows.Forms.ToolStripMenuItem();
             this.copySystemToDest = new System.Windows.Forms.ToolStripMenuItem();
-            this.copySystemToEDSC = new System.Windows.Forms.ToolStripMenuItem();
             this.jumpsLabel = new System.Windows.Forms.Label();
             this.maxLSLabel = new System.Windows.Forms.Label();
             this.pruneHopsLabel = new System.Windows.Forms.Label();
@@ -221,10 +195,10 @@
             this.runOptionsPanel = new System.Windows.Forms.Panel();
             this.backgroundWorker5 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker6 = new System.ComponentModel.BackgroundWorker();
-            this.edscPanel = new System.Windows.Forms.Panel();
             this.trackerLinkLabel = new System.Windows.Forms.LinkLabel();
             this.faqLinkLabel = new System.Windows.Forms.LinkLabel();
             this.backgroundWorker7 = new System.ComponentModel.BackgroundWorker();
+            this.btnSaveSettings = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.belowPriceBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.abovePriceBox)).BeginInit();
@@ -251,12 +225,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.stockBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minAgeUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.loopIntBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.edscLYBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.edscLYBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.edscLYBox3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.edscLYBox4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.edscLYBox5)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.crFilterUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.demandBox)).BeginInit();
             this.panel1.SuspendLayout();
             this.localFilterParentPanel.SuspendLayout();
@@ -273,7 +241,6 @@
             this.panel2.SuspendLayout();
             this.panelLocalOverrideChild.SuspendLayout();
             this.runOptionsPanel.SuspendLayout();
-            this.edscPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // runButton
@@ -432,14 +399,13 @@
             this.clearSaved3MenuItem,
             this.toolStripSeparator2,
             this.pushNotesMenuItem,
-            this.pushEDSCToCSV,
             this.notesClearMenuItem,
             this.toolStripSeparator1,
             this.selectMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.contextMenuStrip1.ShowImageMargin = false;
-            this.contextMenuStrip1.Size = new System.Drawing.Size(123, 330);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(123, 308);
             this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
             // cutMenuItem
@@ -537,13 +503,6 @@
             this.pushNotesMenuItem.Size = new System.Drawing.Size(122, 22);
             this.pushNotesMenuItem.Text = "Add To Notes";
             this.pushNotesMenuItem.Click += new System.EventHandler(this.pushNotesMenuItem_Click);
-            // 
-            // pushEDSCToCSV
-            // 
-            this.pushEDSCToCSV.Name = "pushEDSCToCSV";
-            this.pushEDSCToCSV.Size = new System.Drawing.Size(122, 22);
-            this.pushEDSCToCSV.Text = "Add To CSV";
-            this.pushEDSCToCSV.Visible = false;
             // 
             // notesClearMenuItem
             // 
@@ -935,8 +894,7 @@
             "Station",
             "ShipVendor",
             "Navigation",
-            "OldData",
-            "EDSC"});
+            "OldData"});
             this.methodDropDown.Location = new System.Drawing.Point(4, 61);
             this.methodDropDown.Name = "methodDropDown";
             this.methodDropDown.Size = new System.Drawing.Size(82, 21);
@@ -1720,164 +1678,6 @@
             this.oldRoutesCheckBox.UseVisualStyleBackColor = true;
             this.oldRoutesCheckBox.Visible = false;
             // 
-            // edscLYLabel5
-            // 
-            this.edscLYLabel5.AutoSize = true;
-            this.edscLYLabel5.Location = new System.Drawing.Point(221, 102);
-            this.edscLYLabel5.Name = "edscLYLabel5";
-            this.edscLYLabel5.Size = new System.Drawing.Size(23, 13);
-            this.edscLYLabel5.TabIndex = 23;
-            this.edscLYLabel5.Text = "LY:";
-            this.toolTip1.SetToolTip(this.edscLYLabel5, "Distance in LY (required for a submission)");
-            // 
-            // edscLYLabel4
-            // 
-            this.edscLYLabel4.AutoSize = true;
-            this.edscLYLabel4.Location = new System.Drawing.Point(221, 79);
-            this.edscLYLabel4.Name = "edscLYLabel4";
-            this.edscLYLabel4.Size = new System.Drawing.Size(23, 13);
-            this.edscLYLabel4.TabIndex = 22;
-            this.edscLYLabel4.Text = "LY:";
-            this.toolTip1.SetToolTip(this.edscLYLabel4, "Distance in LY (required for a submission)");
-            // 
-            // edscLYLabel3
-            // 
-            this.edscLYLabel3.AutoSize = true;
-            this.edscLYLabel3.Location = new System.Drawing.Point(221, 56);
-            this.edscLYLabel3.Name = "edscLYLabel3";
-            this.edscLYLabel3.Size = new System.Drawing.Size(23, 13);
-            this.edscLYLabel3.TabIndex = 21;
-            this.edscLYLabel3.Text = "LY:";
-            this.toolTip1.SetToolTip(this.edscLYLabel3, "Distance in LY (required for a submission)");
-            // 
-            // edscLYLabel2
-            // 
-            this.edscLYLabel2.AutoSize = true;
-            this.edscLYLabel2.Location = new System.Drawing.Point(221, 33);
-            this.edscLYLabel2.Name = "edscLYLabel2";
-            this.edscLYLabel2.Size = new System.Drawing.Size(23, 13);
-            this.edscLYLabel2.TabIndex = 20;
-            this.edscLYLabel2.Text = "LY:";
-            this.toolTip1.SetToolTip(this.edscLYLabel2, "Distance in LY (required for a submission)");
-            // 
-            // refSysTextBox5
-            // 
-            this.refSysTextBox5.Location = new System.Drawing.Point(75, 100);
-            this.refSysTextBox5.Name = "refSysTextBox5";
-            this.refSysTextBox5.Size = new System.Drawing.Size(140, 20);
-            this.refSysTextBox5.TabIndex = 9;
-            this.toolTip1.SetToolTip(this.refSysTextBox5, "All 5 references (with distances) are required for a submission");
-            // 
-            // refSysLabel5
-            // 
-            this.refSysLabel5.AutoSize = true;
-            this.refSysLabel5.Location = new System.Drawing.Point(7, 102);
-            this.refSysLabel5.Name = "refSysLabel5";
-            this.refSysLabel5.Size = new System.Drawing.Size(69, 13);
-            this.refSysLabel5.TabIndex = 16;
-            this.refSysLabel5.Text = "Ref. Sys. #5:";
-            this.toolTip1.SetToolTip(this.refSysLabel5, "All 5 references (with distances) are required for a submission");
-            // 
-            // refSysTextBox4
-            // 
-            this.refSysTextBox4.Location = new System.Drawing.Point(75, 77);
-            this.refSysTextBox4.Name = "refSysTextBox4";
-            this.refSysTextBox4.Size = new System.Drawing.Size(140, 20);
-            this.refSysTextBox4.TabIndex = 7;
-            this.toolTip1.SetToolTip(this.refSysTextBox4, "All 5 references (with distances) are required for a submission");
-            // 
-            // refSysLabel4
-            // 
-            this.refSysLabel4.AutoSize = true;
-            this.refSysLabel4.Location = new System.Drawing.Point(7, 79);
-            this.refSysLabel4.Name = "refSysLabel4";
-            this.refSysLabel4.Size = new System.Drawing.Size(69, 13);
-            this.refSysLabel4.TabIndex = 12;
-            this.refSysLabel4.Text = "Ref. Sys. #4:";
-            this.toolTip1.SetToolTip(this.refSysLabel4, "All 5 references (with distances) are required for a submission");
-            // 
-            // refSysTextBox3
-            // 
-            this.refSysTextBox3.Location = new System.Drawing.Point(75, 54);
-            this.refSysTextBox3.Name = "refSysTextBox3";
-            this.refSysTextBox3.Size = new System.Drawing.Size(140, 20);
-            this.refSysTextBox3.TabIndex = 5;
-            this.toolTip1.SetToolTip(this.refSysTextBox3, "All 5 references (with distances) are required for a submission");
-            // 
-            // refSysLabel3
-            // 
-            this.refSysLabel3.AutoSize = true;
-            this.refSysLabel3.Location = new System.Drawing.Point(7, 56);
-            this.refSysLabel3.Name = "refSysLabel3";
-            this.refSysLabel3.Size = new System.Drawing.Size(69, 13);
-            this.refSysLabel3.TabIndex = 8;
-            this.refSysLabel3.Text = "Ref. Sys. #3:";
-            this.toolTip1.SetToolTip(this.refSysLabel3, "All 5 references (with distances) are required for a submission");
-            // 
-            // refSysTextBox2
-            // 
-            this.refSysTextBox2.Location = new System.Drawing.Point(75, 31);
-            this.refSysTextBox2.Name = "refSysTextBox2";
-            this.refSysTextBox2.Size = new System.Drawing.Size(140, 20);
-            this.refSysTextBox2.TabIndex = 3;
-            this.toolTip1.SetToolTip(this.refSysTextBox2, "All 5 references (with distances) are required for a submission");
-            // 
-            // refSysLabel2
-            // 
-            this.refSysLabel2.AutoSize = true;
-            this.refSysLabel2.Location = new System.Drawing.Point(7, 33);
-            this.refSysLabel2.Name = "refSysLabel2";
-            this.refSysLabel2.Size = new System.Drawing.Size(69, 13);
-            this.refSysLabel2.TabIndex = 4;
-            this.refSysLabel2.Text = "Ref. Sys. #2:";
-            this.toolTip1.SetToolTip(this.refSysLabel2, "All 5 references (with distances) are required for a submission");
-            // 
-            // edscLYLabel1
-            // 
-            this.edscLYLabel1.AutoSize = true;
-            this.edscLYLabel1.Location = new System.Drawing.Point(221, 10);
-            this.edscLYLabel1.Name = "edscLYLabel1";
-            this.edscLYLabel1.Size = new System.Drawing.Size(23, 13);
-            this.edscLYLabel1.TabIndex = 2;
-            this.edscLYLabel1.Text = "LY:";
-            this.toolTip1.SetToolTip(this.edscLYLabel1, "Distance in LY (required for a submission)");
-            // 
-            // refSysTextBox1
-            // 
-            this.refSysTextBox1.Location = new System.Drawing.Point(75, 8);
-            this.refSysTextBox1.Name = "refSysTextBox1";
-            this.refSysTextBox1.Size = new System.Drawing.Size(140, 20);
-            this.refSysTextBox1.TabIndex = 1;
-            this.toolTip1.SetToolTip(this.refSysTextBox1, "All 5 references (with distances) are required for a submission");
-            // 
-            // refSysLabel1
-            // 
-            this.refSysLabel1.AutoSize = true;
-            this.refSysLabel1.Location = new System.Drawing.Point(7, 10);
-            this.refSysLabel1.Name = "refSysLabel1";
-            this.refSysLabel1.Size = new System.Drawing.Size(69, 13);
-            this.refSysLabel1.TabIndex = 0;
-            this.refSysLabel1.Text = "Ref. Sys. #1:";
-            this.toolTip1.SetToolTip(this.refSysLabel1, "All 5 references (with distances) are required for a submission");
-            // 
-            // cmdrNameLabel
-            // 
-            this.cmdrNameLabel.AutoSize = true;
-            this.cmdrNameLabel.Location = new System.Drawing.Point(7, 126);
-            this.cmdrNameLabel.Name = "cmdrNameLabel";
-            this.cmdrNameLabel.Size = new System.Drawing.Size(34, 13);
-            this.cmdrNameLabel.TabIndex = 24;
-            this.cmdrNameLabel.Text = "Cmdr:";
-            this.toolTip1.SetToolTip(this.cmdrNameLabel, "Optional: Specify name of submitter on entry");
-            // 
-            // cmdrNameTextBox
-            // 
-            this.cmdrNameTextBox.Location = new System.Drawing.Point(40, 123);
-            this.cmdrNameTextBox.Name = "cmdrNameTextBox";
-            this.cmdrNameTextBox.Size = new System.Drawing.Size(175, 20);
-            this.cmdrNameTextBox.TabIndex = 11;
-            this.toolTip1.SetToolTip(this.cmdrNameTextBox, "Optional: Specify name of submitter on entry");
-            // 
             // loopIntLabel
             // 
             this.loopIntLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -1901,91 +1701,6 @@
             this.loopIntBox.Enter += new System.EventHandler(this.numericUpDown_Enter);
             this.loopIntBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
             // 
-            // edscLYBox1
-            // 
-            this.edscLYBox1.DecimalPlaces = 2;
-            this.edscLYBox1.Location = new System.Drawing.Point(245, 8);
-            this.edscLYBox1.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.edscLYBox1.Name = "edscLYBox1";
-            this.edscLYBox1.Size = new System.Drawing.Size(60, 20);
-            this.edscLYBox1.TabIndex = 2;
-            this.edscLYBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.toolTip1.SetToolTip(this.edscLYBox1, "Distance in LY (required for a submission)");
-            this.edscLYBox1.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.edscLYBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
-            // 
-            // edscLYBox2
-            // 
-            this.edscLYBox2.DecimalPlaces = 2;
-            this.edscLYBox2.Location = new System.Drawing.Point(245, 31);
-            this.edscLYBox2.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.edscLYBox2.Name = "edscLYBox2";
-            this.edscLYBox2.Size = new System.Drawing.Size(60, 20);
-            this.edscLYBox2.TabIndex = 4;
-            this.edscLYBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.toolTip1.SetToolTip(this.edscLYBox2, "Distance in LY (required for a submission)");
-            this.edscLYBox2.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.edscLYBox2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
-            // 
-            // edscLYBox3
-            // 
-            this.edscLYBox3.DecimalPlaces = 2;
-            this.edscLYBox3.Location = new System.Drawing.Point(245, 54);
-            this.edscLYBox3.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.edscLYBox3.Name = "edscLYBox3";
-            this.edscLYBox3.Size = new System.Drawing.Size(60, 20);
-            this.edscLYBox3.TabIndex = 6;
-            this.edscLYBox3.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.toolTip1.SetToolTip(this.edscLYBox3, "Distance in LY (required for a submission)");
-            this.edscLYBox3.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.edscLYBox3.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
-            // 
-            // edscLYBox4
-            // 
-            this.edscLYBox4.DecimalPlaces = 2;
-            this.edscLYBox4.Location = new System.Drawing.Point(245, 77);
-            this.edscLYBox4.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.edscLYBox4.Name = "edscLYBox4";
-            this.edscLYBox4.Size = new System.Drawing.Size(60, 20);
-            this.edscLYBox4.TabIndex = 8;
-            this.edscLYBox4.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.toolTip1.SetToolTip(this.edscLYBox4, "Distance in LY (required for a submission)");
-            this.edscLYBox4.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.edscLYBox4.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
-            // 
-            // edscLYBox5
-            // 
-            this.edscLYBox5.DecimalPlaces = 2;
-            this.edscLYBox5.Location = new System.Drawing.Point(245, 100);
-            this.edscLYBox5.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.edscLYBox5.Name = "edscLYBox5";
-            this.edscLYBox5.Size = new System.Drawing.Size(60, 20);
-            this.edscLYBox5.TabIndex = 10;
-            this.edscLYBox5.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.toolTip1.SetToolTip(this.edscLYBox5, "Distance in LY (required for a submission)");
-            this.edscLYBox5.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.edscLYBox5.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
-            // 
             // shortenCheckBox
             // 
             this.shortenCheckBox.AutoSize = true;
@@ -2007,42 +1722,6 @@
             this.shipsSoldBox.Size = new System.Drawing.Size(214, 21);
             this.shipsSoldBox.TabIndex = 8;
             this.toolTip1.SetToolTip(this.shipsSoldBox, "Ships sold at this ship vendor (delimited by space or comma)");
-            // 
-            // crFilterLabel
-            // 
-            this.crFilterLabel.AutoSize = true;
-            this.crFilterLabel.Location = new System.Drawing.Point(219, 126);
-            this.crFilterLabel.Name = "crFilterLabel";
-            this.crFilterLabel.Size = new System.Drawing.Size(25, 13);
-            this.crFilterLabel.TabIndex = 25;
-            this.crFilterLabel.Text = "CR:";
-            this.toolTip1.SetToolTip(this.crFilterLabel, "Filter by credit rating");
-            // 
-            // crFilterUpDown
-            // 
-            this.crFilterUpDown.Location = new System.Drawing.Point(245, 123);
-            this.crFilterUpDown.Maximum = new decimal(new int[] {
-            20,
-            0,
-            0,
-            0});
-            this.crFilterUpDown.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.crFilterUpDown.Name = "crFilterUpDown";
-            this.crFilterUpDown.Size = new System.Drawing.Size(60, 20);
-            this.crFilterUpDown.TabIndex = 12;
-            this.crFilterUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.toolTip1.SetToolTip(this.crFilterUpDown, "Filter by credit rating");
-            this.crFilterUpDown.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.crFilterUpDown.Enter += new System.EventHandler(this.numericUpDown_Enter);
-            this.crFilterUpDown.MouseUp += new System.Windows.Forms.MouseEventHandler(this.numericUpDown_MouseUp);
             // 
             // demandBox
             // 
@@ -2253,7 +1932,7 @@
             this.savedPage1.Location = new System.Drawing.Point(4, 22);
             this.savedPage1.Name = "savedPage1";
             this.savedPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.savedPage1.Size = new System.Drawing.Size(793, 472);
+            this.savedPage1.Size = new System.Drawing.Size(793, 442);
             this.savedPage1.TabIndex = 1;
             this.savedPage1.Text = "Saved #1";
             this.savedPage1.UseVisualStyleBackColor = true;
@@ -2278,7 +1957,7 @@
             this.savedPage2.Controls.Add(this.savedTextBox2);
             this.savedPage2.Location = new System.Drawing.Point(4, 22);
             this.savedPage2.Name = "savedPage2";
-            this.savedPage2.Size = new System.Drawing.Size(793, 472);
+            this.savedPage2.Size = new System.Drawing.Size(793, 442);
             this.savedPage2.TabIndex = 2;
             this.savedPage2.Text = "Saved #2";
             this.savedPage2.UseVisualStyleBackColor = true;
@@ -2303,7 +1982,7 @@
             this.savedPage3.Controls.Add(this.savedTextBox3);
             this.savedPage3.Location = new System.Drawing.Point(4, 22);
             this.savedPage3.Name = "savedPage3";
-            this.savedPage3.Size = new System.Drawing.Size(793, 472);
+            this.savedPage3.Size = new System.Drawing.Size(793, 442);
             this.savedPage3.TabIndex = 3;
             this.savedPage3.Text = "Saved #3";
             this.savedPage3.UseVisualStyleBackColor = true;
@@ -2391,8 +2070,7 @@
             this.forceResortMenuItem,
             this.toolStripSeparator5,
             this.copySystemToSrc,
-            this.copySystemToDest,
-            this.copySystemToEDSC});
+            this.copySystemToDest});
             this.contextMenuStrip2.Name = "contextMenuStrip2";
             this.contextMenuStrip2.Size = new System.Drawing.Size(189, 170);
             // 
@@ -2447,13 +2125,6 @@
             this.copySystemToDest.Size = new System.Drawing.Size(188, 22);
             this.copySystemToDest.Text = "Copy System to Dest";
             this.copySystemToDest.Click += new System.EventHandler(this.copySystemToDest_Click);
-            // 
-            // copySystemToEDSC
-            // 
-            this.copySystemToEDSC.Name = "copySystemToEDSC";
-            this.copySystemToEDSC.Size = new System.Drawing.Size(188, 22);
-            this.copySystemToEDSC.Text = "Copy System to EDSC";
-            this.copySystemToEDSC.Click += new System.EventHandler(this.copySystemToEDSC_Click);
             // 
             // jumpsLabel
             // 
@@ -2632,39 +2303,6 @@
             this.backgroundWorker6.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker6_DoWork);
             this.backgroundWorker6.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker6_RunWorkerCompleted);
             // 
-            // edscPanel
-            // 
-            this.edscPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.edscPanel.Controls.Add(this.crFilterUpDown);
-            this.edscPanel.Controls.Add(this.crFilterLabel);
-            this.edscPanel.Controls.Add(this.edscLYBox5);
-            this.edscPanel.Controls.Add(this.edscLYBox4);
-            this.edscPanel.Controls.Add(this.edscLYBox3);
-            this.edscPanel.Controls.Add(this.edscLYBox2);
-            this.edscPanel.Controls.Add(this.edscLYBox1);
-            this.edscPanel.Controls.Add(this.cmdrNameTextBox);
-            this.edscPanel.Controls.Add(this.cmdrNameLabel);
-            this.edscPanel.Controls.Add(this.edscLYLabel5);
-            this.edscPanel.Controls.Add(this.edscLYLabel4);
-            this.edscPanel.Controls.Add(this.edscLYLabel3);
-            this.edscPanel.Controls.Add(this.edscLYLabel2);
-            this.edscPanel.Controls.Add(this.refSysTextBox5);
-            this.edscPanel.Controls.Add(this.refSysLabel5);
-            this.edscPanel.Controls.Add(this.refSysTextBox4);
-            this.edscPanel.Controls.Add(this.refSysLabel4);
-            this.edscPanel.Controls.Add(this.refSysTextBox3);
-            this.edscPanel.Controls.Add(this.refSysLabel3);
-            this.edscPanel.Controls.Add(this.refSysTextBox2);
-            this.edscPanel.Controls.Add(this.refSysLabel2);
-            this.edscPanel.Controls.Add(this.edscLYLabel1);
-            this.edscPanel.Controls.Add(this.refSysTextBox1);
-            this.edscPanel.Controls.Add(this.refSysLabel1);
-            this.edscPanel.Location = new System.Drawing.Point(11, 35);
-            this.edscPanel.Name = "edscPanel";
-            this.edscPanel.Size = new System.Drawing.Size(312, 198);
-            this.edscPanel.TabIndex = 65;
-            this.edscPanel.Visible = false;
-            // 
             // trackerLinkLabel
             // 
             this.trackerLinkLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -2697,12 +2335,26 @@
             this.backgroundWorker7.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker7_DoWork);
             this.backgroundWorker7.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker7_RunWorkerCompleted);
             // 
-            // Form1
+            // btnSaveSettings
+            // 
+            this.btnSaveSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnSaveSettings.Location = new System.Drawing.Point(721, 713);
+            this.btnSaveSettings.Name = "btnSaveSettings";
+            this.btnSaveSettings.Size = new System.Drawing.Size(92, 23);
+            this.btnSaveSettings.TabIndex = 69;
+            this.btnSaveSettings.TabStop = false;
+            this.btnSaveSettings.Text = "Save Settings";
+            this.toolTip1.SetToolTip(this.btnSaveSettings, "Save the settings immediately.");
+            this.btnSaveSettings.UseVisualStyleBackColor = true;
+            this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_Click);
+            // 
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(826, 759);
+            this.Controls.Add(this.btnSaveSettings);
             this.Controls.Add(this.updateNotifyLabel);
             this.Controls.Add(this.updateNotifyIcon);
             this.Controls.Add(this.panel1);
@@ -2710,7 +2362,6 @@
             this.Controls.Add(this.btnCmdrProfile);
             this.Controls.Add(this.faqLinkLabel);
             this.Controls.Add(this.trackerLinkLabel);
-            this.Controls.Add(this.edscPanel);
             this.Controls.Add(this.testSystemsCheckBox);
             this.Controls.Add(this.miniModeButton);
             this.Controls.Add(this.swapButton);
@@ -2733,15 +2384,15 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(842, 370);
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Text = "Trade Dangerous Helper";
-            this.Activated += new System.EventHandler(this.Form1_Activated);
-            this.Deactivate += new System.EventHandler(this.Form1_Deactivate);
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
-            this.Load += new System.EventHandler(this.Form1_Load);
-            this.Shown += new System.EventHandler(this.Form1_Shown);
-            this.LocationChanged += new System.EventHandler(this.Form1_LocationChanged);
+            this.Activated += new System.EventHandler(this.MainForm_Activated);
+            this.Deactivate += new System.EventHandler(this.MainForm_Deactivate);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
+            this.Load += new System.EventHandler(this.MainForm_Load);
+            this.Shown += new System.EventHandler(this.MainForm_Shown);
+            this.LocationChanged += new System.EventHandler(this.MainForm_LocationChanged);
             this.contextMenuStrip1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.belowPriceBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.abovePriceBox)).EndInit();
@@ -2768,12 +2419,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.stockBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.minAgeUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.loopIntBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.edscLYBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.edscLYBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.edscLYBox3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.edscLYBox4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.edscLYBox5)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.crFilterUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.demandBox)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -2795,8 +2440,6 @@
             this.panelLocalOverrideChild.PerformLayout();
             this.runOptionsPanel.ResumeLayout(false);
             this.runOptionsPanel.PerformLayout();
-            this.edscPanel.ResumeLayout(false);
-            this.edscPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2949,36 +2592,10 @@
         private System.Windows.Forms.Label minAgeLabel;
         private System.Windows.Forms.NumericUpDown minAgeUpDown;
         private System.Windows.Forms.CheckBox oldRoutesCheckBox;
-        private System.Windows.Forms.Panel edscPanel;
-        private System.Windows.Forms.Label edscLYLabel5;
-        private System.Windows.Forms.Label edscLYLabel4;
-        private System.Windows.Forms.Label edscLYLabel3;
-        private System.Windows.Forms.Label edscLYLabel2;
-        private System.Windows.Forms.TextBox refSysTextBox5;
-        private System.Windows.Forms.Label refSysLabel5;
-        private System.Windows.Forms.TextBox refSysTextBox4;
-        private System.Windows.Forms.Label refSysLabel4;
-        private System.Windows.Forms.TextBox refSysTextBox3;
-        private System.Windows.Forms.Label refSysLabel3;
-        private System.Windows.Forms.TextBox refSysTextBox2;
-        private System.Windows.Forms.Label refSysLabel2;
-        private System.Windows.Forms.Label edscLYLabel1;
-        private System.Windows.Forms.TextBox refSysTextBox1;
-        private System.Windows.Forms.Label refSysLabel1;
-        private System.Windows.Forms.TextBox cmdrNameTextBox;
-        private System.Windows.Forms.Label cmdrNameLabel;
         private System.Windows.Forms.Label loopIntLabel;
         private System.Windows.Forms.NumericUpDown loopIntBox;
-        private System.Windows.Forms.NumericUpDown edscLYBox1;
-        private System.Windows.Forms.NumericUpDown edscLYBox5;
-        private System.Windows.Forms.NumericUpDown edscLYBox4;
-        private System.Windows.Forms.NumericUpDown edscLYBox3;
-        private System.Windows.Forms.NumericUpDown edscLYBox2;
         private System.Windows.Forms.CheckBox shortenCheckBox;
         private System.Windows.Forms.ComboBox shipsSoldBox;
-        private System.Windows.Forms.NumericUpDown crFilterUpDown;
-        private System.Windows.Forms.Label crFilterLabel;
-        private System.Windows.Forms.ToolStripMenuItem pushEDSCToCSV;
         private System.Windows.Forms.NumericUpDown demandBox;
         private System.Windows.Forms.Label demandLabel;
         private System.Windows.Forms.CheckBox showJumpsCheckBox;
@@ -2996,9 +2613,9 @@
         private System.Windows.Forms.ToolStripMenuItem copySystemToDest;
         private System.Windows.Forms.ToolStripMenuItem removeAtGridRow;
         private System.Windows.Forms.ToolStripMenuItem forceResortMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem copySystemToEDSC;
         private System.Windows.Forms.Button btnCmdrProfile;
         private System.ComponentModel.BackgroundWorker backgroundWorker7;
+        private System.Windows.Forms.Button btnSaveSettings;
     }
 }
 

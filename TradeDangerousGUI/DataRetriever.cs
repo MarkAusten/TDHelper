@@ -119,7 +119,7 @@ namespace TDHelper
 
             if (!this.Columns[columnToSortBy].Unique)
             {
-                throw new InvalidOperationException(String.Format(
+                throw new InvalidOperationException(string.Format(
                     "Column {0} must contain unique values.", columnToSortBy));
             }
 
