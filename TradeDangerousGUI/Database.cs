@@ -65,24 +65,30 @@ namespace TDHelper
             {
                 using (SQLiteCommand cmd = new SQLiteCommand("INSERT INTO SystemLog VALUES (null,@Timestamp,@System,null)", dbConn))
                 {
+                    cmd.Parameters.AddWithValue("@Timestamp", string.Empty);
+                    cmd.Parameters.AddWithValue("@System", string.Empty);
+
                     var transaction = dbConn.BeginTransaction();
+
                     foreach (var s in exceptKey)
                     {
-                        string var1 = s.Key;
-                        string var2 = s.Value;
-
                         try
                         {
-                            cmd.Parameters.AddWithValue("@Timestamp", var1);
-                            cmd.Parameters.AddWithValue("@System", var2);
+                            cmd.Parameters["@Timestamp"].Value = s.Key;
+                            cmd.Parameters["@System"].Value = s.Value;
+
                             cmd.ExecuteNonQuery();
-                            cmd.Parameters.Clear();
                         }
-                        catch (Exception) { throw; }
+                        catch (Exception)
+                        {
+                            // Do nothing.
+                        }
                     }
+
                     transaction.Commit();
 
                     invalidatedRowUpdate(true, 0);
+
                     return true; // success!
                 }
             }
@@ -154,31 +160,54 @@ namespace TDHelper
                 using (SQLiteCommand cmd = dbConn.CreateCommand())
                 {
                     if (!hasValidColumn(dbConn, "SystemLog", "System"))
-                    {// create our table first
+                    {
+                        // create our table first
                         cmd.CommandText = "CREATE TABLE SystemLog (ID INTEGER PRIMARY KEY AUTOINCREMENT, Timestamp NVARCHAR, System NVARCHAR, Notes NVARCHAR)";
+                        cmd.ExecuteNonQuery();
+
+                        // Create a unique index.
+                        cmd.CommandText = "CREATE UNIQUE INDEX IF NOT EXISTS SystemTimestamp ON SystemLog (System, Timestamp)";
                         cmd.ExecuteNonQuery();
                     }
                     else if (hasValidRows(dbConn, "SystemLog"))
-                    {// wipe before inserting, ensures most recent records
+                    {
+/*
+                        // wipe before inserting, ensures most recent records
                         cmd.CommandText = "DELETE FROM SystemLog";
                         cmd.ExecuteNonQuery();
 
                         // clean up after ourselves
                         cmd.CommandText = "VACUUM";
                         cmd.ExecuteNonQuery();
+*/
                     }
 
-                    using (var transaction = dbConn.BeginTransaction())
-                    {// always do our inserts in a batch for ideal performance
-                        foreach (var s in netLogOutput)
+                    if (netLogOutput.Count > 0)
+                    {
+                        using (var transaction = dbConn.BeginTransaction())
                         {
-                            cmd.CommandText = @"INSERT INTO SystemLog VALUES (null,@Timestamp,@System,null)";
-                            cmd.Parameters.AddWithValue("@Timestamp", s.Key);
-                            cmd.Parameters.AddWithValue("@System", s.Value);
-                            cmd.ExecuteNonQuery();
-                            cmd.Parameters.Clear();
+                            // always do our inserts in a batch for ideal performance
+                            cmd.CommandText = @"INSERT INTO SystemLog (Timestamp, System) VALUES null,@Timestamp,@System,null)";
+
+                            cmd.Parameters.AddWithValue("@Timestamp", string.Empty);
+                            cmd.Parameters.AddWithValue("@System", string.Empty);
+
+                            foreach (var s in netLogOutput)
+                            {
+                                try
+                                {
+                                    cmd.Parameters["@Timestamp"].Value = s.Key;
+                                    cmd.Parameters["@System"].Value = s.Value;
+
+                                    cmd.ExecuteNonQuery();
+                                }
+                                catch
+                                {
+                                    // Do nothing.
+                                }
+                            }
+                            transaction.Commit();
                         }
-                        transaction.Commit();
                     }
 
                     this.Invoke(new Action(() =>
@@ -298,9 +327,15 @@ namespace TDHelper
             {
                 using (SQLiteCommand cmd = new SQLiteCommand("INSERT OR REPLACE INTO SystemLog VALUES (@ID,@Timestamp,@System,@Notes)", dbConn))
                 {
+                    cmd.Parameters.AddWithValue("@ID", 0);
+                    cmd.Parameters.AddWithValue("@Timestamp", string.Empty);
+                    cmd.Parameters.AddWithValue("@System", string.Empty);
+                    cmd.Parameters.AddWithValue("@Notes", string.Empty);
+
                     try
                     {
                         var transaction = dbConn.BeginTransaction();
+
                         for (int i = rows.Count - 1; i >= 0; i--)
                         {
                             DataRow row = rows[i];
@@ -309,18 +344,20 @@ namespace TDHelper
                             string var3 = (row["System"] ?? "").ToString();
                             string var4 = (row["Notes"] ?? "").ToString();
 
-                            cmd.Parameters.AddWithValue("@ID", var1);
-                            cmd.Parameters.AddWithValue("@Timestamp", var2);
-                            cmd.Parameters.AddWithValue("@System", var3);
-                            cmd.Parameters.AddWithValue("@Notes", var4);
+                            cmd.Parameters["@ID"].Value = var1;
+                            cmd.Parameters["@Timestamp"].Value = var2;
+                            cmd.Parameters["@System"].Value = var3;
+                            cmd.Parameters["@Notes"].Value = var4;
+
                             cmd.ExecuteNonQuery();
-                            cmd.Parameters.Clear();
                         }
+
                         transaction.Commit();
                     }
                     catch (Exception) { throw; }
 
                     updateLocalTable(tdhDBConn);
+
                     return true; // success!
                 }
             }
@@ -465,15 +502,48 @@ namespace TDHelper
 
         private List<String> loadSystemsFromLogs(bool refreshMode, List<string> filePaths)
         {
+            // get the latest timestamp from the DB.
+            string timestamp = this.GetLastTimestamp();
+            int fileCount = 0;
+
+            if (string.IsNullOrEmpty(timestamp))
+            {
+                timestamp = "000000000000";
+            }
+            else
+            {
+                timestamp = timestamp
+                    .Replace(" ", string.Empty)
+                    .Replace("-", string.Empty)
+                    .Replace(":", string.Empty)
+                    .Substring(2);
+            }
+
+            // Count the number of files that are later than the timestamp and add one if not all files returned.
+            fileCount = filePaths
+                .Where(x => string.Compare(
+                    Path.GetFileNameWithoutExtension(x)
+                        .Substring(7)
+                        .Substring(0, 12),
+                    timestamp) > 0)
+                .Count();
+
+            if (fileCount < filePaths.Count)
+            {
+                ++fileCount;
+            }
+
             Splash splashForm = new Splash();
+
+            Stopwatch stopWatch = new Stopwatch();
+            stopwatch.Start();
 
             // this method initially populates the recent systems and pilot's log in the absence of a DB
             // grab the timestamp of this particular netlog
             string fileBuffer = "";
             String pattern0 = @"(\d{2,4}\-\d\d\-\d\d)[\s\-](\d\d:\d\d)\sGMT"; // $1=Y, $2=M, $3=D; $4=GMT
-	//        String pattern0 = @"^\{\d\d\-\d\d\-\d\d)\}"; // $1=Y, $2=M, $3=D; $4=GMT
+
             // grab the timestamp of this entry, and then the system name
-//            String pattern1 = @"\{(.*?)\}\sSystem.+?\((.*?)\)"; // $1=localtime, $2=system
             String pattern1 = @"\{(\d\d:\d\d:\d\d).+System:""(.+)"""; // $1=localtime, $2=system
             List<string> output = new List<string>(); // a list for our system names
             List<KeyValuePair<string, string>> netLogOutput = new List<KeyValuePair<string, string>>();
@@ -481,18 +551,35 @@ namespace TDHelper
 
             if (filePaths.Count > 0 && !String.IsNullOrEmpty(filePaths[0]) && refreshMode)
             {// compile a list of all unique systems last visited in all valid log files, oldest to newest
-                this.Invoke(new Action(() =>
-                {
-                    this.Enabled = false;
-                    splashForm.StartPosition = FormStartPosition.Manual;
-                    splashForm.Location = new Point(this.Location.X + (this.Width - splashForm.Width) / 2, this.Location.Y + (this.Height - splashForm.Height) / 2);
-                    splashForm.Caption = "Reading Net Logs";
-                    splashForm.Show(this); // center on our location
-                    splashForm.Focus(); // force this to the top
-                }));
+                // Count the number of files that are later than the timestamp and add one.
+                fileCount = latestLogPaths
+                    .Where(x => string.Compare(
+                        Path.GetFileNameWithoutExtension(x)
+                            .Substring(7)
+                            .Substring(0, 12),
+                        timestamp) > 0)
+                    .Count();
 
-                foreach (string path in latestLogPaths)
+                if (fileCount < latestLogPaths.Count)
                 {
+                    ++fileCount;
+                }
+
+                foreach (string path in latestLogPaths.Skip(latestLogPaths.Count - fileCount).ToList())
+                {
+                    // Show the splash form if the process has run for more than 5 seconds.
+                    if (!splashForm.Visible && stopwatch.ElapsedMilliseconds > 5000)
+                    {
+                        this.Invoke(new Action(() =>
+                        {
+                            this.Enabled = false;
+                            splashForm.StartPosition = FormStartPosition.Manual;
+                            splashForm.Location = new Point(this.Location.X + (this.Width - splashForm.Width) / 2, this.Location.Y + (this.Height - splashForm.Height) / 2);
+                            splashForm.Caption = "Reading Net Logs";
+                            splashForm.Show(this); // center on our location
+                            splashForm.Focus(); // force this to the top
+                        }));
+                    }
                     using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                     using (BufferedStream bs = new BufferedStream(fs))
                     using (StreamReader stream = new StreamReader(bs, Encoding.UTF8, true, 65536))
@@ -639,6 +726,8 @@ namespace TDHelper
                 updatePilotsLogDB(tdhDBConn, exceptTable); // pass just the diffs, no table
             }
 
+            stopwatch.Stop();
+
             if (splashForm.Visible)
             {
                 this.Invoke(new Action(() =>
@@ -647,6 +736,7 @@ namespace TDHelper
                     splashForm.Close();
                 }));
             }
+
             return output; // return our finished list
         }
 
@@ -825,6 +915,33 @@ namespace TDHelper
             }
 
             return false;
+        }
+
+        private string GetLastTimestamp()
+        {
+            string timestamp = string.Empty;
+
+            using (SQLiteCommand query = new SQLiteCommand("SELECT MAX(Timestamp) FROM SystemLog", tdhDBConn))
+            {
+                try
+                {
+                    if (tdhDBConn != null && tdhDBConn.State == ConnectionState.Closed)
+                    {
+                        tdhDBConn.Open();
+                    }
+
+                    using (SQLiteDataReader reader = query.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            timestamp = reader.GetString(0);
+                        }
+                    }
+                }
+                catch { /* eat exceptions */ }
+            }
+
+            return timestamp;
         }
 
         private bool hasValidColumn(SQLiteConnection dbConn, string tableName, string columnName)
