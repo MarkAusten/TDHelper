@@ -1037,11 +1037,19 @@ namespace TDHelper
                     capacitySetting.DecimalValue = shipCapacity;
                 }
 
+                config[sectionName]["LadenLY"].DecimalValue
+                    = decimal.TryParse(config[sectionName]["LadenLY"].StringValue, out decimal ladenLy)
+                    ? ladenLy
+                    : 1;
+
+                config[sectionName]["unladenLY"].DecimalValue
+                    = decimal.TryParse(config[sectionName]["UnladenLY"].StringValue, out decimal unladenLy)
+                    ? unladenLy
+                    : 1;
+
                 config[sectionName]["hullValue"].DecimalValue = hullValue;
                 config[sectionName]["modulesValue"].DecimalValue = modulesValue;
                 config[sectionName]["Insurance"].DecimalValue = (hullValue + modulesValue) * rebuyPercentage / 100;
-                config[sectionName]["LadenLY"].DecimalValue = 1;
-                config[sectionName]["UnladenLY"].DecimalValue = 1;
                 config[sectionName]["Padsizes"].StringValue = this.GetPadSizes(shipType);
             }
 
