@@ -535,8 +535,9 @@ namespace TDHelper
 
             Splash splashForm = new Splash();
 
-            Stopwatch stopWatch = new Stopwatch();
-            stopwatch.Start();
+            Stopwatch stopWatch2 = new Stopwatch();
+
+            stopWatch2.Start();
 
             // this method initially populates the recent systems and pilot's log in the absence of a DB
             // grab the timestamp of this particular netlog
@@ -568,7 +569,7 @@ namespace TDHelper
                 foreach (string path in latestLogPaths.Skip(latestLogPaths.Count - fileCount).ToList())
                 {
                     // Show the splash form if the process has run for more than 5 seconds.
-                    if (!splashForm.Visible && stopwatch.ElapsedMilliseconds > 5000)
+                    if (!splashForm.Visible && stopWatch2.ElapsedMilliseconds > 5000)
                     {
                         this.Invoke(new Action(() =>
                         {
@@ -726,7 +727,7 @@ namespace TDHelper
                 UpdatePilotsLogDB(tdhDBConn, exceptTable); // pass just the diffs, no table
             }
 
-            stopwatch.Stop();
+            stopWatch2.Stop();
 
             if (splashForm.Visible)
             {
