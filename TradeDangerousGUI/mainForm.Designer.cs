@@ -143,9 +143,9 @@
             this.verbosityComboBox = new System.Windows.Forms.ComboBox();
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker4 = new System.ComponentModel.BackgroundWorker();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.panRunOptions = new System.Windows.Forms.Panel();
             this.updateNotifyLabel = new System.Windows.Forms.Label();
-            this.localFilterParentPanel = new System.Windows.Forms.Panel();
+            this.panLocalFilter = new System.Windows.Forms.Panel();
             this.localFilterGroupBox = new System.Windows.Forms.GroupBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.outputPage = new System.Windows.Forms.TabPage();
@@ -175,14 +175,21 @@
             this.pruneScoreLabel = new System.Windows.Forms.Label();
             this.lsPenaltyLabel = new System.Windows.Forms.Label();
             this.insuranceLabel = new System.Windows.Forms.Label();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.runOptionsPanel = new System.Windows.Forms.Panel();
+            this.panShipVendor = new System.Windows.Forms.Panel();
             this.backgroundWorker5 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker6 = new System.ComponentModel.BackgroundWorker();
             this.trackerLinkLabel = new System.Windows.Forms.LinkLabel();
             this.faqLinkLabel = new System.Windows.Forms.LinkLabel();
             this.backgroundWorker7 = new System.ComponentModel.BackgroundWorker();
             this.panShipData = new System.Windows.Forms.Panel();
+            this.panStock = new System.Windows.Forms.Panel();
+            this.panHops = new System.Windows.Forms.Panel();
+            this.panProfit = new System.Windows.Forms.Panel();
+            this.panDistance = new System.Windows.Forms.Panel();
+            this.panOther = new System.Windows.Forms.Panel();
+            this.panMisc = new System.Windows.Forms.Panel();
+            this.panMethod = new System.Windows.Forms.Panel();
+            this.panAgeCredits = new System.Windows.Forms.Panel();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.belowPriceBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.abovePriceBox)).BeginInit();
@@ -209,8 +216,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.minAgeUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.loopIntBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.demandBox)).BeginInit();
-            this.panel1.SuspendLayout();
-            this.localFilterParentPanel.SuspendLayout();
+            this.panRunOptions.SuspendLayout();
+            this.panLocalFilter.SuspendLayout();
             this.localFilterGroupBox.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.outputPage.SuspendLayout();
@@ -221,18 +228,25 @@
             this.logPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pilotsLogDataGrid)).BeginInit();
             this.contextMenuStrip2.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.runOptionsPanel.SuspendLayout();
+            this.panShipVendor.SuspendLayout();
             this.panShipData.SuspendLayout();
+            this.panStock.SuspendLayout();
+            this.panHops.SuspendLayout();
+            this.panProfit.SuspendLayout();
+            this.panDistance.SuspendLayout();
+            this.panOther.SuspendLayout();
+            this.panMisc.SuspendLayout();
+            this.panMethod.SuspendLayout();
+            this.panAgeCredits.SuspendLayout();
             this.SuspendLayout();
             // 
             // runButton
             // 
             this.runButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.runButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.runButton.Location = new System.Drawing.Point(735, 7);
+            this.runButton.Location = new System.Drawing.Point(883, 7);
             this.runButton.Name = "runButton";
-            this.runButton.Size = new System.Drawing.Size(78, 22);
+            this.runButton.Size = new System.Drawing.Size(75, 23);
             this.runButton.TabIndex = 1;
             this.runButton.TabStop = false;
             this.runButton.Text = "&Run";
@@ -277,7 +291,7 @@
             this.stopWatchLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.stopWatchLabel.AutoSize = true;
             this.stopWatchLabel.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.stopWatchLabel.Location = new System.Drawing.Point(13, 717);
+            this.stopWatchLabel.Location = new System.Drawing.Point(14, 655);
             this.stopWatchLabel.Name = "stopWatchLabel";
             this.stopWatchLabel.Size = new System.Drawing.Size(0, 15);
             this.stopWatchLabel.TabIndex = 9;
@@ -294,7 +308,7 @@
             this.creditsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.creditsLabel.AutoSize = true;
-            this.creditsLabel.Location = new System.Drawing.Point(569, 12);
+            this.creditsLabel.Location = new System.Drawing.Point(2, 36);
             this.creditsLabel.Name = "creditsLabel";
             this.creditsLabel.Size = new System.Drawing.Size(42, 13);
             this.creditsLabel.TabIndex = 0;
@@ -303,10 +317,8 @@
             // 
             // capacityLabel
             // 
-            this.capacityLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.capacityLabel.AutoSize = true;
-            this.capacityLabel.Location = new System.Drawing.Point(252, 34);
+            this.capacityLabel.Location = new System.Drawing.Point(242, 34);
             this.capacityLabel.Name = "capacityLabel";
             this.capacityLabel.Size = new System.Drawing.Size(51, 13);
             this.capacityLabel.TabIndex = 1;
@@ -315,10 +327,8 @@
             // 
             // unladenLYLabel
             // 
-            this.unladenLYLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.unladenLYLabel.AutoSize = true;
-            this.unladenLYLabel.Location = new System.Drawing.Point(122, 34);
+            this.unladenLYLabel.Location = new System.Drawing.Point(118, 34);
             this.unladenLYLabel.Name = "unladenLYLabel";
             this.unladenLYLabel.Size = new System.Drawing.Size(66, 13);
             this.unladenLYLabel.TabIndex = 3;
@@ -327,8 +337,6 @@
             // 
             // ladenLYLabel
             // 
-            this.ladenLYLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.ladenLYLabel.AutoSize = true;
             this.ladenLYLabel.Location = new System.Drawing.Point(4, 34);
             this.ladenLYLabel.Name = "ladenLYLabel";
@@ -509,13 +517,12 @@
             // 
             // stationDropDown
             // 
-            this.stationDropDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.stationDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.stationDropDown.Items.AddRange(new object[] {
             "Update",
             "Add",
             "Remove"});
-            this.stationDropDown.Location = new System.Drawing.Point(4, 31);
+            this.stationDropDown.Location = new System.Drawing.Point(6, 34);
             this.stationDropDown.Name = "stationDropDown";
             this.stationDropDown.Size = new System.Drawing.Size(82, 21);
             this.stationDropDown.TabIndex = 17;
@@ -610,7 +617,7 @@
             // 
             // limitBox
             // 
-            this.limitBox.Location = new System.Drawing.Point(271, 67);
+            this.limitBox.Location = new System.Drawing.Point(67, 48);
             this.limitBox.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -626,10 +633,9 @@
             // 
             // pruneHopsBox
             // 
-            this.pruneHopsBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pruneHopsBox.Location = new System.Drawing.Point(165, 2);
+            this.pruneHopsBox.Location = new System.Drawing.Point(66, 48);
             this.pruneHopsBox.Name = "pruneHopsBox";
-            this.pruneHopsBox.Size = new System.Drawing.Size(46, 20);
+            this.pruneHopsBox.Size = new System.Drawing.Size(39, 20);
             this.pruneHopsBox.TabIndex = 16;
             this.pruneHopsBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.pruneHopsBox, "Number of hops before pruning starts, to enable set >=2");
@@ -638,8 +644,7 @@
             // 
             // pruneScoreBox
             // 
-            this.pruneScoreBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pruneScoreBox.Location = new System.Drawing.Point(165, 24);
+            this.pruneScoreBox.Location = new System.Drawing.Point(75, 3);
             this.pruneScoreBox.Maximum = new decimal(new int[] {
             99,
             0,
@@ -656,14 +661,14 @@
             // lsPenaltyBox
             // 
             this.lsPenaltyBox.DecimalPlaces = 1;
-            this.lsPenaltyBox.Location = new System.Drawing.Point(271, 90);
+            this.lsPenaltyBox.Location = new System.Drawing.Point(78, 26);
             this.lsPenaltyBox.Maximum = new decimal(new int[] {
             20000,
             0,
             0,
             0});
             this.lsPenaltyBox.Name = "lsPenaltyBox";
-            this.lsPenaltyBox.Size = new System.Drawing.Size(71, 20);
+            this.lsPenaltyBox.Size = new System.Drawing.Size(60, 20);
             this.lsPenaltyBox.TabIndex = 13;
             this.lsPenaltyBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.lsPenaltyBox, "Scoring penalty per LS traveled to station");
@@ -672,7 +677,7 @@
             // 
             // maxLSDistanceBox
             // 
-            this.maxLSDistanceBox.Location = new System.Drawing.Point(405, 87);
+            this.maxLSDistanceBox.Location = new System.Drawing.Point(78, 3);
             this.maxLSDistanceBox.Maximum = new decimal(new int[] {
             20000,
             0,
@@ -688,7 +693,7 @@
             // 
             // gptBox
             // 
-            this.gptBox.Location = new System.Drawing.Point(405, 24);
+            this.gptBox.Location = new System.Drawing.Point(61, 2);
             this.gptBox.Maximum = new decimal(new int[] {
             20000,
             0,
@@ -718,7 +723,7 @@
             // 
             // insuranceBox
             // 
-            this.insuranceBox.Location = new System.Drawing.Point(366, 3);
+            this.insuranceBox.Location = new System.Drawing.Point(341, 4);
             this.insuranceBox.Maximum = new decimal(new int[] {
             -2147483648,
             2,
@@ -735,7 +740,7 @@
             // 
             // capacityBox
             // 
-            this.capacityBox.Location = new System.Drawing.Point(309, 30);
+            this.capacityBox.Location = new System.Drawing.Point(292, 30);
             this.capacityBox.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -756,9 +761,9 @@
             // 
             // jumpsBox
             // 
-            this.jumpsBox.Location = new System.Drawing.Point(405, 3);
+            this.jumpsBox.Location = new System.Drawing.Point(66, 26);
             this.jumpsBox.Name = "jumpsBox";
-            this.jumpsBox.Size = new System.Drawing.Size(60, 20);
+            this.jumpsBox.Size = new System.Drawing.Size(39, 20);
             this.jumpsBox.TabIndex = 1;
             this.jumpsBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.jumpsBox, "A jump is any system between two hops");
@@ -767,9 +772,9 @@
             // 
             // hopsBox
             // 
-            this.hopsBox.Location = new System.Drawing.Point(271, 2);
+            this.hopsBox.Location = new System.Drawing.Point(66, 3);
             this.hopsBox.Name = "hopsBox";
-            this.hopsBox.Size = new System.Drawing.Size(71, 20);
+            this.hopsBox.Size = new System.Drawing.Size(39, 20);
             this.hopsBox.TabIndex = 0;
             this.hopsBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.hopsBox, "A hop is a station to load/unload from");
@@ -778,14 +783,14 @@
             // 
             // creditsBox
             // 
-            this.creditsBox.Location = new System.Drawing.Point(612, 9);
+            this.creditsBox.Location = new System.Drawing.Point(44, 32);
             this.creditsBox.Minimum = new decimal(new int[] {
             100,
             0,
             0,
             0});
             this.creditsBox.Name = "creditsBox";
-            this.creditsBox.Size = new System.Drawing.Size(114, 20);
+            this.creditsBox.Size = new System.Drawing.Size(125, 20);
             this.creditsBox.TabIndex = 3;
             this.creditsBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.creditsBox.ThousandsSeparator = true;
@@ -801,7 +806,7 @@
             // unladenLYBox
             // 
             this.unladenLYBox.DecimalPlaces = 2;
-            this.unladenLYBox.Location = new System.Drawing.Point(188, 30);
+            this.unladenLYBox.Location = new System.Drawing.Point(184, 30);
             this.unladenLYBox.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -865,7 +870,6 @@
             // 
             // methodDropDown
             // 
-            this.methodDropDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.methodDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.methodDropDown.Items.AddRange(new object[] {
             "Run",
@@ -877,7 +881,7 @@
             "ShipVendor",
             "Navigation",
             "OldData"});
-            this.methodDropDown.Location = new System.Drawing.Point(4, 4);
+            this.methodDropDown.Location = new System.Drawing.Point(6, 7);
             this.methodDropDown.Name = "methodDropDown";
             this.methodDropDown.Size = new System.Drawing.Size(82, 21);
             this.methodDropDown.TabIndex = 1;
@@ -910,9 +914,9 @@
             // 
             // viaBox
             // 
-            this.viaBox.Location = new System.Drawing.Point(271, 114);
+            this.viaBox.Location = new System.Drawing.Point(61, 29);
             this.viaBox.Name = "viaBox";
-            this.viaBox.Size = new System.Drawing.Size(194, 20);
+            this.viaBox.Size = new System.Drawing.Size(311, 20);
             this.viaBox.TabIndex = 19;
             this.viaBox.TabStop = false;
             this.toolTip1.SetToolTip(this.viaBox, "Attempt to route through these systems, delimited by comma");
@@ -922,7 +926,7 @@
             this.viaLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.viaLabel.AutoSize = true;
-            this.viaLabel.Location = new System.Drawing.Point(241, 117);
+            this.viaLabel.Location = new System.Drawing.Point(31, 31);
             this.viaLabel.Name = "viaLabel";
             this.viaLabel.Size = new System.Drawing.Size(25, 13);
             this.viaLabel.TabIndex = 45;
@@ -954,9 +958,9 @@
             // 
             // avoidBox
             // 
-            this.avoidBox.Location = new System.Drawing.Point(41, 114);
+            this.avoidBox.Location = new System.Drawing.Point(61, 5);
             this.avoidBox.Name = "avoidBox";
-            this.avoidBox.Size = new System.Drawing.Size(194, 20);
+            this.avoidBox.Size = new System.Drawing.Size(311, 20);
             this.avoidBox.TabIndex = 18;
             this.avoidBox.TabStop = false;
             this.toolTip1.SetToolTip(this.avoidBox, "Avoids can include system/station and items delimited by comma");
@@ -967,7 +971,7 @@
             this.avoidLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.avoidLabel.AutoSize = true;
-            this.avoidLabel.Location = new System.Drawing.Point(-2, 117);
+            this.avoidLabel.Location = new System.Drawing.Point(18, 7);
             this.avoidLabel.Name = "avoidLabel";
             this.avoidLabel.Size = new System.Drawing.Size(37, 13);
             this.avoidLabel.TabIndex = 39;
@@ -989,9 +993,9 @@
             // 
             // localNavCheckBox
             // 
-            this.localNavCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.localNavCheckBox.AutoSize = true;
-            this.localNavCheckBox.Location = new System.Drawing.Point(4, 58);
+            this.localNavCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.localNavCheckBox.Location = new System.Drawing.Point(37, 48);
             this.localNavCheckBox.Name = "localNavCheckBox";
             this.localNavCheckBox.Size = new System.Drawing.Size(52, 17);
             this.localNavCheckBox.TabIndex = 2;
@@ -1003,10 +1007,8 @@
             // 
             // hopsLabel
             // 
-            this.hopsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.hopsLabel.AutoSize = true;
-            this.hopsLabel.Location = new System.Drawing.Point(231, 4);
+            this.hopsLabel.Location = new System.Drawing.Point(31, 7);
             this.hopsLabel.Name = "hopsLabel";
             this.hopsLabel.Size = new System.Drawing.Size(35, 13);
             this.hopsLabel.TabIndex = 29;
@@ -1015,8 +1017,8 @@
             // 
             // updateButton
             // 
-            this.updateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.updateButton.Location = new System.Drawing.Point(331, 713);
+            this.updateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.updateButton.Location = new System.Drawing.Point(624, 7);
             this.updateButton.Name = "updateButton";
             this.updateButton.Size = new System.Drawing.Size(75, 23);
             this.updateButton.TabIndex = 24;
@@ -1051,9 +1053,8 @@
             // 
             // padSizeLabel
             // 
-            this.padSizeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.padSizeLabel.AutoSize = true;
-            this.padSizeLabel.Location = new System.Drawing.Point(376, 34);
+            this.padSizeLabel.Location = new System.Drawing.Point(356, 34);
             this.padSizeLabel.Name = "padSizeLabel";
             this.padSizeLabel.Size = new System.Drawing.Size(52, 13);
             this.padSizeLabel.TabIndex = 34;
@@ -1062,8 +1063,7 @@
             // 
             // padSizeBox
             // 
-            this.padSizeBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.padSizeBox.Location = new System.Drawing.Point(434, 30);
+            this.padSizeBox.Location = new System.Drawing.Point(408, 30);
             this.padSizeBox.MaxLength = 3;
             this.padSizeBox.Name = "padSizeBox";
             this.padSizeBox.Size = new System.Drawing.Size(32, 20);
@@ -1075,9 +1075,8 @@
             // 
             // ageLabel
             // 
-            this.ageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ageLabel.AutoSize = true;
-            this.ageLabel.Location = new System.Drawing.Point(493, 11);
+            this.ageLabel.Location = new System.Drawing.Point(2, 11);
             this.ageLabel.Name = "ageLabel";
             this.ageLabel.Size = new System.Drawing.Size(29, 13);
             this.ageLabel.TabIndex = 51;
@@ -1088,7 +1087,7 @@
             // 
             this.verboseLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.verboseLabel.AutoSize = true;
-            this.verboseLabel.Location = new System.Drawing.Point(391, 12);
+            this.verboseLabel.Location = new System.Drawing.Point(413, 12);
             this.verboseLabel.Name = "verboseLabel";
             this.verboseLabel.Size = new System.Drawing.Size(53, 13);
             this.verboseLabel.TabIndex = 55;
@@ -1098,7 +1097,7 @@
             // ageBox
             // 
             this.ageBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.ageBox.Location = new System.Drawing.Point(519, 8);
+            this.ageBox.Location = new System.Drawing.Point(44, 7);
             this.ageBox.Maximum = new decimal(new int[] {
             30,
             0,
@@ -1114,10 +1113,8 @@
             // 
             // gptLabel
             // 
-            this.gptLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.gptLabel.AutoSize = true;
-            this.gptLabel.Location = new System.Drawing.Point(350, 26);
+            this.gptLabel.Location = new System.Drawing.Point(6, 6);
             this.gptLabel.Name = "gptLabel";
             this.gptLabel.Size = new System.Drawing.Size(52, 13);
             this.gptLabel.TabIndex = 27;
@@ -1153,10 +1150,8 @@
             // 
             // marginLabel
             // 
-            this.marginLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.marginLabel.AutoSize = true;
-            this.marginLabel.Location = new System.Drawing.Point(360, 68);
+            this.marginLabel.Location = new System.Drawing.Point(16, 52);
             this.marginLabel.Name = "marginLabel";
             this.marginLabel.Size = new System.Drawing.Size(42, 13);
             this.marginLabel.TabIndex = 53;
@@ -1166,7 +1161,7 @@
             // marginBox
             // 
             this.marginBox.DecimalPlaces = 2;
-            this.marginBox.Location = new System.Drawing.Point(405, 66);
+            this.marginBox.Location = new System.Drawing.Point(61, 48);
             this.marginBox.Maximum = new decimal(new int[] {
             99,
             0,
@@ -1183,7 +1178,7 @@
             // limitLabel
             // 
             this.limitLabel.AutoSize = true;
-            this.limitLabel.Location = new System.Drawing.Point(208, 69);
+            this.limitLabel.Location = new System.Drawing.Point(3, 52);
             this.limitLabel.Name = "limitLabel";
             this.limitLabel.Size = new System.Drawing.Size(62, 13);
             this.limitLabel.TabIndex = 13;
@@ -1192,10 +1187,8 @@
             // 
             // maxGPTLabel
             // 
-            this.maxGPTLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.maxGPTLabel.AutoSize = true;
-            this.maxGPTLabel.Location = new System.Drawing.Point(347, 47);
+            this.maxGPTLabel.Location = new System.Drawing.Point(3, 29);
             this.maxGPTLabel.Name = "maxGPTLabel";
             this.maxGPTLabel.Size = new System.Drawing.Size(55, 13);
             this.maxGPTLabel.TabIndex = 55;
@@ -1204,7 +1197,7 @@
             // 
             // maxGPTBox
             // 
-            this.maxGPTBox.Location = new System.Drawing.Point(405, 45);
+            this.maxGPTBox.Location = new System.Drawing.Point(61, 25);
             this.maxGPTBox.Maximum = new decimal(new int[] {
             20000,
             0,
@@ -1337,11 +1330,10 @@
             // 
             // altConfigBox
             // 
-            this.altConfigBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.altConfigBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.altConfigBox.Location = new System.Drawing.Point(7, 4);
+            this.altConfigBox.Location = new System.Drawing.Point(6, 4);
             this.altConfigBox.Name = "altConfigBox";
-            this.altConfigBox.Size = new System.Drawing.Size(295, 21);
+            this.altConfigBox.Size = new System.Drawing.Size(272, 21);
             this.altConfigBox.TabIndex = 56;
             this.altConfigBox.TabStop = false;
             this.toolTip1.SetToolTip(this.altConfigBox, "Select a previously used config file\r\n(Ctrl+Click a non-default config to delete " +
@@ -1352,7 +1344,7 @@
             // updateNotifyIcon
             // 
             this.updateNotifyIcon.Image = global::TDHelper.Properties.Resources.LightningBolt;
-            this.updateNotifyIcon.Location = new System.Drawing.Point(357, 238);
+            this.updateNotifyIcon.Location = new System.Drawing.Point(259, 652);
             this.updateNotifyIcon.Name = "updateNotifyIcon";
             this.updateNotifyIcon.Size = new System.Drawing.Size(21, 21);
             this.updateNotifyIcon.TabIndex = 59;
@@ -1362,7 +1354,7 @@
             // 
             // stockBox
             // 
-            this.stockBox.Location = new System.Drawing.Point(271, 23);
+            this.stockBox.Location = new System.Drawing.Point(67, 3);
             this.stockBox.Maximum = new decimal(new int[] {
             9999999,
             0,
@@ -1380,7 +1372,7 @@
             // stockLabel
             // 
             this.stockLabel.AutoSize = true;
-            this.stockLabel.Location = new System.Drawing.Point(216, 25);
+            this.stockLabel.Location = new System.Drawing.Point(15, 7);
             this.stockLabel.Name = "stockLabel";
             this.stockLabel.Size = new System.Drawing.Size(50, 13);
             this.stockLabel.TabIndex = 57;
@@ -1451,10 +1443,8 @@
             // 
             // loopIntLabel
             // 
-            this.loopIntLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.loopIntLabel.AutoSize = true;
-            this.loopIntLabel.Location = new System.Drawing.Point(113, 51);
+            this.loopIntLabel.Location = new System.Drawing.Point(23, 30);
             this.loopIntLabel.Name = "loopIntLabel";
             this.loopIntLabel.Size = new System.Drawing.Size(49, 13);
             this.loopIntLabel.TabIndex = 59;
@@ -1463,7 +1453,7 @@
             // 
             // loopIntBox
             // 
-            this.loopIntBox.Location = new System.Drawing.Point(165, 47);
+            this.loopIntBox.Location = new System.Drawing.Point(75, 26);
             this.loopIntBox.Name = "loopIntBox";
             this.loopIntBox.Size = new System.Drawing.Size(46, 20);
             this.loopIntBox.TabIndex = 10;
@@ -1496,7 +1486,7 @@
             // 
             // demandBox
             // 
-            this.demandBox.Location = new System.Drawing.Point(271, 44);
+            this.demandBox.Location = new System.Drawing.Point(67, 26);
             this.demandBox.Maximum = new decimal(new int[] {
             9999999,
             0,
@@ -1514,7 +1504,7 @@
             // demandLabel
             // 
             this.demandLabel.AutoSize = true;
-            this.demandLabel.Location = new System.Drawing.Point(220, 46);
+            this.demandLabel.Location = new System.Drawing.Point(15, 30);
             this.demandLabel.Name = "demandLabel";
             this.demandLabel.Size = new System.Drawing.Size(50, 13);
             this.demandLabel.TabIndex = 61;
@@ -1547,8 +1537,8 @@
             // 
             // btnCmdrProfile
             // 
-            this.btnCmdrProfile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnCmdrProfile.Location = new System.Drawing.Point(472, 713);
+            this.btnCmdrProfile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCmdrProfile.Location = new System.Drawing.Point(704, 7);
             this.btnCmdrProfile.Name = "btnCmdrProfile";
             this.btnCmdrProfile.Size = new System.Drawing.Size(75, 23);
             this.btnCmdrProfile.TabIndex = 68;
@@ -1560,8 +1550,8 @@
             // 
             // btnSaveSettings
             // 
-            this.btnSaveSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSaveSettings.Location = new System.Drawing.Point(721, 713);
+            this.btnSaveSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSaveSettings.Location = new System.Drawing.Point(785, 7);
             this.btnSaveSettings.Name = "btnSaveSettings";
             this.btnSaveSettings.Size = new System.Drawing.Size(92, 23);
             this.btnSaveSettings.TabIndex = 69;
@@ -1592,7 +1582,7 @@
             "-v",
             "-vv",
             "-vvv"});
-            this.verbosityComboBox.Location = new System.Drawing.Point(444, 8);
+            this.verbosityComboBox.Location = new System.Drawing.Point(472, 7);
             this.verbosityComboBox.Name = "verbosityComboBox";
             this.verbosityComboBox.Size = new System.Drawing.Size(46, 21);
             this.verbosityComboBox.TabIndex = 9;
@@ -1608,56 +1598,58 @@
             this.backgroundWorker4.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker4_DoWork);
             this.backgroundWorker4.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker4_RunWorkerCompleted);
             // 
-            // panel1
+            // panRunOptions
             // 
-            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.miscSettingsButton);
-            this.panel1.Controls.Add(this.showJumpsCheckBox);
-            this.panel1.Controls.Add(this.shortenCheckBox);
-            this.panel1.Controls.Add(this.destSysLabel);
-            this.panel1.Controls.Add(this.bmktCheckBox);
-            this.panel1.Controls.Add(this.oneStopCheckBox);
-            this.panel1.Controls.Add(this.endJumpsLabel);
-            this.panel1.Controls.Add(this.startJumpsLabel);
-            this.panel1.Controls.Add(this.directCheckBox);
-            this.panel1.Controls.Add(this.belowPriceBox);
-            this.panel1.Controls.Add(this.commodityLabel);
-            this.panel1.Controls.Add(this.abovePriceBox);
-            this.panel1.Controls.Add(this.commodityComboBox);
-            this.panel1.Controls.Add(this.loopCheckBox);
-            this.panel1.Controls.Add(this.endJumpsBox);
-            this.panel1.Controls.Add(this.abovePriceLabel);
-            this.panel1.Controls.Add(this.startJumpsBox);
-            this.panel1.Controls.Add(this.towardsCheckBox);
-            this.panel1.Controls.Add(this.belowPriceLabel);
-            this.panel1.Controls.Add(this.destSystemComboBox);
-            this.panel1.Controls.Add(this.uniqueCheckBox);
-            this.panel1.Location = new System.Drawing.Point(11, 35);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(312, 198);
-            this.panel1.TabIndex = 1;
+            this.panRunOptions.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panRunOptions.Controls.Add(this.miscSettingsButton);
+            this.panRunOptions.Controls.Add(this.showJumpsCheckBox);
+            this.panRunOptions.Controls.Add(this.shortenCheckBox);
+            this.panRunOptions.Controls.Add(this.destSysLabel);
+            this.panRunOptions.Controls.Add(this.bmktCheckBox);
+            this.panRunOptions.Controls.Add(this.oneStopCheckBox);
+            this.panRunOptions.Controls.Add(this.endJumpsLabel);
+            this.panRunOptions.Controls.Add(this.startJumpsLabel);
+            this.panRunOptions.Controls.Add(this.directCheckBox);
+            this.panRunOptions.Controls.Add(this.belowPriceBox);
+            this.panRunOptions.Controls.Add(this.commodityLabel);
+            this.panRunOptions.Controls.Add(this.abovePriceBox);
+            this.panRunOptions.Controls.Add(this.commodityComboBox);
+            this.panRunOptions.Controls.Add(this.loopCheckBox);
+            this.panRunOptions.Controls.Add(this.endJumpsBox);
+            this.panRunOptions.Controls.Add(this.abovePriceLabel);
+            this.panRunOptions.Controls.Add(this.startJumpsBox);
+            this.panRunOptions.Controls.Add(this.towardsCheckBox);
+            this.panRunOptions.Controls.Add(this.belowPriceLabel);
+            this.panRunOptions.Controls.Add(this.destSystemComboBox);
+            this.panRunOptions.Controls.Add(this.uniqueCheckBox);
+            this.panRunOptions.Location = new System.Drawing.Point(11, 35);
+            this.panRunOptions.Name = "panRunOptions";
+            this.panRunOptions.Size = new System.Drawing.Size(312, 195);
+            this.panRunOptions.TabIndex = 1;
             // 
             // updateNotifyLabel
             // 
             this.updateNotifyLabel.AutoSize = true;
             this.updateNotifyLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.updateNotifyLabel.ForeColor = System.Drawing.Color.Red;
-            this.updateNotifyLabel.Location = new System.Drawing.Point(386, 240);
+            this.updateNotifyLabel.Location = new System.Drawing.Point(288, 654);
             this.updateNotifyLabel.Name = "updateNotifyLabel";
             this.updateNotifyLabel.Size = new System.Drawing.Size(421, 15);
             this.updateNotifyLabel.TabIndex = 60;
             this.updateNotifyLabel.Text = "TDHelper has been updated. Please restart to complete process.";
             this.updateNotifyLabel.Visible = false;
             // 
-            // localFilterParentPanel
+            // panLocalFilter
             // 
-            this.localFilterParentPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.localFilterParentPanel.Controls.Add(this.localFilterGroupBox);
-            this.localFilterParentPanel.Location = new System.Drawing.Point(11, 35);
-            this.localFilterParentPanel.Name = "localFilterParentPanel";
-            this.localFilterParentPanel.Size = new System.Drawing.Size(312, 198);
-            this.localFilterParentPanel.TabIndex = 60;
-            this.localFilterParentPanel.Visible = false;
+            this.panLocalFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panLocalFilter.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panLocalFilter.Controls.Add(this.localFilterGroupBox);
+            this.panLocalFilter.Location = new System.Drawing.Point(11, 35);
+            this.panLocalFilter.Name = "panLocalFilter";
+            this.panLocalFilter.Size = new System.Drawing.Size(312, 195);
+            this.panLocalFilter.TabIndex = 60;
+            this.panLocalFilter.Visible = false;
             // 
             // localFilterGroupBox
             // 
@@ -1688,10 +1680,10 @@
             this.tabControl1.Controls.Add(this.savedPage3);
             this.tabControl1.Controls.Add(this.notesPage);
             this.tabControl1.Controls.Add(this.logPage);
-            this.tabControl1.Location = new System.Drawing.Point(12, 239);
+            this.tabControl1.Location = new System.Drawing.Point(11, 236);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(801, 468);
+            this.tabControl1.Size = new System.Drawing.Size(947, 413);
             this.tabControl1.TabIndex = 23;
             this.tabControl1.TabStop = false;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.TabControl1_SelectedIndexChanged);
@@ -1702,7 +1694,7 @@
             this.outputPage.Location = new System.Drawing.Point(4, 22);
             this.outputPage.Name = "outputPage";
             this.outputPage.Padding = new System.Windows.Forms.Padding(3);
-            this.outputPage.Size = new System.Drawing.Size(793, 442);
+            this.outputPage.Size = new System.Drawing.Size(939, 387);
             this.outputPage.TabIndex = 0;
             this.outputPage.Text = "Output";
             this.outputPage.UseVisualStyleBackColor = true;
@@ -1717,7 +1709,7 @@
             this.td_outputBox.Location = new System.Drawing.Point(3, 6);
             this.td_outputBox.Name = "td_outputBox";
             this.td_outputBox.ReadOnly = true;
-            this.td_outputBox.Size = new System.Drawing.Size(787, 433);
+            this.td_outputBox.Size = new System.Drawing.Size(933, 378);
             this.td_outputBox.TabIndex = 0;
             this.td_outputBox.TabStop = false;
             this.td_outputBox.Text = "";
@@ -1729,7 +1721,7 @@
             this.savedPage1.Location = new System.Drawing.Point(4, 22);
             this.savedPage1.Name = "savedPage1";
             this.savedPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.savedPage1.Size = new System.Drawing.Size(793, 442);
+            this.savedPage1.Size = new System.Drawing.Size(939, 387);
             this.savedPage1.TabIndex = 1;
             this.savedPage1.Text = "Saved #1";
             this.savedPage1.UseVisualStyleBackColor = true;
@@ -1754,7 +1746,7 @@
             this.savedPage2.Controls.Add(this.savedTextBox2);
             this.savedPage2.Location = new System.Drawing.Point(4, 22);
             this.savedPage2.Name = "savedPage2";
-            this.savedPage2.Size = new System.Drawing.Size(793, 442);
+            this.savedPage2.Size = new System.Drawing.Size(939, 387);
             this.savedPage2.TabIndex = 2;
             this.savedPage2.Text = "Saved #2";
             this.savedPage2.UseVisualStyleBackColor = true;
@@ -1779,7 +1771,7 @@
             this.savedPage3.Controls.Add(this.savedTextBox3);
             this.savedPage3.Location = new System.Drawing.Point(4, 22);
             this.savedPage3.Name = "savedPage3";
-            this.savedPage3.Size = new System.Drawing.Size(793, 442);
+            this.savedPage3.Size = new System.Drawing.Size(939, 387);
             this.savedPage3.TabIndex = 3;
             this.savedPage3.Text = "Saved #3";
             this.savedPage3.UseVisualStyleBackColor = true;
@@ -1805,7 +1797,7 @@
             this.notesPage.Location = new System.Drawing.Point(4, 22);
             this.notesPage.Name = "notesPage";
             this.notesPage.Padding = new System.Windows.Forms.Padding(3);
-            this.notesPage.Size = new System.Drawing.Size(793, 442);
+            this.notesPage.Size = new System.Drawing.Size(939, 387);
             this.notesPage.TabIndex = 4;
             this.notesPage.Text = "Notes";
             this.notesPage.UseVisualStyleBackColor = true;
@@ -1831,7 +1823,7 @@
             this.logPage.Location = new System.Drawing.Point(4, 22);
             this.logPage.Name = "logPage";
             this.logPage.Padding = new System.Windows.Forms.Padding(3);
-            this.logPage.Size = new System.Drawing.Size(793, 442);
+            this.logPage.Size = new System.Drawing.Size(939, 387);
             this.logPage.TabIndex = 5;
             this.logPage.Text = "Pilot\'s Log";
             this.logPage.UseVisualStyleBackColor = true;
@@ -1925,10 +1917,8 @@
             // 
             // jumpsLabel
             // 
-            this.jumpsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.jumpsLabel.AutoSize = true;
-            this.jumpsLabel.Location = new System.Drawing.Point(362, 5);
+            this.jumpsLabel.Location = new System.Drawing.Point(26, 30);
             this.jumpsLabel.Name = "jumpsLabel";
             this.jumpsLabel.Size = new System.Drawing.Size(40, 13);
             this.jumpsLabel.TabIndex = 31;
@@ -1936,10 +1926,8 @@
             // 
             // maxLSLabel
             // 
-            this.maxLSLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.maxLSLabel.AutoSize = true;
-            this.maxLSLabel.Location = new System.Drawing.Point(356, 89);
+            this.maxLSLabel.Location = new System.Drawing.Point(8, 7);
             this.maxLSLabel.Name = "maxLSLabel";
             this.maxLSLabel.Size = new System.Drawing.Size(46, 13);
             this.maxLSLabel.TabIndex = 10;
@@ -1947,9 +1935,8 @@
             // 
             // pruneHopsLabel
             // 
-            this.pruneHopsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pruneHopsLabel.AutoSize = true;
-            this.pruneHopsLabel.Location = new System.Drawing.Point(96, 3);
+            this.pruneHopsLabel.Location = new System.Drawing.Point(1, 52);
             this.pruneHopsLabel.Name = "pruneHopsLabel";
             this.pruneHopsLabel.Size = new System.Drawing.Size(66, 13);
             this.pruneHopsLabel.TabIndex = 15;
@@ -1957,9 +1944,8 @@
             // 
             // pruneScoreLabel
             // 
-            this.pruneScoreLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pruneScoreLabel.AutoSize = true;
-            this.pruneScoreLabel.Location = new System.Drawing.Point(93, 26);
+            this.pruneScoreLabel.Location = new System.Drawing.Point(3, 7);
             this.pruneScoreLabel.Name = "pruneScoreLabel";
             this.pruneScoreLabel.Size = new System.Drawing.Size(69, 13);
             this.pruneScoreLabel.TabIndex = 49;
@@ -1967,10 +1953,8 @@
             // 
             // lsPenaltyLabel
             // 
-            this.lsPenaltyLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.lsPenaltyLabel.AutoSize = true;
-            this.lsPenaltyLabel.Location = new System.Drawing.Point(209, 89);
+            this.lsPenaltyLabel.Location = new System.Drawing.Point(1, 30);
             this.lsPenaltyLabel.Name = "lsPenaltyLabel";
             this.lsPenaltyLabel.Size = new System.Drawing.Size(61, 13);
             this.lsPenaltyLabel.TabIndex = 8;
@@ -1978,69 +1962,27 @@
             // 
             // insuranceLabel
             // 
-            this.insuranceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.insuranceLabel.AutoSize = true;
-            this.insuranceLabel.Location = new System.Drawing.Point(312, 4);
+            this.insuranceLabel.Location = new System.Drawing.Point(285, 8);
             this.insuranceLabel.Name = "insuranceLabel";
             this.insuranceLabel.Size = new System.Drawing.Size(57, 13);
             this.insuranceLabel.TabIndex = 51;
             this.insuranceLabel.Text = "Insurance:";
             // 
-            // panel2
+            // panShipVendor
             // 
-            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel2.Controls.Add(this.shipsSoldBox);
-            this.panel2.Controls.Add(this.oldRoutesCheckBox);
-            this.panel2.Controls.Add(this.minAgeLabel);
-            this.panel2.Controls.Add(this.minAgeUpDown);
-            this.panel2.Controls.Add(this.shipsSoldLabel);
-            this.panel2.Location = new System.Drawing.Point(11, 35);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(312, 198);
-            this.panel2.TabIndex = 3;
-            // 
-            // runOptionsPanel
-            // 
-            this.runOptionsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.runOptionsPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.runOptionsPanel.Controls.Add(this.demandBox);
-            this.runOptionsPanel.Controls.Add(this.demandLabel);
-            this.runOptionsPanel.Controls.Add(this.loopIntLabel);
-            this.runOptionsPanel.Controls.Add(this.loopIntBox);
-            this.runOptionsPanel.Controls.Add(this.stockBox);
-            this.runOptionsPanel.Controls.Add(this.stockLabel);
-            this.runOptionsPanel.Controls.Add(this.maxGPTLabel);
-            this.runOptionsPanel.Controls.Add(this.maxGPTBox);
-            this.runOptionsPanel.Controls.Add(this.marginLabel);
-            this.runOptionsPanel.Controls.Add(this.marginBox);
-            this.runOptionsPanel.Controls.Add(this.hopsLabel);
-            this.runOptionsPanel.Controls.Add(this.localNavCheckBox);
-            this.runOptionsPanel.Controls.Add(this.stationDropDown);
-            this.runOptionsPanel.Controls.Add(this.methodDropDown);
-            this.runOptionsPanel.Controls.Add(this.avoidLabel);
-            this.runOptionsPanel.Controls.Add(this.jumpsLabel);
-            this.runOptionsPanel.Controls.Add(this.avoidBox);
-            this.runOptionsPanel.Controls.Add(this.gptLabel);
-            this.runOptionsPanel.Controls.Add(this.viaLabel);
-            this.runOptionsPanel.Controls.Add(this.viaBox);
-            this.runOptionsPanel.Controls.Add(this.maxLSLabel);
-            this.runOptionsPanel.Controls.Add(this.pruneHopsLabel);
-            this.runOptionsPanel.Controls.Add(this.pruneScoreLabel);
-            this.runOptionsPanel.Controls.Add(this.limitBox);
-            this.runOptionsPanel.Controls.Add(this.lsPenaltyLabel);
-            this.runOptionsPanel.Controls.Add(this.pruneHopsBox);
-            this.runOptionsPanel.Controls.Add(this.limitLabel);
-            this.runOptionsPanel.Controls.Add(this.pruneScoreBox);
-            this.runOptionsPanel.Controls.Add(this.lsPenaltyBox);
-            this.runOptionsPanel.Controls.Add(this.maxLSDistanceBox);
-            this.runOptionsPanel.Controls.Add(this.hopsBox);
-            this.runOptionsPanel.Controls.Add(this.gptBox);
-            this.runOptionsPanel.Controls.Add(this.jumpsBox);
-            this.runOptionsPanel.Location = new System.Drawing.Point(340, 93);
-            this.runOptionsPanel.Name = "runOptionsPanel";
-            this.runOptionsPanel.Size = new System.Drawing.Size(473, 140);
-            this.runOptionsPanel.TabIndex = 56;
+            this.panShipVendor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panShipVendor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panShipVendor.Controls.Add(this.shipsSoldBox);
+            this.panShipVendor.Controls.Add(this.oldRoutesCheckBox);
+            this.panShipVendor.Controls.Add(this.minAgeLabel);
+            this.panShipVendor.Controls.Add(this.minAgeUpDown);
+            this.panShipVendor.Controls.Add(this.shipsSoldLabel);
+            this.panShipVendor.Location = new System.Drawing.Point(11, 35);
+            this.panShipVendor.Name = "panShipVendor";
+            this.panShipVendor.Size = new System.Drawing.Size(312, 195);
+            this.panShipVendor.TabIndex = 3;
             // 
             // backgroundWorker5
             // 
@@ -2060,7 +2002,7 @@
             // 
             this.trackerLinkLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.trackerLinkLabel.AutoSize = true;
-            this.trackerLinkLabel.Location = new System.Drawing.Point(9, 737);
+            this.trackerLinkLabel.Location = new System.Drawing.Point(775, 654);
             this.trackerLinkLabel.Name = "trackerLinkLabel";
             this.trackerLinkLabel.Size = new System.Drawing.Size(99, 13);
             this.trackerLinkLabel.TabIndex = 66;
@@ -2073,7 +2015,7 @@
             // 
             this.faqLinkLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.faqLinkLabel.AutoSize = true;
-            this.faqLinkLabel.Location = new System.Drawing.Point(758, 739);
+            this.faqLinkLabel.Location = new System.Drawing.Point(900, 654);
             this.faqLinkLabel.Name = "faqLinkLabel";
             this.faqLinkLabel.Size = new System.Drawing.Size(55, 13);
             this.faqLinkLabel.TabIndex = 67;
@@ -2102,48 +2044,152 @@
             this.panShipData.Controls.Add(this.ladenLYLabel);
             this.panShipData.Controls.Add(this.padSizeLabel);
             this.panShipData.Controls.Add(this.padSizeBox);
-            this.panShipData.Location = new System.Drawing.Point(340, 35);
+            this.panShipData.Location = new System.Drawing.Point(329, 35);
             this.panShipData.Name = "panShipData";
-            this.panShipData.Size = new System.Drawing.Size(473, 56);
+            this.panShipData.Size = new System.Drawing.Size(448, 56);
             this.panShipData.TabIndex = 1;
+            // 
+            // panStock
+            // 
+            this.panStock.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panStock.Controls.Add(this.demandLabel);
+            this.panStock.Controls.Add(this.demandBox);
+            this.panStock.Controls.Add(this.limitBox);
+            this.panStock.Controls.Add(this.stockBox);
+            this.panStock.Controls.Add(this.stockLabel);
+            this.panStock.Controls.Add(this.limitLabel);
+            this.panStock.Location = new System.Drawing.Point(430, 98);
+            this.panStock.Name = "panStock";
+            this.panStock.Size = new System.Drawing.Size(145, 73);
+            this.panStock.TabIndex = 1;
+            // 
+            // panHops
+            // 
+            this.panHops.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panHops.Controls.Add(this.hopsBox);
+            this.panHops.Controls.Add(this.hopsLabel);
+            this.panHops.Controls.Add(this.jumpsBox);
+            this.panHops.Controls.Add(this.jumpsLabel);
+            this.panHops.Controls.Add(this.pruneHopsBox);
+            this.panHops.Controls.Add(this.pruneHopsLabel);
+            this.panHops.Location = new System.Drawing.Point(715, 98);
+            this.panHops.Name = "panHops";
+            this.panHops.Size = new System.Drawing.Size(111, 73);
+            this.panHops.TabIndex = 2;
+            // 
+            // panProfit
+            // 
+            this.panProfit.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panProfit.Controls.Add(this.marginBox);
+            this.panProfit.Controls.Add(this.gptBox);
+            this.panProfit.Controls.Add(this.maxGPTLabel);
+            this.panProfit.Controls.Add(this.gptLabel);
+            this.panProfit.Controls.Add(this.maxGPTBox);
+            this.panProfit.Controls.Add(this.marginLabel);
+            this.panProfit.Location = new System.Drawing.Point(581, 98);
+            this.panProfit.Name = "panProfit";
+            this.panProfit.Size = new System.Drawing.Size(128, 73);
+            this.panProfit.TabIndex = 3;
+            // 
+            // panDistance
+            // 
+            this.panDistance.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panDistance.Controls.Add(this.maxLSDistanceBox);
+            this.panDistance.Controls.Add(this.maxLSLabel);
+            this.panDistance.Controls.Add(this.lsPenaltyBox);
+            this.panDistance.Controls.Add(this.lsPenaltyLabel);
+            this.panDistance.Location = new System.Drawing.Point(430, 177);
+            this.panDistance.Name = "panDistance";
+            this.panDistance.Size = new System.Drawing.Size(145, 53);
+            this.panDistance.TabIndex = 4;
+            // 
+            // panOther
+            // 
+            this.panOther.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panOther.Controls.Add(this.localNavCheckBox);
+            this.panOther.Controls.Add(this.loopIntLabel);
+            this.panOther.Controls.Add(this.pruneScoreBox);
+            this.panOther.Controls.Add(this.loopIntBox);
+            this.panOther.Controls.Add(this.pruneScoreLabel);
+            this.panOther.Location = new System.Drawing.Point(832, 98);
+            this.panOther.Name = "panOther";
+            this.panOther.Size = new System.Drawing.Size(126, 73);
+            this.panOther.TabIndex = 5;
+            // 
+            // panMisc
+            // 
+            this.panMisc.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panMisc.Controls.Add(this.avoidBox);
+            this.panMisc.Controls.Add(this.avoidLabel);
+            this.panMisc.Controls.Add(this.viaBox);
+            this.panMisc.Controls.Add(this.viaLabel);
+            this.panMisc.Location = new System.Drawing.Point(581, 177);
+            this.panMisc.Name = "panMisc";
+            this.panMisc.Size = new System.Drawing.Size(377, 53);
+            this.panMisc.TabIndex = 1;
+            // 
+            // panMethod
+            // 
+            this.panMethod.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panMethod.Controls.Add(this.stationDropDown);
+            this.panMethod.Controls.Add(this.methodDropDown);
+            this.panMethod.Location = new System.Drawing.Point(329, 98);
+            this.panMethod.Name = "panMethod";
+            this.panMethod.Size = new System.Drawing.Size(95, 132);
+            this.panMethod.TabIndex = 1;
+            // 
+            // panAgeCredits
+            // 
+            this.panAgeCredits.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panAgeCredits.Controls.Add(this.ageBox);
+            this.panAgeCredits.Controls.Add(this.ageLabel);
+            this.panAgeCredits.Controls.Add(this.creditsBox);
+            this.panAgeCredits.Controls.Add(this.creditsLabel);
+            this.panAgeCredits.Location = new System.Drawing.Point(783, 35);
+            this.panAgeCredits.Name = "panAgeCredits";
+            this.panAgeCredits.Size = new System.Drawing.Size(175, 56);
+            this.panAgeCredits.TabIndex = 1;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(826, 759);
-            this.Controls.Add(this.panShipData);
-            this.Controls.Add(this.btnSaveSettings);
+            this.ClientSize = new System.Drawing.Size(966, 676);
+            this.Controls.Add(this.panAgeCredits);
             this.Controls.Add(this.updateNotifyLabel);
             this.Controls.Add(this.updateNotifyIcon);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.panMisc);
+            this.Controls.Add(this.panHops);
+            this.Controls.Add(this.panStock);
+            this.Controls.Add(this.panMethod);
+            this.Controls.Add(this.panProfit);
+            this.Controls.Add(this.panOther);
+            this.Controls.Add(this.panDistance);
+            this.Controls.Add(this.panShipData);
+            this.Controls.Add(this.btnSaveSettings);
+            this.Controls.Add(this.panRunOptions);
             this.Controls.Add(this.btnCmdrProfile);
             this.Controls.Add(this.faqLinkLabel);
             this.Controls.Add(this.trackerLinkLabel);
             this.Controls.Add(this.testSystemsCheckBox);
             this.Controls.Add(this.miniModeButton);
             this.Controls.Add(this.swapButton);
-            this.Controls.Add(this.runOptionsPanel);
             this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.ageBox);
             this.Controls.Add(this.verboseLabel);
             this.Controls.Add(this.verbosityComboBox);
-            this.Controls.Add(this.ageLabel);
             this.Controls.Add(this.updateButton);
             this.Controls.Add(this.srcSysLabel);
             this.Controls.Add(this.srcSystemComboBox);
             this.Controls.Add(this.getSystemButton);
             this.Controls.Add(this.runButton);
             this.Controls.Add(this.stopWatchLabel);
-            this.Controls.Add(this.creditsBox);
-            this.Controls.Add(this.creditsLabel);
-            this.Controls.Add(this.panel2);
-            this.Controls.Add(this.localFilterParentPanel);
+            this.Controls.Add(this.panShipVendor);
+            this.Controls.Add(this.panLocalFilter);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(842, 370);
+            this.MinimumSize = new System.Drawing.Size(982, 714);
             this.Name = "MainForm";
             this.Text = "Trade Dangerous Helper";
             this.Activated += new System.EventHandler(this.MainForm_Activated);
@@ -2179,9 +2225,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.minAgeUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.loopIntBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.demandBox)).EndInit();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            this.localFilterParentPanel.ResumeLayout(false);
+            this.panRunOptions.ResumeLayout(false);
+            this.panRunOptions.PerformLayout();
+            this.panLocalFilter.ResumeLayout(false);
             this.localFilterGroupBox.ResumeLayout(false);
             this.localFilterGroupBox.PerformLayout();
             this.tabControl1.ResumeLayout(false);
@@ -2193,12 +2239,25 @@
             this.logPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pilotsLogDataGrid)).EndInit();
             this.contextMenuStrip2.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
-            this.runOptionsPanel.ResumeLayout(false);
-            this.runOptionsPanel.PerformLayout();
+            this.panShipVendor.ResumeLayout(false);
+            this.panShipVendor.PerformLayout();
             this.panShipData.ResumeLayout(false);
             this.panShipData.PerformLayout();
+            this.panStock.ResumeLayout(false);
+            this.panStock.PerformLayout();
+            this.panHops.ResumeLayout(false);
+            this.panHops.PerformLayout();
+            this.panProfit.ResumeLayout(false);
+            this.panProfit.PerformLayout();
+            this.panDistance.ResumeLayout(false);
+            this.panDistance.PerformLayout();
+            this.panOther.ResumeLayout(false);
+            this.panOther.PerformLayout();
+            this.panMisc.ResumeLayout(false);
+            this.panMisc.PerformLayout();
+            this.panMethod.ResumeLayout(false);
+            this.panAgeCredits.ResumeLayout(false);
+            this.panAgeCredits.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2276,7 +2335,7 @@
         private System.Windows.Forms.CheckBox directCheckBox;
         private System.Windows.Forms.CheckBox oneStopCheckBox;
         private System.Windows.Forms.ComboBox stationDropDown;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panRunOptions;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem savePage1MenuItem;
         private System.Windows.Forms.ToolStripMenuItem savePage2MenuItem;
@@ -2303,14 +2362,13 @@
         private System.Windows.Forms.ToolStripMenuItem clearSaved1MenuItem;
         private System.Windows.Forms.ToolStripMenuItem clearSaved2MenuItem;
         private System.Windows.Forms.ToolStripMenuItem clearSaved3MenuItem;
-        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel panShipVendor;
         private System.Windows.Forms.Label shipsSoldLabel;
-        private System.Windows.Forms.Panel runOptionsPanel;
         private System.Windows.Forms.Label marginLabel;
         private System.Windows.Forms.NumericUpDown marginBox;
         private System.Windows.Forms.Label maxGPTLabel;
         private System.Windows.Forms.NumericUpDown maxGPTBox;
-        private System.Windows.Forms.Panel localFilterParentPanel;
+        private System.Windows.Forms.Panel panLocalFilter;
         private System.Windows.Forms.GroupBox localFilterGroupBox;
         private System.Windows.Forms.CheckBox outfitFilterCheckBox;
         private System.Windows.Forms.CheckBox rearmFilterCheckBox;
@@ -2359,6 +2417,14 @@
         private System.Windows.Forms.Button btnSaveSettings;
         private System.Windows.Forms.Panel panShipData;
         private System.Windows.Forms.Button ResetFilterButton;
+        private System.Windows.Forms.Panel panMisc;
+        private System.Windows.Forms.Panel panDistance;
+        private System.Windows.Forms.Panel panOther;
+        private System.Windows.Forms.Panel panHops;
+        private System.Windows.Forms.Panel panProfit;
+        private System.Windows.Forms.Panel panStock;
+        private System.Windows.Forms.Panel panMethod;
+        private System.Windows.Forms.Panel panAgeCredits;
     }
 }
 

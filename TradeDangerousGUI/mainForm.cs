@@ -1534,9 +1534,9 @@ namespace TDHelper
                     stationDropDown.DataSource = shipVendorDrop;
 
                     // hide the run panel
-                    panel1.Visible = false;
+                    panRunOptions.Visible = false;
                     // activate the station panel
-                    panel2.Visible = true;
+                    panShipVendor.Visible = true;
 
                     // fix tooltips
                     toolTip1.SetToolTip(methodDropDown, "Add/Remove/List ships being sold at a given station");
@@ -1600,14 +1600,14 @@ namespace TDHelper
 
         private void RunMethodResetState()
         {// we should use this method as an elevator for the form state
-            panel1.Visible = true;
-            panel2.Visible = false;
+            panRunOptions.Visible = true;
+            panShipVendor.Visible = false;
             stationDropDown.Visible = false;
-            localFilterParentPanel.Visible = false;
+            panLocalFilter.Visible = false;
 
             srcSystemComboBox.Enabled = true;
-            panel1.Enabled = true;
-            panel2.Enabled = false;
+            panRunOptions.Enabled = true;
+            panShipVendor.Enabled = false;
 
             // make an exception for the padsizebox when applicable
             if (methodIndex <= 3 && methodIndex >= 0)
@@ -1667,9 +1667,9 @@ namespace TDHelper
             // main state check
             if (methodIndex == 0)
             {// return to a normal run state
-                foreach (Control ctrl in runOptionsPanel.Controls)
+                foreach (Control ctrl in panRunOptions.Controls)
                     ctrl.Enabled = true;
-                foreach (Control ctrl in panel1.Controls)
+                foreach (Control ctrl in panRunOptions.Controls)
                     ctrl.Enabled = true;
 
                 belowPriceBox.Enabled = true;
@@ -1747,7 +1747,7 @@ namespace TDHelper
             }
             else if (methodFromIndex != 5)
             {// catch everything else (except shipvendor)
-                foreach (Control ctrl in runOptionsPanel.Controls)
+                foreach (Control ctrl in panRunOptions.Controls)
                 {
                     ctrl.Enabled = false;
                 }
@@ -1821,7 +1821,7 @@ namespace TDHelper
             // an exception for the trade command
             if (methodIndex == 4)
             {
-                foreach (Control ctrl in panel1.Controls)
+                foreach (Control ctrl in panRunOptions.Controls)
                     ctrl.Enabled = false;
 
                 destSystemComboBox.Enabled = true;
@@ -1878,14 +1878,14 @@ namespace TDHelper
             // catch station/shipvendor here
             if (methodIndex == 6)
             { // shipvendor
-                panel1.Enabled = false;
-                panel2.Enabled = true;
+                panRunOptions.Enabled = false;
+                panShipVendor.Enabled = true;
 
-                panel1.Visible = false;
-                panel2.Visible = true;
+                panRunOptions.Visible = false;
+                panShipVendor.Visible = true;
 
-                // we don't need most panel2 controls
-                foreach (Control ctrl in panel2.Controls)
+                // we don't need most panShipVendor controls
+                foreach (Control ctrl in panShipVendor.Controls)
                     ctrl.Enabled = false;
 
                 shipsSoldLabel.Enabled = true;
@@ -1895,16 +1895,16 @@ namespace TDHelper
             }
             else if (methodIndex == 8)
             {
-                panel1.Enabled = false;
-                panel2.Enabled = true;
+                panRunOptions.Enabled = false;
+                panShipVendor.Enabled = true;
 
-                // we don't need most panel1 controls
-                foreach (Control ctrl in panel2.Controls)
+                // we don't need most panRunOptions controls
+                foreach (Control ctrl in panShipVendor.Controls)
                     ctrl.Enabled = false;
 
-                panel1.Visible = false;
-                panel2.Visible = true;
-                panel2.BringToFront();
+                panRunOptions.Visible = false;
+                panShipVendor.Visible = true;
+                panShipVendor.BringToFront();
 
                 ageBox.Enabled = false;
                 ageLabel.Enabled = false;
@@ -1920,13 +1920,13 @@ namespace TDHelper
             }
             else
             {
-                // we don't need most panel1 or run options controls
-                foreach (Control ctrl in panel1.Controls)
+                // we don't need most panRunOptions or run options controls
+                foreach (Control ctrl in panRunOptions.Controls)
                 {
                     ctrl.Enabled = false;
                 }
 
-                foreach (Control ctrl in runOptionsPanel.Controls)
+                foreach (Control ctrl in panRunOptions.Controls)
                 {
                     ctrl.Enabled = false;
                 }
@@ -2063,22 +2063,22 @@ namespace TDHelper
             if (localNavCheckBox.Checked)
             {
                 // switching to Local override
-                panel1.Visible = true;
-                panel2.Visible = false;
-                localFilterParentPanel.Visible = true;
+                panRunOptions.Visible = true;
+                panShipVendor.Visible = false;
+                panLocalFilter.Visible = true;
                 // force enable
-                localFilterParentPanel.Enabled = true;
+                panLocalFilter.Enabled = true;
                 destSystemComboBox.Enabled = true;
-                panel1.Enabled = true;
+                panRunOptions.Enabled = true;
                 methodDropDown.Enabled = false;
                 padSizeBox.Enabled = true;
                 padSizeLabel.Enabled = true;
 
                 // pull to the front
-                localFilterParentPanel.BringToFront();
+                panLocalFilter.BringToFront();
 
                 // disable most of the run options
-                foreach (Control ctrl in runOptionsPanel.Controls)
+                foreach (Control ctrl in panRunOptions.Controls)
                 {
                     ctrl.Enabled = false;
                 }
@@ -2273,7 +2273,7 @@ namespace TDHelper
 
         private void SwapButton_Click(object sender, EventArgs e)
         {// here we swap the contents of the boxes with some conditions
-            if (!localFilterParentPanel.Visible && destSystemComboBox.Visible)
+            if (!panLocalFilter.Visible && destSystemComboBox.Visible)
             {// don't swap if the destination box isn't visible (or covered)
                 if (!string.IsNullOrEmpty(srcSystemComboBox.Text)
                     && !string.IsNullOrEmpty(destSystemComboBox.Text))
@@ -2561,9 +2561,17 @@ namespace TDHelper
             {
                 // prevent a null reference
                 if (output.Data.Contains("\a"))
+                {
                     filteredOutput = output.Data.Replace("\a", string.Empty) + "\n";
+                }
+                else if (output.Data.StartsWith("["))
+                {
+                    filteredOutput = output.Data + "\r";
+                }
                 else
+                {
                     filteredOutput = output.Data + "\n";
+                }
 
                 if (buttonCaller != 5 && buttonCaller != 12 && !exceptions.Any(output.Data.Contains) && !t_csvExportCheckBox || methodIndex != 5 || methodIndex != 6)
                 {// hide output if calculating
