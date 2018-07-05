@@ -2074,7 +2074,9 @@ namespace TDHelper
 
             // an exception for Run commands
             if (buttonCaller != 1)
+            {
                 runButton.Enabled = false;
+            }
         }
 
         private void EnableRunButtons()
@@ -2086,19 +2088,31 @@ namespace TDHelper
 
             // fix Run button when returning from non-Run commands
             if (buttonCaller == 1 || !runButton.Enabled)
+            {
                 runButton.Enabled = true;
+            }
         }
 
         private CheckState ParseCheckState(string input)
         {
-            if (input == "?")
-                return CheckState.Indeterminate;
-            else if (input == "Y")
-                return CheckState.Checked;
-            else if (input == "N")
-                return CheckState.Unchecked;
-            else
-                return CheckState.Indeterminate;
+            CheckState state;
+
+            switch (input.ToUpperInvariant())
+            {
+                case "Y":
+                    state = CheckState.Checked;
+                    break;
+
+                case "N":
+                    state = CheckState.Unchecked;
+                    break;
+
+                default:
+                    state = CheckState.Indeterminate;
+                    break;
+            }
+
+            return state;
         }
 
         private void ValidateDestForEndJumps()
