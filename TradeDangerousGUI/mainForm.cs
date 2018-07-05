@@ -33,7 +33,7 @@ namespace TDHelper
 
         private System.Timers.Timer testSystemsTimer = new System.Timers.Timer();
 
-        int buttonCaller, methodIndex, exportIndex, stationIndex, methodFromIndex = -1, hasUpdated, procCode = -1;
+        int buttonCaller, methodIndex, stationIndex, methodFromIndex = -1, hasUpdated, procCode = -1;
         
         IList<string> validConfigs = new List<string>();
         CultureInfo userCulture = CultureInfo.CurrentCulture;
@@ -366,7 +366,6 @@ namespace TDHelper
             temp_dest = RemoveExtraWhitespace(destSystemComboBox.Text);
 
             temp_commod = commodityComboBox.Text;
-            t_maxPadSize = stn_padSizeBox.Text;
 
             // make sure we don't pass the "Ship's Sold" box if its still unchanged
             if (shipsSoldBox.Text.Equals(outputStationShips.ToString(), StringComparison.OrdinalIgnoreCase))
@@ -564,14 +563,6 @@ namespace TDHelper
                 jumpsBox.Text = settingsRef.Jumps.ToString();
             }
 
-            if (decimal.TryParse(lsFromStarBox.Text, out t_lsFromStar))
-                lsFromStarBox.Text = t_lsFromStar.ToString();
-            else
-            {
-                t_lsFromStar = lsFromStarBox.Minimum;
-                lsFromStarBox.Text = t_lsFromStar.ToString();
-            }
-
             if (decimal.TryParse(endJumpsBox.Text, out t_EndJumps))
                 endJumpsBox.Text = t_EndJumps.ToString();
             else
@@ -628,15 +619,6 @@ namespace TDHelper
             stationsFilterChecked = stationsFilterCheckBox.Checked;
             oldDataRouteChecked = oldRoutesCheckBox.Checked;
 
-            // convert the station checkstates to ints for our delegate
-            stn_blackmarketBoxChecked = GetCheckBoxCheckState(blackMarketCheckBox.CheckState);
-            stn_shipyardBoxChecked = GetCheckBoxCheckState(shipyardCheckBox.CheckState);
-            stn_marketBoxChecked = GetCheckBoxCheckState(marketCheckBox.CheckState);
-            stn_repairBoxChecked = GetCheckBoxCheckState(repairCheckBox.CheckState);
-            stn_rearmBoxChecked = GetCheckBoxCheckState(rearmCheckBox.CheckState);
-            stn_refuelBoxChecked = GetCheckBoxCheckState(refuelCheckBox.CheckState);
-            stn_outfitBoxChecked = GetCheckBoxCheckState(outfitCheckBox.CheckState);
-
             // convert the local checkstates to ints as well
             blackmarketBoxChecked = GetCheckBoxCheckState(bmktFilterCheckBox.CheckState);
             shipyardBoxChecked = GetCheckBoxCheckState(shipyardFilterCheckBox.CheckState);
@@ -666,13 +648,7 @@ namespace TDHelper
                 padSizeBox.Text = settingsRef.Padsizes.ToString();
             }
 
-            if (containsHexCode(confirmBox.Text))
-                t_confirmCode = confirmBox.Text;
-            else
-            {
-                t_confirmCode = string.Empty;
-                confirmBox.Text = t_confirmCode.ToString();
-            }
+            t_confirmCode = string.Empty;
 
             // handle floats differently
             if (decimal.TryParse(unladenLYBox.Text, out decimal t_unladenLY))
@@ -879,7 +855,7 @@ namespace TDHelper
                     PlayAlert();
                 }
             }
-            else if (methodIndex == 9)
+            else if (methodIndex == 8)
             {// mark us as coming from the olddata command
                 if (!string.IsNullOrEmpty(temp_src))
                 {
@@ -901,7 +877,7 @@ namespace TDHelper
                     PlayAlert();
                 }
             }
-            else if (methodIndex == 8)
+            else if (methodIndex == 7)
             {// mark us as coming from the nav command
                 if (!string.IsNullOrEmpty(temp_src) && !string.IsNullOrEmpty(temp_dest))
                 {
@@ -919,26 +895,7 @@ namespace TDHelper
                     PlayAlert();
                 }
             }
-            else if ((methodIndex == 6 || methodIndex == 7) && t_csvExportCheckBox)
-            {// we're coming from the csvExport override
-                if (exportIndex == 1)
-                {// an override for System export
-                    t_path += "export --tables System";
-                }
-                else if (exportIndex == 2)
-                {// an override for Station export
-                    t_path += "export --tables Station";
-                }
-                else if (exportIndex == 3)
-                {// an override for ShipVendor export
-                    t_path += "export --tables ShipVendor";
-                }
-                else
-                {// catch all
-                    t_path += "export --tables ShipVendor,System,Station";
-                }
-            }
-            else if (methodIndex == 7)
+            else if (methodIndex == 6)
             {// mark us as coming from the shipvendor editor
                 if (!string.IsNullOrEmpty(temp_src))
                 {
@@ -960,70 +917,8 @@ namespace TDHelper
                         buttonCaller = 17;
                     }
                     else
-                        t_path += "shipvendor \"" + temp_src + "\"";
-                }
-                else
-                {
-                    okayToRun = false;
-                    PlayAlert();
-                }
-            }
-            else if (methodIndex == 6)
-            {// mark us as coming from the station editor
-                if (!string.IsNullOrEmpty(temp_src))
-                {
-                    t_path += "station ";
-
-                    if (stationIndex == 0 || stationIndex == 1)
                     {
-                        if (stationIndex == 0)
-                            // we're updating (default)
-                            t_path += "-u";
-                        else if (stationIndex == 1)
-                        {
-                            t_path += "-a";
-                            buttonCaller = 16; // mark us as forcing a db update
-                        }
-
-                        if (stn_blackmarketBoxChecked == 2) { t_path += " --bm=" + "\"?\""; }
-                        else if (stn_blackmarketBoxChecked == 1) { t_path += " --bm=" + "\"Y\""; }
-                        else if (stn_blackmarketBoxChecked == 0) { t_path += " --bm=" + "\"N\""; }
-
-                        if (stn_shipyardBoxChecked == 2) { t_path += " --shipyard=" + "\"?\""; }
-                        else if (stn_shipyardBoxChecked == 1) { t_path += " --shipyard=" + "\"Y\""; }
-                        else if (stn_shipyardBoxChecked == 0) { t_path += " --shipyard=" + "\"N\""; }
-
-                        if (stn_marketBoxChecked == 2) { t_path += " --market=" + "\"?\""; }
-                        else if (stn_marketBoxChecked == 1) { t_path += " --market=" + "\"Y\""; }
-                        else if (stn_marketBoxChecked == 0) { t_path += " --market=" + "\"N\""; }
-
-                        if (stn_rearmBoxChecked == 2) { t_path += " --rearm=" + "\"?\""; }
-                        else if (stn_rearmBoxChecked == 1) { t_path += " --rearm=" + "\"Y\""; }
-                        else if (stn_rearmBoxChecked == 0) { t_path += " --rearm=" + "\"N\""; }
-
-                        if (stn_repairBoxChecked == 2) { t_path += " --repair=" + "\"?\""; }
-                        else if (stn_repairBoxChecked == 1) { t_path += " --repair=" + "\"Y\""; }
-                        else if (stn_repairBoxChecked == 0) { t_path += " --repair=" + "\"N\""; }
-
-                        if (stn_refuelBoxChecked == 2) { t_path += " --refuel=" + "\"?\""; }
-                        else if (stn_refuelBoxChecked == 1) { t_path += " --refuel=" + "\"Y\""; }
-                        else if (stn_refuelBoxChecked == 0) { t_path += " --refuel=" + "\"N\""; }
-
-                        if (stn_outfitBoxChecked == 2) { t_path += " --outfitting=" + "\"?\""; }
-                        else if (stn_outfitBoxChecked == 1) { t_path += " --outfitting=" + "\"Y\""; }
-                        else if (stn_outfitBoxChecked == 0) { t_path += " --outfitting=" + "\"N\""; }
-
-                        if (t_lsFromStar > 0) { t_path += " --ls-from-star=" + t_lsFromStar; }
-                        if (!string.IsNullOrEmpty(t_maxPadSize)) { t_path += " --pad-size=\"" + t_maxPadSize + "\""; }
-                        if (!string.IsNullOrEmpty(t_confirmCode)) { t_path += " --confirm=" + t_confirmCode; }
-                        t_path += " \"" + temp_src + "\"";
-                    }
-                    else if (stationIndex == 2)
-                    {// removing
-                        t_path += "-rm";
-                        if (!string.IsNullOrEmpty(t_confirmCode)) { t_path += " --confirm=" + t_confirmCode; }
-                        t_path += " \"" + temp_src + "\"";
-                        buttonCaller = 16; // mark us as forcing a db update
+                        t_path += "shipvendor \"" + temp_src + "\"";
                     }
                 }
                 else
@@ -1212,10 +1107,6 @@ namespace TDHelper
             {
                 stopwatch.Stop(); // stop the timer
                 circularBuffer = new System.Text.StringBuilder(2 * circularBufferSize);
-
-                // turn off checkboxes where sensible
-                if (t_csvExportCheckBox) { csvExportCheckBox.Checked = false; }
-                if (!string.IsNullOrEmpty(confirmBox.Text)) { confirmBox.Text = string.Empty; }
 
                 // let's alert the user that the Output pane has changed
                 if (!string.IsNullOrEmpty(td_outputBox.Text) && tabControl1.SelectedTab != outputPage)
@@ -1633,25 +1524,6 @@ namespace TDHelper
                     methodFromIndex = 5;
                 }
                 else if (methodIndex == 6)
-                {// station command
-                    StationEditorChangeState();
-
-                    // show the secondary selection box
-                    stationDropDown.Visible = true;
-                    // set "Update" as the default
-                    List<string> shipVendorDrop = new List<string>(new string[] { "Update", "Add", "Remove" });
-                    stationDropDown.DataSource = shipVendorDrop;
-
-                    // activate the shipsSoldBox
-                    shipsSoldBox.Enabled = false;
-                    shipsSoldLabel.Enabled = false;
-
-                    // fix tooltips
-                    toolTip1.SetToolTip(methodDropDown, "Add/Remove/List detailed station data for a given station");
-
-                    methodFromIndex = 6;
-                }
-                else if (methodIndex == 7)
                 {// shipvendor command
                     StationEditorChangeState();
 
@@ -1669,9 +1541,9 @@ namespace TDHelper
                     // fix tooltips
                     toolTip1.SetToolTip(methodDropDown, "Add/Remove/List ships being sold at a given station");
 
-                    methodFromIndex = 7;
+                    methodFromIndex = 6;
                 }
-                else if (methodIndex == 8)
+                else if (methodIndex == 7)
                 {// nav command
                     // reset our state to the default for this method
                     StationEditorChangeState();
@@ -1696,9 +1568,9 @@ namespace TDHelper
                     viaLabel.Enabled = true;
                     viaBox.Enabled = true;
 
-                    methodFromIndex = 8; // mark nav
+                    methodFromIndex = 7; // mark nav
                 }
-                else if (methodIndex == 9)
+                else if (methodIndex == 8)
                 {// olddata command
                     StationEditorChangeState();
 
@@ -1715,7 +1587,7 @@ namespace TDHelper
                     toolTip1.SetToolTip(ladenLYBox, "Distance to search near the source system");
                     toolTip1.SetToolTip(ladenLYLabel, "Distance to search near the source system");
 
-                    methodFromIndex = 9; // mark olddata
+                    methodFromIndex = 8; // mark olddata
                 }
                 else
                 {// run command
@@ -1852,21 +1724,33 @@ namespace TDHelper
 
                 // restore our last used values
                 if (t_belowPrice > 0)
+                {
                     belowPriceBox.Value = t_belowPrice;
+                }
 
                 if (methodIndex == 1 && t_Supply > 0)
+                {
                     stockBox.Value = t_Supply;
+                }
                 else if (methodIndex == 1)
+                {
                     stockBox.Value = stockBox.Minimum;
+                }
                 else if (methodIndex == 2 && t_Demand > 0)
+                {
                     demandBox.Value = t_Demand;
+                }
                 else if (methodIndex == 2)
+                {
                     demandBox.Value = demandBox.Minimum;
+                }
             }
-            else if (methodFromIndex != 5 || methodFromIndex != 6)
-            {// catch everything else (except station/shipvendor)
+            else if (methodFromIndex != 5)
+            {// catch everything else (except shipvendor)
                 foreach (Control ctrl in runOptionsPanel.Controls)
+                {
                     ctrl.Enabled = false;
+                }
             }
 
             // change the bmkt/direct checkboxes
@@ -1926,7 +1810,6 @@ namespace TDHelper
             commodityLabel.Enabled = false;
             abovePriceBox.Enabled = false;
             abovePriceLabel.Enabled = false;
-            csvExportCheckBox.Checked = false;
             localNavCheckBox.Checked = false;
 
             // an exception for switching from another command with a valid dest
@@ -1948,7 +1831,7 @@ namespace TDHelper
             }
 
             // fix ladenLY minimum for certain commands
-            if (methodIndex == 9)
+            if (methodIndex == 8)
             {
                 ladenLYBox.Minimum = 0; // just for the olddata command
             }
@@ -1993,7 +1876,7 @@ namespace TDHelper
             }
 
             // catch station/shipvendor here
-            if (methodIndex == 7)
+            if (methodIndex == 6)
             { // shipvendor
                 panel1.Enabled = false;
                 panel2.Enabled = true;
@@ -2007,28 +1890,10 @@ namespace TDHelper
 
                 shipsSoldLabel.Enabled = true;
                 shipsSoldBox.Enabled = true;
-                csvExportComboBox.Visible = false;
                 stationDropDown.Enabled = true;
                 toolTip1.SetToolTip(stationDropDown, "Select a mode for station editing");
             }
-            else if (methodIndex == 6)
-            { // station
-                panel1.Enabled = false;
-                panel2.Enabled = true;
-
-                panel1.Visible = false;
-                panel2.Visible = true;
-
-                foreach (Control ctrl in panel2.Controls)
-                    ctrl.Enabled = true;
-
-                shipsSoldLabel.Enabled = false;
-                shipsSoldBox.Enabled = false;
-                csvExportComboBox.Visible = false;
-                stationDropDown.Enabled = true;
-                toolTip1.SetToolTip(stationDropDown, "Select a mode for station editing");
-            }
-            else if (methodIndex == 9)
+            else if (methodIndex == 8)
             {
                 panel1.Enabled = false;
                 panel2.Enabled = true;
@@ -2057,10 +1922,14 @@ namespace TDHelper
             {
                 // we don't need most panel1 or run options controls
                 foreach (Control ctrl in panel1.Controls)
+                {
                     ctrl.Enabled = false;
+                }
 
                 foreach (Control ctrl in runOptionsPanel.Controls)
+                {
                     ctrl.Enabled = false;
+                }
             }
         }
 
@@ -2323,21 +2192,6 @@ namespace TDHelper
             }
         }
 
-        private void Stn_padSizeBox_KeyPress(object sender, KeyPressEventArgs e)
-        {// filter for valid chars
-            if (e.KeyChar == 's'
-                || e.KeyChar == 'S'
-                || e.KeyChar == 'm'
-                || e.KeyChar == 'M'
-                || e.KeyChar == 'l'
-                || e.KeyChar == 'L'
-                || e.KeyChar == '?')
-            {
-                stn_padSizeBox.Text = e.KeyChar.ToString().ToUpper();
-                e.Handled = true;
-            }
-        }
-
         private void PadSizeBox_KeyPress(object sender, KeyPressEventArgs e)
         {// filter for valid chars
             if (e.KeyChar == 'm'
@@ -2370,7 +2224,7 @@ namespace TDHelper
         {
             stationIndex = stationDropDown.SelectedIndex;
 
-            if (methodIndex == 7)
+            if (methodIndex == 6)
             {// if we're in ShipVendor mode
                 if (stationIndex == 2)
                 {// disable when list'ing
@@ -2382,22 +2236,6 @@ namespace TDHelper
                     shipsSoldBox.Enabled = true;
                     shipsSoldLabel.Enabled = true;
                 }
-            }
-        }
-
-        private void CsvExportCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            if (csvExportCheckBox.Checked)
-            {
-                t_csvExportCheckBox = true;
-                csvExportComboBox.Visible = true;
-                csvExportComboBox.SelectedIndex = 0; // always reset the box
-            }
-            else
-            {
-                t_csvExportCheckBox = false;
-                csvExportComboBox.Visible = false;
-                csvExportComboBox.SelectedIndex = 0;
             }
         }
 
@@ -2421,22 +2259,6 @@ namespace TDHelper
             }
         }
 
-        private void CsvExportComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (csvExportComboBox.SelectedIndex == 1)
-                exportIndex = 1;
-            else if (csvExportComboBox.SelectedIndex == 2)
-                exportIndex = 2;
-            else if (csvExportComboBox.SelectedIndex == 3)
-                exportIndex = 3;
-            else if (csvExportComboBox.SelectedIndex == 4)
-                exportIndex = 4;
-            else if (csvExportComboBox.SelectedIndex == 5)
-                exportIndex = 5;
-            else
-                exportIndex = 0;
-        }
-
         private void ResetFilterButton_Click(object sender, EventArgs e)
         {
             rearmFilterCheckBox.Checked = false;
@@ -2446,21 +2268,7 @@ namespace TDHelper
             bmktFilterCheckBox.Checked = false;
             outfitFilterCheckBox.Checked = false;
             shipyardFilterCheckBox.Checked = false;
-        }
-
-        private void ResetStationButton_Click(object sender, EventArgs e)
-        {
-            rearmCheckBox.CheckState = CheckState.Indeterminate;
-            refuelCheckBox.CheckState = CheckState.Indeterminate;
-            repairCheckBox.CheckState = CheckState.Indeterminate;
-            outfitCheckBox.CheckState = CheckState.Indeterminate;
-            shipyardCheckBox.CheckState = CheckState.Indeterminate;
-            marketCheckBox.CheckState = CheckState.Indeterminate;
-            blackMarketCheckBox.CheckState = CheckState.Indeterminate;
-            csvExportCheckBox.Checked = false;
-
-            lsFromStarBox.Value = 0;
-            stn_padSizeBox.Text = "?";
+            stationsFilterCheckBox.Checked = false;
         }
 
         private void SwapButton_Click(object sender, EventArgs e)
@@ -2761,7 +2569,7 @@ namespace TDHelper
                 {// hide output if calculating
                     StackCircularBuffer(filteredOutput);
                 }
-                else if (t_csvExportCheckBox || methodIndex == 5 || methodIndex == 6 || buttonCaller == 5 || buttonCaller == 12)
+                else if (t_csvExportCheckBox || methodIndex == 5 || buttonCaller == 5 || buttonCaller == 12)
                 {// don't hide any output if updating DB or exporting
                     StackCircularBuffer(filteredOutput);
                 }
@@ -3126,6 +2934,19 @@ namespace TDHelper
 
                 backgroundWorker7.RunWorkerAsync();
             }
+        }
+
+        private void FilterCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            this.ResetFilterButton.Enabled
+                = rearmFilterCheckBox.Checked
+                || refuelFilterCheckBox.Checked
+                || repairFilterCheckBox.Checked
+                || itemsFilterCheckBox.Checked
+                || bmktFilterCheckBox.Checked
+                || outfitFilterCheckBox.Checked
+                || shipyardFilterCheckBox.Checked
+                || stationsFilterCheckBox.Checked;
         }
 
         /// <summary>

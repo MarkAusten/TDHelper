@@ -308,9 +308,6 @@ namespace TDHelper
             if (!containsPadSizes(settingsRef.Padsizes))
                 settingsRef.Padsizes = "";
 
-            if (string.IsNullOrEmpty(confirmBox.Text))
-                t_confirmCode = "";
-
             // an exception is made for checkboxes, we shouldn't ever get here
             if (settingsRef.Towards && settingsRef.Loop)
                 settingsRef.Loop = false;
@@ -714,56 +711,6 @@ namespace TDHelper
                     string t_station = tokens[1];
                     if (!string.IsNullOrEmpty(t_system) && !string.IsNullOrEmpty(t_station))
                         GrabStationData(t_system, t_station);
-
-                    if (outputStationDetails.Count > 0)
-                    {
-                        /*
-                         * The contents of each station field can be: 'Y', 'N', '?', 'S', 'M', 'L', or an int64/long
-                         */
-                        int t_stnls = int.Parse(outputStationDetails[0]);
-                        if (t_stnls > lsFromStarBox.Minimum && t_stnls < lsFromStarBox.Maximum)
-                            lsFromStarBox.Text = outputStationDetails[0];
-
-                        if (containsPadSizes(outputStationDetails[1]))
-                        {
-                            stn_padSizeBox.Text = outputStationDetails[1];
-                        }
-
-                        if (!string.IsNullOrEmpty(outputStationDetails[2]))
-                        {
-                            rearmCheckBox.CheckState = ParseCheckState(outputStationDetails[2]);
-                        }
-
-                        if (!string.IsNullOrEmpty(outputStationDetails[3]))
-                        {
-                            refuelCheckBox.CheckState = ParseCheckState(outputStationDetails[3]);
-                        }
-
-                        if (!string.IsNullOrEmpty(outputStationDetails[4]))
-                        {
-                            repairCheckBox.CheckState = ParseCheckState(outputStationDetails[4]);
-                        }
-
-                        if (!string.IsNullOrEmpty(outputStationDetails[5]))
-                        {
-                            outfitCheckBox.CheckState = ParseCheckState(outputStationDetails[5]);
-                        }
-
-                        if (!string.IsNullOrEmpty(outputStationDetails[6]))
-                        {
-                            shipyardCheckBox.CheckState = ParseCheckState(outputStationDetails[6]);
-                        }
-
-                        if (!string.IsNullOrEmpty(outputStationDetails[7]))
-                        {
-                            marketCheckBox.CheckState = ParseCheckState(outputStationDetails[7]);
-                        }
-
-                        if (!string.IsNullOrEmpty(outputStationDetails[8]))
-                        {
-                            blackMarketCheckBox.CheckState = ParseCheckState(outputStationDetails[8]);
-                        }
-                    }
 
                     // shipvendor textbox
                     if (outputStationShips.Count > 0)
