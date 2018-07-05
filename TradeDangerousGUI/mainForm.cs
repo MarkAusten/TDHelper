@@ -1243,7 +1243,9 @@ namespace TDHelper
 
                 // make a sound when we're done with a long operation (>10s)
                 if ((stopwatch.ElapsedMilliseconds > 10000 && buttonCaller != 5) || buttonCaller == 20)
+                {
                     PlayAlert(); // when not marked as cancelled, or explicit
+                }
 
                 if (buttonCaller != 4) // not if we're coming from Run
                 {
@@ -1280,6 +1282,7 @@ namespace TDHelper
             while (stopwatch.IsRunning)
             {
                 System.Threading.Thread.Sleep(1000);
+
                 this.Invoke(new Action(() =>
                 {// do this on the UI thread
                     stopWatchLabel.Text = "Elapsed: " + stopwatch.Elapsed.ToString("hh\\:mm\\:ss");
@@ -1328,7 +1331,9 @@ namespace TDHelper
 
                 // make a sound when we're done with a long operation (>10s)
                 if (stopwatch.ElapsedMilliseconds > 10000)
+                {
                     PlayAlert();
+                }
 
                 rebuildCache = false;
             }
