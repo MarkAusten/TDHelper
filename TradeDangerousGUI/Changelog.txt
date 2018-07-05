@@ -1,19 +1,24 @@
 v2.0.2.0
 --------
-* Fixed bug that left the run button with the cancel text after a Cmdr profile.
 * Removed copyright message
 * Update stopwatch once a second and not ten times a second.
 * Added commander name to main form title.
 * Added read and write settings to ini configuration file.
 * Current settings saved on closing TD Helper.
-* TD Helper now shows a message when loading the net logs.
-* Running the Cmdr Profile will build an entry for every ship the commander owns.
+* TD Helper now shows a message when loading the net logs if the process takes more than 5 seconds.
+* Running the Cmdr Profile will build an entry in the ship list for every ship the commander owns.
 * Currently selected ship is saved on exit and restored at next run.
 * Visible ship type shown instead of internal ship type.
-* Fixed bug where method drop down box was disabled.
-* Fixed bug where local check box was disabled.
 * Changed layout.
 * Removed all EDSC controls and code as EDSC does not seem to be avilable any longer.
+* Removed all station editing. Use EDMC, EDDI or similar for station updates. Run EDDBlink-listener to get up to date prices as they happen.
+* The progress bar now appears on one line only. This is a fudge and may not work in the future as it det4ects the "[" at the start of the progress bar and ensures that this starts outputting at the start of the same line.
+* Added back previously removed 'Save settings' button.
+* Fixed bug that left the run button with the cancel text after a Cmdr profile.
+* Fixed bug where method drop down box was disabled.
+* Fixed bug where local check box was disabled.
+* Fixed bug that stopped the stopwatch prematurely.
+* Fixed bug that overwrote the cargo capacity of ship with 1.
 
 v2.0.1.1
 --------
