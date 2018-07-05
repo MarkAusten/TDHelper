@@ -811,7 +811,23 @@ namespace TDHelper
                 circularBuffer.Append(input);
             }
             else
-                circularBuffer.Append(input);
+            {
+//                if (input.StartsWith("["))
+                if (input.Contains("\r"))
+                {
+                    // Overwrite the last line.
+                    while (circularBuffer.Length > 1 && circularBuffer[circularBuffer.Length - 1] != '\n')
+                    {
+                        --circularBuffer.Length;
+                    }
+
+                    circularBuffer.Append(input);
+                }
+                else
+                {
+                    circularBuffer.Append(input);
+                }
+            }
 
             ReadCircularBuffer();
         }
