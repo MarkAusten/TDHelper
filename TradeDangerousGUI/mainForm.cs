@@ -2068,6 +2068,7 @@ namespace TDHelper
         {
             // disable buttons during uncancellable operation
             updateButton.Enabled = false;
+            btnCmdrProfile.Enabled = false;
             getSystemButton.Enabled = false;
             miniModeButton.Enabled = false;
 
@@ -2080,6 +2081,7 @@ namespace TDHelper
         {
             // reenable other worker callers when done
             updateButton.Enabled = true;
+            btnCmdrProfile.Enabled = true;
             getSystemButton.Enabled = true;
 
             // fix Run button when returning from non-Run commands
