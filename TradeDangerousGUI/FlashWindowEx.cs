@@ -5,40 +5,12 @@ using System.Windows.Forms;
 namespace TDHelper
 {
     public static class FlashWindow
-    {// borrowed from Chris Pietschmann's blog: http://goo.gl/mRXfBE
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool FlashWindowEx(ref FLASHWINFO pwfi);
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct FLASHWINFO
-        {
-            /// <summary>
-            /// The size of the structure in bytes.
-            /// </summary>
-            public uint cbSize;
-            /// <summary>
-            /// A Handle to the Window to be Flashed. The window can be either opened or minimized.
-            /// </summary>
-            public IntPtr hwnd;
-            /// <summary>
-            /// The Flash Status.
-            /// </summary>
-            public uint dwFlags;
-            /// <summary>
-            /// The number of times to Flash the window.
-            /// </summary>
-            public uint uCount;
-            /// <summary>
-            /// The rate at which the Window is to be flashed, in milliseconds. If Zero, the function uses the default cursor blink rate.
-            /// </summary>
-            public uint dwTimeout;
-        }
-
+    {
         /// <summary>
-        /// Stop flashing. The system restores the window to its original stae.
+        /// Flash both the window caption and taskbar button.
+        /// This is equivalent to setting the FLASHW_CAPTION | FLASHW_TRAY flags.
         /// </summary>
-        public const uint FLASHW_STOP = 0;
+        public const uint FLASHW_ALL = 3;
 
         /// <summary>
         /// Flash the window caption.
@@ -46,15 +18,9 @@ namespace TDHelper
         public const uint FLASHW_CAPTION = 1;
 
         /// <summary>
-        /// Flash the taskbar button.
+        /// Stop flashing. The system restores the window to its original stae.
         /// </summary>
-        public const uint FLASHW_TRAY = 2;
-
-        /// <summary>
-        /// Flash both the window caption and taskbar button.
-        /// This is equivalent to setting the FLASHW_CAPTION | FLASHW_TRAY flags.
-        /// </summary>
-        public const uint FLASHW_ALL = 3;
+        public const uint FLASHW_STOP = 0;
 
         /// <summary>
         /// Flash continuously, until the FLASHW_STOP flag is set.
@@ -66,6 +32,27 @@ namespace TDHelper
         /// </summary>
         public const uint FLASHW_TIMERNOFG = 12;
 
+        /// <summary>
+        /// Flash the taskbar button.
+        /// </summary>
+        public const uint FLASHW_TRAY = 2;
+
+        /// <summary>
+        /// A boolean value indicating whether the application is running on Windows 2000 or later.
+        /// </summary>
+        private static bool Win2000OrLater
+        {
+            get { return System.Environment.OSVersion.Version.Major >= 5; }
+        }
+
+        public static void BlinkStart(Form form)
+        {
+            // invoke wrapper for Start() so we can call from a sub-thread
+            form.Invoke((MethodInvoker)delegate
+            {
+                Start(form);
+            });
+        }
 
         /// <summary>
         /// Flash the spacified Window (Form) until it recieves focus.
@@ -81,17 +68,6 @@ namespace TDHelper
                 return FlashWindowEx(ref fi);
             }
             return false;
-        }
-
-        private static FLASHWINFO Create_FLASHWINFO(IntPtr handle, uint flags, uint count, uint timeout)
-        {
-            FLASHWINFO fi = new FLASHWINFO();
-            fi.cbSize = Convert.ToUInt32(Marshal.SizeOf(fi));
-            fi.hwnd = handle;
-            fi.dwFlags = flags;
-            fi.uCount = count;
-            fi.dwTimeout = timeout;
-            return fi;
         }
 
         /// <summary>
@@ -111,7 +87,8 @@ namespace TDHelper
         }
 
         public static void FlashStart(Form form, uint blinkCount)
-        {// invoke wrapper for Flash() so we can call from a sub-thread
+        {
+            // invoke wrapper for Flash() so we can call from a sub-thread
             form.Invoke((MethodInvoker)delegate
             {
                 Flash(form, blinkCount);
@@ -133,14 +110,6 @@ namespace TDHelper
             return false;
         }
 
-        public static void BlinkStart(Form form)
-        {// invoke wrapper for Start() so we can call from a sub-thread
-            form.Invoke((MethodInvoker)delegate
-            {
-                Start(form);
-            });
-        }
-
         /// <summary>
         /// Stop Flashing the specified Window (form)
         /// </summary>
@@ -156,12 +125,49 @@ namespace TDHelper
             return false;
         }
 
-        /// <summary>
-        /// A boolean value indicating whether the application is running on Windows 2000 or later.
-        /// </summary>
-        private static bool Win2000OrLater
+        private static FLASHWINFO Create_FLASHWINFO(IntPtr handle, uint flags, uint count, uint timeout)
         {
-            get { return System.Environment.OSVersion.Version.Major >= 5; }
+            FLASHWINFO fi = new FLASHWINFO();
+            fi.cbSize = Convert.ToUInt32(Marshal.SizeOf(fi));
+            fi.hwnd = handle;
+            fi.dwFlags = flags;
+            fi.uCount = count;
+            fi.dwTimeout = timeout;
+            return fi;
+        }
+
+        // borrowed from Chris Pietschmann's blog: http://goo.gl/mRXfBE
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool FlashWindowEx(ref FLASHWINFO pwfi);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct FLASHWINFO
+        {
+            /// <summary>
+            /// The size of the structure in bytes.
+            /// </summary>
+            public uint cbSize;
+
+            /// <summary>
+            /// A Handle to the Window to be Flashed. The window can be either opened or minimized.
+            /// </summary>
+            public IntPtr hwnd;
+
+            /// <summary>
+            /// The Flash Status.
+            /// </summary>
+            public uint dwFlags;
+
+            /// <summary>
+            /// The number of times to Flash the window.
+            /// </summary>
+            public uint uCount;
+
+            /// <summary>
+            /// The rate at which the Window is to be flashed, in milliseconds. If Zero, the function uses the default cursor blink rate.
+            /// </summary>
+            public uint dwTimeout;
         }
     }
 }

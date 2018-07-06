@@ -1,25 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TDHelper
 {
     public partial class Splash : Form
     {
-        public const int WM_NCLBUTTONDOWN = 0xA1;
         public const int HT_CAPTION = 0x2;
+        public const int WM_NCLBUTTONDOWN = 0xA1;
 
-        [DllImportAttribute("user32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-        [DllImportAttribute("user32.dll")]
-        public static extern bool ReleaseCapture();
+        public Splash()
+        {
+            InitializeComponent();
+        }
 
         public string Caption
         {
@@ -34,10 +27,11 @@ namespace TDHelper
             }
         }
 
-        public Splash()
-        {
-            InitializeComponent();
-        }
+        [DllImportAttribute("user32.dll")]
+        public static extern bool ReleaseCapture();
+
+        [DllImportAttribute("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
 
         private void MainForm_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
         {

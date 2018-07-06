@@ -46,8 +46,8 @@
             this.changelogTextBox.Size = new System.Drawing.Size(505, 496);
             this.changelogTextBox.TabIndex = 2;
             this.changelogTextBox.Text = "";
-            this.changelogTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.changelogTextBox_KeyDown);
-            this.changelogTextBox.MouseEnter += new System.EventHandler(this.changelogTextBox_MouseEnter);
+            this.changelogTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ChangelogTextBox_KeyDown);
+            this.changelogTextBox.MouseEnter += new System.EventHandler(this.ChangelogTextBox_MouseEnter);
             // 
             // okButton
             // 
@@ -59,8 +59,8 @@
             this.okButton.TabIndex = 0;
             this.okButton.Text = "Continue";
             this.okButton.UseVisualStyleBackColor = true;
-            this.okButton.Click += new System.EventHandler(this.okButton_Click);
-            this.okButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.okButton_KeyDown);
+            this.okButton.Click += new System.EventHandler(this.OkButton_Click);
+            this.okButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OkButton_KeyDown);
             // 
             // exitButton
             // 
@@ -71,8 +71,8 @@
             this.exitButton.TabIndex = 1;
             this.exitButton.Text = "Exit";
             this.exitButton.UseVisualStyleBackColor = true;
-            this.exitButton.Click += new System.EventHandler(this.exitButton_Click);
-            this.exitButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.exitButton_KeyDown);
+            this.exitButton.Click += new System.EventHandler(this.ExitButton_Click);
+            this.exitButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ExitButton_KeyDown);
             // 
             // ChangeLogForm
             // 

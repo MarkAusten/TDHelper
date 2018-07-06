@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TDHelper
@@ -18,16 +11,6 @@ namespace TDHelper
             InitializeComponent();
         }
 
-        private void okButton_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void exitButton_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
-
         private void ChangeLogForm_Load(object sender, EventArgs e)
         {
             string changelogPath = MainForm.localDir + "\\Changelog.txt";
@@ -37,12 +20,26 @@ namespace TDHelper
             }
         }
 
-        private void changelogTextBox_MouseEnter(object sender, EventArgs e)
+        private void ChangelogTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                e.Handled = true;
+                this.Close();
+            }
+        }
+
+        private void ChangelogTextBox_MouseEnter(object sender, EventArgs e)
         {
             changelogTextBox.Focus();
         }
 
-        private void changelogTextBox_KeyDown(object sender, KeyEventArgs e)
+        private void ExitButton_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void ExitButton_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
             {
@@ -51,16 +48,12 @@ namespace TDHelper
             }
         }
 
-        private void okButton_KeyDown(object sender, KeyEventArgs e)
+        private void OkButton_Click(object sender, EventArgs e)
         {
-            if (e.KeyCode == Keys.Escape)
-            {
-                e.Handled = true;
-                this.Close();
-            }
+            this.Close();
         }
 
-        private void exitButton_KeyDown(object sender, KeyEventArgs e)
+        private void OkButton_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
             {

@@ -51,7 +51,7 @@
             this.treeView.Name = "treeView";
             this.treeView.Size = new System.Drawing.Size(240, 342);
             this.treeView.TabIndex = 0;
-            this.treeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeView_KeyDown);
+            this.treeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             // 
             // pinButton
             // 
@@ -71,8 +71,8 @@
             this.pinButton.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             this.toolTip1.SetToolTip(this.pinButton, "Enable on-top mode for this window");
             this.pinButton.UseVisualStyleBackColor = false;
-            this.pinButton.Click += new System.EventHandler(this.pinButton_Click);
-            this.pinButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.pinButton_KeyDown);
+            this.pinButton.Click += new System.EventHandler(this.PinButton_Click);
+            this.pinButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PinButton_KeyDown);
             // 
             // TdMiniForm
             // 

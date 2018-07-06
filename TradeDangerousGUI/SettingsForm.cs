@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TDHelper
@@ -17,8 +11,81 @@ namespace TDHelper
             InitializeComponent();
         }
 
+        private void CancelButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        /// <summary>
+        /// Copy the values from the setting boxes to the settings obejct.
+        /// </summary>
+        private void CopyValuesToSettings()
+        {
+            TDSettings settings = MainForm.settingsRef;
+
+            settings.DisableNetLogs = this.overrideDisableNetLogs.Checked;
+            settings.DoNotUpdate = this.overrideDoNotUpdate.Checked;
+            settings.CopySystemToClipboard = !this.overrideCopySystemToClipboard.Checked;
+
+            settings.PythonPath = this.pythonPathBox.Text;
+            settings.TDPath = this.tdPathBox.Text;
+            settings.EdcePath = this.edcePathBox.Text;
+            settings.NetLogPath = this.netLogsPathBox.Text;
+
+            settings.ExtraRunParams = this.extraRunParameters.Text;
+
+            settings.RebuyPercentage = this.rebuyPercentage.Value;
+        }
+
+        private void FormValidator()
+        {
+            this.CopyValuesToSettings();
+
+            MainForm.SaveSettingsToIniFile();
+
+            this.Close();
+        }
+
+        private void Generic_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+                this.Close();
+            }
+            else if (e.KeyCode == Keys.Enter)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+                FormValidator();
+            }
+        }
+
+        private void OkButton_Click(object sender, EventArgs e)
+        {
+            FormValidator();
+        }
+
+        private void ResetButton_Click(object sender, EventArgs e)
+        {
+            DialogResult d = TopMostMessageBox.Show(
+                false,
+                true,
+                "This will wipe all configuration settings currently loaded, are you sure?",
+                "TD Helper - Warning",
+                MessageBoxButtons.YesNo);
+
+            if (d == DialogResult.Yes)
+            {
+                MainForm.callForReset = true;
+                this.Dispose();
+            }
+        }
+
         private void SettingsForm_Load(object sender, EventArgs e)
-        {// load our current settings from the config
+        {
+            // load our current settings from the config
             if (!string.IsNullOrEmpty(MainForm.settingsRef.ExtraRunParams))
             {
                 extraRunParameters.Text = MainForm.settingsRef.ExtraRunParams;
@@ -60,13 +127,15 @@ namespace TDHelper
             }
 
             if (!string.IsNullOrEmpty(MainForm.settingsRef.TreeViewFont))
-            {// set our selected font and text box to what we've set in our config
+            {
+                // set our selected font and text box to what we've set in our config
                 Font savedFont = MainForm.settingsRef.ConvertFromMemberFont();
                 FontConverter fontToString = new FontConverter();
                 currentTVFontBox.Text = string.Format("{0}", fontToString.ConvertToInvariantString(savedFont));
             }
             else
-            {// set to a global default
+            {
+                // set to a global default
                 Font tvDefaultFont = new Font("Consolas", 8.25f);
                 currentTVFontBox.Text = string.Format("{0}", MainForm.settingsRef.ConvertToFontString(tvDefaultFont));
                 MainForm.settingsRef.TreeViewFont = MainForm.settingsRef.ConvertToFontString(tvDefaultFont);
@@ -75,60 +144,56 @@ namespace TDHelper
             this.rebuyPercentage.Value = MainForm.settingsRef.RebuyPercentage;
         }
 
-        private void FormValidator()
+        private void TvFontSelectorButton_Click(object sender, EventArgs e)
         {
-            this.CopyValuesToSettings();
+            Font tvDefaultFont = new Font("Consolas", 8.25f);
+            Font localFontObject = new Font("Consolas", 8.25f);
 
-            MainForm.SaveSettingsToIniFile();
-
-            this.Close();
-        }
-
-        /// <summary>
-        /// Copy the values from the setting boxes to the settings obejct.
-        /// </summary>
-        private void CopyValuesToSettings()
-        {
-            TDSettings settings = MainForm.settingsRef;
-
-            settings.DisableNetLogs = this.overrideDisableNetLogs.Checked;
-            settings.DoNotUpdate = this.overrideDoNotUpdate.Checked;
-            settings.CopySystemToClipboard = !this.overrideCopySystemToClipboard.Checked;
-
-            settings.PythonPath = this.pythonPathBox.Text;
-            settings.TDPath = this.tdPathBox.Text;
-            settings.EdcePath = this.edcePathBox.Text;
-            settings.NetLogPath = this.netLogsPathBox.Text;
-
-            settings.ExtraRunParams = this.extraRunParameters.Text;
-
-            settings.RebuyPercentage = this.rebuyPercentage.Value;
-        }
-
-        private void Generic_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Escape)
+            FontDialog fontDialog = new FontDialog()
             {
-                e.Handled = true;
-                e.SuppressKeyPress = true;
-                this.Close();
+                MinSize = 6,
+                MaxSize = 32,
+                Font = tvDefaultFont
+            };
+
+            if (Control.ModifierKeys == Keys.Control)
+            {
+                // reset our font to a preset default with a Ctrl+Click
+                MainForm.settingsRef.TreeViewFont = MainForm.settingsRef.ConvertToFontString(tvDefaultFont);
             }
-            else if (e.KeyCode == Keys.Enter)
+
+            if (fontDialog.ShowDialog(this) == DialogResult.OK)
             {
-                e.Handled = true;
-                e.SuppressKeyPress = true;
-                FormValidator();
+                localFontObject = fontDialog.Font;
+                MainForm.settingsRef.TreeViewFont = MainForm.settingsRef.ConvertToFontString(localFontObject);
+                currentTVFontBox.Text = string.Format("{0}", MainForm.settingsRef.TreeViewFont);
+            }
+            else
+            {
+                // set to our saved default, if that's null, set to the global default
+                if (MainForm.settingsRef.TreeViewFont != null)
+                    localFontObject = MainForm.settingsRef.ConvertFromMemberFont();
+                else
+                    localFontObject = tvDefaultFont;
+
+                currentTVFontBox.Text = string.Format("{0}", MainForm.settingsRef.ConvertToFontString(localFontObject));
             }
         }
 
-        private void OkButton_Click(object sender, EventArgs e)
+        private void ValidateEdcePath_Click(object sender, EventArgs e)
         {
-            FormValidator();
+            string origPath = MainForm.settingsRef.EdcePath;
+            MainForm.settingsRef.EdcePath = "";
+            MainForm.ValidateEdcePath(origPath);
+            edcePathBox.Text = MainForm.settingsRef.EdcePath;
         }
 
-        private void CancelButton_Click(object sender, EventArgs e)
+        private void ValidateNetLogsPath_Click(object sender, EventArgs e)
         {
-            this.Close();
+            string origPath = MainForm.settingsRef.NetLogPath;
+            MainForm.settingsRef.NetLogPath = "";
+            MainForm.ValidateNetLogPath(origPath);
+            netLogsPathBox.Text = MainForm.settingsRef.NetLogPath;
         }
 
         private void ValidatePythonPath_Click(object sender, EventArgs e)
@@ -138,7 +203,7 @@ namespace TDHelper
 
             MainForm.settingsRef.PythonPath = "";
             MainForm.ValidatePython(origPath);
-            
+
             // adjust for Trade Dangerous Installer
             if (MainForm.settingsRef.PythonPath.EndsWith("trade.exe"))
             {
@@ -175,72 +240,6 @@ namespace TDHelper
             }
 
             tdPathBox.Text = MainForm.settingsRef.TDPath;
-        }
-
-        private void ValidateNetLogsPath_Click(object sender, EventArgs e)
-        {
-            string origPath = MainForm.settingsRef.NetLogPath;
-            MainForm.settingsRef.NetLogPath = "";
-            MainForm.ValidateNetLogPath(origPath);
-            netLogsPathBox.Text = MainForm.settingsRef.NetLogPath;
-        }
-
-        private void ValidateEdcePath_Click(object sender, EventArgs e)
-        {
-            string origPath = MainForm.settingsRef.EdcePath;
-            MainForm.settingsRef.EdcePath = "";
-            MainForm.ValidateEdcePath(origPath);
-            edcePathBox.Text = MainForm.settingsRef.EdcePath;
-        }
-
-        private void ResetButton_Click(object sender, EventArgs e)
-        {
-            DialogResult d = TopMostMessageBox.Show(
-                false,
-                true,
-                "This will wipe all configuration settings currently loaded, are you sure?",
-                "TD Helper - Warning", 
-                MessageBoxButtons.YesNo);
-
-            if (d == DialogResult.Yes)
-            {
-                MainForm.callForReset = true;
-                this.Dispose();
-            }
-        }
-
-        private void TvFontSelectorButton_Click(object sender, EventArgs e)
-        {
-            Font tvDefaultFont = new Font("Consolas", 8.25f);
-            Font localFontObject = new Font("Consolas", 8.25f);
-
-            FontDialog fontDialog = new FontDialog()
-            {
-                MinSize = 6,
-                MaxSize = 32,
-                Font = tvDefaultFont
-            };
-
-            if (Control.ModifierKeys == Keys.Control)
-            {// reset our font to a preset default with a Ctrl+Click
-                MainForm.settingsRef.TreeViewFont = MainForm.settingsRef.ConvertToFontString(tvDefaultFont);
-            }
-
-            if (fontDialog.ShowDialog(this) == DialogResult.OK)
-            {
-                localFontObject = fontDialog.Font;
-                MainForm.settingsRef.TreeViewFont = MainForm.settingsRef.ConvertToFontString(localFontObject);
-                currentTVFontBox.Text = string.Format("{0}", MainForm.settingsRef.TreeViewFont);
-            }
-            else
-            {// set to our saved default, if that's null, set to the global default
-                if (MainForm.settingsRef.TreeViewFont != null)
-                    localFontObject = MainForm.settingsRef.ConvertFromMemberFont();
-                else
-                    localFontObject = tvDefaultFont;
-
-                currentTVFontBox.Text = string.Format("{0}", MainForm.settingsRef.ConvertToFontString(localFontObject));
-            }
         }
     }
 }

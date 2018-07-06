@@ -1,63 +1,115 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Xml.Linq;
-using System.Text;
-using System.Windows.Forms;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace TDHelper
 {
     public partial class TdMiniForm : Form
     {
-        #region FormProps
-        public TreeView treeViewBox
+        private const int SnapDist = 10;
+
+        private string snipSystem = "";
+
+        public TdMiniForm(MainForm instance)
+        {
+            InitializeComponent();
+        }
+
+        public string FormTitle
+        {
+            get { return this.Text; }
+            set
+            {
+                this.Text 
+                    = MainForm.t_CrTonTally > 0
+                    ? value
+                    : "TDHelper (mini-mode)";
+            }
+        }
+
+        public TreeView TreeViewBox
         {
             get { return treeView; }
             set { treeView = value; }
         }
 
-        public string formTitle
+        private void CompensateNodeLength(int[] winSize)
         {
-            get { return this.Text; }
-            set 
+            // check for the longest treeview text string
+            int maxNodeLength = 0, sumNodesHeight = 0, formWidth = this.Size.Width;
+            List<int> procWidths = new List<int>(), procHeights = new List<int>();
+
+            foreach (var n in TraverseNodes(treeView.Nodes))
             {
-                if (MainForm.t_CrTonTally > 0)
-                    this.Text = value;
-                else
-                    this.Text = "TDHelper (mini-mode)";
+                // make a list of all node bounds
+
+                // width + scrollbar
+                procWidths.Add(Math.Max(n.Bounds.Right + 38, this.treeView.ClientSize.Width));
+                sumNodesHeight += n.Bounds.Size.Height;
+            }
+
+            maxNodeLength = procWidths.Max(); // pick the largest in the list
+
+            winSize[0] = maxNodeLength; // width
+            winSize[1] = sumNodesHeight + 65; // height + titlebar
+
+            if (this.MinimumSize.Width < winSize[0] && this.MinimumSize.Height < winSize[1])
+            {
+                // make sure we don't set the form smaller than the minimums
+                this.Size = new Size(winSize[0], winSize[1]);
+                this.MaximumSize = new Size(winSize[0], Screen.FromControl(this).WorkingArea.Bottom);
             }
         }
 
-        string snipSystem = "";
-        #endregion
-
-
-        #region Snap-To-Edge
-        private const int SnapDist = 10;
-        private void TdMiniForm_LocationChanged(object sender, EventArgs e)
+        private void PinButton_Click(object sender, EventArgs e)
         {
-            Rectangle workingArea = Screen.FromControl(this).WorkingArea;
+            // toggle on-top
+            if (!this.TopMost)
+            {
+                // bold the button text as an indicator
+                if (!MainForm.settingsRef.MiniModeOnTop)
+                    MainForm.settingsRef.MiniModeOnTop = true;
 
-            if (Math.Abs(workingArea.Left - this.Left) < SnapDist)
-                this.Left = workingArea.Left;
-            else if (Math.Abs(this.Left + this.Width - workingArea.Left - workingArea.Width) < SnapDist)
-                this.Left = workingArea.Left + workingArea.Width - this.Width;
-
-            if (Math.Abs(workingArea.Top - this.Top) < SnapDist)
-                this.Top = workingArea.Top;
-            else if (Math.Abs(this.Top + this.Height - workingArea.Top - workingArea.Height) < SnapDist)
-                this.Top = workingArea.Top + workingArea.Height - this.Height;
+                pinButton.BackColor = Color.FromArgb(50, 50, 50);
+                pinButton.FlatAppearance.BorderColor = Color.FromArgb(50, 50, 50);
+                pinButton.ForeColor = Color.DarkOrange;
+                pinButton.Font = new Font(pinButton.Font, FontStyle.Bold);
+                toolTip1.SetToolTip(pinButton, "Disable on-top mode for this window");
+                this.TopMost = true;
+            }
+            else
+            {
+                // return to normal
+                pinButton.BackColor = Color.FromArgb(30, 30, 30);
+                pinButton.FlatAppearance.BorderColor = Color.FromArgb(30, 30, 30);
+                pinButton.ForeColor = Color.DimGray;
+                pinButton.Font = new Font(pinButton.Font, FontStyle.Regular);
+                toolTip1.SetToolTip(pinButton, "Enable on-top mode for this window");
+                MainForm.settingsRef.MiniModeOnTop = false;
+                this.TopMost = false;
+            }
         }
-        #endregion
 
-        #region FormStuff
-        public TdMiniForm(MainForm instance)
+        private void PinButton_KeyDown(object sender, KeyEventArgs e)
         {
-            InitializeComponent();
+            if (e.KeyCode == Keys.Escape)
+            {
+                e.Handled = true;
+                this.Close();
+            }
+        }
+
+        private void TdMiniForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+        }
+
+        private void TdMiniForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            MainForm.settingsRef.LocationChild = MainForm.SaveWinLoc(this);
+            MainForm.settingsRef.SizeChild = MainForm.SaveWinSize(this);
         }
 
         private void TdMiniForm_Load(object sender, EventArgs e)
@@ -73,22 +125,25 @@ namespace TDHelper
 
             // only resize on our first parsing
             if (!MainForm.hasParsed)
-            {// try to remember and restore the window size
+            {
+                // try to remember and restore the window size
                 if (winSize.Length != 0 && winSize != null)
-                    compensateNodeLength(winSize); // check our width and compensate
+                    CompensateNodeLength(winSize); // check our width and compensate
                 else
-                {// load our default size
+                {
+                    // load our default size
                     MainForm.settingsRef.SizeChild = MainForm.SaveWinSize(this);
                     int[] t_winSize = MainForm.LoadWinSize(MainForm.settingsRef.SizeChild);
 
                     // check width
-                    compensateNodeLength(t_winSize); // check our width and compensate
+                    CompensateNodeLength(t_winSize); // check our width and compensate
                 }
 
                 MainForm.hasParsed = true;
             }
             else if (MainForm.hasParsed && winSize.Length != 0 && winSize != null)
-            {// just restore our size without compensating
+            {
+                // just restore our size without compensating
                 this.Size = new Size(winSize[0], winSize[1]);
             }
 
@@ -110,53 +165,49 @@ namespace TDHelper
             }
 
             // remember our on-top state before passing to pinButton
-            if (MainForm.settingsRef.MiniModeOnTop)
-                this.TopMost = false;
-            else
-                this.TopMost = true;
+            this.TopMost = !(MainForm.settingsRef.MiniModeOnTop);
 
-            pinButton_Click(this, null);
+            PinButton_Click(this, null);
         }
 
-        private void TdMiniForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void TdMiniForm_LocationChanged(object sender, EventArgs e)
         {
-            MainForm.settingsRef.LocationChild = MainForm.SaveWinLoc(this);
-            MainForm.settingsRef.SizeChild = MainForm.SaveWinSize(this);
-        }
+            Rectangle workingArea = Screen.FromControl(this).WorkingArea;
 
-        private void TdMiniForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-        }
-        #endregion
-
-        #region FormMembers
-        private void pinButton_Click(object sender, EventArgs e)
-        {// toggle on-top
-            if (!this.TopMost)
-            {// bold the button text as an indicator
-                if (!MainForm.settingsRef.MiniModeOnTop)
-                    MainForm.settingsRef.MiniModeOnTop = true;
-
-                pinButton.BackColor = Color.FromArgb(50, 50, 50);
-                pinButton.FlatAppearance.BorderColor = Color.FromArgb(50, 50, 50);
-                pinButton.ForeColor = Color.DarkOrange;
-                pinButton.Font = new Font(pinButton.Font, FontStyle.Bold);
-                toolTip1.SetToolTip(pinButton, "Disable on-top mode for this window");
-                this.TopMost = true;
+            if (Math.Abs(workingArea.Left - this.Left) < SnapDist)
+            {
+                this.Left = workingArea.Left;
             }
-            else
-            {// return to normal
-                pinButton.BackColor = Color.FromArgb(30, 30, 30);
-                pinButton.FlatAppearance.BorderColor = Color.FromArgb(30, 30, 30);
-                pinButton.ForeColor = Color.DimGray;
-                pinButton.Font = new Font(pinButton.Font, FontStyle.Regular);
-                toolTip1.SetToolTip(pinButton, "Enable on-top mode for this window");
-                MainForm.settingsRef.MiniModeOnTop = false;
-                this.TopMost = false;
+            else if (Math.Abs(this.Left + this.Width - workingArea.Left - workingArea.Width) < SnapDist)
+            {
+                this.Left = workingArea.Left + workingArea.Width - this.Width;
+            }
+
+            if (Math.Abs(workingArea.Top - this.Top) < SnapDist)
+            {
+                this.Top = workingArea.Top;
+            }
+            else if (Math.Abs(this.Top + this.Height - workingArea.Top - workingArea.Height) < SnapDist)
+            {
+                this.Top = workingArea.Top + workingArea.Height - this.Height;
             }
         }
 
-        private void treeView_KeyDown(object sender, KeyEventArgs e)
+        private IEnumerable<TreeNode> TraverseNodes(TreeNodeCollection nodeTree)
+        {
+            // traverse all the nodes in a TreeView as a list
+            foreach (TreeNode n in nodeTree)
+            {
+                yield return n;
+
+                foreach (var result in TraverseNodes(n.Nodes))
+                {
+                    yield return result;
+                }
+            }
+        }
+
+        private void TreeView_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
             {
@@ -167,8 +218,11 @@ namespace TDHelper
             {
                 snipSystem = treeView.SelectedNode.Text;
                 string resultLabel = Regex.Replace(snipSystem, @"(?:Unload|Load|^)\s\@\s(.+?(?=\n|\s\[\d|$)).*", "$1").ToString();
+
                 if (!string.IsNullOrEmpty(resultLabel))
+                {
                     Clipboard.SetText(resultLabel);
+                }
 
                 e.SuppressKeyPress = true;
                 e.Handled = true;
@@ -178,62 +232,15 @@ namespace TDHelper
                 //(?:(?:Load|Unload)\s@\s|\d+x\s|^)(.+?(?=\/)|.+).*
                 snipSystem = treeView.SelectedNode.Text;
                 string resultLabel = Regex.Replace(snipSystem, @"(?:Unload|Load|^)\s\@\s(.+?(?=\/)).*", "$1").ToString();
+
                 if (!string.IsNullOrEmpty(resultLabel))
+                {
                     Clipboard.SetText(resultLabel);
+                }
 
                 e.SuppressKeyPress = true;
                 e.Handled = true;
             }
         }
-
-        private void pinButton_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Escape)
-            {
-                e.Handled = true;
-                this.Close();
-            }
-        }
-        #endregion
-
-        #region Helpers
-        private void compensateNodeLength(int[] winSize)
-        {// check for the longest treeview text string
-            int maxNodeLength = 0, sumNodesHeight = 0, formWidth = this.Size.Width;
-            List<int> procWidths = new List<int>(), procHeights = new List<int>();
-
-            foreach (var n in TraverseNodes(treeView.Nodes))
-            {// make a list of all node bounds
-
-                // width + scrollbar
-                procWidths.Add(Math.Max(n.Bounds.Right + 38, this.treeView.ClientSize.Width));
-                sumNodesHeight += n.Bounds.Size.Height;
-            }
-
-            maxNodeLength = procWidths.Max(); // pick the largest in the list
-
-            winSize[0] = maxNodeLength; // width
-            winSize[1] = sumNodesHeight + 65; // height + titlebar
-
-            if (this.MinimumSize.Width < winSize[0] && this.MinimumSize.Height < winSize[1])
-            {// make sure we don't set the form smaller than the minimums
-                this.Size = new Size(winSize[0], winSize[1]);
-                this.MaximumSize = new Size(winSize[0], Screen.FromControl(this).WorkingArea.Bottom);
-            }
-        }
-
-        IEnumerable<TreeNode> TraverseNodes(TreeNodeCollection nodeTree)
-        {// traverse all the nodes in a TreeView as a list
-            foreach(TreeNode n in nodeTree)
-            {
-                yield return n;
-
-                foreach (var result in TraverseNodes(n.Nodes))
-                {
-                    yield return result;
-                }
-            }
-        }
-        #endregion
     }
 }
