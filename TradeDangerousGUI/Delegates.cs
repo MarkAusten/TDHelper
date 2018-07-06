@@ -743,7 +743,7 @@ namespace TDHelper
                 try
                 {
                     procCode = -1; // reset the exit code
-                    td_proc.StartInfo.Arguments = path;
+                    td_proc.StartInfo.Arguments = "\"" + path + "\"";
 
                     if (buttonCaller == 12)
                     {
@@ -767,9 +767,14 @@ namespace TDHelper
 
                     // pre-invoke
                     if (circularBuffer.Length == 0)
+                    {
                         StackCircularBuffer("Command line: " + path + "\n");
+                    }
+
                     else
+                    {
                         StackCircularBuffer("\nCommand line: " + path + "\n");
+                    }
 
                     this.Invoke(new Action(() =>
                     {
