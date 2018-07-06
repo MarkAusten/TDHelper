@@ -61,15 +61,15 @@ namespace TDHelper
 
             if (!string.IsNullOrEmpty(MainForm.settingsRef.TreeViewFont))
             {// set our selected font and text box to what we've set in our config
-                Font savedFont = MainForm.settingsRef.convertFromMemberFont();
+                Font savedFont = MainForm.settingsRef.ConvertFromMemberFont();
                 FontConverter fontToString = new FontConverter();
                 currentTVFontBox.Text = string.Format("{0}", fontToString.ConvertToInvariantString(savedFont));
             }
             else
             {// set to a global default
                 Font tvDefaultFont = new Font("Consolas", 8.25f);
-                currentTVFontBox.Text = string.Format("{0}", MainForm.settingsRef.convertToFontString(tvDefaultFont));
-                MainForm.settingsRef.TreeViewFont = MainForm.settingsRef.convertToFontString(tvDefaultFont);
+                currentTVFontBox.Text = string.Format("{0}", MainForm.settingsRef.ConvertToFontString(tvDefaultFont));
+                MainForm.settingsRef.TreeViewFont = MainForm.settingsRef.ConvertToFontString(tvDefaultFont);
             }
 
             this.rebuyPercentage.Value = MainForm.settingsRef.RebuyPercentage;
@@ -215,23 +215,23 @@ namespace TDHelper
 
             if (Control.ModifierKeys == Keys.Control)
             {// reset our font to a preset default with a Ctrl+Click
-                MainForm.settingsRef.TreeViewFont = MainForm.settingsRef.convertToFontString(tvDefaultFont);
+                MainForm.settingsRef.TreeViewFont = MainForm.settingsRef.ConvertToFontString(tvDefaultFont);
             }
 
             if (fontDialog.ShowDialog(this) == DialogResult.OK)
             {
                 localFontObject = fontDialog.Font;
-                MainForm.settingsRef.TreeViewFont = MainForm.settingsRef.convertToFontString(localFontObject);
+                MainForm.settingsRef.TreeViewFont = MainForm.settingsRef.ConvertToFontString(localFontObject);
                 currentTVFontBox.Text = string.Format("{0}", MainForm.settingsRef.TreeViewFont);
             }
             else
             {// set to our saved default, if that's null, set to the global default
                 if (MainForm.settingsRef.TreeViewFont != null)
-                    localFontObject = MainForm.settingsRef.convertFromMemberFont();
+                    localFontObject = MainForm.settingsRef.ConvertFromMemberFont();
                 else
                     localFontObject = tvDefaultFont;
 
-                currentTVFontBox.Text = string.Format("{0}", MainForm.settingsRef.convertToFontString(localFontObject));
+                currentTVFontBox.Text = string.Format("{0}", MainForm.settingsRef.ConvertToFontString(localFontObject));
             }
         }
     }

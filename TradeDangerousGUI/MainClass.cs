@@ -83,7 +83,7 @@ namespace TDHelper
             if (CheckIfFileOpens(configFile))
             {
                 LoadSettingsFromIniFile();
-                currentMarkedStations = parseMarkedStations();
+                currentMarkedStations = ParseMarkedStations();
             }
 
             // reset culture
@@ -105,12 +105,12 @@ namespace TDHelper
             else
                 settingsRef.LastUsedConfig = configFile;
 
-            serializeMarkedStations(currentMarkedStations); // convert object to built string
+            SerializeMarkedStations(currentMarkedStations); // convert object to built string
             CopySettingsFromForm();
             ValidateSettings();
 
-            settingsRef.LocationParent = saveWinLoc(this);
-            settingsRef.SizeParent = saveWinSize(this);
+            settingsRef.LocationParent = SaveWinLoc(this);
+            settingsRef.SizeParent = SaveWinSize(this);
 
             if (tabControl1.SelectedTab == tabControl1.TabPages["notesPage"])
                 notesTextBox.SaveFile(notesFile, RichTextBoxStreamType.PlainText);
@@ -131,7 +131,7 @@ namespace TDHelper
             // make sure to load our data as invariant
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
-            if (CheckIfFileOpens(path) && validateConfigFile(path))
+            if (CheckIfFileOpens(path) && ValidateConfigFile(path))
                 configFile = path; // we've got a valid TDHelper config file
 
             // save our current used config file
@@ -305,7 +305,7 @@ namespace TDHelper
             if (settingsRef.CSVSelect < 0 && settingsRef.CSVSelect > 5)
                 settingsRef.CSVSelect = 0;
 
-            if (!containsPadSizes(settingsRef.Padsizes))
+            if (!ContainsPadSizes(settingsRef.Padsizes))
                 settingsRef.Padsizes = "";
 
             // an exception is made for checkboxes, we shouldn't ever get here
@@ -462,32 +462,34 @@ namespace TDHelper
         }
 
         public static void ValidateNetLogPath(string altPath)
-        {// override to avoid net log logic
+        {
+            // override to avoid net log logic
             if (!settingsRef.DisableNetLogs)
             {
-                if (string.IsNullOrEmpty(settingsRef.NetLogPath) || !CheckIfFileOpens(Directory.GetParent(settingsRef.NetLogPath).ToString() + "\\AppConfigLocal.xml"))
-                {// let's just ask the user where to look
+                if (string.IsNullOrEmpty(settingsRef.NetLogPath) || !CheckIfFileOpens(Path.Combine(Directory.GetParent(settingsRef.NetLogPath).ToString(), "AppConfig.xml")))
+                {
+                    // let's just ask the user where to look
                     OpenFileDialog x = new OpenFileDialog()
                     {
-                        Title = "Select a valid Elite: Dangerous AppConfigLocal.xml",
-                        Filter = "AppConfigLocal.xml|*.xml"
+                        Title = "Select a valid Elite: Dangerous AppConfig.xml",
+                        Filter = "AppConfig.xml|*.xml"
                     };
 
                     if (x.ShowDialog() == DialogResult.OK)
                     {
                         t_AppConfigPath = x.FileName;
-                        settingsRef.NetLogPath = Directory.GetParent(t_AppConfigPath) + "\\Logs"; // set the appropriate Logs folder
+                        settingsRef.NetLogPath = Path.Combine(Directory.GetParent(t_AppConfigPath).ToString(), "Logs"); // set the appropriate Logs folder
                         SaveSettingsToIniFile();
-                        validateVerboseLogging(); // always validate if verboselogging is enabled
+                        ValidateVerboseLogging(); // always validate if verboselogging is enabled
                     }
                     else
                     {
                         if (!string.IsNullOrEmpty(altPath) && Directory.Exists(settingsRef.NetLogPath) && settingsRef.NetLogPath.EndsWith("Logs"))
                         {
-                            t_AppConfigPath = Directory.GetParent(altPath) + "\\AppConfigLocal.xml";
+                            t_AppConfigPath = Path.Combine(Directory.GetParent(altPath).ToString(), "AppConfigLocal.xml");
                             settingsRef.NetLogPath = altPath;
                             SaveSettingsToIniFile();
-                            validateVerboseLogging(); // always validate if verboselogging is enabled
+                            ValidateVerboseLogging(); // always validate if verboselogging is enabled
                         }
                         else
                         {
@@ -499,10 +501,10 @@ namespace TDHelper
                 }
                 else
                 {
-                    // derive our AppConfigLocal.xml path from NetLogPath
-                    t_AppConfigPath = Directory.GetParent(settingsRef.NetLogPath).ToString() + "\\AppConfigLocal.xml";
+                    // derive our AppConfig.xml path from NetLogPath
+                    t_AppConfigPath = Path.Combine(Directory.GetParent(settingsRef.NetLogPath).ToString(), "AppConfig.xml");
                     // double check the verbose logging state
-                    validateVerboseLogging();
+                    ValidateVerboseLogging();
                 }
             }
         }

@@ -831,7 +831,8 @@ namespace TDHelper
 
         #region HelperFuncs
         public static List<string> CollectLogPaths(string path, string pattern)
-        {// only collect log paths that contain system names
+        {
+            // only collect log paths that contain system names
             try
             {
                 DirectoryInfo dInfo = new DirectoryInfo(path);
@@ -844,13 +845,13 @@ namespace TDHelper
                     {
                         foreach (FileInfo f in dInfo.GetFiles(pattern).OrderBy(f => f.LastWriteTime))
                         {
-                            string filePath = path + "\\" + f.ToString();
+                            string filePath = Path.Combine(path, f.ToString());
                             using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                             using (BufferedStream bs = new BufferedStream(fs))
                             using (StreamReader stream = new StreamReader(bs, Encoding.UTF8, true, 65536))
-                            {// check if there are any files that match the mask, return null if nothing matches
+                            {
+                                // check if there are any files that match the mask, return null if nothing matches
                                 string tempLines = stream.ReadToEnd(); // pull into memory
-//                                Match timestampMatch = Regex.Match(tempLines, @"^(\d\d\-\d\d\-\d\d).+?\((.+?)\sGMT");
                                 Match timestampMatch = Regex.Match(tempLines, @"(\d{2,4}\-\d\d\-\d\d)[\s\-](\d\d:\d\d)\sGMT");
                                 Match systemMatch = Regex.Match(tempLines, @"\{(\d\d:\d\d:\d\d).+System:""(.+)""");
 
@@ -871,7 +872,9 @@ namespace TDHelper
             catch (Exception e)
             {
                 if (e is FileNotFoundException || e is DirectoryNotFoundException)
+                {
                     return null; // prevent explosion
+                }
             }
 
             return null; // should never reach this
@@ -1059,7 +1062,7 @@ namespace TDHelper
                         loadedFromDB = false;
                     }
 
-                    currentMarkedStations = parseMarkedStations();
+                    currentMarkedStations = ParseMarkedStations();
 
                     Stopwatch m_timer = Stopwatch.StartNew();
 

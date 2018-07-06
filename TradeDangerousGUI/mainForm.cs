@@ -83,15 +83,15 @@ namespace TDHelper
         {
             Screen screen = Screen.FromControl(this);
             Rectangle workingArea = screen.WorkingArea;
-            int[] winLoc = loadWinLoc(settingsRef.LocationParent);
-            int[] winSize = loadWinSize(settingsRef.SizeParent);
+            int[] winLoc = LoadWinLoc(settingsRef.LocationParent);
+            int[] winSize = LoadWinSize(settingsRef.SizeParent);
 
             // restore window size from config
             if (winSize.Length != 0 && winSize != null)
                 this.Size = new Size(winSize[0], winSize[1]);
             else
             {// save our default size to the config
-                settingsRef.SizeParent = saveWinSize(this);
+                settingsRef.SizeParent = SaveWinSize(this);
             }
 
             // try to remember and restore the window location
@@ -99,7 +99,7 @@ namespace TDHelper
             {
                 this.Location = new Point(winLoc[0], winLoc[1]);
                 // if we're restoring the location, let's force it to be visible on screen
-                MainForm.forceFormOnScreen(this);
+                MainForm.ForceFormOnScreen(this);
             }
             else
             {
@@ -143,7 +143,7 @@ namespace TDHelper
             // load our last saved config
             if (!string.IsNullOrEmpty(settingsRef.LastUsedConfig)
                 && settingsRef.LastUsedConfig != configFile
-                && validateConfigFile(settingsRef.LastUsedConfig))
+                && ValidateConfigFile(settingsRef.LastUsedConfig))
             {
                 LoadSettings(settingsRef.LastUsedConfig);
             }
@@ -160,8 +160,8 @@ namespace TDHelper
             if (CheckIfFileOpens(configFileDefault))
             {// serialize window data to the default config file
                 CopySettingsFromForm();
-                settingsRef.LocationParent = saveWinLoc(this);
-                settingsRef.SizeParent = saveWinSize(this);
+                settingsRef.LocationParent = SaveWinLoc(this);
+                settingsRef.SizeParent = SaveWinSize(this);
 
                 SaveSettingsToIniFile();
             }
@@ -344,7 +344,7 @@ namespace TDHelper
             else
                 uniqueCheckBox.Checked = false;
 
-            if (containsPadSizes(settingsRef.Padsizes))
+            if (ContainsPadSizes(settingsRef.Padsizes))
                 padSizeBox.Text = settingsRef.Padsizes;
             else
                 padSizeBox.Text = string.Empty;
@@ -640,7 +640,7 @@ namespace TDHelper
             else
                 settingsRef.Verbosity = 1;
 
-            if (containsPadSizes(padSizeBox.Text))
+            if (ContainsPadSizes(padSizeBox.Text))
                 settingsRef.Padsizes = padSizeBox.Text;
             else
             {
@@ -2023,12 +2023,21 @@ namespace TDHelper
 
         private void MiscSettingsButton_Click(object sender, EventArgs e)
         {
+            bool oldValue = settingsRef.DisableNetLogs;
+
             SettingsForm SettingsForm = new SettingsForm()
             {
                 StartPosition = FormStartPosition.CenterParent
             };
 
             SettingsForm.ShowDialog(this);
+
+            // Chec to see if the user has unchecked the disable net logs setting
+            if (settingsRef.DisableNetLogs != oldValue && oldValue)
+            {
+                // Check the verbose logging setting.
+                ValidateVerboseLogging();
+            }
 
             if (callForReset)
             {// wipe our settings and reinitialize
@@ -2700,7 +2709,7 @@ namespace TDHelper
                 if ((e.KeyCode == Keys.Enter & e.Modifiers == Keys.Control)
                     && StringInList(filteredString, outputSysStnNames))
                 {// if ctrl+enter, is a known system/station, and not in our net log, mark it down
-                    addMarkedStation(filteredString, currentMarkedStations);
+                    AddMarkedStation(filteredString, currentMarkedStations);
                     BuildOutput(true);
                     SaveSettingsToIniFile();
                     e.Handled = true;
@@ -2708,7 +2717,7 @@ namespace TDHelper
                 else if ((e.KeyCode == Keys.Enter & e.Modifiers == Keys.Shift)
                     && StringInList(filteredString, currentMarkedStations))
                 {// if shift+enter, item is in our list, remove it
-                    removeMarkedStation(filteredString, currentMarkedStations);
+                    RemoveMarkedStation(filteredString, currentMarkedStations);
                     int index = IndexInList(filteredString, output_unclean);
                     BuildOutput(true);
                     SaveSettingsToIniFile();
@@ -2739,7 +2748,7 @@ namespace TDHelper
             if ((e.KeyCode == Keys.Enter & e.Modifiers == Keys.Control)
                 && StringInList(filteredString, outputSysStnNames))
             {// if ctrl+enter, is a known system/station, and not in our net log, mark it down
-                addMarkedStation(filteredString, currentMarkedStations);
+                AddMarkedStation(filteredString, currentMarkedStations);
                 BuildOutput(true);
                 SaveSettingsToIniFile();
                 e.Handled = true;
@@ -2747,7 +2756,7 @@ namespace TDHelper
             else if ((e.KeyCode == Keys.Enter & e.Modifiers == Keys.Shift)
                 && StringInList(filteredString, currentMarkedStations))
             {// if shift+enter, item is in our list, remove it
-                removeMarkedStation(filteredString, currentMarkedStations);
+                RemoveMarkedStation(filteredString, currentMarkedStations);
                 int index = IndexInList(filteredString, output_unclean);
                 BuildOutput(true);
                 SaveSettingsToIniFile();

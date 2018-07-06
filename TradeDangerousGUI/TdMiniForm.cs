@@ -64,12 +64,12 @@ namespace TDHelper
         {
             Screen screen = Screen.FromControl(this);
             Rectangle workingArea = screen.WorkingArea;
-            int[] winLoc = MainForm.loadWinLoc(MainForm.settingsRef.LocationChild);
-            int[] winSize = MainForm.loadWinSize(MainForm.settingsRef.SizeChild);
+            int[] winLoc = MainForm.LoadWinLoc(MainForm.settingsRef.LocationChild);
+            int[] winSize = MainForm.LoadWinSize(MainForm.settingsRef.SizeChild);
 
             // if we've saved a fontname and fontsize, use them, otherwise use default
             if (MainForm.settingsRef.TreeViewFont != null)
-                this.treeView.Font = MainForm.settingsRef.convertFromMemberFont();
+                this.treeView.Font = MainForm.settingsRef.ConvertFromMemberFont();
 
             // only resize on our first parsing
             if (!MainForm.hasParsed)
@@ -78,8 +78,8 @@ namespace TDHelper
                     compensateNodeLength(winSize); // check our width and compensate
                 else
                 {// load our default size
-                    MainForm.settingsRef.SizeChild = MainForm.saveWinSize(this);
-                    int[] t_winSize = MainForm.loadWinSize(MainForm.settingsRef.SizeChild);
+                    MainForm.settingsRef.SizeChild = MainForm.SaveWinSize(this);
+                    int[] t_winSize = MainForm.LoadWinSize(MainForm.settingsRef.SizeChild);
 
                     // check width
                     compensateNodeLength(t_winSize); // check our width and compensate
@@ -98,7 +98,7 @@ namespace TDHelper
                 this.Location = new Point(winLoc[0], winLoc[1]);
 
                 // if we're restoring the location, let's force it to be visible on screen
-                MainForm.forceFormOnScreen(this);
+                MainForm.ForceFormOnScreen(this);
             }
             else
             {
@@ -120,8 +120,8 @@ namespace TDHelper
 
         private void TdMiniForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            MainForm.settingsRef.LocationChild = MainForm.saveWinLoc(this);
-            MainForm.settingsRef.SizeChild = MainForm.saveWinSize(this);
+            MainForm.settingsRef.LocationChild = MainForm.SaveWinLoc(this);
+            MainForm.settingsRef.SizeChild = MainForm.SaveWinSize(this);
         }
 
         private void TdMiniForm_FormClosed(object sender, FormClosedEventArgs e)

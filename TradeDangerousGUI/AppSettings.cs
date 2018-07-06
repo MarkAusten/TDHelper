@@ -32,24 +32,24 @@ namespace TDHelper
 
         public void Reset(TDSettings instance)
         {// go through and reset all accessors in instance
-            instance.LocationParent = "";
-            instance.LocationChild = "";
-            instance.SizeParent = "";
-            instance.SizeChild = "";
-            instance.TDPath = "";
-            instance.EdcePath = "";
-            instance.NetLogPath = "";
-            instance.PythonPath = "";
-            instance.ImportPath = "";
-            instance.UploadPath = "";
-            instance.LastUsedConfig = "";
-            instance.MarkedStations = "";
-            instance.CmdrName = "";
-            instance.Padsizes = "";
-            instance.Avoid = "";
-            instance.Via = "";
-            instance.ExtraRunParams = "";
-            instance.TreeViewFont = "";
+            instance.LocationParent = string.Empty;
+            instance.LocationChild = string.Empty;
+            instance.SizeParent = string.Empty;
+            instance.SizeChild = string.Empty;
+            instance.TDPath = string.Empty;
+            instance.EdcePath = string.Empty;
+            instance.NetLogPath = string.Empty;
+            instance.PythonPath = string.Empty;
+            instance.ImportPath = string.Empty;
+            instance.UploadPath = string.Empty;
+            instance.LastUsedConfig = string.Empty;
+            instance.MarkedStations = string.Empty;
+            instance.CmdrName = string.Empty;
+            instance.Padsizes = string.Empty;
+            instance.Avoid = string.Empty;
+            instance.Via = string.Empty;
+            instance.ExtraRunParams = string.Empty;
+            instance.TreeViewFont = string.Empty;
 
             instance.Hops = 0;
             instance.Jumps = 0;
@@ -174,7 +174,7 @@ namespace TDHelper
 
         public bool CopySystemToClipboard { get; set; }
 
-        public Font convertFromMemberFont()
+        public Font ConvertFromMemberFont()
         {
             FontConverter conv = new FontConverter();
             if (this.TreeViewFont != null)
@@ -183,13 +183,18 @@ namespace TDHelper
                 return null;
         }
 
-        public string convertToFontString(Font fontObject)
+        public string ConvertToFontString(Font fontObject)
         {
             FontConverter conv = new FontConverter();
+
             if (fontObject != null)
+            {
                 return conv.ConvertToInvariantString(fontObject);
+            }
             else
-                return "";
+            {
+                return string.Empty;
+            }
         }
 
         public decimal RebuyPercentage { get; set; }
@@ -222,37 +227,43 @@ namespace TDHelper
 
         static public DialogResult Show(bool onTop, bool playAlert, string message, string title, MessageBoxButtons buttons)
         {
+            System.Drawing.Rectangle rect = SystemInformation.VirtualScreen;
+
             // Create a host form that is a TopMost window which will be the 
             // parent of the MessageBox.
-            Form topmostForm = new Form();
             // We do not want anyone to see this window so position it off the 
             // visible screen and make it as small as possible
-            topmostForm.Size = new System.Drawing.Size(1, 1);
-            topmostForm.Icon = TDHelper.Properties.Resources.TDH_Icon;
-            topmostForm.ShowIcon = true;
-            topmostForm.Text = title;
-            topmostForm.StartPosition = FormStartPosition.Manual;
-            System.Drawing.Rectangle rect = SystemInformation.VirtualScreen;
-            topmostForm.Location = new System.Drawing.Point(rect.Bottom + 10,
-                rect.Right + 10);
+            Form topmostForm = new Form()
+            {
+                Size = new System.Drawing.Size(1, 1),
+                Icon = TDHelper.Properties.Resources.TDH_Icon,
+                ShowIcon = true,
+                Text = title,
+                StartPosition = FormStartPosition.Manual,
+                Location = new System.Drawing.Point(rect.Bottom + 10, rect.Right + 10),
+            };
+
             topmostForm.Show();
 
             if (onTop)
-            {// force the form to the top of the stack
+            {
+                // force the form to the top of the stack
                 topmostForm.Focus();
                 topmostForm.BringToFront();
                 topmostForm.TopMost = true;
             }
             else
-            {// avoid grabbing focus
+            {
+                // avoid grabbing focus
                 topmostForm.TopMost = false;
             }
 
             if (playAlert)
+            {
                 TDHelper.MainForm.PlayAlert(); // make noise to alert the user
+            }
 
-            DialogResult result = MessageBox.Show(topmostForm, message, title,
-                buttons);
+            DialogResult result = MessageBox.Show(topmostForm, message, title, buttons);
             topmostForm.Dispose(); // clean it up all the way
 
             return result;
@@ -266,114 +277,160 @@ namespace TDHelper
         {
             get
             {
+                string assemblyGuid;
+
                 object[] attributes = Assembly.GetEntryAssembly().GetCustomAttributes(typeof(GuidAttribute), false);
-                if (attributes.Length == 0) { return string.Empty; }
-                return ((System.Runtime.InteropServices.GuidAttribute)attributes[0]).Value.ToUpper();
+
+                assemblyGuid 
+                    = attributes.Length == 0
+                    ? string.Empty
+                    : ((System.Runtime.InteropServices.GuidAttribute)attributes[0]).Value.ToUpper();
+
+                return assemblyGuid;
             }
         }
 
-        public static void setVerboseLogging(string path)
-        {// we should save our new XML to AppConfigLocal.xml
-            string savePath = Path.GetDirectoryName(path) + "\\AppConfigLocal.xml";
-
+        public static void SetVerboseLogging(string path)
+        {
             XDocument file;
-            // if our file exists, load it, if not create a fresh one
-            if (File.Exists(savePath))
-                file = XDocument.Load(savePath, LoadOptions.PreserveWhitespace);
-            else
-                file = new XDocument(new XElement("AppConfig",
-                        new XElement("Network", new XAttribute("VerboseLogging", "1"))));
-
             XmlWriterSettings settings = new XmlWriterSettings();
             StringBuilder unformat = new StringBuilder();
             StringWriterUTF8 output = new StringWriterUTF8(unformat);
             settings.Indent = true;
             settings.NewLineOnAttributes = true;
 
-            XElement parentElement = file.Element("AppConfig");
-            XElement element = parentElement.Element("Network");
+            // if our file exists, load it, if not create a fresh one
+            if (File.Exists(path))
+            {
+                file = XDocument.Load(path, LoadOptions.PreserveWhitespace);
 
-            // check the attributes to see if VerboseLogging is set
-            if (parentElement != null && element != null)
-            {// we've got a valid local config, let's modify it
-                int verboseLogging = element.Attribute("VerboseLogging") == null ? -1 : int.Parse(element.Attribute("VerboseLogging").Value);
+                XElement parentElement = file.Element("AppConfig");
+                XElement element = parentElement.Element("Network");
 
-                if (verboseLogging < 1 && verboseLogging != -1)
-                {// the attribute seems to exist, lets correct it and move on
-                    element.Attribute("VerboseLogging").Value = "1";
+                // check the attributes to see if VerboseLogging is set
+                if (parentElement != null && element != null)
+                {
+                    // we've got a valid local config, let's modify it
+                    int verboseLogging 
+                        = element.Attribute("VerboseLogging") == null 
+                        ? -1 
+                        : int.Parse(element.Attribute("VerboseLogging").Value);
+
+                    if (verboseLogging < 1 && verboseLogging != -1)
+                    {
+                        // the attribute seems to exist, lets correct it and move on
+                        element.Attribute("VerboseLogging").Value = "1";
+                    }
+                    else if (verboseLogging == -1)
+                    {
+                        // our attribute doesn't exist, create it
+                        element.Add(new XAttribute("VerboseLogging", "1"));
+                    }
                 }
-                else if (verboseLogging == -1)
-                {// our attribute doesn't exist, create it
-                    element.Add(new XAttribute("VerboseLogging", "1"));
-                }
+            }
+            else
+            {
+                // ceate a fresh config file with the correct setting.
+                file = new XDocument(
+                    new XElement("AppConfig",
+                        new XElement("Network", new XAttribute("VerboseLogging", "1"))));
             }
 
             // refresh our path to the latest netlog
             latestLogPaths = CollectLogPaths(settingsRef.NetLogPath, "netLog*.log");
+
             if (latestLogPaths != null && latestLogPaths.Count > 0)
+            {
                 recentLogPath = latestLogPaths[0];
+            }
             else
-                recentLogPath = "";
+            {
+                recentLogPath = string.Empty;
+            }
 
             // always make a backup for safety
             if (File.Exists(path))
+            {
                 File.Copy(path, path + ".backup", true);
+            }
 
             // must be utf-8 on the output, so we force it with a class override
-            using (XmlWriter xmlWriter = XmlWriter.Create(savePath, settings))
+            using (XmlWriter xmlWriter = XmlWriter.Create(path, settings))
             {
                 file.WriteTo(xmlWriter);
             }
         }
 
-        public static void validateVerboseLogging()
+        public static void ValidateVerboseLogging()
         {
-            string path = t_AppConfigPath, foundPath = "";
-            string altPath = Directory.GetParent(path) + "\\AppConfigLocal.xml";
+            // Open the AppConfig file and check to see if the setting is found.
+            string path = t_AppConfigPath;
 
-            // test AppConfigLocal.xml first, then AppConfigLocal.xml
-            if (File.Exists(altPath))
-                foundPath = altPath;
-            else if (File.Exists(path))
-                foundPath = path;
-            else
-                throw new ArgumentException("Cannot find an AppConfigLocal file based on the given path: " + t_AppConfigPath);
-
-            XDocument file = XDocument.Load(foundPath, LoadOptions.PreserveWhitespace);
+            XDocument file = XDocument.Load(path, LoadOptions.PreserveWhitespace);
             XElement parentElement = file.Element("AppConfig");
             XElement element = parentElement.Element("Network");
+            bool elementFound = !(element.Attribute("VerboseLogging") == null); ;
 
-            if (parentElement != null && element != null)
-            {// we've got a valid config
-                if (element.Attribute("VerboseLogging") == null || int.Parse(element.Attribute("VerboseLogging").Value) != 1)
-                {// it can be set
-                    // ask the user first
-                    DialogResult dialog = TopMostMessageBox.Show(true, true, "VerboseLogging isn't set, it must be corrected so we can grab recent systems.\r\n\nMay we fix it?", "Error", MessageBoxButtons.YesNo);
-                    if (dialog == DialogResult.Yes)
-                    {
-                        setVerboseLogging(foundPath); // so fix it
-                    }
-                    else
-                    {
-                        DialogResult dialog2 = TopMostMessageBox.Show(true, true, "We will set the DisableNetLogs override in our config file to prevent prompts.\r\n", "Notice", MessageBoxButtons.OK);
-                        settingsRef.DisableNetLogs = true;
-                    }
-                }
-                else
-                {// it's already set, let's continue
-                    // refresh our path to the first netlog
-                    latestLogPaths = CollectLogPaths(settingsRef.NetLogPath, "netLog*.log");
-                    if (latestLogPaths != null && latestLogPaths.Count > 0)
-                        recentLogPath = latestLogPaths[0];
-                    else
-                        recentLogPath = "";
+            if (!elementFound)
+            {
+                // Not found in AppConfig.xml so check to see if there is an AppConfigLocal.xml file and check that.
+                path = Path.Combine(Path.GetDirectoryName(path), "AppConfigLocal.xml");
+
+                if (File.Exists(path))
+                {
+                    file = XDocument.Load(path, LoadOptions.PreserveWhitespace);
+                    parentElement = file.Element("AppConfig");
+                    element = parentElement.Element("Network");
+                    elementFound = !(element.Attribute("VerboseLogging") == null);
                 }
             }
-            else
-                setVerboseLogging(foundPath); // try to create a valid file
+
+            if (elementFound)
+            {
+                // The VerboseLogging element has been found in the file pointed to by path so check for the correct value.
+                elementFound = int.Parse(element.Attribute("VerboseLogging").Value) == 1;
+            }
+
+            if (!elementFound)
+            {
+                // If elementFound is false at this point, then VerboseLogging was either not found or it was found but not set.
+                // Ask the user if we can set it.
+                DialogResult dialog = TopMostMessageBox.Show(
+                    true,
+                    true, "VerboseLogging isn't set, it must be corrected so we can grab recent systems.\r\n\nMay we fix it?",
+                    "Error",
+                    MessageBoxButtons.YesNo);
+
+                if (dialog == DialogResult.Yes)
+                {
+                    SetVerboseLogging(path); // so fix it
+                }
+                else
+                {
+                    DialogResult dialog2 = TopMostMessageBox.Show(
+                        true,
+                        true,
+                        "We will set the DisableNetLogs override in our config file to prevent prompts.\r\n",
+                        "Notice",
+                        MessageBoxButtons.OK);
+
+                    settingsRef.DisableNetLogs = true;
+                }
+            }
+
+            if (!settingsRef.DisableNetLogs)
+            {
+                // refresh our path to the first netlog
+                latestLogPaths = CollectLogPaths(settingsRef.NetLogPath, "netLog*.log");
+
+                recentLogPath
+                    = latestLogPaths != null && latestLogPaths.Count > 0
+                    ? latestLogPaths[0]
+                    : string.Empty;
+            }
         }
 
-        public static string saveWinSize(Form x)
+        public static string SaveWinSize(Form x)
         {// save window size
             string modWidth, modHeight;
 
@@ -391,7 +448,7 @@ namespace TDHelper
             return string.Format("{0},{1}", modWidth, modHeight);
         }
 
-        public static int[] loadWinSize(string objRef)
+        public static int[] LoadWinSize(string objRef)
         {// load window size
             int[] winSize = new int[] { };
 
@@ -412,12 +469,12 @@ namespace TDHelper
             return winSize;
         }
 
-        public static string saveWinLoc(Form x)
+        public static string SaveWinLoc(Form x)
         {// save winLoc to a given variable object
             return string.Format("{0},{1}", x.Location.X, x.Location.Y);
         }
 
-        public static int[] loadWinLoc(string objRef)
+        public static int[] LoadWinLoc(string objRef)
         {// load winLoc from a given variable object
             int[] winLoc = new int[] { };
 
@@ -432,7 +489,7 @@ namespace TDHelper
             return winLoc;
         }
 
-        public static void forceFormOnScreen(Form form)
+        public static void ForceFormOnScreen(Form form)
         {
             if (form.Left < SystemInformation.VirtualScreen.Left)
                 form.Left = SystemInformation.VirtualScreen.Left;
@@ -447,7 +504,7 @@ namespace TDHelper
                 form.Top = SystemInformation.VirtualScreen.Bottom - form.Height;
         }
 
-        public static bool validateConfigFile(string filePath)
+        public static bool ValidateConfigFile(string filePath)
         {
             bool fileIsValid = false;
 
@@ -461,7 +518,7 @@ namespace TDHelper
             return fileIsValid;
         }
 
-        private bool containsPadSizes(string text)
+        private bool ContainsPadSizes(string text)
         {
             // we only want one of each from the key
             if (!string.IsNullOrEmpty(text))
@@ -482,7 +539,7 @@ namespace TDHelper
                 return false;
         }
 
-        private bool containsHexCode(string input)
+        private bool ContainsHexCode(string input)
         {
             /*
              * Taken from: http://goo.gl/gBLkGs with adjustments
@@ -513,34 +570,34 @@ namespace TDHelper
                 return false;
         }
 
-        private bool isMarkedStation(string input, List<string> parentList)
+        private bool IsMarkedStation(string input, List<string> parentList)
         {
             return StringInList(input, parentList);
         }
 
-        private void addMarkedStation(string input, List<string> parentList)
+        private void AddMarkedStation(string input, List<string> parentList)
         {
-            if (!isMarkedStation(input, parentList) && StringInList(input, outputSysStnNames) 
+            if (!IsMarkedStation(input, parentList) && StringInList(input, outputSysStnNames) 
                 && !StringInList(input, parentList))
             {// insert at the top of the list
                 parentList.Insert(0, input);
-                settingsRef.MarkedStations = serializeMarkedStations(parentList);
+                settingsRef.MarkedStations = SerializeMarkedStations(parentList);
             }
         }
 
-        private void removeMarkedStation(string input, List<string> parentList)
+        private void RemoveMarkedStation(string input, List<string> parentList)
         {
             int index = IndexInList(input, parentList);
 
             // it's valid, grab the index
-            if (isMarkedStation(input, parentList) && index >= 0)
+            if (IsMarkedStation(input, parentList) && index >= 0)
             {
                 parentList.RemoveAt(index);
-                settingsRef.MarkedStations = serializeMarkedStations(parentList);
+                settingsRef.MarkedStations = SerializeMarkedStations(parentList);
             }
         }
 
-        private static List<string> parseMarkedStations()
+        private static List<string> ParseMarkedStations()
         {
             if (!string.IsNullOrEmpty(settingsRef.MarkedStations))
                 return RemoveExtraWhitespace(settingsRef.MarkedStations).Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).ToList();
@@ -548,15 +605,11 @@ namespace TDHelper
                 return new List<string>();
         }
 
-        private string serializeMarkedStations(List<string> parentList)
+        private string SerializeMarkedStations(List<string> parentList)
         {
-            if (parentList.Count > 0)
-            {
-                string builtString = string.Join(",", parentList);
-                return builtString;
-            }
-            else
-                return "";
+            return parentList.Count > 0 
+                ? string.Join(",", parentList) 
+                : string.Empty;
         }
 
         /// <summary>
