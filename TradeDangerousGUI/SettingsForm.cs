@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
 namespace TDHelper
@@ -211,7 +212,7 @@ namespace TDHelper
                 tdPathBox.Text = MainForm.settingsRef.TDPath;
             }
             else if (MainForm.settingsRef.PythonPath.EndsWith("python.exe")
-                && !MainForm.CheckIfFileOpens(MainForm.settingsRef.TDPath + "\\trade.py"))
+                && !MainForm.CheckIfFileOpens(Path.Combine(MainForm.settingsRef.TDPath, "trade.py")))
             {
                 MainForm.settingsRef.TDPath = "";
                 MainForm.ValidateTDPath(origTDPath);

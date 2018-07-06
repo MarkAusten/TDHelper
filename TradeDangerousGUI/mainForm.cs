@@ -123,9 +123,13 @@ namespace TDHelper
             td_proc.StartInfo.FileName = settingsRef.PythonPath;
 
             if (settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase))
+            {
                 t_path = string.Empty; // go in blank so we don't pass silliness to trade.exe
+            }
             else
-                t_path = "-u \"" + settingsRef.TDPath + "\\trade.py\" ";
+            {
+                t_path = "-u \"" + Path.Combine(settingsRef.TDPath, "trade.py") + "\" ";
+            }
 
             /* Indexes are as follows:
              *
@@ -1814,7 +1818,7 @@ namespace TDHelper
                 DoHotSwapCleanup(); // call cleanup to remove unnecessary files if they exist
 
                 // show the user the changelog after an update
-                if (File.Exists(localDir + "\\Changelog.txt"))
+                if (File.Exists(Path.Combine(assemblyPath, "Changelog.txt")))
                 {
                     ChangeLogForm changelogForm = new ChangeLogForm();
                     changelogForm.ShowDialog(this); // modal

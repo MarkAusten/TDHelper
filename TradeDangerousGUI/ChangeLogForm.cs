@@ -13,7 +13,8 @@ namespace TDHelper
 
         private void ChangeLogForm_Load(object sender, EventArgs e)
         {
-            string changelogPath = MainForm.localDir + "\\Changelog.txt";
+            string changelogPath = Path.Combine(MainForm.assemblyPath, "Changelog.txt");
+
             if (File.Exists(changelogPath))
             {
                 changelogTextBox.Text = File.ReadAllText(changelogPath);

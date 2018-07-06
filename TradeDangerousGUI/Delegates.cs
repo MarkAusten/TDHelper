@@ -26,8 +26,8 @@ namespace TDHelper
                 * This should search for Buy/Sell price for each commodity and set them to 0
                 */
 
-            string pricesFilePath = settingsRef.TDPath + "\\prices.last";
-            string pricesFileOutputPath = settingsRef.TDPath + "\\prices.updated";
+            string pricesFilePath = Path.Combine(settingsRef.TDPath, "prices.last");
+            string pricesFileOutputPath = Path.Combine(settingsRef.TDPath, "prices.updated");
             string match = @"(\d+)\s+(\d+)\s+";
             string replace = "0        0        ";
             string contents = "";
@@ -54,7 +54,7 @@ namespace TDHelper
             string filePattern = @"[\-A-za-z0-9_\.]+\.zip";
             // parse the archive name from the url given
             string remoteArchiveName = Regex.Match(zipFileURL, filePattern).ToString();
-            remoteArchiveLocalPath = Path.Combine(MainForm.localDir, remoteArchiveName + ".tmp");
+            remoteArchiveLocalPath = Path.Combine(MainForm.assemblyPath, remoteArchiveName + ".tmp");
 
             // download the archive mentioned in the manifest
             if (UpdateClass.DownloadFile(zipFileURL, remoteArchiveLocalPath))
@@ -64,7 +64,7 @@ namespace TDHelper
                 // rename our conflicting files by making a list then enumerating
                 foreach (string s in UpdateClass.ManifestFileList(localManifestPath))
                 {
-                    string localFilePath = Path.Combine(localDir, s);
+                    string localFilePath = Path.Combine(assemblyPath, s);
                     string localFileRenamed = localFilePath + ".REMOVE";
 
                     if (File.Exists(localFilePath))
@@ -73,8 +73,8 @@ namespace TDHelper
                     }
                 }
 
-                UpdateClass.DecompressZip(remoteArchiveLocalPath, localDir);
-                UpdateClass.WriteToLog(MainForm.updateLogPath, "Attempted decompression of " + Path.GetFileName(remoteArchiveName) + " to our working directory: " + localDir);
+                UpdateClass.DecompressZip(remoteArchiveLocalPath, assemblyPath);
+                UpdateClass.WriteToLog(MainForm.updateLogPath, "Attempted decompression of " + Path.GetFileName(remoteArchiveName) + " to our working directory: " + assemblyPath);
 
                 // change flag indicator and serialize it
                 settingsRef.HasUpdated = true;
@@ -129,7 +129,7 @@ namespace TDHelper
             if (File.Exists(localManifestPath))
             {
                 // only grab new archive if assembly doesn't match
-                if (!UpdateClass.CompareAssemblyToManifest(localManifestPath, localDir))
+                if (!UpdateClass.CompareAssemblyToManifest(localManifestPath, assemblyPath))
                 {
                     DialogResult d = TopMostMessageBox.Show(
                         true,
@@ -146,7 +146,7 @@ namespace TDHelper
                         if (urlRoot != null)
                         {
                             string remoteArchiveURL = urlRoot.Value;
-                            DecompressUpdate(remoteArchiveURL, localDir);
+                            DecompressUpdate(remoteArchiveURL, assemblyPath);
                         }
                         else
                         {
@@ -168,7 +168,7 @@ namespace TDHelper
             try
             {
                 // we include replaced and tmp files just to be thorough
-                string[] cleanupFiles = Directory.EnumerateFiles(localDir, "*.*").Where(x => x.EndsWith(".tmp") || x.EndsWith(".REMOVE")).Reverse().ToArray();
+                string[] cleanupFiles = Directory.EnumerateFiles(assemblyPath, "*.*").Where(x => x.EndsWith(".tmp") || x.EndsWith(".REMOVE")).Reverse().ToArray();
 
                 foreach (string s in cleanupFiles)
                 {
@@ -337,7 +337,7 @@ namespace TDHelper
 
             t_path = settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase)
                 ? "" // go in blank so we don't pass silliness to trade.exe
-                : "-u \"" + settingsRef.TDPath + "\\trade.py\" ";
+                : "-u \"" + Path.Combine(settingsRef.TDPath, "trade.py") + "\" ";
 
             // catch the method drop down here
             if (buttonCaller == 5)
@@ -509,11 +509,13 @@ namespace TDHelper
         private void GetUpdatedPricesFile()
         {
             buttonCaller = 11;  // mark us as coming from the commodities editor (ctrl+click)
-            string pricesFilePath = settingsRef.TDPath + "\\prices.last";
+            string pricesFilePath = Path.Combine(settingsRef.TDPath, "prices.last");
 
             // first check if the input prices.last file already exists, if so delete it
             if (File.Exists(pricesFilePath))
+            {
                 File.Delete(pricesFilePath);
+            }
 
             // hop to the worker delegate to grab updated prices for a station
             if (!backgroundWorker2.IsBusy)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -49,7 +50,10 @@ namespace TDHelper
 
                             if (d == DialogResult.OK)
                             {
-                                UpdateClass.GenerateManifest(MainForm.localDir, MainForm.localDir + "\\TDHelper.manifest", args[1]);
+                                UpdateClass.GenerateManifest(
+                                    MainForm.assemblyPath, 
+                                    Path.Combine(MainForm.assemblyPath, "TDHelper.manifest"), 
+                                    args[1]);
                                 return;
                             }
                         }

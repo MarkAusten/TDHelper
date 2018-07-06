@@ -20,19 +20,18 @@ namespace TDHelper
     {
         #region Props
 
-        public static string assemblyPath = System.Reflection.Assembly.GetEntryAssembly().Location;
+        public static string assemblyFolder = System.Reflection.Assembly.GetEntryAssembly().Location;
+        public static string assemblyPath = Path.GetDirectoryName(assemblyFolder);
 
-        public static string configFile = configFileDefault;
-
-        public static string configFileDefault = Path.Combine(localDir, "tdh.ini");
+        public static string configFile = Path.Combine(assemblyPath, "tdh.ini");
 
         public static bool hasParsed = false, isActive = false, callForReset = false;
 
         public static List<string> latestLogPaths;
 
-        public static string localDir = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+        public static string configFileDefault = Path.Combine(assemblyPath, "tdh.ini");
 
-        public static string localManifestPath = Path.Combine(localDir, "TDHelper.manifest.tmp");
+        public static string localManifestPath = Path.Combine(assemblyPath, "TDHelper.manifest.tmp");
 
         public static string remoteArchiveLocalPath;
 
@@ -43,7 +42,7 @@ namespace TDHelper
         public static string t_itemListPath, t_shipListPath, t_AppConfigPath, recentLogPath, authCode;
 
         // save the archive path
-        public static string updateLogPath = Path.Combine(localDir, "update.log");
+        public static string updateLogPath = Path.Combine(assemblyPath, "update.log");
 
         public bool hasRun, dropdownOpened, rebuildCache, t_localNavEnabled, t_csvExportCheckBox, stationsFilterChecked, oldDataRouteChecked;
         public int marketBoxChecked, blackmarketBoxChecked, shipyardBoxChecked, repairBoxChecked, rearmBoxChecked, refuelBoxChecked, outfitBoxChecked, fromPane = -1, runOutputState = -1;
@@ -76,7 +75,7 @@ namespace TDHelper
 
         private List<string> output_unclean = new List<string>();
 
-        private string pilotsLogDBPath = localDir + "\\TDHelper.db";
+        private string pilotsLogDBPath = Path.Combine(assemblyPath, "TDHelper.db");
 
         // for Pilot's Log support
         //public DataSet pilotsLogSet = new DataSet("PilotsLog");
@@ -130,7 +129,7 @@ namespace TDHelper
             // a simple method for playing a custom beep.wav or the default system Beep
             SoundPlayer player = new SoundPlayer();
             Assembly thisExecutable = System.Reflection.Assembly.GetExecutingAssembly();
-            string localSound = localDir + "\\notify.wav";
+            string localSound = Path.Combine(assemblyPath, "notify.wav");
 
             if (CheckIfFileOpens(localSound))
             {
@@ -150,7 +149,7 @@ namespace TDHelper
             // a simple method for playing a custom beep.wav or the default system Beep
             SoundPlayer player = new SoundPlayer();
             Assembly thisExecutable = System.Reflection.Assembly.GetExecutingAssembly();
-            string localSound = localDir + "\\unknown.wav";
+            string localSound = Path.Combine(assemblyPath, "unknown.wav");
 
             if (CheckIfFileOpens(localSound))
             {
@@ -168,7 +167,7 @@ namespace TDHelper
         public static void ValidateEdcePath(string altPath)
         {
             // bypass this routine if the python path validator sets our path for us (due to Trade Dangerous Installer)
-            if (string.IsNullOrEmpty(settingsRef.EdcePath) || !CheckIfFileOpens(settingsRef.EdcePath + "\\edce_client.py"))
+            if (string.IsNullOrEmpty(settingsRef.EdcePath) || !CheckIfFileOpens(Path.Combine(settingsRef.EdcePath, "edce_client.py")))
             {
                 OpenFileDialog x = new OpenFileDialog()
                 {
@@ -176,9 +175,12 @@ namespace TDHelper
                 };
 
                 if (Directory.Exists(settingsRef.EdcePath))
+                {
                     x.InitialDirectory = settingsRef.EdcePath;
+                }
 
                 x.Filter = "Py files (*.py)|*.py";
+
                 if (x.ShowDialog() == DialogResult.OK)
                 {
                     settingsRef.EdcePath = Path.GetDirectoryName(x.FileName);
@@ -187,7 +189,7 @@ namespace TDHelper
                 else
                 {
                     string localPath = altPath ?? ""; // prevent null
-                    if (!string.IsNullOrEmpty(localPath) && CheckIfFileOpens(localPath + "\\edce_client.py") || localPath.EndsWith(".py"))
+                    if (!string.IsNullOrEmpty(localPath) && CheckIfFileOpens(Path.Combine(localPath, "edce_client.py")) || localPath.EndsWith(".py"))
                     {
                         // if we have an alternate path, we can reset the variable here
                         settingsRef.EdcePath = localPath;
@@ -327,7 +329,7 @@ namespace TDHelper
             if (!string.IsNullOrEmpty(settingsRef.PythonPath) && !settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase))
             {
                 // bypass this routine if the python path validator sets our path for us (due to Trade Dangerous Installer)
-                if (string.IsNullOrEmpty(settingsRef.TDPath) || !CheckIfFileOpens(settingsRef.TDPath + "\\trade.py"))
+                if (string.IsNullOrEmpty(settingsRef.TDPath) || !CheckIfFileOpens(Path.Combine(settingsRef.TDPath, "trade.py")))
                 {
                     OpenFileDialog x = new OpenFileDialog()
                     {
@@ -349,7 +351,7 @@ namespace TDHelper
                     else
                     {
                         string localPath = altPath ?? ""; // prevent null
-                        if (!string.IsNullOrEmpty(localPath) && CheckIfFileOpens(localPath + "\\trade.py") || localPath.EndsWith(".py"))
+                        if (!string.IsNullOrEmpty(localPath) && CheckIfFileOpens(Path.Combine(localPath, "trade.py")) || localPath.EndsWith(".py"))
                         {
                             // if we have an alternate path, we can reset the variable here
                             settingsRef.TDPath = localPath;
@@ -718,7 +720,7 @@ namespace TDHelper
             if (!string.IsNullOrEmpty(settingsRef.LastUsedConfig)
                 && settingsRef.LastUsedConfig.Contains("Default.xml"))
             {
-                settingsRef.LastUsedConfig = localDir + "\\Default.xml";
+                settingsRef.LastUsedConfig = Path.Combine(assemblyPath, "Default.xml");
             }
             else
             {
@@ -973,9 +975,13 @@ namespace TDHelper
             // save the path for reload on startup
             if (!string.IsNullOrEmpty(settingsRef.LastUsedConfig)
                 && settingsRef.LastUsedConfig.Contains("Default.xml"))
-                settingsRef.LastUsedConfig = localDir + "\\Default.xml";
+            {
+                settingsRef.LastUsedConfig = Path.Combine(assemblyPath, "Default.xml");
+            }
             else
+            {
                 settingsRef.LastUsedConfig = configFile;
+            }
 
             SerializeMarkedStations(currentMarkedStations); // convert object to built string
             CopySettingsFromForm();
@@ -985,7 +991,9 @@ namespace TDHelper
             settingsRef.SizeParent = SaveWinSize(this);
 
             if (tabControl1.SelectedTab == tabControl1.TabPages["notesPage"])
+            {
                 notesTextBox.SaveFile(notesFile, RichTextBoxStreamType.PlainText);
+            }
 
             //// Serialize(configFile);
             SaveSettingsToIniFile();

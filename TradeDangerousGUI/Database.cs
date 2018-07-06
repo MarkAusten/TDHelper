@@ -1409,13 +1409,11 @@ namespace TDHelper
 
         private bool ValidateDBPath()
         {
-            tdDBPath = settingsRef.TDPath + "\\data\\TradeDangerous.db";
+            tdDBPath = Path.Combine(settingsRef.TDPath, @"data\TradeDangerous.db");
+
             try
             {
-                if (CheckIfFileOpens(tdDBPath))
-                    return true;
-                else
-                    return false;
+                return CheckIfFileOpens(tdDBPath);
             }
             catch
             {
