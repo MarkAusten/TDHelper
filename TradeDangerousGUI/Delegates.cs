@@ -743,7 +743,7 @@ namespace TDHelper
                 try
                 {
                     procCode = -1; // reset the exit code
-                    td_proc.StartInfo.Arguments = "\"" + path + "\"";
+                    td_proc.StartInfo.Arguments = path;
 
                     if (buttonCaller == 12)
                     {

@@ -1310,7 +1310,7 @@ namespace TDHelper
                 if (this.ValidateEdce())
                 {
                     // EDCE is valid so set up the call.
-                    t_path = Path.Combine(MainForm.settingsRef.EdcePath, "edce_client.py");
+                    t_path = "\"" + Path.Combine(MainForm.settingsRef.EdcePath, "edce_client.py") + "\"";
                 }
                 else
                 {
