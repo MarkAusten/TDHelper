@@ -1,3 +1,8 @@
+v2.0.2.1
+--------
+* Fixed issue #1 - AppConfigLocal.xml doesn't exist!
+* fixed issue #2 - Calling Python borks out where there are spaces in paths.
+
 v2.0.2.0
 --------
 * Removed copyright message
