@@ -1,3 +1,8 @@
+V2.0.3.2
+--------
+
+* Added "TD Helper - " to all dialog title bars.
+
 v2.0.2.1
 --------
 * Fixed issue #1 - AppConfigLocal.xml doesn't exist!
