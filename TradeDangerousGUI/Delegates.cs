@@ -864,7 +864,7 @@ namespace TDHelper
             {// only grab new archive if assembly doesn't match
                 if (!UpdateClass.compareAssemblyToManifest(localManifestPath, localDir))
                 {
-                    DialogResult d = TopMostMessageBox.Show(true, true, "An update is available, should we download it?", "Confirmation", MessageBoxButtons.YesNo);
+                    DialogResult d = TopMostMessageBox.Show(true, true, "An update is available, should we download it?", "TD Helper Confirmation", MessageBoxButtons.YesNo);
                     if (d == DialogResult.Yes)
                     {
                         XDocument doc = XDocument.Load(localManifestPath);
