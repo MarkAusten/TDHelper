@@ -350,7 +350,7 @@ namespace TDHelper
                 {
                     OpenFileDialog x = new OpenFileDialog()
                     {
-                        Title = "Select Trade.py from the Trade Dangerous directory"
+                        Title = "TD Helper - Select Trade.py from the Trade Dangerous directory"
                     };
 
                     if (Directory.Exists(settingsRef.TDPath))
@@ -389,7 +389,7 @@ namespace TDHelper
             {
                 OpenFileDialog x = new OpenFileDialog()
                 {
-                    Title = "Select edce_client.py from the EDCE directory"
+                    Title = "TD Helper - Select edce_client.py from the EDCE directory"
                 };
 
                 if (Directory.Exists(settingsRef.EdcePath))
@@ -423,7 +423,7 @@ namespace TDHelper
             {// only execute if called from Import button
                 OpenFileDialog x = new OpenFileDialog()
                 {
-                    Title = "Select a .prices file"
+                    Title = "TD Helper - Select a .prices file"
                 };
 
                 if (Directory.Exists(settingsRef.ImportPath))
@@ -444,7 +444,7 @@ namespace TDHelper
             {// only execute if called from Upload button
                 OpenFileDialog x = new OpenFileDialog()
                 {
-                    Title = "Select a file to upload"
+                    Title = "TD Helper - Select a file to upload"
                 };
 
                 if (Directory.Exists(settingsRef.UploadPath))
@@ -471,7 +471,7 @@ namespace TDHelper
                     // let's just ask the user where to look
                     OpenFileDialog x = new OpenFileDialog()
                     {
-                        Title = "Select a valid Elite: Dangerous AppConfig.xml",
+                        Title = "TD Helper - Select a valid Elite: Dangerous AppConfig.xml",
                         Filter = "AppConfig.xml|*.xml"
                     };
 
@@ -493,7 +493,13 @@ namespace TDHelper
                         }
                         else
                         {
-                            DialogResult dialog2 = TopMostMessageBox.Show(true, true, "Cannot set NetLogPath to a valid directory.\r\nWe will disable scanning for recent systems, if you want to re-enable it, set a working path.", "Error", MessageBoxButtons.OK);
+                            DialogResult dialog2 = TopMostMessageBox.Show(
+                                true, 
+                                true, 
+                                "Cannot set NetLogPath to a valid directory.\r\nWe will disable scanning for recent systems, if you want to re-enable it, set a working path.",
+                                "TD Helper - Error", 
+                                MessageBoxButtons.OK);
+
                             settingsRef.DisableNetLogs = true;
                             SaveSettingsToIniFile();
                         }
@@ -521,7 +527,7 @@ namespace TDHelper
             {
                 OpenFileDialog x = new OpenFileDialog()
                 {
-                    Title = "Select your python.exe or trade.exe",
+                    Title = "TD Helper - Select your python.exe or trade.exe",
                     Filter = "Python Interpreter (*.exe)|*.exe"
                 };
 

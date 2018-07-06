@@ -105,7 +105,7 @@ namespace TDHelper
             settings.RebuyPercentage = this.rebuyPercentage.Value;
         }
 
-        private void generic_KeyDown(object sender, KeyEventArgs e)
+        private void Generic_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
             {
@@ -121,17 +121,17 @@ namespace TDHelper
             }
         }
 
-        private void okButton_Click(object sender, EventArgs e)
+        private void OkButton_Click(object sender, EventArgs e)
         {
             FormValidator();
         }
 
-        private void cancelButton_Click(object sender, EventArgs e)
+        private void CancelButton_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
-        private void validatePythonPath_Click(object sender, EventArgs e)
+        private void ValidatePythonPath_Click(object sender, EventArgs e)
         {
             string origPath = MainForm.settingsRef.PythonPath;
             string origTDPath = MainForm.settingsRef.TDPath;
@@ -156,7 +156,7 @@ namespace TDHelper
             pythonPathBox.Text = MainForm.settingsRef.PythonPath;
         }
 
-        private void validateTDPath_Click(object sender, EventArgs e)
+        private void ValidateTDPath_Click(object sender, EventArgs e)
         {
             string origPath = MainForm.settingsRef.TDPath;
             string origPyPath = MainForm.settingsRef.PythonPath;
@@ -177,7 +177,7 @@ namespace TDHelper
             tdPathBox.Text = MainForm.settingsRef.TDPath;
         }
 
-        private void validateNetLogsPath_Click(object sender, EventArgs e)
+        private void ValidateNetLogsPath_Click(object sender, EventArgs e)
         {
             string origPath = MainForm.settingsRef.NetLogPath;
             MainForm.settingsRef.NetLogPath = "";
@@ -185,7 +185,7 @@ namespace TDHelper
             netLogsPathBox.Text = MainForm.settingsRef.NetLogPath;
         }
 
-        private void validateEdcePath_Click(object sender, EventArgs e)
+        private void ValidateEdcePath_Click(object sender, EventArgs e)
         {
             string origPath = MainForm.settingsRef.EdcePath;
             MainForm.settingsRef.EdcePath = "";
@@ -193,9 +193,14 @@ namespace TDHelper
             edcePathBox.Text = MainForm.settingsRef.EdcePath;
         }
 
-        private void resetButton_Click(object sender, EventArgs e)
+        private void ResetButton_Click(object sender, EventArgs e)
         {
-            DialogResult d = TopMostMessageBox.Show(false,true,"This will wipe all configuration settings currently loaded, are you sure?","Warning",MessageBoxButtons.YesNo);
+            DialogResult d = TopMostMessageBox.Show(
+                false,
+                true,
+                "This will wipe all configuration settings currently loaded, are you sure?",
+                "TD Helper - Warning", 
+                MessageBoxButtons.YesNo);
 
             if (d == DialogResult.Yes)
             {
@@ -204,14 +209,17 @@ namespace TDHelper
             }
         }
 
-        private void tvFontSelectorButton_Click(object sender, EventArgs e)
+        private void TvFontSelectorButton_Click(object sender, EventArgs e)
         {
-            FontDialog fontDialog = new FontDialog();
-            fontDialog.MinSize = 6;
-            fontDialog.MaxSize = 32;
             Font tvDefaultFont = new Font("Consolas", 8.25f);
             Font localFontObject = new Font("Consolas", 8.25f);
-            fontDialog.Font = tvDefaultFont;
+
+            FontDialog fontDialog = new FontDialog()
+            {
+                MinSize = 6,
+                MaxSize = 32,
+                Font = tvDefaultFont
+            };
 
             if (Control.ModifierKeys == Keys.Control)
             {// reset our font to a preset default with a Ctrl+Click

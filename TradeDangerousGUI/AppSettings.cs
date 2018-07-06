@@ -398,7 +398,7 @@ namespace TDHelper
                 DialogResult dialog = TopMostMessageBox.Show(
                     true,
                     true, "VerboseLogging isn't set, it must be corrected so we can grab recent systems.\r\n\nMay we fix it?",
-                    "Error",
+                    "TD Helper - Error",
                     MessageBoxButtons.YesNo);
 
                 if (dialog == DialogResult.Yes)
@@ -411,7 +411,7 @@ namespace TDHelper
                         true,
                         true,
                         "We will set the DisableNetLogs override in our config file to prevent prompts.\r\n",
-                        "Notice",
+                        "TD Helper - Notice",
                         MessageBoxButtons.OK);
 
                     settingsRef.DisableNetLogs = true;

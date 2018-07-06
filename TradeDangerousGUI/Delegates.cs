@@ -858,13 +858,19 @@ namespace TDHelper
              * 8) Cleans up when done
              */
             // grab the remote manifest to a tmp file
-            UpdateClass.downloadFile(remoteManifestPath, localManifestPath);
+            UpdateClass.DownloadFile(remoteManifestPath, localManifestPath);
 
             if (File.Exists(localManifestPath))
             {// only grab new archive if assembly doesn't match
-                if (!UpdateClass.compareAssemblyToManifest(localManifestPath, localDir))
+                if (!UpdateClass.CompareAssemblyToManifest(localManifestPath, localDir))
                 {
-                    DialogResult d = TopMostMessageBox.Show(true, true, "An update is available, should we download it?", "TD Helper Confirmation", MessageBoxButtons.YesNo);
+                    DialogResult d = TopMostMessageBox.Show(
+                        true, 
+                        true, 
+                        "An update is available, should we download it?", 
+                        "TD Helper - Confirmation", 
+                        MessageBoxButtons.YesNo);
+
                     if (d == DialogResult.Yes)
                     {
                         XDocument doc = XDocument.Load(localManifestPath);
@@ -878,12 +884,12 @@ namespace TDHelper
                         else
                         {
                             Debug.WriteLine(doc.ToString());
-                            UpdateClass.writeToLog(MainForm.updateLogPath, "The manifest does not contain a URL tag, cannot parse for remote archive");
+                            UpdateClass.WriteToLog(MainForm.updateLogPath, "The manifest does not contain a URL tag, cannot parse for remote archive");
                         }
                     }
                     else
                     {
-                        UpdateClass.writeToLog(MainForm.updateLogPath, "The user cancelled the auto-update download");
+                        UpdateClass.WriteToLog(MainForm.updateLogPath, "The user cancelled the auto-update download");
                     }
                 }
             }
@@ -906,7 +912,7 @@ namespace TDHelper
             catch (UnauthorizedAccessException) { /* eat it */ }
             catch (Exception e)
             {
-                UpdateClass.writeToLog(updateLogPath, "Exception: " + e.Message);
+                UpdateClass.WriteToLog(updateLogPath, "Exception: " + e.Message);
             }
         }
 
@@ -918,12 +924,12 @@ namespace TDHelper
             remoteArchiveLocalPath = Path.Combine(MainForm.localDir, remoteArchiveName + ".tmp");
 
             // download the archive mentioned in the manifest
-            if (UpdateClass.downloadFile(zipFileURL, remoteArchiveLocalPath))
+            if (UpdateClass.DownloadFile(zipFileURL, remoteArchiveLocalPath))
             {
-                UpdateClass.writeToLog(MainForm.updateLogPath, "Downloaded a dependent archive from URL: " + zipFileURL);
+                UpdateClass.WriteToLog(MainForm.updateLogPath, "Downloaded a dependent archive from URL: " + zipFileURL);
 
                 // rename our conflicting files by making a list then enumerating
-                foreach (string s in UpdateClass.manifestFileList(localManifestPath))
+                foreach (string s in UpdateClass.ManifestFileList(localManifestPath))
                 {
                     string localFilePath = Path.Combine(localDir, s);
                     string localFileRenamed = localFilePath + ".REMOVE";
@@ -934,8 +940,8 @@ namespace TDHelper
                     }
                 }
 
-                UpdateClass.decompressZip(remoteArchiveLocalPath, localDir);
-                UpdateClass.writeToLog(MainForm.updateLogPath, "Attempted decompression of " + Path.GetFileName(remoteArchiveName) + " to our working directory: " + localDir);
+                UpdateClass.DecompressZip(remoteArchiveLocalPath, localDir);
+                UpdateClass.WriteToLog(MainForm.updateLogPath, "Attempted decompression of " + Path.GetFileName(remoteArchiveName) + " to our working directory: " + localDir);
 
                 // change flag indicator and serialize it
                 settingsRef.HasUpdated = true;

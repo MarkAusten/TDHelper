@@ -34,24 +34,42 @@ namespace TDHelper
                     }
                     else if (args.Length == 1 && args[0] == "/g")
                     {
-                        TopMostMessageBox.Show(true, true, "You must include a URL pointing to a Zip file surrounded by quotes as your second argument!\r\nExample:  TDHelper.exe /g \"http://localhost:90/File.zip\"", "Argument Error", MessageBoxButtons.OK);
+                        TopMostMessageBox.Show(
+                            true, 
+                            true, 
+                            "You must include a URL pointing to a Zip file surrounded by quotes as your second argument!\r\nExample:  TDHelper.exe /g \"http://localhost:90/File.zip\"",
+                            "TD Helper - Argument Error", 
+                            MessageBoxButtons.OK);
+
                         return;
                     }
                     else if (args.Length == 2 && args[0] == "/g")
                     {
-                        if (UpdateClass.isValidURLArchive(args[1]))
+                        if (UpdateClass.IsValidURLArchive(args[1]))
                         {
-                            DialogResult d = TopMostMessageBox.Show(true, true, "We will now generate a manifest file in the current directory.", "Confirm", MessageBoxButtons.OKCancel);
+                            DialogResult d = TopMostMessageBox.Show(
+                                true, 
+                                true, 
+                                "We will now generate a manifest file in the current directory.", 
+                                "TD Helper - Confirm", 
+                                MessageBoxButtons.OKCancel);
+
                             if (d == DialogResult.OK)
                             {
-                                UpdateClass.generateManifest(MainForm.localDir, MainForm.localDir + "\\TDHelper.manifest", args[1]);
+                                UpdateClass.GenerateManifest(MainForm.localDir, MainForm.localDir + "\\TDHelper.manifest", args[1]);
                                 return;
                             }
                         }
                     }
                     else if (args.Length == 1 && args[0] == "/?")
                     {
-                        TopMostMessageBox.Show(true, true, "Proper commandline arguments are:\r\n\r\n\t/noupdate   Disables auto-update.\r\n\t/g [URL]       Specifies a URL to assign as the package in the manifest.\r\n\t/?\t   This help message box.", "Argument Help", MessageBoxButtons.OK);
+                        TopMostMessageBox.Show(
+                            true, 
+                            true, 
+                            "Proper commandline arguments are:\r\n\r\n\t/noupdate   Disables auto-update.\r\n\t/g [URL]       Specifies a URL to assign as the package in the manifest.\r\n\t/?\t   This help message box.",
+                            "TD Helper - Argument Help", 
+                            MessageBoxButtons.OK);
+
                         return;
                     }
 
