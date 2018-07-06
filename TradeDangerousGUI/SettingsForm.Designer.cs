@@ -70,7 +70,7 @@
             this.extraRunParameters.Size = new System.Drawing.Size(257, 20);
             this.extraRunParameters.TabIndex = 13;
             this.toolTip1.SetToolTip(this.extraRunParameters, "This text will be added on to the end of the Run command [caution!]");
-            this.extraRunParameters.KeyDown += new System.Windows.Forms.KeyEventHandler(this.generic_KeyDown);
+            this.extraRunParameters.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Generic_KeyDown);
             // 
             // label1
             // 
@@ -90,7 +90,7 @@
             this.okButton.TabIndex = 16;
             this.okButton.Text = "OK";
             this.okButton.UseVisualStyleBackColor = true;
-            this.okButton.Click += new System.EventHandler(this.okButton_Click);
+            this.okButton.Click += new System.EventHandler(this.OkButton_Click);
             // 
             // cancelButton
             // 
@@ -101,7 +101,7 @@
             this.cancelButton.TabIndex = 14;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
-            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
+            this.cancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // overrideDisableNetLogs
             // 
@@ -170,7 +170,7 @@
             this.validateEdcePath.TabIndex = 16;
             this.validateEdcePath.Text = "...";
             this.validateEdcePath.UseVisualStyleBackColor = true;
-            this.validateEdcePath.Click += new System.EventHandler(this.validateEdcePath_Click);
+            this.validateEdcePath.Click += new System.EventHandler(this.ValidateEdcePath_Click);
             // 
             // edcePathBox
             // 
@@ -197,7 +197,7 @@
             this.tvFontSelectorButton.Text = "...";
             this.toolTip1.SetToolTip(this.tvFontSelectorButton, "Ctrl+Click to reset the TreeView font to the default");
             this.tvFontSelectorButton.UseVisualStyleBackColor = true;
-            this.tvFontSelectorButton.Click += new System.EventHandler(this.tvFontSelectorButton_Click);
+            this.tvFontSelectorButton.Click += new System.EventHandler(this.TvFontSelectorButton_Click);
             // 
             // currentTVFontBox
             // 
@@ -223,7 +223,7 @@
             this.validateNetLogsPath.TabIndex = 12;
             this.validateNetLogsPath.Text = "...";
             this.validateNetLogsPath.UseVisualStyleBackColor = true;
-            this.validateNetLogsPath.Click += new System.EventHandler(this.validateNetLogsPath_Click);
+            this.validateNetLogsPath.Click += new System.EventHandler(this.ValidateNetLogsPath_Click);
             // 
             // validateTDPath
             // 
@@ -233,7 +233,7 @@
             this.validateTDPath.TabIndex = 10;
             this.validateTDPath.Text = "...";
             this.validateTDPath.UseVisualStyleBackColor = true;
-            this.validateTDPath.Click += new System.EventHandler(this.validateTDPath_Click);
+            this.validateTDPath.Click += new System.EventHandler(this.ValidateTDPath_Click);
             // 
             // validatePythonPath
             // 
@@ -243,7 +243,7 @@
             this.validatePythonPath.TabIndex = 8;
             this.validatePythonPath.Text = "...";
             this.validatePythonPath.UseVisualStyleBackColor = true;
-            this.validatePythonPath.Click += new System.EventHandler(this.validatePythonPath_Click);
+            this.validatePythonPath.Click += new System.EventHandler(this.ValidatePythonPath_Click);
             // 
             // netLogsPathBox
             // 
@@ -302,7 +302,7 @@
             this.resetButton.TabIndex = 15;
             this.resetButton.Text = "Reset Settings";
             this.resetButton.UseVisualStyleBackColor = true;
-            this.resetButton.Click += new System.EventHandler(this.resetButton_Click);
+            this.resetButton.Click += new System.EventHandler(this.ResetButton_Click);
             // 
             // rebuyPercentage
             // 
@@ -357,7 +357,7 @@
             this.ShowIcon = false;
             this.Text = "Misc. Settings";
             this.Load += new System.EventHandler(this.SettingsForm_Load);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.generic_KeyDown);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Generic_KeyDown);
             this.overrideGroupBox.ResumeLayout(false);
             this.overrideGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rebuyPercentage)).EndInit();
