@@ -40,8 +40,16 @@ namespace TDHelper
                     | ControlStyles.UserPaint
                     | ControlStyles.DoubleBuffer, true);
 
+            ValidateSettings();
+
             // Build variables from config
             BuildSettings();
+
+            // Copy the setting to the form controls
+            CopySettingsFromConfig();
+
+            // And validate the settings to get rid of any nonsense.
+            ValidateSettings();
 
             // Let's change the title
             SetFormTitle(this);
@@ -1798,9 +1806,6 @@ namespace TDHelper
                     Y = Math.Max(workingArea.Y, workingArea.Y + (workingArea.Height - this.Height) / 2)
                 };
             }
-
-            ValidateSettings();
-            CopySettingsFromConfig();
 
             // bind our alternate config files
             SetShipList(true);
