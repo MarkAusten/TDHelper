@@ -1,11 +1,13 @@
-V2.0.3.3
+v2.0.3.4
 --------
+* Updater additionally checks the file versions before downloading new version.
 
-* FIxed bug that lept asking for paths at every start.
-
-V2.0.3.2
+v2.0.3.3
 --------
+* Fixed bug that lept asking for paths at every start.
 
+v2.0.3.2
+--------
 * Added "TD Helper - " to all dialog title bars.
 * Fixed bug where cancelling from the mandatory path selection did not close the application.
 

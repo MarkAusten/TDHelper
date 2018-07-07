@@ -129,7 +129,8 @@ namespace TDHelper
             if (File.Exists(localManifestPath))
             {
                 // only grab new archive if assembly doesn't match
-                if (!UpdateClass.CompareAssemblyToManifest(localManifestPath, assemblyPath))
+                if (!UpdateClass.CompareAssemblyToManifest(localManifestPath, assemblyPath) &&
+                    UpdateClass.CompareVersionNumbers(localManifestPath, assemblyPath))
                 {
                     DialogResult d = TopMostMessageBox.Show(
                         true,

@@ -77,6 +77,7 @@ namespace TDHelper
                 else
                 {
                     WriteToLog(MainForm.updateLogPath, "The assembly mentioned in the manifest cannot be found: " + manifestAssemblyName);
+
                     return false;
                 }
             }
@@ -88,18 +89,83 @@ namespace TDHelper
 
         public static bool CompareFileHashes(string path1, string path2)
         {
+            bool matchFound = false;
+
             // take two file paths, spit out true/false if their hashes match
             if (File.Exists(path1) && File.Exists(path2))
             {
                 string firstHash = CalculateMD5(path1);
                 string secondHash = CalculateMD5(path2);
 
-                return firstHash.Equals(secondHash);
+                matchFound = firstHash.Equals(secondHash);
             }
-            else
+
+            return matchFound;
+        }
+
+        /// <summary>
+        /// Compare the version number found in the manifest with that of the assembly.
+        /// </summary>
+        /// <param name="manifest"></param>
+        /// <param name="assemblyPath"></param>
+        /// <returns></returns>
+        public static bool CompareVersionNumbers(
+            string manifest, 
+            string assemblyPath)
+        {
+            bool manifestVersionIsGreater = false;
+
+            if (File.Exists(manifest))
             {
-                return false;
+                XDocument doc = XDocument.Load(manifest);
+                XElement root = doc.Element("Manifest").Element("Assembly");
+                string manifestAssemblyName = root.Attribute("Name").Value;
+                string localAssemblyPath = Path.Combine(assemblyPath, manifestAssemblyName);
+
+                if (!string.IsNullOrEmpty(manifestAssemblyName) && File.Exists(localAssemblyPath))
+                {
+                    // resolve the local path to the assembly mentioned in the manifest
+                    string manifestAssemblyVersion = root.Element("Version").Value;
+                    string localAssemblyVersion = GetFileVersion(localAssemblyPath);
+
+                    int manifestVersion = ConvertVersion(manifestAssemblyVersion);
+                    int assemblyVersion = ConvertVersion(localAssemblyVersion);
+
+                    manifestVersionIsGreater = manifestVersion > assemblyVersion;
+                }
+                else
+                {
+                    WriteToLog(MainForm.updateLogPath, "The assembly mentioned in the manifest cannot be found: " + manifestAssemblyName);
+                }
             }
+
+            return manifestVersionIsGreater;
+        }
+
+        /// <summary>
+        /// Convert the string version number to an int suitable for copmaring.
+        /// </summary>
+        /// <param name="version">The version to convert.</param>
+        /// <returns>The version number as an int.</returns>
+        public static int ConvertVersion(string version)
+        {
+            string newVersion = string.Empty;
+
+            string[] data = version.Split(new string[] { "." }, StringSplitOptions.None);
+
+            for (int i = 0; i < 4; ++i)
+            {
+                string part = data.Length >= i + 1 ? data[i] : "0";
+
+                newVersion += part.PadLeft(3).Replace(" ", "0");
+            }
+
+            if (!int.TryParse(newVersion, out int versionNumber))
+            {
+                versionNumber = 0;
+            }
+
+            return versionNumber;
         }
 
         public static void DecompressFile(string zipFile, string fileInZip, string outputFile)
@@ -262,15 +328,15 @@ namespace TDHelper
 
         public static string GetFileVersion(string filePath)
         {
+            string version = string.Empty;
+
             // return the file version of a given assembly
             if (File.Exists(filePath))
             {
-                return AssemblyName.GetAssemblyName(filePath).Version.ToString();
+                version =  AssemblyName.GetAssemblyName(filePath).Version.ToString();
             }
-            else
-            {
-                return string.Empty;
-            }
+
+            return version;
         }
 
         public static bool IsValidURLArchive(string URI)
