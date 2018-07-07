@@ -412,157 +412,272 @@ namespace TDHelper
 
         public void ValidateSettings()
         {
+            // check our paths.
+            ValidatePython(null);
+            ValidateTDPath(null);
+            ValidateEdcePath(null);
+            ValidateNetLogPath(null);
+
             // sanity check our inputs
             if (settingsRef.Credits < creditsBox.Minimum)
+            {
                 settingsRef.Credits = creditsBox.Minimum; // this is a requirement
+            }
             else if (settingsRef.Credits > creditsBox.Maximum)
+            {
                 settingsRef.Credits = creditsBox.Maximum;
+            }
 
             if (settingsRef.Capacity < capacityBox.Minimum)
+            {
                 settingsRef.Capacity = capacityBox.Minimum;
+            }
             else if (settingsRef.Capacity > capacityBox.Maximum)
+            {
                 settingsRef.Capacity = capacityBox.Maximum;
+            }
 
             if (settingsRef.AbovePrice < abovePriceBox.Minimum)
+            {
                 settingsRef.AbovePrice = abovePriceBox.Minimum;
+            }
             else if (settingsRef.AbovePrice > abovePriceBox.Maximum)
+            {
                 settingsRef.AbovePrice = abovePriceBox.Maximum;
+            }
 
             if (settingsRef.BelowPrice < belowPriceBox.Minimum)
+            {
                 settingsRef.BelowPrice = belowPriceBox.Minimum;
+            }
             else if (settingsRef.BelowPrice > belowPriceBox.Maximum)
+            {
                 settingsRef.BelowPrice = belowPriceBox.Maximum;
+            }
 
             if (settingsRef.PruneHops < pruneHopsBox.Minimum)
+            {
                 settingsRef.PruneHops = pruneHopsBox.Minimum;
+            }
             else if (settingsRef.PruneHops > pruneHopsBox.Maximum)
+            {
                 settingsRef.PruneHops = pruneHopsBox.Maximum;
+            }
 
             if (settingsRef.PruneScore < pruneScoreBox.Minimum)
+            {
                 settingsRef.PruneScore = pruneScoreBox.Minimum;
+            }
             else if (settingsRef.PruneScore > pruneScoreBox.Maximum)
+            {
                 settingsRef.PruneScore = pruneScoreBox.Maximum;
+            }
 
             if (settingsRef.Limit < limitBox.Minimum)
+            {
                 settingsRef.Limit = limitBox.Minimum;
+            }
             else if (settingsRef.Limit > limitBox.Maximum)
+            {
                 settingsRef.Limit = limitBox.Maximum;
+            }
 
             if (settingsRef.MaxLSDistance < maxLSDistanceBox.Minimum)
+            {
                 settingsRef.MaxLSDistance = maxLSDistanceBox.Minimum;
+            }
             else if (settingsRef.MaxLSDistance > maxLSDistanceBox.Maximum)
+            {
                 settingsRef.MaxLSDistance = maxLSDistanceBox.Maximum;
+            }
 
             if (settingsRef.LSPenalty < lsPenaltyBox.Minimum)
+            {
                 settingsRef.LSPenalty = lsPenaltyBox.Minimum;
+            }
             else if (settingsRef.LSPenalty > lsPenaltyBox.Maximum)
+            {
                 settingsRef.LSPenalty = lsPenaltyBox.Maximum;
+            }
 
             if (settingsRef.Stock < stockBox.Minimum)
+            {
                 settingsRef.Stock = stockBox.Minimum;
+            }
             else if (settingsRef.Stock > stockBox.Maximum)
+            {
                 settingsRef.Stock = stockBox.Maximum;
+            }
 
             if (settingsRef.GPT < gptBox.Minimum)
+            {
                 settingsRef.GPT = gptBox.Minimum;
+            }
             else if (settingsRef.GPT > gptBox.Maximum)
+            {
                 settingsRef.GPT = gptBox.Maximum;
+            }
 
             if (settingsRef.MaxGPT < maxGPTBox.Minimum)
+            {
                 settingsRef.MaxGPT = maxGPTBox.Minimum;
+            }
             else if (settingsRef.MaxGPT > maxGPTBox.Maximum)
+            {
                 settingsRef.MaxGPT = maxGPTBox.Maximum;
+            }
 
             if (settingsRef.Insurance < insuranceBox.Minimum)
+            {
                 settingsRef.Insurance = insuranceBox.Minimum;
+            }
             else if (settingsRef.Insurance > insuranceBox.Maximum)
+            {
                 settingsRef.Insurance = insuranceBox.Maximum;
+            }
 
             if (settingsRef.Margin < marginBox.Minimum)
+            {
                 settingsRef.Margin = marginBox.Minimum;
+            }
             else if (settingsRef.Margin > marginBox.Maximum)
+            {
                 settingsRef.Margin = marginBox.Maximum;
+            }
 
             if (settingsRef.Age < ageBox.Minimum)
+            {
                 settingsRef.Age = ageBox.Minimum;
+            }
             else if (settingsRef.Age > ageBox.Maximum)
+            {
                 settingsRef.Age = ageBox.Maximum;
+            }
 
             if (settingsRef.LadenLY < ladenLYBox.Minimum)
+            {
                 settingsRef.LadenLY = ladenLYBox.Minimum; // this is a requirement
+            }
             else if (settingsRef.LadenLY > ladenLYBox.Maximum)
+            {
                 settingsRef.LadenLY = ladenLYBox.Maximum;
+            }
 
             if (settingsRef.UnladenLY < unladenLYBox.Minimum)
+            {
                 settingsRef.UnladenLY = unladenLYBox.Minimum;
+            }
             else if (settingsRef.UnladenLY > unladenLYBox.Maximum)
+            {
                 settingsRef.UnladenLY = unladenLYBox.Maximum;
+            }
 
             // convert verbosity to a string
-            if (settingsRef.Verbosity == 0)
-                t_outputVerbosity = "";
-            else if (settingsRef.Verbosity == 3)
-                t_outputVerbosity = "-vvv";
-            else if (settingsRef.Verbosity == 2)
-                t_outputVerbosity = "-vv";
-            else if (settingsRef.Verbosity == 1)
-                t_outputVerbosity = "-v";
+            switch (settingsRef.Verbosity)
+            {
+                case 3:
+                    t_outputVerbosity = "-vvv";
+                    break;
+
+                case 2:
+                    t_outputVerbosity = "-vv";
+                    break;
+
+                case 1:
+                    t_outputVerbosity = "-v";
+                    break;
+
+                default:
+                    t_outputVerbosity = string.Empty;
+                    break;
+
+            }
 
             if (settingsRef.Hops < hopsBox.Minimum && !settingsRef.Loop)
+            {
                 settingsRef.Hops = hopsBox.Minimum;
+            }
             else if (settingsRef.Loop && settingsRef.Hops < 2)
             {
                 settingsRef.Hops = 2;
                 hopsBox.Text = "2";
             }
             else if (settingsRef.Hops > hopsBox.Maximum)
+            {
                 settingsRef.Hops = hopsBox.Maximum;
+            }
 
             if (settingsRef.Jumps < jumpsBox.Minimum)
+            {
                 settingsRef.Jumps = jumpsBox.Minimum;
+            }
             else if (settingsRef.Jumps > jumpsBox.Maximum)
+            {
                 settingsRef.Jumps = jumpsBox.Maximum;
+            }
 
             // these only apply if we haven't copied them already
             if (t_StartJumps < startJumpsBox.Minimum)
+            {
                 t_StartJumps = startJumpsBox.Minimum;
+            }
             else if (t_StartJumps > startJumpsBox.Maximum)
+            {
                 t_StartJumps = startJumpsBox.Maximum;
+            }
 
             if (t_EndJumps < endJumpsBox.Minimum)
+            {
                 t_EndJumps = endJumpsBox.Minimum;
+            }
             else if (t_EndJumps > endJumpsBox.Maximum)
+            {
                 t_EndJumps = endJumpsBox.Maximum;
+            }
 
             if (settingsRef.CSVSelect < 0 && settingsRef.CSVSelect > 5)
+            {
                 settingsRef.CSVSelect = 0;
+            }
 
             if (!ContainsPadSizes(settingsRef.Padsizes))
+            {
                 settingsRef.Padsizes = "";
+            }
 
             // an exception is made for checkboxes, we shouldn't ever get here
             if (settingsRef.Towards && settingsRef.Loop)
+            {
                 settingsRef.Loop = false;
+            }
             else if (settingsRef.Towards && string.IsNullOrEmpty(temp_dest))
+            {
                 settingsRef.Towards = false;
+            }
 
             // sanity check in case of invalid input paths
             if (buttonCaller == 14)
+            {
                 ValidateImportPath();
+            }
             else if (buttonCaller == 13)
+            {
                 ValidateUploadPath();
-
-            ValidatePython(null);
-            ValidateTDPath(null);
-            ValidateEdcePath(null);
-            ValidateNetLogPath(null);
+            }
 
             // default to Run command if unset
             methodDropDown.SelectedIndex = methodIndex;
 
             // make sure we pull CSV paths after we validate our inputs
-            if (!string.IsNullOrEmpty(settingsRef.TDPath)) { t_itemListPath = settingsRef.TDPath + @"\data\Item.csv"; }
-            if (!string.IsNullOrEmpty(settingsRef.TDPath)) { t_shipListPath = settingsRef.TDPath + @"\data\Ship.csv"; }
+            if (!string.IsNullOrEmpty(settingsRef.TDPath))
+            {
+                t_itemListPath = settingsRef.TDPath + @"\data\Item.csv";
+            }
+
+            if (!string.IsNullOrEmpty(settingsRef.TDPath))
+            {
+                t_shipListPath = settingsRef.TDPath + @"\data\Ship.csv";
+            }
 
             // Set the default rebuy percentage to 5%.
             if (settingsRef.RebuyPercentage == 0)
@@ -582,6 +697,7 @@ namespace TDHelper
                 .Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
                 .SkipWhile(x => exceptions.Any(x.Contains)).ToArray();
             string result = string.Join(Environment.NewLine, filteredLines);
+
             return result;
         }
 
@@ -590,6 +706,7 @@ namespace TDHelper
             // should work with most patterns, and favorite systems/stations
             string pattern = @"^\s*!|^\s*(?=\D)|(?!\S)[ ]+(?=\/)|(?<=\/)[ ]+(?=\S)|(?<=\S)[ ]+(?!\S)";
             string sanitized = Regex.Replace(input, pattern, "", RegexOptions.Compiled);
+
             return sanitized;
         }
 
@@ -597,9 +714,11 @@ namespace TDHelper
         {
             // compare the strings in the array to see if duplicates exist
             int count = 0;
+
             for (int i = 0; i < inputArray.Length; i++)
             {
                 count = 1; // we always have at least 1 occurance
+
                 for (int j = 0; j < inputArray.Length; j++)
                 {
                     if (i != j)
@@ -611,7 +730,9 @@ namespace TDHelper
                 }
 
                 if (count > 1)
+                {
                     return true; // break as soon as any duplicates are found
+                }
             }
 
             return false;
@@ -655,7 +776,9 @@ namespace TDHelper
                 outputStamp = parsedStamp.AddSeconds(-1);
             }
             else
+            {
                 outputStamp = DateTime.Now; // fail, but don't explode
+            }
 
             return outputStamp.ToString(format);
         }
@@ -664,10 +787,15 @@ namespace TDHelper
         {
             // return only an index of the first partial match (insensitive)
             int index = listToSearch.IndexOf(input);
+
             if (index >= 0)
+            {
                 return index;
+            }
             else
+            {
                 return -1;
+            }
         }
 
         private int IndexInListExact(string input, List<string> listToSearch)
@@ -690,12 +818,16 @@ namespace TDHelper
         {
             // quick loop to check equality of two string lists
             if (list1.Count != list2.Count)
+            {
                 return false;
+            }
 
             for (int i = 0; i < list1.Count; i++)
             {
                 if (!list1[i].Equals(list2[i]))
+                {
                     return false;
+                }
             }
 
             return true;
@@ -708,7 +840,9 @@ namespace TDHelper
             {
                 // compare exact indexes
                 if (!list1[i].Equals(list2[i]))
+                {
                     return false; // break on the first negative
+                }
             }
 
             return true;
@@ -720,7 +854,9 @@ namespace TDHelper
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
             if (CheckIfFileOpens(path) && ValidateConfigFile(path))
+            {
                 configFile = path; // we've got a valid TDHelper config file
+            }
 
             // save our current used config file
             if (!string.IsNullOrEmpty(settingsRef.LastUsedConfig)
@@ -736,8 +872,8 @@ namespace TDHelper
             SaveSettingsToIniFile();
 
             BuildSettings();
-            ValidateSettings();
             CopySettingsFromConfig();
+            ValidateSettings();
 
             // don't populate if switching configs
             if (buttonCaller != 21)
@@ -748,14 +884,9 @@ namespace TDHelper
 
             // populate the notes page
             if (File.Exists(notesFile))
+            {
                 notesTextBox.LoadFile(notesFile, RichTextBoxStreamType.PlainText);
-
-            //// call the parser to add new configs to the list
-            //validConfigs = parseValidConfigs();
-            //// refresh our datasource
-            //altConfigBox.DataSource = null;
-            //altConfigBox.DataSource = validConfigs[1];
-            //altConfigBox.SelectedIndex = altConfigBox.Items.IndexOf(Path.GetFileNameWithoutExtension(configFile));
+            }
 
             // reset our selected command for safety
             methodDropDown.SelectedIndex = 0;
@@ -770,13 +901,17 @@ namespace TDHelper
             if (!string.IsNullOrEmpty(input))
             {
                 string[] tokens = input.Split(new string[] { "/" }, StringSplitOptions.None);
+
                 if (tokens != null && tokens.Length == 2)
                 {
                     // has both system and station
                     string t_system = tokens[0];
                     string t_station = tokens[1];
+
                     if (!string.IsNullOrEmpty(t_system) && !string.IsNullOrEmpty(t_station))
+                    {
                         GrabStationData(t_system, t_station);
+                    }
 
                     // shipvendor textbox
                     if (outputStationShips.Count > 0)
@@ -785,7 +920,9 @@ namespace TDHelper
                         shipsSoldBox.DataSource = outputStationShips;
                     }
                     else
+                    {
                         shipsSoldBox.DataSource = null;
+                    }
                 }
             }
         }
@@ -841,7 +978,6 @@ namespace TDHelper
             }
             else
             {
-                //                if (input.StartsWith("["))
                 if (input.Contains("\r"))
                 {
                     // Overwrite the last line.
@@ -867,7 +1003,9 @@ namespace TDHelper
             foreach (string s in stringsToSearch)
             {
                 if (s.IndexOf(input, StringComparison.OrdinalIgnoreCase) >= 0)
+                {
                     return true;
+                }
             }
 
             return false;
@@ -879,7 +1017,9 @@ namespace TDHelper
             for (int i = 0; i < listToSearch.Count; i++)
             {
                 if (listToSearch[i].IndexOf(input, StringComparison.OrdinalIgnoreCase) >= 0)
+                {
                     return true;
+                }
             }
 
             return false;
@@ -891,7 +1031,9 @@ namespace TDHelper
             {
                 // go in reverse to hit a match faster with our particular dataset
                 if (listToSearch[i].Equals(input, StringComparison.InvariantCulture))
+                {
                     return true; // return on the first match
+                }
             }
 
             return false;
@@ -924,6 +1066,7 @@ namespace TDHelper
                     x.InitialDirectory = settingsRef.ImportPath;
 
                 x.Filter = "Prices files|*.prices;*.updated;*.last|All files|*.*";
+
                 if (x.ShowDialog() == DialogResult.OK)
                 {
                     settingsRef.ImportPath = x.FileName;
@@ -948,6 +1091,7 @@ namespace TDHelper
                 }
 
                 x.Filter = "Prices/CSV files|*.prices;*.csv|All files|*.*";
+
                 if (x.ShowDialog() == DialogResult.OK)
                 {
                     settingsRef.UploadPath = x.FileName;
@@ -960,6 +1104,7 @@ namespace TDHelper
         {
             // this takes text as an input, filters it, and outputs to a file
             string filteredOutput = FilterOutput(text);
+
             if (!string.IsNullOrEmpty(filteredOutput))
             {
                 using (FileStream fs = new FileStream(file, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
@@ -1003,13 +1148,6 @@ namespace TDHelper
 
             //// Serialize(configFile);
             SaveSettingsToIniFile();
-
-            // call the parser to add new configs to the list
-            //validConfigs = parseValidConfigs();
-            //// refresh our datasource
-            //altConfigBox.DataSource = null;
-            //altConfigBox.DataSource = validConfigs[1];
-            //altConfigBox.SelectedIndex = altConfigBox.Items.IndexOf(Path.GetFileNameWithoutExtension(configFile));
         }
     }
 }
