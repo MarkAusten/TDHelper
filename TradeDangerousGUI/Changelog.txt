@@ -2,6 +2,7 @@ V2.0.3.2
 --------
 
 * Added "TD Helper - " to all dialog title bars.
+* Fixed bug where cancelling from the mandatory path selection did not close the application.
 
 v2.0.2.1
 --------
@@ -22,7 +23,7 @@ v2.0.2.0
 * Changed layout.
 * Removed all EDSC controls and code as EDSC does not seem to be avilable any longer.
 * Removed all station editing. Use EDMC, EDDI or similar for station updates. Run EDDBlink-listener to get up to date prices as they happen.
-* The progress bar now appears on one line only. This is a fudge and may not work in the future as it det4ects the "[" at the start of the progress bar and ensures that this starts outputting at the start of the same line.
+* The progress bar now appears on one line only. This is a fudge and may not work in the future as it detects the "[" at the start of the progress bar and ensures that this starts outputting at the start of the same line.
 * Added back previously removed 'Save settings' button.
 * Fixed bug that left the run button with the cancel text after a Cmdr profile.
 * Fixed bug where method drop down box was disabled.
