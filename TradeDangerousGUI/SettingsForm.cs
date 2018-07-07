@@ -184,7 +184,7 @@ namespace TDHelper
         private void ValidateEdcePath_Click(object sender, EventArgs e)
         {
             string origPath = MainForm.settingsRef.EdcePath;
-            MainForm.settingsRef.EdcePath = "";
+            MainForm.settingsRef.EdcePath = string.Empty;
             MainForm.ValidateEdcePath(origPath);
             edcePathBox.Text = MainForm.settingsRef.EdcePath;
         }
@@ -192,7 +192,7 @@ namespace TDHelper
         private void ValidateNetLogsPath_Click(object sender, EventArgs e)
         {
             string origPath = MainForm.settingsRef.NetLogPath;
-            MainForm.settingsRef.NetLogPath = "";
+            MainForm.settingsRef.NetLogPath = string.Empty;
             MainForm.ValidateNetLogPath(origPath);
             netLogsPathBox.Text = MainForm.settingsRef.NetLogPath;
         }
@@ -202,7 +202,7 @@ namespace TDHelper
             string origPath = MainForm.settingsRef.PythonPath;
             string origTDPath = MainForm.settingsRef.TDPath;
 
-            MainForm.settingsRef.PythonPath = "";
+            MainForm.settingsRef.PythonPath = string.Empty;
             MainForm.ValidatePython(origPath);
 
             // adjust for Trade Dangerous Installer
@@ -214,7 +214,7 @@ namespace TDHelper
             else if (MainForm.settingsRef.PythonPath.EndsWith("python.exe")
                 && !MainForm.CheckIfFileOpens(Path.Combine(MainForm.settingsRef.TDPath, "trade.py")))
             {
-                MainForm.settingsRef.TDPath = "";
+                MainForm.settingsRef.TDPath = string.Empty;
                 MainForm.ValidateTDPath(origTDPath);
                 tdPathBox.Text = MainForm.settingsRef.TDPath;
             }
@@ -229,9 +229,9 @@ namespace TDHelper
 
             // if we're using Trade Dangerous Installer, wipe our interpreter path first
             if (origPyPath.EndsWith("trade.exe"))
-                MainForm.settingsRef.PythonPath = "";
+                MainForm.settingsRef.PythonPath = string.Empty;
 
-            MainForm.settingsRef.TDPath = "";
+            MainForm.settingsRef.TDPath = string.Empty;
             MainForm.ValidateTDPath(origPath);
 
             if (origPyPath.EndsWith("trade.exe"))

@@ -290,7 +290,9 @@ namespace TDHelper
                         }
                     }
                     else
+                    {
                         throw new Exception("Unable to access the python interpreter, this is fatal");
+                    }
                 }
                 else
                 {
@@ -309,7 +311,9 @@ namespace TDHelper
                         }
                     }
                     else
+                    {
                         throw new Exception("Unable to access the python interpreter, this is fatal");
+                    }
                 }
             }
             else
@@ -360,7 +364,9 @@ namespace TDHelper
                             SaveSettingsToIniFile();
                         }
                         else
+                        {
                             throw new Exception("TradeDangerous path is empty or invalid, cannot continue");
+                        }
                     }
                 }
             }

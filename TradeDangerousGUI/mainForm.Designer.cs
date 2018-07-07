@@ -1736,7 +1736,7 @@
             this.savedTextBox1.Location = new System.Drawing.Point(3, 3);
             this.savedTextBox1.Name = "savedTextBox1";
             this.savedTextBox1.ReadOnly = true;
-            this.savedTextBox1.Size = new System.Drawing.Size(787, 466);
+            this.savedTextBox1.Size = new System.Drawing.Size(935, 466);
             this.savedTextBox1.TabIndex = 2;
             this.savedTextBox1.TabStop = false;
             this.savedTextBox1.Text = "";
@@ -1761,7 +1761,7 @@
             this.savedTextBox2.Location = new System.Drawing.Point(3, 3);
             this.savedTextBox2.Name = "savedTextBox2";
             this.savedTextBox2.ReadOnly = true;
-            this.savedTextBox2.Size = new System.Drawing.Size(787, 466);
+            this.savedTextBox2.Size = new System.Drawing.Size(933, 466);
             this.savedTextBox2.TabIndex = 2;
             this.savedTextBox2.TabStop = false;
             this.savedTextBox2.Text = "";
@@ -1786,7 +1786,7 @@
             this.savedTextBox3.Location = new System.Drawing.Point(3, 3);
             this.savedTextBox3.Name = "savedTextBox3";
             this.savedTextBox3.ReadOnly = true;
-            this.savedTextBox3.Size = new System.Drawing.Size(787, 466);
+            this.savedTextBox3.Size = new System.Drawing.Size(935, 466);
             this.savedTextBox3.TabIndex = 2;
             this.savedTextBox3.TabStop = false;
             this.savedTextBox3.Text = "";
@@ -1812,7 +1812,7 @@
             this.notesTextBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.notesTextBox.Location = new System.Drawing.Point(3, 3);
             this.notesTextBox.Name = "notesTextBox";
-            this.notesTextBox.Size = new System.Drawing.Size(787, 466);
+            this.notesTextBox.Size = new System.Drawing.Size(933, 466);
             this.notesTextBox.TabIndex = 3;
             this.notesTextBox.TabStop = false;
             this.notesTextBox.Text = "";
@@ -1841,7 +1841,7 @@
             this.pilotsLogDataGrid.ContextMenuStrip = this.contextMenuStrip2;
             this.pilotsLogDataGrid.Location = new System.Drawing.Point(3, 3);
             this.pilotsLogDataGrid.Name = "pilotsLogDataGrid";
-            this.pilotsLogDataGrid.Size = new System.Drawing.Size(787, 436);
+            this.pilotsLogDataGrid.Size = new System.Drawing.Size(935, 436);
             this.pilotsLogDataGrid.TabIndex = 0;
             this.pilotsLogDataGrid.VirtualMode = true;
             this.pilotsLogDataGrid.CellContextMenuStripNeeded += new System.Windows.Forms.DataGridViewCellContextMenuStripNeededEventHandler(this.PilotsLogDataGrid_CellContextMenuStripNeeded);
