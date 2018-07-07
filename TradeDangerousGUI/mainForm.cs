@@ -40,6 +40,8 @@ namespace TDHelper
                     | ControlStyles.UserPaint
                     | ControlStyles.DoubleBuffer, true);
 
+            this.creditsBox.Maximum = Decimal.MaxValue;
+
             // Build variables from config
             BuildSettings();
 
@@ -55,8 +57,25 @@ namespace TDHelper
             testSystemsTimer.AutoReset = false;
             testSystemsTimer.Interval = 10000;
             testSystemsTimer.Elapsed += this.TestSystemsTimer_Delegate;
+        }
 
-            this.creditsBox.Maximum = Decimal.MaxValue;
+        private string AddPlanetary(TDSettings settingsRef)
+        {
+            string modifier = string.Empty;
+
+            if (settingsRef.RouteNoPlanet)
+            {
+                modifier = " --no-planet";
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(settingsRef.Planetary))
+                {
+                    modifier = " --planetary=" + settingsRef.Planetary;
+                }
+            }
+
+            return modifier;
         }
 
         private void AltConfigBox_DropDown(object sender, EventArgs e)
@@ -145,10 +164,9 @@ namespace TDHelper
              * Index = 3 is the Rare command
              * Index = 4 is the Trade command
              * Index = 5 is the Market command
-             * Index = 6 is the Station command
-             * Index = 7 is the ShipVendor command
-             * Index = 8 is the Navigation command
-             * Index = 9 is the OldData command
+             * Index = 6 is the ShipVendor command
+             * Index = 7 is the Navigation command
+             * Index = 8 is the OldData command
              *
              * buttonCaller = 1 is a semaphore for the Run button
              * buttonCaller = 2 is a semaphore for the "C" button
@@ -224,9 +242,21 @@ namespace TDHelper
                     if (shipyardBoxChecked == 1) { t_path += " --shipyard"; }
                     if (outfitBoxChecked == 1) { t_path += " --outfitting"; }
                     if (stationsFilterChecked) { t_path += " --stations"; }
+                    if (chkLocalNoPlanet.Checked)
+                    {
+                        t_path += " --no-planet";
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(txtLocalPlanetary.Text))
+                        {
+                            t_path += " --planetary=" + txtLocalPlanetary.Text;
+                        }
+                    }
 
                     if (!string.IsNullOrEmpty(settingsRef.Padsizes)) { t_path += " --pad=" + settingsRef.Padsizes; }
                     if (settingsRef.Verbosity > 0) { t_path += " " + t_outputVerbosity; }
+
                     t_path += " \"" + temp_src + "\"";
                 }
                 else
@@ -269,6 +299,9 @@ namespace TDHelper
                     if (!string.IsNullOrEmpty(settingsRef.Avoid)) { t_path += " --avoid=\"" + settingsRef.Avoid + "\""; }
                     if (settingsRef.LadenLY > 0) { t_path += " --ly=" + settingsRef.LadenLY; }
                     if (settingsRef.Verbosity > 0) { t_path += " " + t_outputVerbosity; }
+                    if (settingsRef.RouteStations) { t_path += " --stations"; }
+
+                    t_path += this.AddPlanetary(settingsRef);
                     t_path += " \"" + temp_src + "\" " + "\"" + temp_dest + "\"";
                 }
                 else
@@ -321,6 +354,7 @@ namespace TDHelper
                     if (bmktCheckBox.Checked) { t_path += " -B"; }
                     if (directCheckBox.Checked) { t_path += " -S"; }
                     if (settingsRef.Verbosity > 0) { t_path += " " + t_outputVerbosity; }
+
                     t_path += " \"" + temp_src + "\"";
                 }
                 else
@@ -370,7 +404,11 @@ namespace TDHelper
                             t_path += " --from=\"" + output + "\"";
                         }
                     }
+
+                    t_path += this.AddPlanetary(settingsRef);
+
                     if (settingsRef.Verbosity > 0) { t_path += " " + t_outputVerbosity; }
+
                     t_path += " \"" + temp_src + "\"";
                 }
                 else
@@ -393,6 +431,9 @@ namespace TDHelper
                 if (!string.IsNullOrEmpty(settingsRef.Avoid)) { t_path += " --avoid=\"" + settingsRef.Avoid + "\""; }
                 if (stationIndex == 1 && !string.IsNullOrEmpty(temp_src)) { t_path += " --price-sort"; }
                 if (settingsRef.Verbosity > 0) { t_path += " " + t_outputVerbosity; }
+
+                t_path += this.AddPlanetary(settingsRef);
+
                 t_path += " --lim=50";
 
                 if (!string.IsNullOrEmpty(temp_commod))
@@ -414,10 +455,13 @@ namespace TDHelper
                 if (!string.IsNullOrEmpty(settingsRef.Padsizes)) { t_path += " --pad=" + settingsRef.Padsizes; }
                 if (!string.IsNullOrEmpty(settingsRef.Avoid)) { t_path += " --avoid=\"" + settingsRef.Avoid + "\""; }
 
+                t_path += this.AddPlanetary(settingsRef);
+
                 if (stationIndex == 1 && !string.IsNullOrEmpty(temp_src)) { t_path += " --price-sort"; }
                 else if (stationIndex == 2) { t_path += " --units-sort"; }
 
                 if (settingsRef.Verbosity > 0) { t_path += " " + t_outputVerbosity; }
+
                 t_path += " --lim=50";
 
                 if (!string.IsNullOrEmpty(temp_commod))
@@ -479,6 +523,14 @@ namespace TDHelper
                 if (settingsRef.ShowJumps) { t_path += " -J"; }
                 if (!string.IsNullOrEmpty(settingsRef.ExtraRunParams)) { t_path += " " + settingsRef.ExtraRunParams; }
                 if (settingsRef.Verbosity > 0) { t_path += " " + t_outputVerbosity; }
+
+                t_path += this.AddPlanetary(settingsRef);
+
+                // Add the progress command if required.
+                if (settingsRef.ShowProgress && !t_path.Contains("--progress"))
+                {
+                    t_path += " --progress";
+                }
 
                 buttonCaller = 4; // mark as Run command
             }
@@ -802,6 +854,16 @@ namespace TDHelper
             this.btnSaveSettings.Enabled = true;
         }
 
+        private void chkLocalNoPlanet_CheckedChanged(object sender, EventArgs e)
+        {
+            lblLocalPlanetary.Enabled = !chkLocalNoPlanet.Checked;
+            txtLocalPlanetary.Enabled = !chkLocalNoPlanet.Checked;
+        }
+
+        private void ChkRouteNoPlanet_CheckedChanged(object sender, EventArgs e)
+        {
+        }
+
         private void ClearSaved1MenuItem_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(savedTextBox1.Text))
@@ -1050,7 +1112,17 @@ namespace TDHelper
                 ? settingsRef.Padsizes
                 : string.Empty;
 
+            txtPlanetary.Text = ContainsPlanetary(settingsRef.Planetary)
+                ? settingsRef.Planetary
+                : string.Empty;
+
             testSystemsCheckBox.Checked = settingsRef.TestSystems;
+
+            chkRouteNoPlanet.Checked = settingsRef.RouteNoPlanet;
+            chkLocalNoPlanet.Checked = settingsRef.LocalNoPlanet;
+            chkRouteStations.Checked = settingsRef.RouteStations;
+            chkProgress.Checked = settingsRef.ShowProgress;
+            txtPlanetary.Text = settingsRef.Planetary;
         }
 
         private void CopySettingsFromForm()
@@ -1320,6 +1392,12 @@ namespace TDHelper
             settingsRef.Towards = towardsCheckBox.Checked;
             settingsRef.Unique = uniqueCheckBox.Checked;
             settingsRef.ShowJumps = showJumpsCheckBox.Checked;
+            settingsRef.RouteNoPlanet = chkRouteNoPlanet.Checked;
+            settingsRef.LocalNoPlanet = chkLocalNoPlanet.Checked;
+            settingsRef.RouteStations = chkRouteStations.Checked;
+            settingsRef.ShowProgress = chkProgress.Checked;
+
+            settingsRef.Planetary = txtPlanetary.Text;
 
             t_localNavEnabled = localNavCheckBox.Checked;
             stationsFilterChecked = stationsFilterCheckBox.Checked;
@@ -1364,6 +1442,16 @@ namespace TDHelper
             {
                 settingsRef.Padsizes = string.Empty;
                 padSizeBox.Text = settingsRef.Padsizes.ToString();
+            }
+
+            if (ContainsPlanetary(txtPlanetary.Text))
+            {
+                settingsRef.Planetary = txtPlanetary.Text;
+            }
+            else
+            {
+                settingsRef.Planetary = string.Empty;
+                txtPlanetary.Text = settingsRef.Planetary.ToString();
             }
 
             t_confirmCode = string.Empty;
@@ -1690,6 +1778,8 @@ namespace TDHelper
                 ladenLYLabel.Font = new Font(ladenLYLabel.Font, FontStyle.Italic);
                 ladenLYLabel.Text = "  Near LY:";
                 ladenLYLabel.Enabled = true;
+                chkLocalNoPlanet.Enabled = true;
+                stationsFilterCheckBox.Enabled = true;
 
                 l0_ladenLY = ladenLYBox.Value; // save our last used ladenLY
 
@@ -1927,6 +2017,9 @@ namespace TDHelper
                         demandBox.Enabled = true;
                     }
 
+                    chkRouteNoPlanet.Enabled = true;
+                    chkRouteStations.Enabled = false;
+
                     // only reenable the appropriate options
                     ladenLYBox.Enabled = true;
                     ladenLYLabel.Enabled = true;
@@ -1989,6 +2082,8 @@ namespace TDHelper
                     unladenLYLabel.Enabled = true;
                     avoidLabel.Enabled = true;
                     avoidBox.Enabled = true;
+                    chkRouteNoPlanet.Enabled = true;
+                    chkRouteStations.Enabled = false;
 
                     // fix tooltips
                     toolTip1.SetToolTip(stationDropDown, "Filter rares by context");
@@ -2005,6 +2100,9 @@ namespace TDHelper
                 {
                     // trade command
                     RunMethodResetState();
+
+                    chkRouteStations.Enabled = false;
+
                     methodFromIndex = 4;
                 }
                 else if (methodIndex == 5)
@@ -2074,6 +2172,8 @@ namespace TDHelper
                     avoidBox.Enabled = true;
                     viaLabel.Enabled = true;
                     viaBox.Enabled = true;
+                    chkRouteNoPlanet.Enabled = true;
+                    chkRouteStations.Enabled = true;
 
                     methodFromIndex = 7; // mark nav
                 }
@@ -2435,6 +2535,9 @@ namespace TDHelper
             outfitFilterCheckBox.Checked = false;
             shipyardFilterCheckBox.Checked = false;
             stationsFilterCheckBox.Checked = false;
+            chkLocalNoPlanet.Checked = false;
+            lblPlanetary.Enabled = true;
+            txtPlanetary.Enabled = true;
         }
 
         private void RunButton_Click(object sender, EventArgs e)
@@ -2563,6 +2666,8 @@ namespace TDHelper
                     : demandBox.Minimum;
 
                 oneStopCheckBox.Enabled = false;
+                chkRouteStations.Enabled = false;
+                chkProgress.Enabled = true;
 
                 towardsCheckBox.Enabled = srcSystemComboBox.Text.Length > 3 && destSystemComboBox.Text.Length > 3;
             }
@@ -3149,6 +3254,14 @@ namespace TDHelper
         private void TestSystemsCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             settingsRef.TestSystems = testSystemsCheckBox.Checked;
+        }
+
+        private void TxtLocalPlanetary_TextChanged(object sender, EventArgs e)
+        {
+            txtLocalPlanetary.Text
+                = ContainsPlanetary(txtLocalPlanetary.Text)
+                ? txtLocalPlanetary.Text
+                : string.Empty;
         }
 
         private void TestSystemsTimer_Delegate(object sender, ElapsedEventArgs e)

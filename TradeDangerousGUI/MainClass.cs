@@ -188,7 +188,7 @@ namespace TDHelper
                 }
                 else
                 {
-                    string localPath = altPath ?? ""; // prevent null
+                    string localPath = altPath ?? string.Empty; // prevent null
                     if (!string.IsNullOrEmpty(localPath) && CheckIfFileOpens(Path.Combine(localPath, "edce_client.py")) || localPath.EndsWith(".py"))
                     {
                         // if we have an alternate path, we can reset the variable here
@@ -354,7 +354,7 @@ namespace TDHelper
                     }
                     else
                     {
-                        string localPath = altPath ?? ""; // prevent null
+                        string localPath = altPath ?? string.Empty; // prevent null
                         if (!string.IsNullOrEmpty(localPath) && CheckIfFileOpens(Path.Combine(localPath, "trade.py")) || localPath.EndsWith(".py"))
                         {
                             // if we have an alternate path, we can reset the variable here
@@ -642,7 +642,12 @@ namespace TDHelper
 
             if (!ContainsPadSizes(settingsRef.Padsizes))
             {
-                settingsRef.Padsizes = "";
+                settingsRef.Padsizes = string.Empty;
+            }
+
+            if (!ContainsPlanetary(settingsRef.Planetary))
+            {
+                settingsRef.Planetary = string.Empty;
             }
 
             // an exception is made for checkboxes, we shouldn't ever get here
@@ -705,7 +710,7 @@ namespace TDHelper
         {
             // should work with most patterns, and favorite systems/stations
             string pattern = @"^\s*!|^\s*(?=\D)|(?!\S)[ ]+(?=\/)|(?<=\/)[ ]+(?=\S)|(?<=\S)[ ]+(?!\S)";
-            string sanitized = Regex.Replace(input, pattern, "", RegexOptions.Compiled);
+            string sanitized = Regex.Replace(input, pattern, string.Empty, RegexOptions.Compiled);
 
             return sanitized;
         }
@@ -757,7 +762,7 @@ namespace TDHelper
         private string CleanShipVendorInput(string input)
         {
             // just a simple method to clean invalid data from the shipvendor input
-            return Regex.Replace(input, @"\s\[.*\]|(?<=\w)\,\s*(?!\w|\s+\w)|(?<=\s)\s+", "");
+            return Regex.Replace(input, @"\s\[.*\]|(?<=\w)\,\s*(?!\w|\s+\w)|(?<=\s)\s+", string.Empty);
         }
 
         private string CurrentTimestamp()

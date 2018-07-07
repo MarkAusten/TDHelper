@@ -140,6 +140,12 @@
             this.btnCmdrProfile = new System.Windows.Forms.Button();
             this.btnSaveSettings = new System.Windows.Forms.Button();
             this.ResetFilterButton = new System.Windows.Forms.Button();
+            this.chkRouteNoPlanet = new System.Windows.Forms.CheckBox();
+            this.chkLocalNoPlanet = new System.Windows.Forms.CheckBox();
+            this.chkRouteStations = new System.Windows.Forms.CheckBox();
+            this.chkProgress = new System.Windows.Forms.CheckBox();
+            this.lblPlanetary = new System.Windows.Forms.Label();
+            this.txtPlanetary = new System.Windows.Forms.TextBox();
             this.verbosityComboBox = new System.Windows.Forms.ComboBox();
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker4 = new System.ComponentModel.BackgroundWorker();
@@ -190,6 +196,8 @@
             this.panMisc = new System.Windows.Forms.Panel();
             this.panMethod = new System.Windows.Forms.Panel();
             this.panAgeCredits = new System.Windows.Forms.Panel();
+            this.lblLocalPlanetary = new System.Windows.Forms.Label();
+            this.txtLocalPlanetary = new System.Windows.Forms.TextBox();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.belowPriceBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.abovePriceBox)).BeginInit();
@@ -1267,7 +1275,7 @@
             // shipyardFilterCheckBox
             // 
             this.shipyardFilterCheckBox.AutoSize = true;
-            this.shipyardFilterCheckBox.Location = new System.Drawing.Point(72, 21);
+            this.shipyardFilterCheckBox.Location = new System.Drawing.Point(95, 21);
             this.shipyardFilterCheckBox.Name = "shipyardFilterCheckBox";
             this.shipyardFilterCheckBox.Size = new System.Drawing.Size(67, 17);
             this.shipyardFilterCheckBox.TabIndex = 2;
@@ -1280,7 +1288,7 @@
             // bmktFilterCheckBox
             // 
             this.bmktFilterCheckBox.AutoSize = true;
-            this.bmktFilterCheckBox.Location = new System.Drawing.Point(72, 73);
+            this.bmktFilterCheckBox.Location = new System.Drawing.Point(95, 73);
             this.bmktFilterCheckBox.Name = "bmktFilterCheckBox";
             this.bmktFilterCheckBox.Size = new System.Drawing.Size(89, 17);
             this.bmktFilterCheckBox.TabIndex = 3;
@@ -1293,7 +1301,7 @@
             // itemsFilterCheckBox
             // 
             this.itemsFilterCheckBox.AutoSize = true;
-            this.itemsFilterCheckBox.Location = new System.Drawing.Point(72, 47);
+            this.itemsFilterCheckBox.Location = new System.Drawing.Point(95, 47);
             this.itemsFilterCheckBox.Name = "itemsFilterCheckBox";
             this.itemsFilterCheckBox.Size = new System.Drawing.Size(85, 17);
             this.itemsFilterCheckBox.TabIndex = 4;
@@ -1394,10 +1402,11 @@
             // stationsFilterCheckBox
             // 
             this.stationsFilterCheckBox.AutoSize = true;
-            this.stationsFilterCheckBox.Location = new System.Drawing.Point(121, 99);
+            this.stationsFilterCheckBox.Location = new System.Drawing.Point(9, 122);
             this.stationsFilterCheckBox.Name = "stationsFilterCheckBox";
-            this.stationsFilterCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.stationsFilterCheckBox.Size = new System.Drawing.Size(64, 17);
             this.stationsFilterCheckBox.TabIndex = 60;
+            this.stationsFilterCheckBox.Text = "Stations";
             this.toolTip1.SetToolTip(this.stationsFilterCheckBox, "Filter destinations that don\'t contain stations");
             this.stationsFilterCheckBox.UseVisualStyleBackColor = true;
             this.stationsFilterCheckBox.CheckedChanged += new System.EventHandler(this.FilterCheckBox_CheckedChanged);
@@ -1563,8 +1572,9 @@
             // 
             // ResetFilterButton
             // 
+            this.ResetFilterButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ResetFilterButton.Enabled = false;
-            this.ResetFilterButton.Location = new System.Drawing.Point(83, 94);
+            this.ResetFilterButton.Location = new System.Drawing.Point(260, 140);
             this.ResetFilterButton.Name = "ResetFilterButton";
             this.ResetFilterButton.Size = new System.Drawing.Size(21, 21);
             this.ResetFilterButton.TabIndex = 60;
@@ -1572,6 +1582,83 @@
             this.toolTip1.SetToolTip(this.ResetFilterButton, "Reset the station filters.");
             this.ResetFilterButton.UseVisualStyleBackColor = true;
             this.ResetFilterButton.Click += new System.EventHandler(this.ResetFilterButton_Click);
+            // 
+            // chkRouteNoPlanet
+            // 
+            this.chkRouteNoPlanet.AutoSize = true;
+            this.chkRouteNoPlanet.Enabled = false;
+            this.chkRouteNoPlanet.Location = new System.Drawing.Point(10, 142);
+            this.chkRouteNoPlanet.Name = "chkRouteNoPlanet";
+            this.chkRouteNoPlanet.Size = new System.Drawing.Size(73, 17);
+            this.chkRouteNoPlanet.TabIndex = 64;
+            this.chkRouteNoPlanet.TabStop = false;
+            this.chkRouteNoPlanet.Text = "No Planet";
+            this.toolTip1.SetToolTip(this.chkRouteNoPlanet, "Filters out stations that are on planets");
+            this.chkRouteNoPlanet.UseVisualStyleBackColor = true;
+            this.chkRouteNoPlanet.CheckedChanged += new System.EventHandler(this.ChkRouteNoPlanet_CheckedChanged);
+            // 
+            // chkLocalNoPlanet
+            // 
+            this.chkLocalNoPlanet.AutoSize = true;
+            this.chkLocalNoPlanet.Enabled = false;
+            this.chkLocalNoPlanet.Location = new System.Drawing.Point(95, 97);
+            this.chkLocalNoPlanet.Name = "chkLocalNoPlanet";
+            this.chkLocalNoPlanet.Size = new System.Drawing.Size(73, 17);
+            this.chkLocalNoPlanet.TabIndex = 65;
+            this.chkLocalNoPlanet.TabStop = false;
+            this.chkLocalNoPlanet.Text = "No Planet";
+            this.toolTip1.SetToolTip(this.chkLocalNoPlanet, "Filters out stations that are on planets");
+            this.chkLocalNoPlanet.UseVisualStyleBackColor = true;
+            this.chkLocalNoPlanet.CheckedChanged += new System.EventHandler(this.chkLocalNoPlanet_CheckedChanged);
+            // 
+            // chkRouteStations
+            // 
+            this.chkRouteStations.AutoSize = true;
+            this.chkRouteStations.Enabled = false;
+            this.chkRouteStations.Location = new System.Drawing.Point(9, 165);
+            this.chkRouteStations.Name = "chkRouteStations";
+            this.chkRouteStations.Size = new System.Drawing.Size(64, 17);
+            this.chkRouteStations.TabIndex = 65;
+            this.chkRouteStations.TabStop = false;
+            this.chkRouteStations.Text = "Stations";
+            this.toolTip1.SetToolTip(this.chkRouteStations, "List all the stations enroute");
+            this.chkRouteStations.UseVisualStyleBackColor = true;
+            // 
+            // chkProgress
+            // 
+            this.chkProgress.AutoSize = true;
+            this.chkProgress.Enabled = false;
+            this.chkProgress.Location = new System.Drawing.Point(238, 165);
+            this.chkProgress.Name = "chkProgress";
+            this.chkProgress.Size = new System.Drawing.Size(67, 17);
+            this.chkProgress.TabIndex = 67;
+            this.chkProgress.TabStop = false;
+            this.chkProgress.Text = "Progress";
+            this.toolTip1.SetToolTip(this.chkProgress, "Show the progress of the calculations.");
+            this.chkProgress.UseVisualStyleBackColor = true;
+            // 
+            // lblPlanetary
+            // 
+            this.lblPlanetary.AutoSize = true;
+            this.lblPlanetary.Location = new System.Drawing.Point(93, 163);
+            this.lblPlanetary.Name = "lblPlanetary";
+            this.lblPlanetary.Size = new System.Drawing.Size(54, 13);
+            this.lblPlanetary.TabIndex = 69;
+            this.lblPlanetary.Text = "Planetary:";
+            this.toolTip1.SetToolTip(this.lblPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
+        "?");
+            // 
+            // txtPlanetary
+            // 
+            this.txtPlanetary.Location = new System.Drawing.Point(147, 160);
+            this.txtPlanetary.MaxLength = 3;
+            this.txtPlanetary.Name = "txtPlanetary";
+            this.txtPlanetary.Size = new System.Drawing.Size(32, 20);
+            this.txtPlanetary.TabIndex = 68;
+            this.txtPlanetary.Text = "?";
+            this.txtPlanetary.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.toolTip1.SetToolTip(this.txtPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
+        "?\r\n");
             // 
             // verbosityComboBox
             // 
@@ -1601,6 +1688,11 @@
             // panRunOptions
             // 
             this.panRunOptions.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panRunOptions.Controls.Add(this.lblPlanetary);
+            this.panRunOptions.Controls.Add(this.txtPlanetary);
+            this.panRunOptions.Controls.Add(this.chkProgress);
+            this.panRunOptions.Controls.Add(this.chkRouteStations);
+            this.panRunOptions.Controls.Add(this.chkRouteNoPlanet);
             this.panRunOptions.Controls.Add(this.miscSettingsButton);
             this.panRunOptions.Controls.Add(this.showJumpsCheckBox);
             this.panRunOptions.Controls.Add(this.shortenCheckBox);
@@ -1653,6 +1745,9 @@
             // 
             // localFilterGroupBox
             // 
+            this.localFilterGroupBox.Controls.Add(this.lblLocalPlanetary);
+            this.localFilterGroupBox.Controls.Add(this.txtLocalPlanetary);
+            this.localFilterGroupBox.Controls.Add(this.chkLocalNoPlanet);
             this.localFilterGroupBox.Controls.Add(this.ResetFilterButton);
             this.localFilterGroupBox.Controls.Add(this.stationsFilterCheckBox);
             this.localFilterGroupBox.Controls.Add(this.outfitFilterCheckBox);
@@ -1662,9 +1757,9 @@
             this.localFilterGroupBox.Controls.Add(this.bmktFilterCheckBox);
             this.localFilterGroupBox.Controls.Add(this.refuelFilterCheckBox);
             this.localFilterGroupBox.Controls.Add(this.shipyardFilterCheckBox);
-            this.localFilterGroupBox.Location = new System.Drawing.Point(64, 15);
+            this.localFilterGroupBox.Location = new System.Drawing.Point(11, 15);
             this.localFilterGroupBox.Name = "localFilterGroupBox";
-            this.localFilterGroupBox.Size = new System.Drawing.Size(163, 121);
+            this.localFilterGroupBox.Size = new System.Drawing.Size(287, 167);
             this.localFilterGroupBox.TabIndex = 59;
             this.localFilterGroupBox.TabStop = false;
             this.localFilterGroupBox.Text = "Filters";
@@ -2150,12 +2245,37 @@
             this.panAgeCredits.Size = new System.Drawing.Size(175, 56);
             this.panAgeCredits.TabIndex = 1;
             // 
+            // lblLocalPlanetary
+            // 
+            this.lblLocalPlanetary.AutoSize = true;
+            this.lblLocalPlanetary.Location = new System.Drawing.Point(173, 99);
+            this.lblLocalPlanetary.Name = "lblLocalPlanetary";
+            this.lblLocalPlanetary.Size = new System.Drawing.Size(54, 13);
+            this.lblLocalPlanetary.TabIndex = 71;
+            this.lblLocalPlanetary.Text = "Planetary:";
+            this.toolTip1.SetToolTip(this.lblLocalPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
+        "?");
+            // 
+            // txtLocalPlanetary
+            // 
+            this.txtLocalPlanetary.Location = new System.Drawing.Point(227, 96);
+            this.txtLocalPlanetary.MaxLength = 3;
+            this.txtLocalPlanetary.Name = "txtLocalPlanetary";
+            this.txtLocalPlanetary.Size = new System.Drawing.Size(32, 20);
+            this.txtLocalPlanetary.TabIndex = 70;
+            this.txtLocalPlanetary.Text = "?";
+            this.txtLocalPlanetary.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.toolTip1.SetToolTip(this.txtLocalPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
+        "?\r\n");
+            this.txtLocalPlanetary.TextChanged += new System.EventHandler(this.TxtLocalPlanetary_TextChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(966, 676);
+            this.Controls.Add(this.panLocalFilter);
             this.Controls.Add(this.panAgeCredits);
             this.Controls.Add(this.updateNotifyLabel);
             this.Controls.Add(this.updateNotifyIcon);
@@ -2185,7 +2305,6 @@
             this.Controls.Add(this.runButton);
             this.Controls.Add(this.stopWatchLabel);
             this.Controls.Add(this.panShipVendor);
-            this.Controls.Add(this.panLocalFilter);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -2425,6 +2544,14 @@
         private System.Windows.Forms.Panel panStock;
         private System.Windows.Forms.Panel panMethod;
         private System.Windows.Forms.Panel panAgeCredits;
+        private System.Windows.Forms.CheckBox chkRouteNoPlanet;
+        private System.Windows.Forms.CheckBox chkLocalNoPlanet;
+        private System.Windows.Forms.CheckBox chkRouteStations;
+        private System.Windows.Forms.CheckBox chkProgress;
+        private System.Windows.Forms.Label lblPlanetary;
+        private System.Windows.Forms.TextBox txtPlanetary;
+        private System.Windows.Forms.Label lblLocalPlanetary;
+        private System.Windows.Forms.TextBox txtLocalPlanetary;
     }
 }
 
