@@ -387,21 +387,36 @@ namespace TDHelper
             }
 
             TDSettings settings = MainForm.settingsRef;
-
-            string lastUsed = settings.LastUsedConfig;
-
-            altConfigBox.SelectedIndex
-               = !string.IsNullOrEmpty(lastUsed)
-               ? altConfigBox.FindStringExact(lastUsed)
-               : 0;
-
             Configuration config = Configuration.LoadFromFile(configFile);
 
-            settings.Capacity = config[lastUsed]["Capacity"].DecimalValue;
-            settings.Insurance = config[lastUsed]["Insurance"].DecimalValue;
-            settings.LadenLY = config[lastUsed]["LadenLY"].DecimalValue;
-            settings.Padsizes = config[lastUsed]["Padsizes"].StringValue;
-            settings.UnladenLY = config[lastUsed]["UnladenLY"].DecimalValue;
+            if (string.IsNullOrEmpty(settings.LastUsedConfig))
+            {
+                settings.LastUsedConfig = "Default";
+            }
+
+            bool hasSection = config.FirstOrDefault(x => x.Name == settings.LastUsedConfig) != null;
+
+            if (hasSection)
+            {
+                settings.Capacity = config[settings.LastUsedConfig]["Capacity"].DecimalValue;
+                settings.Insurance = config[settings.LastUsedConfig]["Insurance"].DecimalValue;
+                settings.LadenLY = config[settings.LastUsedConfig]["LadenLY"].DecimalValue;
+                settings.Padsizes = config[settings.LastUsedConfig]["Padsizes"].StringValue;
+                settings.UnladenLY = config[settings.LastUsedConfig]["UnladenLY"].DecimalValue;
+            }
+            else
+            {
+                settings.Capacity = 1;
+                settings.Insurance = 0;
+                settings.LadenLY = 1;
+                settings.Padsizes = "?";
+                settings.UnladenLY = 1;
+            }
+
+            altConfigBox.SelectedIndex
+               = !string.IsNullOrEmpty(settings.LastUsedConfig)
+               ? altConfigBox.FindStringExact(settings.LastUsedConfig)
+               : 0;
 
             capacityBox.Value = settings.Capacity;
             insuranceBox.Value = Math.Max(settings.Insurance, insuranceBox.Minimum);

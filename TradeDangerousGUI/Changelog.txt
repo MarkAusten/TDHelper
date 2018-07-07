@@ -1,3 +1,7 @@
+v2.0.3.5
+--------
+* Fixed issue #7. TD Helper will now load without error when no INI file is available.
+
 v2.0.3.4
 --------
 * Updater additionally checks the file versions before downloading new version.

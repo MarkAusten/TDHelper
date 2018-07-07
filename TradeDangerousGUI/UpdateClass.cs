@@ -242,7 +242,10 @@ namespace TDHelper
             }
             catch (Exception e)
             {
-                WriteToLog(MainForm.updateLogPath, e.Message + " [URL: " + url + "] " + (!string.IsNullOrEmpty(e.InnerException.Message) ? e.InnerException.Message : string.Empty));
+                if (e.Message != "The remote server returned an error: (404) Not Found.")
+                {
+                    WriteToLog(MainForm.updateLogPath, e.Message + " [URL: " + url + "] " + (!string.IsNullOrEmpty(e.InnerException.Message) ? e.InnerException.Message : string.Empty));
+                }
             }
 
             return result;

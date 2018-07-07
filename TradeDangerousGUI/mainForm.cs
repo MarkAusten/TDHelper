@@ -1850,15 +1850,12 @@ namespace TDHelper
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (CheckIfFileOpens(configFileDefault))
-            {
-                // serialize window data to the default config file
-                CopySettingsFromForm();
-                settingsRef.LocationParent = SaveWinLoc(this);
-                settingsRef.SizeParent = SaveWinSize(this);
+            // serialize window data to the default config file
+            CopySettingsFromForm();
+            settingsRef.LocationParent = SaveWinLoc(this);
+            settingsRef.SizeParent = SaveWinSize(this);
 
-                SaveSettingsToIniFile();
-            }
+            SaveSettingsToIniFile();
         }
 
         private void MainForm_Load(object sender, EventArgs e)

@@ -191,13 +191,6 @@ namespace TDHelper
             }
         }
 
-        public static bool SectionHasKey(Section section, string key)
-        {
-            bool result = section.FirstOrDefault(x => x.Name == key) != null;
-
-            return result;
-        }
-
         public static int[] LoadWinLoc(string objRef)
         {
             // load winLoc from a given variable object
@@ -282,7 +275,7 @@ namespace TDHelper
             configSection["LocalNoPlanet"].BoolValue = settings.LocalNoPlanet;
             configSection["RouteStations"].BoolValue = settings.RouteStations;
             configSection["ShowProgress"].BoolValue = settings.ShowProgress;
-            configSection["Planetary"].StringValue = settings.Planetary;
+            configSection["Planetary"].StringValue = settings.Planetary ?? string.Empty;
 
             // Commander settings
             configSection = config["Commander"];
@@ -319,23 +312,35 @@ namespace TDHelper
             {
                 string sectionName = settings.LastUsedConfig;
 
-                if (config[sectionName]["Capacity"].DecimalValue != settings.Capacity)
+                bool hasSection = config.FirstOrDefault(x => x.Name == sectionName) != null;
+
+                if (hasSection)
+                {
+                    if (config[sectionName]["Capacity"].DecimalValue != settings.Capacity)
+                    {
+                        config[sectionName]["Capacity"].DecimalValue = settings.Capacity;
+                    }
+
+                    if (config[sectionName]["LadenLY"].DecimalValue != settings.LadenLY)
+                    {
+                        config[sectionName]["LadenLY"].DecimalValue = settings.LadenLY;
+                    }
+
+                    if (config[sectionName]["Padsizes"].StringValue != settings.Padsizes)
+                    {
+                        config[sectionName]["Padsizes"].StringValue = settings.Padsizes;
+                    }
+
+                    if (config[sectionName]["UnladenLY"].DecimalValue != settings.UnladenLY)
+                    {
+                        config[sectionName]["UnladenLY"].DecimalValue = settings.UnladenLY;
+                    }
+                }
+                else
                 {
                     config[sectionName]["Capacity"].DecimalValue = settings.Capacity;
-                }
-
-                if (config[sectionName]["LadenLY"].DecimalValue != settings.LadenLY)
-                {
                     config[sectionName]["LadenLY"].DecimalValue = settings.LadenLY;
-                }
-
-                if (config[sectionName]["Padsizes"].StringValue != settings.Padsizes)
-                {
                     config[sectionName]["Padsizes"].StringValue = settings.Padsizes;
-                }
-
-                if (config[sectionName]["UnladenLY"].DecimalValue != settings.UnladenLY)
-                {
                     config[sectionName]["UnladenLY"].DecimalValue = settings.UnladenLY;
                 }
             }
@@ -366,6 +371,13 @@ namespace TDHelper
                 modHeight = x.Size.Height.ToString();
 
             return string.Format("{0},{1}", modWidth, modHeight);
+        }
+
+        public static bool SectionHasKey(Section section, string key)
+        {
+            bool result = section.FirstOrDefault(x => x.Name == key) != null;
+
+            return result;
         }
 
         public static void SetVerboseLogging(string path)
@@ -528,9 +540,17 @@ namespace TDHelper
         /// <returns>A list of available ships.</returns>
         public IList<string> SetAvailableShips()
         {
-            string[] ships = MainForm.settingsRef.AvailableShips.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+            if (string.IsNullOrEmpty(MainForm.settingsRef.AvailableShips))
+            {
+                MainForm.settingsRef.AvailableShips = "default";
+            }
 
-            return new List<string>(ships).OrderBy(x => x).ToList();
+            return MainForm
+                .settingsRef
+                .AvailableShips
+                .Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries)
+                .OrderBy(x => x)
+                .ToList();
         }
 
         private static List<string> ParseMarkedStations()
@@ -605,7 +625,7 @@ namespace TDHelper
                 var intersect = z.Intersect(c).ToList();
 
                 // check for only M/L/? and no more than that
-                containsPadSizes = ! (intersect.Count > 3 || intersect.Count < 1);
+                containsPadSizes = !(intersect.Count > 3 || intersect.Count < 1);
             }
 
             return containsPadSizes;
@@ -625,7 +645,7 @@ namespace TDHelper
                 var intersect = z.Intersect(c).ToList();
 
                 // check for only M/L/? and no more than that
-                containsPlanetary = ! (intersect.Count > 3 || intersect.Count < 1);
+                containsPlanetary = !(intersect.Count > 3 || intersect.Count < 1);
             }
 
             return containsPlanetary;
@@ -748,7 +768,6 @@ namespace TDHelper
         public bool MiniModeOnTop { get; set; }
         public string NetLogPath { get; set; }
         public string Padsizes { get; set; }
-        public bool ShowProgress { get; set; }
         public string Planetary { get; set; }
         public decimal PruneHops { get; set; }
         public decimal PruneScore { get; set; }
@@ -757,6 +776,7 @@ namespace TDHelper
         public bool RouteNoPlanet { get; set; }
         public bool RouteStations { get; set; }
         public bool ShowJumps { get; set; }
+        public bool ShowProgress { get; set; }
         public string SizeChild { get; set; }
         public string SizeParent { get; set; }
         public decimal Stock { get; set; }
