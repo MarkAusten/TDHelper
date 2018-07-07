@@ -40,8 +40,6 @@ namespace TDHelper
                     | ControlStyles.UserPaint
                     | ControlStyles.DoubleBuffer, true);
 
-            ValidateSettings();
-
             // Build variables from config
             BuildSettings();
 

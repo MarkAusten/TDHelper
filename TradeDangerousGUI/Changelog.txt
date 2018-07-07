@@ -1,3 +1,8 @@
+V2.0.3.3
+--------
+
+* FIxed bug that lept asking for paths at every start.
+
 V2.0.3.2
 --------
 
