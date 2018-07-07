@@ -75,7 +75,34 @@ namespace TDHelper
                     Application.Run(new MainForm());
                 }
             }
-            catch (Exception e) { throw e; }
+            catch (Exception ex)
+            {
+                // Get the path to the error log.
+                string errorLogPath = Path.Combine(
+                    Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), 
+                    "error.log");
+
+                // Get the exception message plus any inner exception messages.
+                string message = DateTime.Now.ToString("yyyy//MM/dd hh:mm:ss") + " : " + ex.Message;
+                Exception pointer = ex.InnerException;
+
+                while (pointer != null && string.IsNullOrEmpty(pointer.Message))
+                {
+                    message += Environment.NewLine + pointer.Message;
+                }
+
+                // Append the message to the error log
+                File.AppendAllText(
+                    errorLogPath, 
+                    message + Environment.NewLine + Environment.NewLine, 
+                    System.Text.Encoding.Default);
+
+                // Show an error dialog to the user.
+                MessageBox.Show(
+                    "An error occured when running TDHelper. Please close this mesage box and try again. If this continues to happen please contact the administrator. Thanks.", 
+                    "TD Helper - Error", 
+                    MessageBoxButtons.OK);
+            }
         }
     }
 }
