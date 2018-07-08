@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
@@ -38,26 +39,82 @@ namespace TDHelper
         // grab a static reference to the global settings
         public static TDSettings settingsRef = TDSettings.Instance;
 
-        public static double t_CrTonTally, t_meanDist;
-        public static string t_itemListPath, t_shipListPath, t_AppConfigPath, recentLogPath, authCode;
+        public static double t_CrTonTally;
+        public static double t_meanDist;
+
+        public static string t_itemListPath;
+        public static string t_shipListPath;
+        public static string t_AppConfigPath;
+        public static string recentLogPath;
+        public static string authCode;
 
         // save the archive path
         public static string updateLogPath = Path.Combine(assemblyPath, "update.log");
 
-        public bool hasRun, dropdownOpened, rebuildCache, t_localNavEnabled, t_csvExportCheckBox, stationsFilterChecked, oldDataRouteChecked;
-        public int marketBoxChecked, blackmarketBoxChecked, shipyardBoxChecked, repairBoxChecked, rearmBoxChecked, refuelBoxChecked, outfitBoxChecked, fromPane = -1, runOutputState = -1;
-        public List<string> outputItems, currentMarkedStations;
-        public string r_fromBox, t_avoidBox, t_outputVerbosity, t_confirmCode, t_lastSystem, t_lastSysCheck, t_childTitle;
-        public string remoteManifestPath = @"http://markausten.info/files/TDHelper.manifest";
+        public bool hasRun;
+        public bool dropdownOpened;
+        public bool rebuildCache;
+        public bool t_localNavEnabled;
+        public bool t_csvExportCheckBox;
+        public bool stationsFilterChecked;
+        public bool oldDataRouteChecked;
 
-        public int stn_marketBoxChecked, stn_blackmarketBoxChecked, stn_shipyardBoxChecked, stn_repairBoxChecked,
-            stn_rearmBoxChecked, stn_refuelBoxChecked, stn_outfitBoxChecked;
+        public int marketBoxChecked;
+        public int blackmarketBoxChecked;
+        public int shipyardBoxChecked;
+        public int repairBoxChecked;
+        public int rearmBoxChecked;
+        public int refuelBoxChecked;
+        public int outfitBoxChecked;
+        public int fromPane = -1;
+        public int runOutputState = -1;
+
+        public List<string> outputItems;
+        public List<string> currentMarkedStations;
+
+        public string r_fromBox;
+        public string t_avoidBox;
+        public string t_outputVerbosity;
+        public string t_confirmCode;
+        public string t_lastSystem;
+        public string t_lastSysCheck;
+        public string t_childTitle;
+
+        public string remoteManifestPath = ConfigurationManager.AppSettings["remoteManifestPath"];
+
+        public int stn_marketBoxChecked;
+        public int stn_blackmarketBoxChecked;
+        public int stn_shipyardBoxChecked;
+        public int stn_repairBoxChecked;
+        public int stn_rearmBoxChecked;
+        public int stn_refuelBoxChecked;
+        public int stn_outfitBoxChecked;
 
         public Stopwatch stopwatch = new Stopwatch();
-        public decimal t_belowPrice, t_Routes, t_EndJumps, t_StartJumps, r_unladenLY, r_ladenLY, l0_ladenLY, l1_ladenLY, t_ladenLY, t1_ladenLY, t2_ladenLY, t_lsFromStar, t_Supply, t_Demand;
+
+        public decimal t_belowPrice;
+        public decimal t_Routes;
+        public decimal t_EndJumps;
+        public decimal t_StartJumps;
+        public decimal r_unladenLY;
+        public decimal r_ladenLY;
+        public decimal l0_ladenLY;
+        public decimal l1_ladenLY;
+        public decimal t_ladenLY;
+        public decimal t1_ladenLY;
+        public decimal t2_ladenLY;
+        public decimal t_lsFromStar;
+        public decimal t_Supply;
+        public decimal t_Demand;
+
         public Process td_proc = new Process();
-        public string temp_src, temp_dest, temp_commod, temp_shipsSold, t_path, t_maxPadSize;
-        // put this outside so we can kill the process
+
+        public string temp_src;
+        public string temp_dest;
+        public string temp_commod;
+        public string temp_shipsSold;
+        public string t_path;
+        public string t_maxPadSize;
 
         // for circular buffering in the output log
         private const int circularBufferSize = 32768;
@@ -79,9 +136,14 @@ namespace TDHelper
 
         // for Pilot's Log support
         //public DataSet pilotsLogSet = new DataSet("PilotsLog");
-        private DataTable pilotsSystemLogTable = new DataTable("SystemLog"), retrieverCacheTable = new DataTable();
+        private DataTable pilotsSystemLogTable = new DataTable("SystemLog");
+        private DataTable retrieverCacheTable = new DataTable();
 
-        private int pRowIndex = 0, dRowIndex = 0, batchedRowCount = -1, listLimit = 50;
+        private int pRowIndex = 0;
+        private int dRowIndex = 0;
+        private int batchedRowCount = -1;
+        private int listLimit = 50;
+
         private Object readNetLock = new Object();
 
         #endregion Props
@@ -387,7 +449,7 @@ namespace TDHelper
             }
 
             TDSettings settings = MainForm.settingsRef;
-            Configuration config = Configuration.LoadFromFile(configFile);
+            SharpConfig.Configuration config = SharpConfig.Configuration.LoadFromFile(configFile);
 
             if (string.IsNullOrEmpty(settings.LastUsedConfig))
             {
