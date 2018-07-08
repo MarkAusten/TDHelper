@@ -47,6 +47,8 @@ if (($binaries.count -gt 0) -and (Test-Path $binpath))
 
     # clean up
     cmd /c rmdir /s /q $packpath
+    
+    cmd /c $binpath\TDHelper.exe /g "https://github.com/MarkAusten/TDHelper/releases/download/v$callFileVersion-Beta/TDHelper-v$callFileVersion.zip"
 }
 else
 {
