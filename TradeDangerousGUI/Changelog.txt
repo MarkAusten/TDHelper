@@ -1,6 +1,7 @@
 v2.0.3.5
 --------
 * Fixed issue #7. TD Helper will now load without error when no INI file is available.
+* Fixed issue #6. Saving settings whilst in Local mode will not overwrite the select ship's laden LY value.
 
 v2.0.3.4
 --------
