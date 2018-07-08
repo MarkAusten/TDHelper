@@ -1609,7 +1609,7 @@
             this.chkLocalNoPlanet.Text = "No Planet";
             this.toolTip1.SetToolTip(this.chkLocalNoPlanet, "Filters out stations that are on planets");
             this.chkLocalNoPlanet.UseVisualStyleBackColor = true;
-            this.chkLocalNoPlanet.CheckedChanged += new System.EventHandler(this.chkLocalNoPlanet_CheckedChanged);
+            this.chkLocalNoPlanet.CheckedChanged += new System.EventHandler(this.ChkLocalNoPlanet_CheckedChanged);
             // 
             // chkRouteStations
             // 

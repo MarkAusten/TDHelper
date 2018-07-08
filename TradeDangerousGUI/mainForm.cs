@@ -854,7 +854,7 @@ namespace TDHelper
             this.btnSaveSettings.Enabled = true;
         }
 
-        private void chkLocalNoPlanet_CheckedChanged(object sender, EventArgs e)
+        private void ChkLocalNoPlanet_CheckedChanged(object sender, EventArgs e)
         {
             lblLocalPlanetary.Enabled = !chkLocalNoPlanet.Checked;
             txtLocalPlanetary.Enabled = !chkLocalNoPlanet.Checked;
