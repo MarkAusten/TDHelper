@@ -226,10 +226,20 @@ namespace TDHelper
             }
         }
 
+
+        /// <summary>
+        /// Check to see if the EDCE installation is valid.
+        /// </summary>
+        /// <returns>True of the EDCE is valid otherwise false.</returns>
+        public static bool ValidateEdce()
+        {
+            return !string.IsNullOrEmpty(settingsRef.EdcePath) && CheckIfFileOpens(Path.Combine(settingsRef.EdcePath, "edce_client.py"));
+        }
+
         public static void ValidateEdcePath(string altPath)
         {
             // bypass this routine if the python path validator sets our path for us (due to Trade Dangerous Installer)
-            if (string.IsNullOrEmpty(settingsRef.EdcePath) || !CheckIfFileOpens(Path.Combine(settingsRef.EdcePath, "edce_client.py")))
+            if (!ValidateEdce())
             {
                 OpenFileDialog x = new OpenFileDialog()
                 {

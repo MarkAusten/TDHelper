@@ -596,6 +596,27 @@ namespace TDHelper
             return false;
         }
 
+        /// <summary>
+        /// Stop the timer and hide the splash form is required.
+        /// </summary>
+        /// <param name="splashForm">The splash form to be closed.</param>
+        /// <param name="stopWatch">The timer to be stopped.</param>
+        private void HideSplashForm(
+            Splash splashForm,
+            Stopwatch stopWatch)
+        {
+            stopWatch.Stop();
+
+            if (splashForm.Visible)
+            {
+                this.Invoke(new Action(() =>
+                {
+                    this.Enabled = true;
+                    splashForm.Close();
+                }));
+            }
+        }
+
         private bool InvalidatedRowUpdate(bool refreshMode, int rowIndex)
         {
             if (refreshMode)
@@ -680,6 +701,7 @@ namespace TDHelper
                     }
 
                     outputSysStnNames = new List<string>(); // wipe before we fill
+
                     FilterDatabase(); // filter and fill our output
                 }
                 catch (Exception e)
@@ -744,6 +766,7 @@ namespace TDHelper
                     string fileBuffer = stream.ReadToEnd();
                     Match match0 = Regex.Match(fileBuffer, pattern0, RegexOptions.Compiled);
                     Match match1 = Regex.Match(fileBuffer, pattern1, RegexOptions.Compiled);
+
                     // pull some variables for comparison
                     string firstTimestamp = "", firstSystem = "";
 
@@ -767,14 +790,19 @@ namespace TDHelper
                             for (int i = 0; i < localSystemList.Count; i++)
                             {
                                 var row = localSystemList[i];
+
                                 if (output.Count == 0 || !StringInListExact(row.Value, output) && output.Count < listLimit)
+                                {
                                     output.Add(row.Value);
+                                }
                             }
                         }
                     }
 
                     if (output.Count > 0)
+                    {
                         loadedFromDB = true; // flag us
+                    }
                 }
             }
 
@@ -851,18 +879,8 @@ namespace TDHelper
                 foreach (string path in latestLogPaths.Skip(latestLogPaths.Count - fileCount).ToList())
                 {
                     // Show the splash form if the process has run for more than 5 seconds.
-                    if (!splashForm.Visible && stopWatch2.ElapsedMilliseconds > 5000)
-                    {
-                        this.Invoke(new Action(() =>
-                        {
-                            this.Enabled = false;
-                            splashForm.StartPosition = FormStartPosition.Manual;
-                            splashForm.Location = new Point(this.Location.X + (this.Width - splashForm.Width) / 2, this.Location.Y + (this.Height - splashForm.Height) / 2);
-                            splashForm.Caption = "Reading Net Logs";
-                            splashForm.Show(this); // center on our location
-                            splashForm.Focus(); // force this to the top
-                        }));
-                    }
+                    this.ShowSplashForm(splashForm, stopWatch2, "Reading Net Logs");
+
                     using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                     using (BufferedStream bs = new BufferedStream(fs))
                     using (StreamReader stream = new StreamReader(bs, Encoding.UTF8, true, 65536))
@@ -1023,16 +1041,7 @@ namespace TDHelper
                 UpdatePilotsLogDB(tdhDBConn, exceptTable); // pass just the diffs, no table
             }
 
-            stopWatch2.Stop();
-
-            if (splashForm.Visible)
-            {
-                this.Invoke(new Action(() =>
-                {
-                    this.Enabled = true;
-                    splashForm.Close();
-                }));
-            }
+            this.HideSplashForm(splashForm, stopWatch2);
 
             return output; // return our finished list
         }
@@ -1117,14 +1126,7 @@ namespace TDHelper
                             if (buttonCaller == 16 || !hasRun && localSystemList.Count == 0)
                             {
                                 // open a splash window to alert the user to our activity
-                                this.Invoke(new Action(() =>
-                                {
-                                    this.Enabled = false;
-                                    splashForm.StartPosition = FormStartPosition.Manual;
-                                    splashForm.Location = new Point(this.Location.X + (this.Width - splashForm.Width) / 2, this.Location.Y + (this.Height - splashForm.Height) / 2);
-                                    splashForm.Show(this); // center on our location
-                                    splashForm.Focus(); // force this to the top
-                                }));
+                                this.ShowSplashForm(splashForm, m_timer, string.Empty, true);
                             }
 
                             checkBuffer = LoadSystemsFromDB(latestLogPaths);
@@ -1164,14 +1166,7 @@ namespace TDHelper
                         hasLogLoaded = true;
                     }
 
-                    if (splashForm.Visible)
-                    {
-                        this.Invoke(new Action(() =>
-                        {
-                            this.Enabled = true;
-                            splashForm.Close();
-                        }));
-                    }
+                    this.HideSplashForm(splashForm, m_timer);
                 }
                 else
                 {
@@ -1268,6 +1263,43 @@ namespace TDHelper
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Show the splash form if required.
+        /// </summary>
+        /// <param name="splashForm">The splash form to be shown.</param>
+        /// <param name="stopWatch">The elapsed timer.</param>
+        /// <param name="prompt">The prompt to be displayed in the form.</param>
+        private void ShowSplashForm(
+            Splash splashForm,
+            Stopwatch stopWatch,
+            string prompt = "",
+            bool showNow = false)
+        {
+            // Show the splash form if the process has run for more than 5 seconds.
+            bool showSplash = showNow || stopWatch.ElapsedMilliseconds > 5000;
+
+            if (!splashForm.Visible && showSplash)
+            {
+                this.Invoke(new Action(() =>
+                {
+                    this.Enabled = false;
+
+                    splashForm.StartPosition = FormStartPosition.Manual;
+                    splashForm.Location = new Point(
+                        this.Location.X + (this.Width - splashForm.Width) / 2,
+                        this.Location.Y + (this.Height - splashForm.Height) / 2);
+
+                    if (!string.IsNullOrEmpty(prompt))
+                    {
+                        splashForm.Caption = prompt;
+                    }
+
+                    splashForm.Show(this); // center on our location
+                    splashForm.Focus(); // force this to the top
+                }));
+            }
         }
 
         private bool UpdateDBRow(SQLiteConnection dbConn, List<DataRow> rows)

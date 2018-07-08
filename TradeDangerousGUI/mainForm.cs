@@ -57,8 +57,15 @@ namespace TDHelper
             testSystemsTimer.AutoReset = false;
             testSystemsTimer.Interval = 10000;
             testSystemsTimer.Elapsed += this.TestSystemsTimer_Delegate;
+
+            this.btnCmdrProfile.Enabled = ValidateEdce();
         }
 
+        /// <summary>
+        /// Add the planetary modifiers if required.
+        /// </summary>
+        /// <param name="settingsRef">The settings object.</param>
+        /// <returns>the planetary modifiers.</returns>
         private string AddPlanetary(TDSettings settingsRef)
         {
             string modifier = string.Empty;
@@ -754,7 +761,7 @@ namespace TDHelper
             if (buttonCaller == 22)
             {
                 // Check to see if the EDCE folder and files are valid
-                if (this.ValidateEdce())
+                if (ValidateEdce())
                 {
                     // EDCE is valid so set up the call.
                     t_path = "\"" + Path.Combine(MainForm.settingsRef.EdcePath, "edce_client.py") + "\"";
@@ -1655,7 +1662,7 @@ namespace TDHelper
         {
             // reenable other worker callers when done
             updateButton.Enabled = true;
-            btnCmdrProfile.Enabled = true;
+            btnCmdrProfile.Enabled = ValidateEdce();
             getSystemButton.Enabled = true;
 
             // fix Run button when returning from non-Run commands

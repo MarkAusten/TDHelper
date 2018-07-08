@@ -1427,14 +1427,5 @@ namespace TDHelper
             SetFormTitle(this);
             SetShipList(true);
         }
-
-        /// <summary>
-        /// Check to see if the EDCE installation is valid.
-        /// </summary>
-        /// <returns>True of the EDCE is valid otherwise false.</returns>
-        private bool ValidateEdce()
-        {
-            return true;
-        }
     }
 }
