@@ -25,7 +25,7 @@ namespace TDHelper
 
         public static string configFile = Path.Combine(assemblyPath, "tdh.ini");
 
-        public static bool hasParsed = false, isActive = false, callForReset = false;
+        public static bool hasParsed = false, callForReset = false;
 
         public static List<string> latestLogPaths;
 

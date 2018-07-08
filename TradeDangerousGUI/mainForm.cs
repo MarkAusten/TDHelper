@@ -726,8 +726,6 @@ namespace TDHelper
                 {
                     // if we've already checked a recent system, only check the newest entered system once
                     PlayUnknown(); // alert the user
-                    // only flash if the window isn't active
-                    if (!isActive) { FlashWindow.BlinkStart(this); }
 
                     this.Invoke(new Action(() =>
                     {
@@ -1826,18 +1824,6 @@ namespace TDHelper
                 settingsRef.Towards = false;
                 towardsCheckBox.Checked = false;
             }
-        }
-
-        private void MainForm_Activated(object sender, EventArgs e)
-        {
-            isActive = true;
-
-            FlashWindow.Stop(this); // stop flashing when we activate the window
-        }
-
-        private void MainForm_Deactivate(object sender, EventArgs e)
-        {
-            isActive = false;
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)

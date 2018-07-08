@@ -146,6 +146,8 @@
             this.chkProgress = new System.Windows.Forms.CheckBox();
             this.lblPlanetary = new System.Windows.Forms.Label();
             this.txtPlanetary = new System.Windows.Forms.TextBox();
+            this.lblLocalPlanetary = new System.Windows.Forms.Label();
+            this.txtLocalPlanetary = new System.Windows.Forms.TextBox();
             this.verbosityComboBox = new System.Windows.Forms.ComboBox();
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker4 = new System.ComponentModel.BackgroundWorker();
@@ -196,8 +198,6 @@
             this.panMisc = new System.Windows.Forms.Panel();
             this.panMethod = new System.Windows.Forms.Panel();
             this.panAgeCredits = new System.Windows.Forms.Panel();
-            this.lblLocalPlanetary = new System.Windows.Forms.Label();
-            this.txtLocalPlanetary = new System.Windows.Forms.TextBox();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.belowPriceBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.abovePriceBox)).BeginInit();
@@ -1660,6 +1660,30 @@
             this.toolTip1.SetToolTip(this.txtPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
         "?\r\n");
             // 
+            // lblLocalPlanetary
+            // 
+            this.lblLocalPlanetary.AutoSize = true;
+            this.lblLocalPlanetary.Location = new System.Drawing.Point(173, 99);
+            this.lblLocalPlanetary.Name = "lblLocalPlanetary";
+            this.lblLocalPlanetary.Size = new System.Drawing.Size(54, 13);
+            this.lblLocalPlanetary.TabIndex = 71;
+            this.lblLocalPlanetary.Text = "Planetary:";
+            this.toolTip1.SetToolTip(this.lblLocalPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
+        "?");
+            // 
+            // txtLocalPlanetary
+            // 
+            this.txtLocalPlanetary.Location = new System.Drawing.Point(227, 96);
+            this.txtLocalPlanetary.MaxLength = 3;
+            this.txtLocalPlanetary.Name = "txtLocalPlanetary";
+            this.txtLocalPlanetary.Size = new System.Drawing.Size(32, 20);
+            this.txtLocalPlanetary.TabIndex = 70;
+            this.txtLocalPlanetary.Text = "?";
+            this.txtLocalPlanetary.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.toolTip1.SetToolTip(this.txtLocalPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
+        "?\r\n");
+            this.txtLocalPlanetary.TextChanged += new System.EventHandler(this.TxtLocalPlanetary_TextChanged);
+            // 
             // verbosityComboBox
             // 
             this.verbosityComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -2245,30 +2269,6 @@
             this.panAgeCredits.Size = new System.Drawing.Size(175, 56);
             this.panAgeCredits.TabIndex = 1;
             // 
-            // lblLocalPlanetary
-            // 
-            this.lblLocalPlanetary.AutoSize = true;
-            this.lblLocalPlanetary.Location = new System.Drawing.Point(173, 99);
-            this.lblLocalPlanetary.Name = "lblLocalPlanetary";
-            this.lblLocalPlanetary.Size = new System.Drawing.Size(54, 13);
-            this.lblLocalPlanetary.TabIndex = 71;
-            this.lblLocalPlanetary.Text = "Planetary:";
-            this.toolTip1.SetToolTip(this.lblLocalPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
-        "?");
-            // 
-            // txtLocalPlanetary
-            // 
-            this.txtLocalPlanetary.Location = new System.Drawing.Point(227, 96);
-            this.txtLocalPlanetary.MaxLength = 3;
-            this.txtLocalPlanetary.Name = "txtLocalPlanetary";
-            this.txtLocalPlanetary.Size = new System.Drawing.Size(32, 20);
-            this.txtLocalPlanetary.TabIndex = 70;
-            this.txtLocalPlanetary.Text = "?";
-            this.txtLocalPlanetary.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.toolTip1.SetToolTip(this.txtLocalPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
-        "?\r\n");
-            this.txtLocalPlanetary.TextChanged += new System.EventHandler(this.TxtLocalPlanetary_TextChanged);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2311,8 +2311,6 @@
             this.MinimumSize = new System.Drawing.Size(982, 714);
             this.Name = "MainForm";
             this.Text = "Trade Dangerous Helper";
-            this.Activated += new System.EventHandler(this.MainForm_Activated);
-            this.Deactivate += new System.EventHandler(this.MainForm_Deactivate);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
             this.Load += new System.EventHandler(this.MainForm_Load);

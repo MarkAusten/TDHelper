@@ -136,7 +136,6 @@
     <Compile Include="Delegates.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FlashWindowEx.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
