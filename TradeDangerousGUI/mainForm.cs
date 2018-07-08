@@ -232,7 +232,7 @@ namespace TDHelper
                 // local is a global override, let's catch it first
                 if (!string.IsNullOrEmpty(temp_src))
                 {
-                    t_path += "local --ly " + t_ladenLY;
+                    t_path += "local --ly " + numNearLy.Value;
 
                     if (rearmBoxChecked == 1) { t_path += " --rearm"; }
                     if (refuelBoxChecked == 1) { t_path += " --refuel"; }
@@ -1773,17 +1773,14 @@ namespace TDHelper
                 // disable most of the run options
                 this.SetPanelEnabledState(panRunOptions);
 
-                ladenLYLabel.Font = new Font(ladenLYLabel.Font, FontStyle.Italic);
-                ladenLYLabel.Text = "  Near LY:";
-                ladenLYLabel.Enabled = true;
+                ladenLYLabel.Visible = false;
+                ladenLYBox.Visible = false;
+
+                lblNearLy.Visible = true;
+                numNearLy.Visible = true;
+
                 chkLocalNoPlanet.Enabled = true;
                 stationsFilterCheckBox.Enabled = true;
-
-                l0_ladenLY = ladenLYBox.Value; // save our last used ladenLY
-
-                ladenLYBox.Value = l1_ladenLY > 0
-                    ? l1_ladenLY // restore local ladenLY
-                    : 1.00m; // default to 1.00 LY in local
 
                 toolTip1.SetToolTip(ladenLYLabel, "Distance to search for local system/station info.");
                 ladenLYBox.Enabled = true;
@@ -1792,12 +1789,11 @@ namespace TDHelper
             else
             {
                 // we're unchecked
-                l1_ladenLY = ladenLYBox.Value; // save our last used local ladenLY
+                ladenLYLabel.Visible = true;
+                ladenLYBox.Visible = true;
 
-                if (l0_ladenLY > 0)
-                {
-                    ladenLYBox.Value = l0_ladenLY; // restore last used ladenLY
-                }
+                lblNearLy.Visible = false;
+                numNearLy.Visible = false;
 
                 if (methodIndex >= 4)
                 {
