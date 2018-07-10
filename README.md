@@ -13,7 +13,7 @@ Trade Dangerous Helper
 ======================
 Copyright under the MIT License (C) 2015, Jon Wrights
 
-## FAQ page is [HERE](https://github.com/MarkAusten/TDHelper/wiki) ##
+## FAQ page is [HERE](https://github.com/MarkAusten/TDHelper/wiki/Frequently-Asked-Questions) ##
 
 What is this tool supposed to do?
 =================================
