@@ -572,45 +572,6 @@ namespace TDHelper
             }
         }
 
-        private bool ContainsHexCode(string input)
-        {
-            /*
-             * Taken from: http://goo.gl/gBLkGs with adjustments
-             */
-
-            // to be safe we force uppercase for the comparison
-            if (!string.IsNullOrEmpty(input.ToUpper()))
-            {
-                // must be only 4 characters
-                char[] chars = input.ToUpper().ToCharArray();
-                if (chars.Length < 5 && chars.Length > 0)
-                {
-                    bool isHex;
-
-                    foreach (var c in chars)
-                    {
-                        isHex = ((c >= '0' && c <= '9') ||
-                                 (c >= 'A' && c <= 'F'));
-
-                        if (!isHex)
-                        {
-                            return false;
-                        }
-                    }
-
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
-        }
-
         private bool ContainsPadSizes(string text)
         {
             bool containsPadSizes = false;
