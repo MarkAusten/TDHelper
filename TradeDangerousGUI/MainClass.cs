@@ -940,32 +940,10 @@ namespace TDHelper
             return true;
         }
 
-        private void LoadSettings(string path)
+        private void LoadSettings()
         {
             // make sure to load our data as invariant
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-
-            if (CheckIfFileOpens(path) && ValidateConfigFile(path))
-            {
-                configFile = path; // we've got a valid TDHelper config file
-            }
-
-            // save our current used config file
-            if (!string.IsNullOrEmpty(settingsRef.LastUsedConfig)
-                && settingsRef.LastUsedConfig.Contains("Default.xml"))
-            {
-                settingsRef.LastUsedConfig = Path.Combine(assemblyPath, "Default.xml");
-            }
-            else
-            {
-                settingsRef.LastUsedConfig = configFile;
-            }
-
-            SaveSettingsToIniFile();
-
-            BuildSettings();
-            CopySettingsFromConfig();
-            ValidateSettings();
 
             // don't populate if switching configs
             if (buttonCaller != 21)
@@ -1217,9 +1195,9 @@ namespace TDHelper
 
             // save the path for reload on startup
             if (!string.IsNullOrEmpty(settingsRef.LastUsedConfig)
-                && settingsRef.LastUsedConfig.Contains("Default.xml"))
+                && settingsRef.LastUsedConfig.Contains("Default"))
             {
-                settingsRef.LastUsedConfig = Path.Combine(assemblyPath, "Default.xml");
+                settingsRef.LastUsedConfig = "Default";
             }
             else
             {

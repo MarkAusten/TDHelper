@@ -1,3 +1,7 @@
+v2.0.3.6
+--------
+* Fixed issue #9 Dropdowns not working correctly.
+
 v2.0.3.5
 --------
 * Fixed issue #7. TD Helper will now load without error when no INI file is available.

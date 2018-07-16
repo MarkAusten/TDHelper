@@ -148,6 +148,8 @@
             this.txtPlanetary = new System.Windows.Forms.TextBox();
             this.lblLocalPlanetary = new System.Windows.Forms.Label();
             this.txtLocalPlanetary = new System.Windows.Forms.TextBox();
+            this.numNearLy = new System.Windows.Forms.NumericUpDown();
+            this.lblNearLy = new System.Windows.Forms.Label();
             this.verbosityComboBox = new System.Windows.Forms.ComboBox();
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker4 = new System.ComponentModel.BackgroundWorker();
@@ -198,8 +200,6 @@
             this.panMisc = new System.Windows.Forms.Panel();
             this.panMethod = new System.Windows.Forms.Panel();
             this.panAgeCredits = new System.Windows.Forms.Panel();
-            this.numNearLy = new System.Windows.Forms.NumericUpDown();
-            this.lblNearLy = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.belowPriceBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.abovePriceBox)).BeginInit();
@@ -226,6 +226,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.minAgeUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.loopIntBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.demandBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numNearLy)).BeginInit();
             this.panRunOptions.SuspendLayout();
             this.panLocalFilter.SuspendLayout();
             this.localFilterGroupBox.SuspendLayout();
@@ -248,7 +249,6 @@
             this.panMisc.SuspendLayout();
             this.panMethod.SuspendLayout();
             this.panAgeCredits.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numNearLy)).BeginInit();
             this.SuspendLayout();
             // 
             // runButton
@@ -1687,6 +1687,44 @@
         "?\r\n");
             this.txtLocalPlanetary.TextChanged += new System.EventHandler(this.TxtLocalPlanetary_TextChanged);
             // 
+            // numNearLy
+            // 
+            this.numNearLy.DecimalPlaces = 2;
+            this.numNearLy.Location = new System.Drawing.Point(61, 30);
+            this.numNearLy.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            131072});
+            this.numNearLy.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numNearLy.Name = "numNearLy";
+            this.numNearLy.Size = new System.Drawing.Size(53, 20);
+            this.numNearLy.TabIndex = 3;
+            this.numNearLy.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip1.SetToolTip(this.numNearLy, "Distance that can be travelled while fully laden (including fuel)");
+            this.numNearLy.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numNearLy.Visible = false;
+            // 
+            // lblNearLy
+            // 
+            this.lblNearLy.AutoSize = true;
+            this.lblNearLy.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNearLy.Location = new System.Drawing.Point(5, 34);
+            this.lblNearLy.Name = "lblNearLy";
+            this.lblNearLy.Size = new System.Drawing.Size(49, 13);
+            this.lblNearLy.TabIndex = 4;
+            this.lblNearLy.Text = "Near LY:";
+            this.toolTip1.SetToolTip(this.lblNearLy, "Distance that can be travelled while fully laden (including fuel)");
+            this.lblNearLy.Visible = false;
+            // 
             // verbosityComboBox
             // 
             this.verbosityComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -2274,50 +2312,13 @@
             this.panAgeCredits.Size = new System.Drawing.Size(175, 56);
             this.panAgeCredits.TabIndex = 1;
             // 
-            // numNearLy
-            // 
-            this.numNearLy.DecimalPlaces = 2;
-            this.numNearLy.Location = new System.Drawing.Point(61, 30);
-            this.numNearLy.Maximum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            131072});
-            this.numNearLy.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numNearLy.Name = "numNearLy";
-            this.numNearLy.Size = new System.Drawing.Size(53, 20);
-            this.numNearLy.TabIndex = 3;
-            this.numNearLy.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.toolTip1.SetToolTip(this.numNearLy, "Distance that can be travelled while fully laden (including fuel)");
-            this.numNearLy.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numNearLy.Visible = false;
-            // 
-            // lblNearLy
-            // 
-            this.lblNearLy.AutoSize = true;
-            this.lblNearLy.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNearLy.Location = new System.Drawing.Point(5, 34);
-            this.lblNearLy.Name = "lblNearLy";
-            this.lblNearLy.Size = new System.Drawing.Size(49, 13);
-            this.lblNearLy.TabIndex = 4;
-            this.lblNearLy.Text = "Near LY:";
-            this.toolTip1.SetToolTip(this.lblNearLy, "Distance that can be travelled while fully laden (including fuel)");
-            this.lblNearLy.Visible = false;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(966, 676);
+            this.Controls.Add(this.panRunOptions);
             this.Controls.Add(this.panLocalFilter);
             this.Controls.Add(this.panAgeCredits);
             this.Controls.Add(this.updateNotifyLabel);
@@ -2331,7 +2332,6 @@
             this.Controls.Add(this.panDistance);
             this.Controls.Add(this.panShipData);
             this.Controls.Add(this.btnSaveSettings);
-            this.Controls.Add(this.panRunOptions);
             this.Controls.Add(this.btnCmdrProfile);
             this.Controls.Add(this.faqLinkLabel);
             this.Controls.Add(this.trackerLinkLabel);
@@ -2385,6 +2385,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.minAgeUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.loopIntBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.demandBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numNearLy)).EndInit();
             this.panRunOptions.ResumeLayout(false);
             this.panRunOptions.PerformLayout();
             this.panLocalFilter.ResumeLayout(false);
@@ -2418,7 +2419,6 @@
             this.panMethod.ResumeLayout(false);
             this.panAgeCredits.ResumeLayout(false);
             this.panAgeCredits.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numNearLy)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -1910,11 +1910,9 @@ namespace TDHelper
             }
 
             // load our last saved config
-            if (!string.IsNullOrEmpty(settingsRef.LastUsedConfig)
-                && settingsRef.LastUsedConfig != configFile
-                && ValidateConfigFile(settingsRef.LastUsedConfig))
+            if (!string.IsNullOrEmpty(settingsRef.LastUsedConfig))
             {
-                LoadSettings(settingsRef.LastUsedConfig);
+                LoadSettings();
             }
         }
 

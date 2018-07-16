@@ -48,12 +48,12 @@ namespace TDHelper
                 DirectoryInfo dInfo = new DirectoryInfo(path);
                 SortedList<string, string> logPaths = new SortedList<string, string>();
 
+                FileInfo[] fileList = dInfo.GetFiles(pattern);
+
                 // check the make sure the directory is populated
-                if (dInfo.Exists && dInfo.GetFiles().Length > 0)
+                if (dInfo.Exists && fileList.Length > 0)
                 {
-                    if (dInfo.GetFiles(pattern).OrderBy(f => f.LastWriteTime).FirstOrDefault() != null)
-                    {
-                        foreach (FileInfo f in dInfo.GetFiles(pattern).OrderBy(f => f.LastWriteTime))
+                        foreach (FileInfo f in fileList.OrderBy(f => f.LastWriteTime))
                         {
                             string filePath = Path.Combine(path, f.ToString());
                             using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
@@ -74,7 +74,6 @@ namespace TDHelper
                         }
 
                         return new List<string>(logPaths.Values);
-                    }
                 }
             }
             catch (UnauthorizedAccessException) { }
@@ -292,9 +291,13 @@ namespace TDHelper
             if (pilotsLogDataGrid.Rows.Count == 0)
             {
                 if (HasValidRows(tdhDBConn, "SystemLog"))
+                {
                     InvalidatedRowUpdate(true, -1);
+                }
                 else
+                {
                     CreatePilotsLogDB(tdhDBConn); // make from scratch
+                }
             }
             else if (HasValidRows(tdhDBConn, "SystemLog"))
             {
