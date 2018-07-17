@@ -1,3 +1,7 @@
+v2.0.3.7
+--------
+* Fixed issue #8 - Chime on completion of task. Play Alert check box in settings.
+
 v2.0.3.6
 --------
 * Fixed issue #9 Dropdowns not working correctly.

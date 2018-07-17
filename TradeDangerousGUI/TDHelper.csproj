@@ -248,10 +248,14 @@
   <ItemGroup>
     <Content Include="Changelog.txt" />
     <Content Include="License.txt" />
-    <None Include="unknown.wav" />
+    <None Include="unknown.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\TDH_Icon.ico" />
     <None Include="Resources\LightningBolt.png" />
-    <None Include="notify.wav" />
+    <None Include="notify.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Gear.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

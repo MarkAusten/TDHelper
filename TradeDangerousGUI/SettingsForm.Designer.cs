@@ -58,6 +58,7 @@
             this.rebuyPercentage = new System.Windows.Forms.NumericUpDown();
             this.miscGroupBox = new System.Windows.Forms.GroupBox();
             this.lblRebuyPercentage = new System.Windows.Forms.Label();
+            this.chkQuiet = new System.Windows.Forms.CheckBox();
             this.overrideGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rebuyPercentage)).BeginInit();
             this.miscGroupBox.SuspendLayout();
@@ -321,6 +322,7 @@
             // 
             // miscGroupBox
             // 
+            this.miscGroupBox.Controls.Add(this.chkQuiet);
             this.miscGroupBox.Controls.Add(this.rebuyPercentage);
             this.miscGroupBox.Controls.Add(this.lblRebuyPercentage);
             this.miscGroupBox.Location = new System.Drawing.Point(12, 281);
@@ -338,6 +340,16 @@
             this.lblRebuyPercentage.Size = new System.Drawing.Size(99, 13);
             this.lblRebuyPercentage.TabIndex = 2;
             this.lblRebuyPercentage.Text = "Rebuy Percentage:";
+            // 
+            // chkQuiet
+            // 
+            this.chkQuiet.AutoSize = true;
+            this.chkQuiet.Location = new System.Drawing.Point(216, 22);
+            this.chkQuiet.Name = "chkQuiet";
+            this.chkQuiet.Size = new System.Drawing.Size(75, 17);
+            this.chkQuiet.TabIndex = 6;
+            this.chkQuiet.Text = "Play Alerts";
+            this.chkQuiet.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
@@ -397,5 +409,6 @@
         private System.Windows.Forms.Button validateEdcePath;
         private System.Windows.Forms.TextBox edcePathBox;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.CheckBox chkQuiet;
     }
 }

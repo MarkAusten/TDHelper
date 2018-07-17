@@ -36,6 +36,8 @@ namespace TDHelper
             settings.ExtraRunParams = this.extraRunParameters.Text;
 
             settings.RebuyPercentage = this.rebuyPercentage.Value;
+
+            settings.Quiet = !this.chkQuiet.Checked;
         }
 
         private void FormValidator()
@@ -143,6 +145,7 @@ namespace TDHelper
             }
 
             this.rebuyPercentage.Value = MainForm.settingsRef.RebuyPercentage;
+            this.chkQuiet.Checked = !MainForm.settingsRef.Quiet;
         }
 
         private void TvFontSelectorButton_Click(object sender, EventArgs e)

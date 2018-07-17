@@ -188,44 +188,49 @@ namespace TDHelper
 
         public static void PlayAlert()
         {
-            // a simple method for playing a custom beep.wav or the default system Beep
-            SoundPlayer player = new SoundPlayer();
-            Assembly thisExecutable = System.Reflection.Assembly.GetExecutingAssembly();
-            string localSound = Path.Combine(assemblyPath, "notify.wav");
+            if (!settingsRef.Quiet)
+            {
+                // a simple method for playing a custom beep.wav or the default system Beep
+                SoundPlayer player = new SoundPlayer();
+                Assembly thisExecutable = System.Reflection.Assembly.GetExecutingAssembly();
+                string localSound = Path.Combine(assemblyPath, "notify.wav");
 
-            if (CheckIfFileOpens(localSound))
-            {
-                player.SoundLocation = localSound;
-                player.LoadAsync();
-                player.Play();
-            }
-            else
-            {
-                player.Stream = Properties.Resources.notify;
-                player.Play();
+                if (CheckIfFileOpens(localSound))
+                {
+                    player.SoundLocation = localSound;
+                    player.LoadAsync();
+                    player.Play();
+                }
+                else
+                {
+                    player.Stream = Properties.Resources.notify;
+                    player.Play();
+                }
             }
         }
 
         public static void PlayUnknown()
         {
-            // a simple method for playing a custom beep.wav or the default system Beep
-            SoundPlayer player = new SoundPlayer();
-            Assembly thisExecutable = System.Reflection.Assembly.GetExecutingAssembly();
-            string localSound = Path.Combine(assemblyPath, "unknown.wav");
+            if (!settingsRef.Quiet)
+            {
+                // a simple method for playing a custom beep.wav or the default system Beep
+                SoundPlayer player = new SoundPlayer();
+                Assembly thisExecutable = System.Reflection.Assembly.GetExecutingAssembly();
+                string localSound = Path.Combine(assemblyPath, "unknown.wav");
 
-            if (CheckIfFileOpens(localSound))
-            {
-                player.SoundLocation = localSound;
-                player.LoadAsync();
-                player.Play();
-            }
-            else
-            {
-                player.Stream = Properties.Resources.unknown;
-                player.Play();
+                if (CheckIfFileOpens(localSound))
+                {
+                    player.SoundLocation = localSound;
+                    player.LoadAsync();
+                    player.Play();
+                }
+                else
+                {
+                    player.Stream = Properties.Resources.unknown;
+                    player.Play();
+                }
             }
         }
-
 
         /// <summary>
         /// Check to see if the EDCE installation is valid.

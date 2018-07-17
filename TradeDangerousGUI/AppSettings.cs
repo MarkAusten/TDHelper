@@ -183,6 +183,7 @@ namespace TDHelper
                 settings.TreeViewFont = SectionHasKey(configSection, "TreeViewFont") ? configSection["TreeViewFont"].StringValue : string.Empty;
                 settings.UploadPath = SectionHasKey(configSection, "UploadPath") ? configSection["UploadPath"].StringValue : string.Empty;
                 settings.AvailableShips = SectionHasKey(configSection, "AvailableShips") ? configSection["AvailableShips"].StringValue : string.Empty;
+                settings.Quiet = SectionHasKey(configSection, "Quiet") ? configSection["Quiet"].BoolValue : false;
 
                 if (string.IsNullOrEmpty(settings.AvailableShips))
                 {
@@ -306,6 +307,7 @@ namespace TDHelper
             configSection["TreeViewFont"].StringValue = settings.TreeViewFont ?? string.Empty;
             configSection["UploadPath"].StringValue = settings.UploadPath ?? string.Empty;
             configSection["AvailableShips"].StringValue = settings.AvailableShips ?? string.Empty;
+            configSection["Quiet"].BoolValue = settings.Quiet;
 
             // Update the current ship if required.
             if (!string.IsNullOrEmpty(settings.LastUsedConfig))
@@ -501,7 +503,8 @@ namespace TDHelper
                 // Ask the user if we can set it.
                 DialogResult dialog = TopMostMessageBox.Show(
                     true,
-                    true, "VerboseLogging isn't set, it must be corrected so we can grab recent systems.\r\n\nMay we fix it?",
+                    true, 
+                    "VerboseLogging isn't set, it must be corrected so we can grab recent systems.\r\n\nMay we fix it?",
                     "TD Helper - Error",
                     MessageBoxButtons.YesNo);
 
@@ -737,6 +740,7 @@ namespace TDHelper
         public decimal PruneHops { get; set; }
         public decimal PruneScore { get; set; }
         public string PythonPath { get; set; }
+        public bool Quiet { get; set; }
         public decimal RebuyPercentage { get; set; }
         public bool RouteNoPlanet { get; set; }
         public bool RouteStations { get; set; }
@@ -852,6 +856,7 @@ namespace TDHelper
             instance.LocalNoPlanet = false;
             instance.ShowProgress = false;
             instance.Planetary = string.Empty;
+            instance.Quiet = false;
         }
     }
 
