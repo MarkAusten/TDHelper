@@ -47,7 +47,10 @@ namespace TDHelper
                 using (FileStream stream = File.OpenRead(filePath))
                 {
                     // output a valid lowercase md5sum
-                    return BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToLower();
+                    return BitConverter
+                        .ToString(md5.ComputeHash(stream))
+                        .Replace("-", string.Empty)
+                        .ToLower();
                 }
             }
         }
@@ -280,7 +283,11 @@ namespace TDHelper
                         string assemblyMD5 = CalculateMD5(fileList[0]);
                         string assemblyExeName = Path.GetFileName(fileList[0]);
 
-                        root.Add(new XElement("Assembly", new XAttribute("Name", assemblyExeName), new XElement("Version", assemblyVersion), new XElement("MD5", assemblyMD5)));
+                        root.Add(new XElement(
+                            "Assembly", 
+                            new XAttribute("Name", assemblyExeName), 
+                            new XElement("Version", assemblyVersion), 
+                            new XElement("MD5", assemblyMD5)));
 
                         if (!string.IsNullOrEmpty(URL))
                         {
@@ -408,7 +415,7 @@ namespace TDHelper
                     if (root != null)
                     {
                         string rootAttr = root.Attribute("Name").Value;
-                        return (!string.IsNullOrEmpty(rootAttr)) ? rootAttr : "";
+                        return (!string.IsNullOrEmpty(rootAttr)) ? rootAttr : string.Empty;
                     }
                     else
                     {

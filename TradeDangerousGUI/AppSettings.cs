@@ -60,6 +60,7 @@ namespace TDHelper
             }
 
             DialogResult result = MessageBox.Show(topmostForm, message, title, buttons);
+
             topmostForm.Dispose(); // clean it up all the way
 
             return result;
@@ -221,10 +222,14 @@ namespace TDHelper
                 winSize[1] = Convert.ToInt32(t_winSize.GetValue(1));
 
                 if (winSize[0] > SystemInformation.VirtualScreen.Right)
+                {
                     winSize[0] = SystemInformation.VirtualScreen.Right;
+                }
 
                 if (winSize[1] > SystemInformation.VirtualScreen.Bottom)
+                {
                     winSize[1] = SystemInformation.VirtualScreen.Bottom;
+                }
             }
 
             return winSize;
@@ -363,14 +368,22 @@ namespace TDHelper
 
             // make sure we're not out of bounds
             if (x.Size.Width > SystemInformation.VirtualScreen.Right)
+            {
                 modWidth = SystemInformation.VirtualScreen.Right.ToString();
+            }
             else
+            {
                 modWidth = x.Size.Width.ToString();
+            }
 
             if (x.Size.Height > SystemInformation.VirtualScreen.Bottom)
+            {
                 modHeight = SystemInformation.VirtualScreen.Bottom.ToString();
+            }
             else
+            {
                 modHeight = x.Size.Height.ToString();
+            }
 
             return string.Format("{0},{1}", modWidth, modHeight);
         }
@@ -768,10 +781,15 @@ namespace TDHelper
         public Font ConvertFromMemberFont()
         {
             FontConverter conv = new FontConverter();
+
             if (this.TreeViewFont != null)
+            {
                 return conv.ConvertFromInvariantString(this.TreeViewFont) as Font;
+            }
             else
+            {
                 return null;
+            }
         }
 
         public string ConvertToFontString(Font fontObject)

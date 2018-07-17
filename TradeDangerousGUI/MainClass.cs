@@ -176,6 +176,7 @@ namespace TDHelper
         {
             // return a normalized string version of our decoded input
             var inputBytes = Convert.FromBase64String(input);
+
             return Encoding.UTF8.GetString(MachineKey.Unprotect(inputBytes));
         }
 
@@ -183,50 +184,37 @@ namespace TDHelper
         {
             // return a base64 string version of our encoded input
             var inputBytes = Encoding.UTF8.GetBytes(input);
+
             return Convert.ToBase64String(MachineKey.Protect(inputBytes));
         }
 
         public static void PlayAlert()
         {
-            if (!settingsRef.Quiet)
-            {
-                // a simple method for playing a custom beep.wav or the default system Beep
-                SoundPlayer player = new SoundPlayer();
-                Assembly thisExecutable = System.Reflection.Assembly.GetExecutingAssembly();
-                string localSound = Path.Combine(assemblyPath, "notify.wav");
-
-                if (CheckIfFileOpens(localSound))
-                {
-                    player.SoundLocation = localSound;
-                    player.LoadAsync();
-                    player.Play();
-                }
-                else
-                {
-                    player.Stream = Properties.Resources.notify;
-                    player.Play();
-                }
-            }
+            PlaySoundFile("notify.wav");
         }
 
         public static void PlayUnknown()
+        {
+            PlaySoundFile("unknown.wav");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileName"></param>
+        public static void PlaySoundFile(string fileName)
         {
             if (!settingsRef.Quiet)
             {
                 // a simple method for playing a custom beep.wav or the default system Beep
                 SoundPlayer player = new SoundPlayer();
                 Assembly thisExecutable = System.Reflection.Assembly.GetExecutingAssembly();
-                string localSound = Path.Combine(assemblyPath, "unknown.wav");
+                string localSound = Path.Combine(assemblyPath, fileName);
 
                 if (CheckIfFileOpens(localSound))
                 {
                     player.SoundLocation = localSound;
                     player.LoadAsync();
-                    player.Play();
-                }
-                else
-                {
-                    player.Stream = Properties.Resources.unknown;
                     player.Play();
                 }
             }
@@ -238,7 +226,8 @@ namespace TDHelper
         /// <returns>True of the EDCE is valid otherwise false.</returns>
         public static bool ValidateEdce()
         {
-            return !string.IsNullOrEmpty(settingsRef.EdcePath) && CheckIfFileOpens(Path.Combine(settingsRef.EdcePath, "edce_client.py"));
+            return !string.IsNullOrEmpty(settingsRef.EdcePath) 
+                && CheckIfFileOpens(Path.Combine(settingsRef.EdcePath, "edce_client.py"));
         }
 
         public static void ValidateEdcePath(string altPath)
@@ -266,10 +255,12 @@ namespace TDHelper
                 else
                 {
                     string localPath = altPath ?? string.Empty; // prevent null
+
                     if (!string.IsNullOrEmpty(localPath) && CheckIfFileOpens(Path.Combine(localPath, "edce_client.py")) || localPath.EndsWith(".py"))
                     {
                         // if we have an alternate path, we can reset the variable here
                         settingsRef.EdcePath = localPath;
+
                         SaveSettingsToIniFile();
                     }
                     else
@@ -298,6 +289,7 @@ namespace TDHelper
                     {
                         t_AppConfigPath = x.FileName;
                         settingsRef.NetLogPath = Path.Combine(Directory.GetParent(t_AppConfigPath).ToString(), "Logs"); // set the appropriate Logs folder
+
                         SaveSettingsToIniFile();
                         ValidateVerboseLogging(); // always validate if verboselogging is enabled
                     }
@@ -307,6 +299,7 @@ namespace TDHelper
                         {
                             t_AppConfigPath = Path.Combine(Directory.GetParent(altPath).ToString(), "AppConfigLocal.xml");
                             settingsRef.NetLogPath = altPath;
+
                             SaveSettingsToIniFile();
                             ValidateVerboseLogging(); // always validate if verboselogging is enabled
                         }
@@ -320,6 +313,7 @@ namespace TDHelper
                                 MessageBoxButtons.OK);
 
                             settingsRef.DisableNetLogs = true;
+
                             SaveSettingsToIniFile();
                         }
                     }
@@ -328,6 +322,7 @@ namespace TDHelper
                 {
                     // derive our AppConfig.xml path from NetLogPath
                     t_AppConfigPath = Path.Combine(Directory.GetParent(settingsRef.NetLogPath).ToString(), "AppConfig.xml");
+                    
                     // double check the verbose logging state
                     ValidateVerboseLogging();
                 }
@@ -361,8 +356,9 @@ namespace TDHelper
                         {
                             // we're running Trade Dangerous Installer, adjust the relative paths
                             settingsRef.TDPath = Directory.GetParent(settingsRef.PythonPath).ToString();
-                            t_itemListPath = settingsRef.TDPath + @"\data\Item.csv";
-                            t_shipListPath = settingsRef.TDPath + @"\data\Ship.csv";
+                            t_itemListPath = Path.Combine(settingsRef.TDPath, @"data\Item.csv");
+                            t_shipListPath = Path.Combine(settingsRef.TDPath, @"data\Ship.csv");
+
                             SaveSettingsToIniFile();
                         }
                     }
@@ -382,8 +378,9 @@ namespace TDHelper
                         {
                             // we're running Trade Dangerous Installer, adjust the relative paths
                             settingsRef.TDPath = Directory.GetParent(settingsRef.PythonPath).ToString();
-                            t_itemListPath = settingsRef.TDPath + @"\data\Item.csv";
-                            t_shipListPath = settingsRef.TDPath + @"\data\Ship.csv";
+                            t_itemListPath = Path.Combine(settingsRef.TDPath, @"data\Item.csv");
+                            t_shipListPath = Path.Combine(settingsRef.TDPath, @"data\Ship.csv");
+
                             SaveSettingsToIniFile();
                         }
                     }
@@ -399,8 +396,8 @@ namespace TDHelper
                 {
                     // make sure we adjust relative paths to CSVs if we need to
                     settingsRef.TDPath = Directory.GetParent(settingsRef.PythonPath).ToString();
-                    t_itemListPath = settingsRef.TDPath + @"\data\Item.csv";
-                    t_shipListPath = settingsRef.TDPath + @"\data\Ship.csv";
+                    t_itemListPath = Path.Combine(settingsRef.TDPath, @"data\Item.csv");
+                    t_shipListPath = Path.Combine(settingsRef.TDPath, @"data\Ship.csv");
                 }
             }
         }
@@ -418,15 +415,19 @@ namespace TDHelper
                     };
 
                     if (Directory.Exists(settingsRef.TDPath))
+                    {
                         x.InitialDirectory = settingsRef.TDPath;
+                    }
 
                     x.Filter = "Py files (*.py)|*.py";
+
                     if (x.ShowDialog() == DialogResult.OK)
                     {
                         settingsRef.TDPath = Path.GetDirectoryName(x.FileName);
                         // we have to create the item/ship paths again after the validation
-                        t_itemListPath = settingsRef.TDPath + @"\data\Item.csv";
-                        t_shipListPath = settingsRef.TDPath + @"\data\Ship.csv";
+                        t_itemListPath = Path.Combine(settingsRef.TDPath, @"data\Item.csv");
+                        t_shipListPath = Path.Combine(settingsRef.TDPath, @"data\Ship.csv");
+
                         SaveSettingsToIniFile();
                     }
                     else
@@ -436,8 +437,9 @@ namespace TDHelper
                         {
                             // if we have an alternate path, we can reset the variable here
                             settingsRef.TDPath = localPath;
-                            t_itemListPath = settingsRef.TDPath + @"\data\Item.csv";
-                            t_shipListPath = settingsRef.TDPath + @"\data\Ship.csv";
+                            t_itemListPath = Path.Combine(settingsRef.TDPath, @"data\Item.csv");
+                            t_shipListPath = Path.Combine(settingsRef.TDPath, @"data\Ship.csv");
+
                             SaveSettingsToIniFile();
                         }
                         else
@@ -885,14 +887,7 @@ namespace TDHelper
             // return only an index of the first partial match (insensitive)
             int index = listToSearch.IndexOf(input);
 
-            if (index >= 0)
-            {
-                return index;
-            }
-            else
-            {
-                return -1;
-            }
+            return index >= 0 ? index : -1;
         }
 
         private int IndexInListExact(string input, List<string> listToSearch)

@@ -695,8 +695,11 @@ namespace TDHelper
             if (settingsRef.HasUpdated)
             {
                 // show the update notification
-                updateNotifyLabel.Visible = true;
+                updateNotifyIcon.Top = this.Height - 60;
+                updateNotifyLabel.Top = updateNotifyIcon.Top;
+
                 updateNotifyIcon.Visible = true;
+                updateNotifyLabel.Visible = true;
             }
 
             // always wipe the temp files
@@ -3240,14 +3243,6 @@ namespace TDHelper
             settingsRef.TestSystems = testSystemsCheckBox.Checked;
         }
 
-        private void TxtLocalPlanetary_TextChanged(object sender, EventArgs e)
-        {
-            txtLocalPlanetary.Text
-                = ContainsPlanetary(txtLocalPlanetary.Text)
-                ? txtLocalPlanetary.Text
-                : string.Empty;
-        }
-
         private void TestSystemsTimer_Delegate(object sender, ElapsedEventArgs e)
         {
             Debug.WriteLine(string.Format("testSystems Firing at: {0}", CurrentTimestamp()));
@@ -3286,6 +3281,14 @@ namespace TDHelper
         private void TrackerLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/MarkAusten/TDHelper/issues/new");
+        }
+
+        private void TxtLocalPlanetary_TextChanged(object sender, EventArgs e)
+        {
+            txtLocalPlanetary.Text
+                = ContainsPlanetary(txtLocalPlanetary.Text)
+                ? txtLocalPlanetary.Text
+                : string.Empty;
         }
 
         private void UpdateButton_Click(object sender, EventArgs e)

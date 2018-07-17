@@ -56,6 +56,7 @@ namespace TDHelper
                     foreach (FileInfo f in fileList.OrderBy(f => f.LastWriteTime))
                     {
                         string filePath = Path.Combine(path, f.ToString());
+
                         using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                         using (BufferedStream bs = new BufferedStream(fs))
                         using (StreamReader stream = new StreamReader(bs, Encoding.UTF8, true, 65536))
@@ -67,7 +68,11 @@ namespace TDHelper
 
                             if (systemMatch.Success && timestampMatch.Success)
                             {
-                                string timestampHeader = timestampMatch.Groups[1].Value.ToString() + " " + systemMatch.Groups[1].Value.ToString();
+                                string timestampHeader 
+                                    = timestampMatch.Groups[1].Value.ToString() 
+                                    + " " 
+                                    + systemMatch.Groups[1].Value.ToString();
+
                                 logPaths.Add(timestampHeader, filePath);
                             }
                         }
@@ -95,6 +100,7 @@ namespace TDHelper
             using (SQLiteCommand cmd = new SQLiteCommand("INSERT INTO SystemLog VALUES (null,@Timestamp,null,null)", dbConn))
             {
                 DateTime tempTimestamp = new DateTime();
+
                 if (!string.IsNullOrEmpty(timestamp)
                     && DateTime.TryParseExact(timestamp, "yy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out tempTimestamp))
                 {
@@ -127,6 +133,7 @@ namespace TDHelper
                 try
                 {
                     string var1 = CurrentTimestamp();
+
                     using (var transaction = dbConn.BeginTransaction())
                     {
                         cmd.Parameters.AddWithValue("@Timestamp", var1);
@@ -138,6 +145,7 @@ namespace TDHelper
                 catch { throw; }
 
                 LoadPilotsLogDB(tdhDBConn); // need a full refresh
+
                 return true; // success!
             }
         }
@@ -185,14 +193,20 @@ namespace TDHelper
                             // bind the recent systems/stations first
                             srcSystemComboBox.Items.Clear();
                             srcSystemComboBox.Items.Add(string.Empty);
+
                             destSystemComboBox.Items.Clear();
                             destSystemComboBox.Items.Add(string.Empty);
 
                             // we should add an indicator to every entry in our favorites
                             if (currentMarkedStations.Count > 0)
+                            {
                                 srcSystemComboBox.Items.AddRange(currentMarkedStations.Select(x => "!" + x).ToArray());
+                            }
+
                             if (currentMarkedStations.Count > 0)
+                            {
                                 destSystemComboBox.Items.AddRange(currentMarkedStations.Select(x => "!" + x).ToArray());
+                            }
 
                             srcSystemComboBox.Items.AddRange(output_unclean.ToArray());
                             destSystemComboBox.Items.AddRange(output_unclean.ToArray());
@@ -203,9 +217,12 @@ namespace TDHelper
                                 // bind the database output for autocompletion
                                 srcSystemComboBox.AutoCompleteCustomSource.Clear();
                                 srcSystemComboBox.AutoCompleteCustomSource.AddRange(outputSysStnNames.ToArray());
+
                                 commodityComboBox.SelectedIndex = 0;
+
                                 destSystemComboBox.AutoCompleteCustomSource.Clear();
                                 destSystemComboBox.AutoCompleteCustomSource.AddRange(outputSysStnNames.ToArray());
+
                                 commodityComboBox.SelectedIndex = 0;
                             }
                         }));
@@ -223,6 +240,7 @@ namespace TDHelper
                                 // rebind our dropdowns
                                 srcSystemComboBox.Items.Clear();
                                 destSystemComboBox.Items.Clear();
+
                                 srcSystemComboBox.Items.Add(string.Empty); // add a blank entry to the top
                                 destSystemComboBox.Items.Add(string.Empty);
 
@@ -275,6 +293,7 @@ namespace TDHelper
 
                             srcSystemComboBox.Items.AddRange(output_unclean.ToArray());
                             destSystemComboBox.Items.AddRange(output_unclean.ToArray());
+
                             srcSystemComboBox.AutoCompleteCustomSource.AddRange(outputSysStnNames.ToArray());
                             destSystemComboBox.AutoCompleteCustomSource.AddRange(outputSysStnNames.ToArray());
                         }));
@@ -283,6 +302,7 @@ namespace TDHelper
                     }
 
                     Debug.WriteLine("buildOutput combobox population took: " + m_timer.ElapsedMilliseconds + "ms");
+
                     m_timer.Stop();
                 }
                 finally
@@ -391,7 +411,7 @@ namespace TDHelper
                         memoryCache = new Cache(retriever, 24);
 
                         pilotsLogDataGrid.RowCount = retriever.RowCount;
-                        //pilotsLogDataGrid.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
+
                         pilotsLogDataGrid.Columns["ID"].Visible = false;
                         pilotsLogDataGrid.Columns["Timestamp"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
                         pilotsLogDataGrid.Columns["System"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
@@ -415,7 +435,10 @@ namespace TDHelper
                 // try to minimize how much we iterate the datatable
                 for (int i = 0; i < stn_table.Rows.Count; i++)
                 {
-                    outputSysStnNames.Add(stn_table.Rows[i]["sys_name"].ToString() + "/" + stn_table.Rows[i]["stn_name"].ToString());
+                    outputSysStnNames.Add(string.Format(
+                        "{0}/{1}", 
+                        stn_table.Rows[i]["sys_name"], 
+                        stn_table.Rows[i]["stn_name"]));
                 }
             }
 
@@ -429,7 +452,9 @@ namespace TDHelper
             }
 
             if (outputSysStnNames.Count == 0)
+            {
                 Debug.WriteLine("outputSysStnNames is empty, must be a DB path failure or access violation");
+            }
         }
 
         private void FilterStationData()
@@ -454,8 +479,14 @@ namespace TDHelper
                 for (int i = 0; i < ship_table.Rows.Count; i++)
                 {
                     // save the ship cost, and display in an invariant format
-                    string temp_cost = string.Format("{0:#,##0}", decimal.Parse(ship_table.Rows[i]["ship_cost"].ToString()));
-                    outputStationShips.Add(ship_table.Rows[i]["ship_name"].ToString() + " [" + temp_cost + "cr]");
+                    string temp_cost = string.Format(
+                        "{0:#,##0}", 
+                        decimal.Parse(ship_table.Rows[i]["ship_cost"].ToString()));
+
+                    outputStationShips.Add(string.Format(
+                        "{0} [{1} cr]",
+                        ship_table.Rows[i]["ship_name"],
+                        temp_cost));
                 }
             }
 
@@ -520,10 +551,14 @@ namespace TDHelper
                         db.Open();
 
                         if (stnship_table.Rows.Count != 0)
+                        {
                             stnship_table = new DataTable();
+                        }
 
                         if (ship_table.Rows.Count != 0)
+                        {
                             ship_table = new DataTable();
+                        }
 
                         /*
                          * Extract station details into a single row array--the structure is as follows:
@@ -554,9 +589,11 @@ namespace TDHelper
 
                             outputStationDetails = new List<string>();
                             outputStationShips = new List<string>();
+
                             FilterStationData();
 
                             Debug.WriteLine("grabStationData query took: " + m_timer.ElapsedMilliseconds + "ms");
+
                             m_timer.Stop();
                         }
                     }
@@ -577,7 +614,9 @@ namespace TDHelper
                 try
                 {
                     if (dbConn != null && dbConn.State == ConnectionState.Closed)
+                    {
                         dbConn.Open();
+                    }
 
                     using (SQLiteDataReader reader = query.ExecuteReader())
                     {
@@ -588,7 +627,9 @@ namespace TDHelper
                             foreach (var i in r.ItemArray)
                             {
                                 if (i.ToString() == columnName)
+                                {
                                     return true;
+                                }
                             }
                         }
                     }
@@ -607,15 +648,20 @@ namespace TDHelper
                 try
                 {
                     if (dbConn != null && dbConn.State == ConnectionState.Closed)
+                    {
                         dbConn.Open();
+                    }
 
                     using (SQLiteDataReader reader = query.ExecuteReader())
                     {
                         while (reader.Read())
                         {
                             int rows = reader.GetInt32(0);
+
                             if (rows > 0)
+                            {
                                 return true;
+                            }
                         }
                     }
                 }
@@ -654,13 +700,16 @@ namespace TDHelper
                 if (rowIndex == -1)
                 {
                     LoadPilotsLogDB(tdhDBConn);
+
                     return true;
                 }
 
                 // invalidate the cache pages
                 UpdateLocalTable(tdhDBConn);
+
                 retriever = new DataRetriever(tdhDBConn, "SystemLog");
                 memoryCache = new Cache(retriever, 24);
+
                 // force a refresh/repaint
                 this.Invoke(new Action(() =>
                 {
@@ -672,8 +721,10 @@ namespace TDHelper
             {
                 // partial refresh
                 UpdateLocalTable(tdhDBConn);
+
                 retriever = new DataRetriever(tdhDBConn, "SystemLog");
                 memoryCache = new Cache(retriever, 24);
+
                 this.Invoke(new Action(() =>
                 {
                     pilotsLogDataGrid.RowCount = retriever.RowCount;
@@ -749,24 +800,11 @@ namespace TDHelper
                             }
                         }
 
-                        //nonstn_table.Load(reader);
-
-                        //SQLiteCommand query = new SQLiteCommand("SELECT distinct A.name AS sys_name, B.name AS stn_name FROM System AS A, Station AS B WHERE A.system_id = B.system_id ORDER BY A.system_id", db);
-                        //SQLiteDataReader reader = query.ExecuteReader();
-                        //stn_table.Load(reader); // pre-sorted by matches/sys_id/alphabetical
-
-                        // match on System.system_id != Station.system_id, output in "System" format
-                        //query = new SQLiteCommand("SELECT distinct A.name AS sys_name FROM System AS A WHERE A.system_id NOT IN (SELECT B.system_id FROM Station AS B)", db);
-                        //reader = query.ExecuteReader();
-                        //nonstn_table.Load(reader); // pre-sorted by matches/sys_id/alphabetical
-
-                        // unnecessary, but still explicit
-                        //reader.Close();
-                        //reader.Dispose();
                         db.Close();
                         db.Dispose();
 
                         Debug.WriteLine("loadDatabase query took: " + m_timer.ElapsedMilliseconds + "ms");
+
                         m_timer.Stop();
                     }
 
@@ -788,6 +826,7 @@ namespace TDHelper
                 try
                 {
                     UpdateLocalTable(tdhDBConn);
+
                     retriever = new DataRetriever(dbConn, "SystemLog");
 
                     this.Invoke(new Action(() =>
@@ -795,14 +834,19 @@ namespace TDHelper
                         if (pilotsLogDataGrid.Columns.Count != localTable.Columns.Count)
                         {
                             foreach (DataColumn c in retriever.Columns)
+                            {
                                 pilotsLogDataGrid.Columns.Add(c.ColumnName, c.ColumnName);
+                            }
                         }
 
                         pilotsLogDataGrid.Rows.Clear();
+
                         memoryCache = new Cache(retriever, 24);
+
                         pilotsLogDataGrid.Refresh();
 
                         pilotsLogDataGrid.RowCount = retriever.RowCount;
+
                         if (pilotsLogDataGrid.RowCount > 0)
                         {
                             pilotsLogDataGrid.Columns["ID"].Visible = false;
@@ -820,8 +864,10 @@ namespace TDHelper
         {
             // we should load from the DB if the newest entry is newer than the newest log file entry
             string pattern0 = @"^(\d\d\-\d\d\-\d\d).+?\((.+?)\sGMT"; // $1=Y, $2=M, $3=D; $4=GMT
+
             // grab the timestamp of this entry, and then the system name
             string pattern1 = @"\{(.*?)\}\sSystem.+?\((.*?)\)"; // $1=localtime, $2=system
+
             List<string> output = new List<string>(); // a list for our system names
             string logDatestamp = string.Empty;
 
@@ -925,6 +971,7 @@ namespace TDHelper
 
             // grab the timestamp of this entry, and then the system name
             string pattern1 = @"\{(\d\d:\d\d:\d\d).+System:""(.+)"""; // $1=localtime, $2=system
+
             List<string> output = new List<string>(); // a list for our system names
             List<KeyValuePair<string, string>> netLogOutput = new List<KeyValuePair<string, string>>();
             string logDatestamp = string.Empty;
@@ -974,7 +1021,13 @@ namespace TDHelper
                         foreach (Match m in matchCollector1)
                         {
                             string curTimestamp = logDatestamp + " " + m.Groups[1].Value.ToString();
-                            string curSystem = m.Groups[2].Value.Replace("\r\n", string.Empty).Replace("\r", string.Empty).Replace("\n", string.Empty).ToString().ToUpper();
+                            string curSystem = m.Groups[2].Value
+                                .Replace("\r\n", string.Empty)
+                                .Replace("\r", string.Empty)
+                                .Replace("\n", string.Empty)
+                                .ToString()
+                                .ToUpper();
+
                             string lastOutput = (output.Count != 0) ? output.Last() : string.Empty;
 
                             if (!curSystem.Equals(lastOutput))
@@ -1012,7 +1065,9 @@ namespace TDHelper
                     {
                         // go in reverse to preserve the list
                         if (!TimestampIsNewer(netLogOutput[i].Key, localSystemList[0].Key))
+                        {
                             netLogOutput.RemoveAt(i);
+                        }
                     }
                 }
 
@@ -1049,8 +1104,11 @@ namespace TDHelper
                         {
                             // replace any existing previous duplicate with the newest iteration
                             int index = IndexInListExact(curSystem, output);
+
                             if (index >= 0)
+                            {
                                 output.RemoveAt(index);
+                            }
 
                             output.Insert(0, curSystem); // add the new unique system to the list
                         }
@@ -1076,8 +1134,11 @@ namespace TDHelper
                         {
                             // remove duplicates from the target list before we concat()
                             int index = IndexInListExact(output[i], output_unclean);
+
                             if (index >= 0)
+                            {
                                 output_unclean.RemoveAt(index);
+                            }
                         }
                     }
                 }
@@ -1097,14 +1158,20 @@ namespace TDHelper
             if (netLogOutput.Count > 0 && localSystemList.Count > 0)
             {
                 if (netLogOutput.First().Value.Equals(localSystemList.First().Value))
+                {
                     netLogOutput.RemoveAt(0); // first vs first, match
+                }
                 else if (localSystemList.Count >= netLogOutput.Count
                     && netLogOutput.First().Value.Equals(localSystemList[netLogOutput.Count - 1].Value))
+                {
                     netLogOutput.RemoveAt(0); // first vs offset, match
+                }
             }
 
             if (localSystemList.Count == 0 && netLogOutput.Count > 0)
+            {
                 UpdatePilotsLogDB(tdhDBConn, netLogOutput); // pass just the table, no diffs
+            }
             else if (netLogOutput.Count > 0)
             {
                 var exceptTable = netLogOutput.Except(localSystemList).ToList();
@@ -1268,14 +1335,14 @@ namespace TDHelper
                 // refreshing, let's rebind
                 commodityComboBox.Items.Clear();
                 commodityComboBox.Items.AddRange(outputItems.ToArray());
-                commodityComboBox.SelectedIndex = 0;
             }
             else if (!hasRun)
             {
                 // if we're starting fresh, just bind
                 commodityComboBox.Items.AddRange(outputItems.ToArray());
-                commodityComboBox.SelectedIndex = 0;
             }
+
+            commodityComboBox.SelectedIndex = 0;
 
             Debug.WriteLine("refreshItems took: " + m_timer.ElapsedMilliseconds + "ms");
             m_timer.Stop();
@@ -1315,7 +1382,8 @@ namespace TDHelper
                 {
                     try
                     {
-                        var transaction = dbConn.BeginTransaction();
+                        SQLiteTransaction transaction = dbConn.BeginTransaction();
+
                         foreach (int i in rowsIndex)
                         {
                             // delete all the rows specified by the index, using a transaction for efficiency
@@ -1323,11 +1391,13 @@ namespace TDHelper
                             cmd.ExecuteNonQuery();
                             cmd.Parameters.Clear();
                         }
+
                         transaction.Commit();
 
                         VacuumPilotsLogDB(tdhDBConn);
                     }
                     catch (Exception) { throw; }
+
                     return true; // success!
                 }
             }
