@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -20,7 +21,9 @@ namespace TDHelper
                 using (Mutex mutex = new Mutex(false, "Global\\" + MainForm.AssemblyGuid))
                 {
                     if (!mutex.WaitOne(0, false))
+                    {
                         return;
+                    }
 
                     if (args.Length == 1 && args[0] == "/noupdate")
                     {
@@ -69,6 +72,14 @@ namespace TDHelper
 
                         return;
                     }
+
+                    string version = AssemblyName
+                        .GetAssemblyName("TDHelper.exe")
+                        .Version
+                        .ToString();
+
+                    SplashScreen.ShowSplashScreen();
+                    SplashScreen.SetVersion(version);
 
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);

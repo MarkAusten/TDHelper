@@ -42,14 +42,16 @@ namespace TDHelper
 
             this.creditsBox.Maximum = Decimal.MaxValue;
 
+            SplashScreen.SetStatus("Building settings...");
             // Build variables from config
             BuildSettings();
 
+            SplashScreen.SetStatus("Reaading configuration...");
             // Copy the setting to the form controls
             CopySettingsFromConfig();
 
             // And validate the settings to get rid of any nonsense.
-            ValidateSettings();
+            ValidateSettings(true);
 
             // Let's change the title
             SetFormTitle(this);
@@ -1946,6 +1948,8 @@ namespace TDHelper
         {
             // start the database uploader
             backgroundWorker6.RunWorkerAsync();
+
+            SplashScreen.CloseForm();
         }
 
         private void MethodComboBox_SelectedIndexChanged(object sender, EventArgs e)

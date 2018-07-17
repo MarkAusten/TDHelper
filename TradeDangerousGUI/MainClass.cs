@@ -504,12 +504,23 @@ namespace TDHelper
             unladenLYBox.Value = Math.Max(settings.UnladenLY, unladenLYBox.Minimum);
         }
 
-        public void ValidateSettings()
+        public void ValidateSettings(bool firstRun = false)
         {
+            if (firstRun)
+            {
+                SplashScreen.SetStatus("Validating the settings...");
+            }
+
             // check our paths.
             ValidatePython(null);
             ValidateTDPath(null);
             ValidateEdcePath(null);
+
+            if (firstRun)
+            {
+                SplashScreen.SetStatus("Validating the net logs...");
+            }
+
             ValidateNetLogPath(null);
 
             // sanity check our inputs
