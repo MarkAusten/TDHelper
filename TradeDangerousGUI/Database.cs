@@ -35,7 +35,7 @@ namespace TDHelper
         private DataTable stn_table = new DataTable();
 
         private DataTable stnship_table = new DataTable();
-        private string tdDBPath = "";
+        private string tdDBPath = string.Empty;
         private SQLiteConnection tdhDBConn;
 
         #endregion Props
@@ -53,27 +53,27 @@ namespace TDHelper
                 // check the make sure the directory is populated
                 if (dInfo.Exists && fileList.Length > 0)
                 {
-                        foreach (FileInfo f in fileList.OrderBy(f => f.LastWriteTime))
+                    foreach (FileInfo f in fileList.OrderBy(f => f.LastWriteTime))
+                    {
+                        string filePath = Path.Combine(path, f.ToString());
+                        using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                        using (BufferedStream bs = new BufferedStream(fs))
+                        using (StreamReader stream = new StreamReader(bs, Encoding.UTF8, true, 65536))
                         {
-                            string filePath = Path.Combine(path, f.ToString());
-                            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                            using (BufferedStream bs = new BufferedStream(fs))
-                            using (StreamReader stream = new StreamReader(bs, Encoding.UTF8, true, 65536))
-                            {
-                                // check if there are any files that match the mask, return null if nothing matches
-                                string tempLines = stream.ReadToEnd(); // pull into memory
-                                Match timestampMatch = Regex.Match(tempLines, @"(\d{2,4}\-\d\d\-\d\d)[\s\-](\d\d:\d\d)\sGMT");
-                                Match systemMatch = Regex.Match(tempLines, @"\{(\d\d:\d\d:\d\d).+System:""(.+)""");
+                            // check if there are any files that match the mask, return null if nothing matches
+                            string tempLines = stream.ReadToEnd(); // pull into memory
+                            Match timestampMatch = Regex.Match(tempLines, @"(\d{2,4}\-\d\d\-\d\d)[\s\-](\d\d:\d\d)\sGMT");
+                            Match systemMatch = Regex.Match(tempLines, @"\{(\d\d:\d\d:\d\d).+System:""(.+)""");
 
-                                if (systemMatch.Success && timestampMatch.Success)
-                                {
-                                    string timestampHeader = timestampMatch.Groups[1].Value.ToString() + " " + systemMatch.Groups[1].Value.ToString();
-                                    logPaths.Add(timestampHeader, filePath);
-                                }
+                            if (systemMatch.Success && timestampMatch.Success)
+                            {
+                                string timestampHeader = timestampMatch.Groups[1].Value.ToString() + " " + systemMatch.Groups[1].Value.ToString();
+                                logPaths.Add(timestampHeader, filePath);
                             }
                         }
+                    }
 
-                        return new List<string>(logPaths.Values);
+                    return new List<string>(logPaths.Values);
                 }
             }
             catch (UnauthorizedAccessException) { }
@@ -184,9 +184,9 @@ namespace TDHelper
                         {
                             // bind the recent systems/stations first
                             srcSystemComboBox.Items.Clear();
-                            srcSystemComboBox.Items.Add("");
+                            srcSystemComboBox.Items.Add(string.Empty);
                             destSystemComboBox.Items.Clear();
-                            destSystemComboBox.Items.Add("");
+                            destSystemComboBox.Items.Add(string.Empty);
 
                             // we should add an indicator to every entry in our favorites
                             if (currentMarkedStations.Count > 0)
@@ -223,14 +223,19 @@ namespace TDHelper
                                 // rebind our dropdowns
                                 srcSystemComboBox.Items.Clear();
                                 destSystemComboBox.Items.Clear();
-                                srcSystemComboBox.Items.Add(""); // add a blank entry to the top
-                                destSystemComboBox.Items.Add("");
+                                srcSystemComboBox.Items.Add(string.Empty); // add a blank entry to the top
+                                destSystemComboBox.Items.Add(string.Empty);
 
                                 // favorites first
                                 if (currentMarkedStations.Count > 0)
+                                {
                                     srcSystemComboBox.Items.AddRange(currentMarkedStations.Select(x => "!" + x).ToArray());
+                                }
+
                                 if (currentMarkedStations.Count > 0)
+                                {
                                     destSystemComboBox.Items.AddRange(currentMarkedStations.Select(x => "!" + x).ToArray());
+                                }
 
                                 // finally the system list
                                 srcSystemComboBox.Items.AddRange(output_unclean.ToArray());
@@ -238,10 +243,16 @@ namespace TDHelper
 
                                 // reset our cursor after the refresh if the user had input focus
                                 if (srcSystemComboBox.Text.Length > 0)
+                                {
                                     srcSystemComboBox.Select(srcSystemComboBox.Text.Length, 0);
+                                }
+
                                 if (destSystemComboBox.Text.Length > 0)
+                                {
                                     destSystemComboBox.Select(srcSystemComboBox.Text.Length, 0);
+                                }
                             }));
+
                             hasRefreshedRecents = false;
                         }
                     }
@@ -253,8 +264,8 @@ namespace TDHelper
 
                         this.Invoke(new Action(() =>
                         {
-                            srcSystemComboBox.Items.Add("");
-                            destSystemComboBox.Items.Add("");
+                            srcSystemComboBox.Items.Add(string.Empty);
+                            destSystemComboBox.Items.Add(string.Empty);
 
                             if (currentMarkedStations.Count > 0)
                             {
@@ -267,6 +278,7 @@ namespace TDHelper
                             srcSystemComboBox.AutoCompleteCustomSource.AddRange(outputSysStnNames.ToArray());
                             destSystemComboBox.AutoCompleteCustomSource.AddRange(outputSysStnNames.ToArray());
                         }));
+
                         hasRun = true; // set the semaphore so we don't hork our data tables
                     }
 
@@ -276,7 +288,9 @@ namespace TDHelper
                 finally
                 {
                     if (hasRun)
+                    {
                         testSystemsTimer.Start(); // start our background systems list updater (~10s)
+                    }
 
                     Monitor.Exit(readNetLock);
                 }
@@ -286,7 +300,7 @@ namespace TDHelper
         private void BuildPilotsLog()
         {
             // here we either build or load our database
-            tdhDBConn = new SQLiteConnection("Data Source=" + pilotsLogDBPath + ";Version=3;");
+            tdhDBConn = GetConnection(pilotsLogDBPath);
 
             if (pilotsLogDataGrid.Rows.Count == 0)
             {
@@ -446,7 +460,19 @@ namespace TDHelper
             }
 
             if (outputStationDetails.Count == 0)
+            {
                 Debug.WriteLine("outputStationDetails is empty, must be a DB path failure or access violation");
+            }
+        }
+
+        /// <summary>
+        /// Create a conection to the specified database file.
+        /// </summary>
+        /// <param name="path">The path to the database file to which the connection should be made.</param>
+        /// <returns>An SQLite Connection.</returns>
+        private SQLiteConnection GetConnection(string path)
+        {
+            return new SQLiteConnection("Data Source=" + path + ";Version=3;FKSupport=False;");
         }
 
         private string GetLastTimestamp()
@@ -487,7 +513,7 @@ namespace TDHelper
             {
                 try
                 {
-                    using (SQLiteConnection db = new SQLiteConnection("Data Source=" + tdDBPath + ";Version=3;"))
+                    using (SQLiteConnection db = GetConnection(tdDBPath))
                     {
                         Stopwatch m_timer = Stopwatch.StartNew();
 
@@ -668,9 +694,12 @@ namespace TDHelper
 
             if (ValidateDBPath())
             {
+                string stationName = string.Empty;
+                string systemName = string.Empty;
+
                 try
                 {
-                    using (SQLiteConnection db = new SQLiteConnection("Data Source=" + tdDBPath + ";Version=3;"))
+                    using (SQLiteConnection db = GetConnection(tdDBPath))
                     {
                         Stopwatch m_timer = Stopwatch.StartNew();
 
@@ -684,18 +713,56 @@ namespace TDHelper
                         }
 
                         // match on System.system_id = Station.system_id, output in "System | Station" format
-                        SQLiteCommand query = new SQLiteCommand("SELECT A.name AS sys_name, B.name AS stn_name FROM System AS A, Station AS B WHERE A.system_id = B.system_id ORDER BY A.system_id", db);
-                        SQLiteDataReader reader = query.ExecuteReader();
-                        stn_table.Load(reader); // pre-sorted by matches/sys_id/alphabetical
+                        SQLiteCommand cmd = db.CreateCommand();
+
+                        stn_table.Columns.Clear();
+                        stn_table.Columns.Add(new DataColumn("sys_name"));
+                        stn_table.Columns.Add(new DataColumn("stn_name"));
+
+                        cmd.CommandText = "select sys.name as sys_name, stn.name as stn_name from System sys left join Station stn on sys.system_id = stn.system_id";
+
+                        using (SQLiteDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                systemName = reader[0].ToString();
+                                stationName = reader[1].ToString();
+
+                                stn_table.LoadDataRow(new object[] { systemName, stationName }, true);
+                            }
+                        }
+
+                        //stn_table.Load(reader);
+
+                        nonstn_table.Columns.Clear();
+                        nonstn_table.Columns.Add(new DataColumn("sys_name"));
+
+                        cmd.CommandText = "SELECT A.name AS sys_name FROM System AS A WHERE A.system_id NOT IN(SELECT B.system_id FROM Station AS B)";
+
+                        using (SQLiteDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                systemName = reader[0].ToString();
+
+                                stn_table.LoadDataRow(new object[] { systemName }, true);
+                            }
+                        }
+
+                        //nonstn_table.Load(reader);
+
+                        //SQLiteCommand query = new SQLiteCommand("SELECT distinct A.name AS sys_name, B.name AS stn_name FROM System AS A, Station AS B WHERE A.system_id = B.system_id ORDER BY A.system_id", db);
+                        //SQLiteDataReader reader = query.ExecuteReader();
+                        //stn_table.Load(reader); // pre-sorted by matches/sys_id/alphabetical
 
                         // match on System.system_id != Station.system_id, output in "System" format
-                        query = new SQLiteCommand("SELECT A.name AS sys_name FROM System AS A WHERE A.system_id NOT IN (SELECT B.system_id FROM Station AS B)", db);
-                        reader = query.ExecuteReader();
-                        nonstn_table.Load(reader); // pre-sorted by matches/sys_id/alphabetical
+                        //query = new SQLiteCommand("SELECT distinct A.name AS sys_name FROM System AS A WHERE A.system_id NOT IN (SELECT B.system_id FROM Station AS B)", db);
+                        //reader = query.ExecuteReader();
+                        //nonstn_table.Load(reader); // pre-sorted by matches/sys_id/alphabetical
 
                         // unnecessary, but still explicit
-                        reader.Close();
-                        reader.Dispose();
+                        //reader.Close();
+                        //reader.Dispose();
                         db.Close();
                         db.Dispose();
 
@@ -756,7 +823,7 @@ namespace TDHelper
             // grab the timestamp of this entry, and then the system name
             string pattern1 = @"\{(.*?)\}\sSystem.+?\((.*?)\)"; // $1=localtime, $2=system
             List<string> output = new List<string>(); // a list for our system names
-            string logDatestamp = "";
+            string logDatestamp = string.Empty;
 
             if (logPaths.Count > 0 && !string.IsNullOrEmpty(logPaths.Last())
                 && !hasLogLoaded && !loadedFromDB && localSystemList.Count > 0)
@@ -771,7 +838,7 @@ namespace TDHelper
                     Match match1 = Regex.Match(fileBuffer, pattern1, RegexOptions.Compiled);
 
                     // pull some variables for comparison
-                    string firstTimestamp = "", firstSystem = "";
+                    string firstTimestamp = string.Empty, firstSystem = string.Empty;
 
                     if (!string.IsNullOrEmpty(match0.Groups[0].Value)
                         && !string.IsNullOrEmpty(match1.Groups[1].Value)
@@ -780,7 +847,7 @@ namespace TDHelper
                         // grab our first timestamped entry
                         logDatestamp = match0.Groups[1].Value;
                         firstTimestamp = logDatestamp + " " + match1.Groups[1].Value.ToString();
-                        firstSystem = match1.Groups[2].Value.Replace("\r\n", "").Replace("\r", "").Replace("\n", "").ToString().ToUpper();
+                        firstSystem = match1.Groups[2].Value.Replace("\r\n", string.Empty).Replace("\r", string.Empty).Replace("\n", string.Empty).ToString().ToUpper();
                     }
 
                     if (!string.IsNullOrEmpty(firstTimestamp) && !string.IsNullOrEmpty(firstSystem)
@@ -853,14 +920,14 @@ namespace TDHelper
 
             // this method initially populates the recent systems and pilot's log in the absence of a DB
             // grab the timestamp of this particular netlog
-            string fileBuffer = "";
+            string fileBuffer = string.Empty;
             string pattern0 = @"(\d{2,4}\-\d\d\-\d\d)[\s\-](\d\d:\d\d)\sGMT"; // $1=Y, $2=M, $3=D; $4=GMT
 
             // grab the timestamp of this entry, and then the system name
             string pattern1 = @"\{(\d\d:\d\d:\d\d).+System:""(.+)"""; // $1=localtime, $2=system
             List<string> output = new List<string>(); // a list for our system names
             List<KeyValuePair<string, string>> netLogOutput = new List<KeyValuePair<string, string>>();
-            string logDatestamp = "";
+            string logDatestamp = string.Empty;
 
             if (filePaths.Count > 0 && !string.IsNullOrEmpty(filePaths[0]) && refreshMode)
             {
@@ -907,8 +974,8 @@ namespace TDHelper
                         foreach (Match m in matchCollector1)
                         {
                             string curTimestamp = logDatestamp + " " + m.Groups[1].Value.ToString();
-                            string curSystem = m.Groups[2].Value.Replace("\r\n", "").Replace("\r", "").Replace("\n", "").ToString().ToUpper();
-                            string lastOutput = (output.Count != 0) ? output.Last() : "";
+                            string curSystem = m.Groups[2].Value.Replace("\r\n", string.Empty).Replace("\r", string.Empty).Replace("\n", string.Empty).ToString().ToUpper();
+                            string lastOutput = (output.Count != 0) ? output.Last() : string.Empty;
 
                             if (!curSystem.Equals(lastOutput))
                             {
@@ -972,10 +1039,10 @@ namespace TDHelper
                     foreach (Match m in matchCollector1)
                     {
                         string curTimestamp = logDatestamp + " " + m.Groups[1].Value.ToString();
-                        string curSystem = m.Groups[2].Value.Replace("\r\n", "").Replace("\r", "").Replace("\n", "").ToString().ToUpper();
-                        string lastOutput = (output_unclean.Count != 0) ? output_unclean.First() : "";
-                        string lastEntry = (output.Count != 0) ? output.Last() : "";
-                        string firstEntry = (output.Count != 0) ? output.First() : "";
+                        string curSystem = m.Groups[2].Value.Replace("\r\n", string.Empty).Replace("\r", string.Empty).Replace("\n", string.Empty).ToString().ToUpper();
+                        string lastOutput = (output_unclean.Count != 0) ? output_unclean.First() : string.Empty;
+                        string lastEntry = (output.Count != 0) ? output.Last() : string.Empty;
+                        string firstEntry = (output.Count != 0) ? output.First() : string.Empty;
 
                         // we should only add new entries to our input list if they're not a duplicate
                         if (output.Count == 0 && !curSystem.Equals(lastOutput) || !curSystem.Equals(firstEntry))
@@ -1325,9 +1392,9 @@ namespace TDHelper
                         {
                             DataRow row = rows[i];
                             int var1 = int.Parse(row["ID"].ToString());
-                            string var2 = (row["Timestamp"] ?? "").ToString();
-                            string var3 = (row["System"] ?? "").ToString();
-                            string var4 = (row["Notes"] ?? "").ToString();
+                            string var2 = (row["Timestamp"] ?? string.Empty).ToString();
+                            string var3 = (row["System"] ?? string.Empty).ToString();
+                            string var4 = (row["Notes"] ?? string.Empty).ToString();
 
                             cmd.Parameters["@ID"].Value = var1;
                             cmd.Parameters["@Timestamp"].Value = var2;

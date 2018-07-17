@@ -555,10 +555,14 @@ namespace TDHelper
 
         private static List<string> ParseMarkedStations()
         {
-            if (!string.IsNullOrEmpty(settingsRef.MarkedStations))
-                return RemoveExtraWhitespace(settingsRef.MarkedStations).Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).ToList();
-            else
-                return new List<string>();
+            List<string> result
+                = string.IsNullOrEmpty(settingsRef.MarkedStations)
+                ? new List<string>()
+                : RemoveExtraWhitespace(settingsRef.MarkedStations)
+                    .Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
+                    .ToList();
+                
+            return result;
         }
 
         private void AddMarkedStation(string input, List<string> parentList)
