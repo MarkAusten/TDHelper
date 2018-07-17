@@ -171,7 +171,7 @@ namespace TDHelper
              * Index = 3 is the Rare command
              * Index = 4 is the Trade command
              * Index = 5 is the Market command
-             * Index = 6 is the ShipVendor command
+             * Index = 6 is the Ship Vendor command
              * Index = 7 is the Navigation command
              * Index = 8 is the OldData command
              *
@@ -317,41 +317,41 @@ namespace TDHelper
                     PlayAlert();
                 }
             }
-            else if (methodIndex == 6)
-            {
-                // mark us as coming from the shipvendor editor
-                if (!string.IsNullOrEmpty(temp_src))
-                {
-                    if (!string.IsNullOrEmpty(temp_shipsSold) && stationIndex != 2)
-                    {
-                        // clean our ship input before passing
-                        string sanitizedInput = CleanShipVendorInput(temp_shipsSold);
+            //else if (methodIndex == 6)
+            //{
+            //    // mark us as coming from the shipvendor editor
+            //    if (!string.IsNullOrEmpty(temp_src))
+            //    {
+            //        if (!string.IsNullOrEmpty(temp_shipsSold) && stationIndex != 2)
+            //        {
+            //            // clean our ship input before passing
+            //            string sanitizedInput = CleanShipVendorInput(temp_shipsSold);
 
-                        if (stationIndex == 0)
-                        {
-                            // we're adding/updating (default)
-                            t_path += "shipvendor -a \"" + temp_src + "\" " + "\"" + sanitizedInput + "\"";
-                        }
-                        else if (stationIndex == 1)
-                        {
-                            // removing
-                            t_path += "shipvendor -rm \"" + temp_src + "\" " + "\"" + sanitizedInput + "\"";
-                        }
+            //            if (stationIndex == 0)
+            //            {
+            //                // we're adding/updating (default)
+            //                t_path += "shipvendor -a \"" + temp_src + "\" " + "\"" + sanitizedInput + "\"";
+            //            }
+            //            else if (stationIndex == 1)
+            //            {
+            //                // removing
+            //                t_path += "shipvendor -rm \"" + temp_src + "\" " + "\"" + sanitizedInput + "\"";
+            //            }
 
-                        // force a station/shipvendor panel update
-                        buttonCaller = 17;
-                    }
-                    else
-                    {
-                        t_path += "shipvendor \"" + temp_src + "\"";
-                    }
-                }
-                else
-                {
-                    okayToRun = false;
-                    PlayAlert();
-                }
-            }
+            //            // force a station/shipvendor panel update
+            //            buttonCaller = 17;
+            //        }
+            //        else
+            //        {
+            //            t_path += "shipvendor \"" + temp_src + "\"";
+            //        }
+            //    }
+            //    else
+            //    {
+            //        okayToRun = false;
+            //        PlayAlert();
+            //    }
+            //}
             else if (methodIndex == 5)
             { // Market command
                 if (!string.IsNullOrEmpty(temp_src))
@@ -567,11 +567,11 @@ namespace TDHelper
                     if (!backgroundWorker1.IsBusy)
                         backgroundWorker1.RunWorkerAsync();
                 }
-                else if (buttonCaller == 17)
-                {
-                    // force a station/shipvendor panel update
-                    PopulateStationPanel(temp_src);
-                }
+                //else if (buttonCaller == 17)
+                //{
+                //    // force a station/shipvendor panel update
+                //    PopulateStationPanel(temp_src);
+                //}
 
                 // reenable after uncancellable task is done
                 EnableRunButtons();
@@ -2118,19 +2118,13 @@ namespace TDHelper
                     // shipvendor command
                     StationEditorChangeState();
 
-                    // show the secondary selection box
-                    stationDropDown.Visible = true;
-                    // set "add" as the default
-                    List<string> shipVendorDrop = new List<string>(new string[] { "Add", "Remove", "List" });
-                    stationDropDown.DataSource = shipVendorDrop;
-
                     // hide the run panel
                     panRunOptions.Visible = false;
                     // activate the station panel
                     panShipVendor.Visible = true;
 
                     // fix tooltips
-                    toolTip1.SetToolTip(methodDropDown, "Add/Remove/List ships being sold at a given station");
+                    //toolTip1.SetToolTip(methodDropDown, "Add/Remove/List ships being sold at a given station");
 
                     methodFromIndex = 6;
                 }

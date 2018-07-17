@@ -571,19 +571,111 @@ namespace TDHelper
                         // check for one of the common columns
                         if (HasValidColumn(db, "Station", "rearm"))
                         {
-                            SQLiteCommand query = new SQLiteCommand(
-                                "SELECT Sys.name AS sys_name, Stn.name AS stn_name, Stn.ls_from_star AS stn_ls, Stn.max_pad_size AS stn_padsize, Stn.rearm AS stn_rearm, Stn.refuel AS stn_refuel, Stn.repair AS stn_repair, Stn.outfitting AS stn_outfit, Stn.shipyard AS stn_ship, Stn.market AS stn_items, Stn.blackmarket AS stn_bmkt FROM System as Sys, Station as Stn WHERE sys_name = \"" + inputSystem + "\" AND stn_name = \"" + inputStation + "\" AND Stn.system_id = Sys.system_id", db);
-                            SQLiteDataReader reader = query.ExecuteReader();
-                            stnship_table.Load(reader); // should be a single row/multi-column
+                            SQLiteCommand query = db.CreateCommand();
+
+                            query.CommandText
+                                = " select "
+                                + "    sys.name as sys_name,"
+                                + "    stn.name as stn_name,"
+                                + "    stn.ls_from_star as stn_ls,"
+                                + "    stn.max_pad_size as stn_padsize,"
+                                + "    stn.rearm as stn_rearm,"
+                                + "    stn.refuel as stn_refuel,"
+                                + "    stn.repair as stn_repair,"
+                                + "    stn.outfitting as stn_outfit,"
+                                + "    stn.shipyard as stn_ship,"
+                                + "    stn.market as stn_items,"
+                                + "    stn.blackmarket as stn_bmkt"
+                                + " from"
+                                + "    system sys"
+                                + " left join"
+                                + "    station stn on stn.system_id = sys.system_id"
+                                + " where"
+                                + "    sys.name = @system and"
+                                + "    stn.name = @station";
+
+                            query.Parameters.AddWithValue("@system", inputSystem);
+                            query.Parameters.AddWithValue("@station", inputStation);
+
+                            using (SQLiteDataReader reader = query.ExecuteReader())
+                            {
+                                stnship_table.Load(reader); // should be a single row/multi-column
+                            }
 
                             // populate our shipvendor table as well
-                            query = new SQLiteCommand("SELECT Sys.system_id AS sys_sysid, Stn.system_id AS stn_sysid, Stn.station_id AS stn_stnid, ShipV.station_id AS shipv_stnid, ShipV.ship_id AS shipv_shipid, Ship.ship_id AS ship_shipid, Sys.name AS sys_name, Stn.name AS stn_name, Ship.name AS ship_name, Ship.cost AS ship_cost FROM System AS Sys, Station AS Stn, ShipVendor AS ShipV, Ship WHERE stn_stnid = shipv_stnid AND shipv_shipid = ship_shipid AND sys_name = \"" + inputSystem + "\" AND stn_name = \"" + inputStation + "\" AND Stn.system_id = Sys.system_id ORDER BY ship_cost DESC", db);
-                            reader = query.ExecuteReader();
-                            ship_table.Load(reader); // ship data is in "ship_name" column
+                            ship_table.Columns.Clear();
+                            ship_table.Columns.Add(new DataColumn("sys_sysid"));
+                            ship_table.Columns.Add(new DataColumn("stn_sysid"));
+                            ship_table.Columns.Add(new DataColumn("stn_stnid"));
+                            ship_table.Columns.Add(new DataColumn("shipv_stnid"));
+                            ship_table.Columns.Add(new DataColumn("shipv_shipid"));
+                            ship_table.Columns.Add(new DataColumn("ship_shipid"));
+                            ship_table.Columns.Add(new DataColumn("sys_name"));
+                            ship_table.Columns.Add(new DataColumn("stn_name"));
+                            ship_table.Columns.Add(new DataColumn("ship_name"));
+                            ship_table.Columns.Add(new DataColumn("ship_cost"));
+
+                            query.CommandText
+                                = " select"
+                                + " 	sys.system_id as sys_sysid,"
+                                + " 	stn.system_id as stn_sysid,"
+                                + " 	stn.station_id as stn_stnid,"
+                                + " 	shipv.station_id as shipv_stnid,"
+                                + " 	shipv.ship_id as shipv_shipid,"
+                                + " 	ship.ship_id as ship_shipid,"
+                                + " 	sys.name as sys_name,"
+                                + " 	stn.name as stn_name,"
+                                + " 	ship.name as ship_name,"
+                                + " 	ship.cost as ship_cost"
+                                + " from "
+                                + " 	system sys"
+                                + " left join "
+                                + " 	station stn on stn.system_id = sys.system_id"
+                                + " left join "
+                                + " 	shipvendor shipv on stn.station_id = shipv.station_id"
+                                + " left join "
+                                + " 	ship on shipv.ship_id = ship.ship_id"
+                                + " where "
+                                + "     sys.name = @system and "
+                                + "     stn.name = @station"
+                                + " order by "
+                                + "     ship.cost desc";
+
+                            using (SQLiteDataReader reader = query.ExecuteReader())
+                            {
+                                if (reader.HasRows)
+                                {
+                                    while (reader.Read())
+                                    {
+                                        var sys_sysid = reader[0];
+                                        var stn_sysid = reader[1];
+                                        var stn_stnid = reader[2];
+                                        var shipv_stnid = reader[3];
+                                        var shipv_shipid = reader[4];
+                                        var ship_shipid = reader[5];
+                                        var sys_name = reader[6];
+                                        var stn_name = reader[7];
+                                        var ship_name = reader[8];
+                                        var ship_cost = reader[9];
+
+                                        ship_table.LoadDataRow(new object[]
+                                        {
+                                            sys_sysid,
+                                            stn_sysid,
+                                            stn_stnid,
+                                            shipv_stnid,
+                                            shipv_shipid,
+                                            ship_shipid,
+                                            sys_name,
+                                            stn_name,
+                                            ship_name,
+                                            ship_cost
+                                        }, true);
+                                    }
+                                }
+                            }
 
                             // unnecessary, but still explicit
-                            reader.Close();
-                            reader.Dispose();
                             db.Close();
                             db.Dispose();
 
@@ -596,6 +688,7 @@ namespace TDHelper
 
                             m_timer.Stop();
                         }
+
                     }
                 }
                 catch (Exception e)
@@ -770,7 +863,14 @@ namespace TDHelper
                         stn_table.Columns.Add(new DataColumn("sys_name"));
                         stn_table.Columns.Add(new DataColumn("stn_name"));
 
-                        cmd.CommandText = "select sys.name as sys_name, stn.name as stn_name from System sys left join Station stn on sys.system_id = stn.system_id";
+                        cmd.CommandText 
+                            = " select"
+                            + "     sys.name as sys_name,"
+                            + "     stn.name as stn_name"
+                            + " from"
+                            + "     System sys"
+                            + " left join" 
+                            + "     Station stn on sys.system_id = stn.system_id";
 
                         using (SQLiteDataReader reader = cmd.ExecuteReader())
                         {
@@ -783,12 +883,19 @@ namespace TDHelper
                             }
                         }
 
-                        //stn_table.Load(reader);
-
                         nonstn_table.Columns.Clear();
                         nonstn_table.Columns.Add(new DataColumn("sys_name"));
 
-                        cmd.CommandText = "SELECT A.name AS sys_name FROM System AS A WHERE A.system_id NOT IN(SELECT B.system_id FROM Station AS B)";
+                        cmd.CommandText
+                            = " select "
+                            + "     a.name as sys_name "
+                            + " from"
+                            + "     system as a "
+                            + " where"
+                            + "     a.system_id not in"
+                            + "     ("
+                            + "         select b.system_id from station as b"
+                            + "     )";
 
                         using (SQLiteDataReader reader = cmd.ExecuteReader())
                         {
