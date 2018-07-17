@@ -1904,6 +1904,8 @@ namespace TDHelper
                 // show the user the changelog after an update
                 if (File.Exists(Path.Combine(assemblyPath, "Changelog.txt")))
                 {
+                    SplashScreen.CloseForm();
+
                     ChangeLogForm changelogForm = new ChangeLogForm();
                     changelogForm.ShowDialog(this); // modal
                     changelogForm.Dispose();

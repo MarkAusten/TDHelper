@@ -1,6 +1,10 @@
+v2.0.3.9
+--------
+* Fixed issue #10 - Exception when TD database is locked by eddblink_listener.
+
 v2.0.3.8
 --------
-* Added splash screen to avoid a 'ong "nothing happening" delay when firt opening TDH.
+* Added splash screen to avoid a long "nothing happening" delay when first opening TDH.
 
 v2.0.3.7
 --------

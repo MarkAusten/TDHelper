@@ -68,9 +68,9 @@ namespace TDHelper
 
                             if (systemMatch.Success && timestampMatch.Success)
                             {
-                                string timestampHeader 
-                                    = timestampMatch.Groups[1].Value.ToString() 
-                                    + " " 
+                                string timestampHeader
+                                    = timestampMatch.Groups[1].Value.ToString()
+                                    + " "
                                     + systemMatch.Groups[1].Value.ToString();
 
                                 logPaths.Add(timestampHeader, filePath);
@@ -92,6 +92,22 @@ namespace TDHelper
             }
 
             return null; // should never reach this
+        }
+
+        public bool IsConnectionBusy(SQLiteConnection conn)
+        {
+            bool isBusy = false;
+
+            switch (conn.State)
+            {
+                case ConnectionState.Connecting:
+                case ConnectionState.Executing:
+                case ConnectionState.Fetching:
+                    isBusy = true;
+                    break;
+            }
+
+            return isBusy;
         }
 
         private bool AddAtTimestampDBRow(SQLiteConnection dbConn, string timestamp)
@@ -340,12 +356,56 @@ namespace TDHelper
             }
         }
 
+        private void CheckAndWaitForUnlock(string databaseFile)
+        {
+            bool retry = true;
+            bool isLocked = true;
+
+            // Keep trying until either retry is false or the database is not locked.
+            while (retry && isLocked)
+            {
+                // The inner loop is 5 time 1 second.
+                int retryCount = 5;
+
+                while (--retryCount > 0 && isLocked)
+                {
+                    isLocked = IsDatabaseLocked(databaseFile);
+
+                    if (isLocked)
+                    {
+                        System.Threading.Thread.Sleep(1000);
+                    }
+                }
+
+                if (isLocked)
+                {
+                    // Display database locked message and ask for input.
+                    DialogResult dialog = TopMostMessageBox.Show(
+                        true,
+                        true,
+                        "The Trade Dangerous database is locked. Try to connect again?",
+                        "TD Helper - Error",
+                        MessageBoxButtons.YesNo);
+
+                    retry = dialog == DialogResult.Yes;
+                }
+            }
+
+            // If the database is locked and the user does not want to retry, shut down THD.
+            if (isLocked)
+            {
+                Environment.Exit(0);
+            }
+        }
+
         private void CreatePilotsLogDB(SQLiteConnection dbConn)
         {
             try
             {
                 if (dbConn != null && dbConn.State == ConnectionState.Closed)
+                {
                     dbConn.Open();
+                }
 
                 using (SQLiteCommand cmd = dbConn.CreateCommand())
                 {
@@ -396,6 +456,7 @@ namespace TDHelper
                                     // Do nothing.
                                 }
                             }
+
                             transaction.Commit();
                         }
                     }
@@ -404,7 +465,9 @@ namespace TDHelper
                     {
                         retriever = new DataRetriever(dbConn, "SystemLog");
                         foreach (DataColumn c in retriever.Columns)
+                        {
                             pilotsLogDataGrid.Columns.Add(c.ColumnName, c.ColumnName);
+                        }
 
                         // setup the gridview
                         UpdateLocalTable(tdhDBConn);
@@ -436,8 +499,8 @@ namespace TDHelper
                 for (int i = 0; i < stn_table.Rows.Count; i++)
                 {
                     outputSysStnNames.Add(string.Format(
-                        "{0}/{1}", 
-                        stn_table.Rows[i]["sys_name"], 
+                        "{0}/{1}",
+                        stn_table.Rows[i]["sys_name"],
                         stn_table.Rows[i]["stn_name"]));
                 }
             }
@@ -480,7 +543,7 @@ namespace TDHelper
                 {
                     // save the ship cost, and display in an invariant format
                     string temp_cost = string.Format(
-                        "{0:#,##0}", 
+                        "{0:#,##0}",
                         decimal.Parse(ship_table.Rows[i]["ship_cost"].ToString()));
 
                     outputStationShips.Add(string.Format(
@@ -688,7 +751,6 @@ namespace TDHelper
 
                             m_timer.Stop();
                         }
-
                     }
                 }
                 catch (Exception e)
@@ -828,6 +890,47 @@ namespace TDHelper
             return false;
         }
 
+        /// <summary>
+        /// Check to see if the database is currently locked.
+        /// </summary>
+        /// <param name="databaseFile">The path to the database being checked.</param>
+        /// <returns>True if the database is locked.</returns>
+        private bool IsDatabaseLocked(string databaseFile)
+        {
+            bool isLocked = false;
+
+            // Connect to the specofed database.
+            using (SQLiteConnection conn = GetConnection(tdDBPath))
+            {
+                conn.Open();
+
+                // Issue a 'BEGIN IMMEDIATE' command
+                using (SQLiteCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "begin immediate";
+
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+
+                        // It worked so rollback.
+                        cmd.CommandText = "rollback";
+
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        // It did not work so the database is locked.
+                        isLocked = true;
+                    }
+                }
+
+                conn.Close();
+            }
+
+            return isLocked;
+        }
+
         private void LoadDatabase()
         {
             /*
@@ -838,16 +941,18 @@ namespace TDHelper
 
             if (ValidateDBPath())
             {
+                CheckAndWaitForUnlock(tdDBPath);
+
                 string stationName = string.Empty;
                 string systemName = string.Empty;
 
                 try
                 {
-                    using (SQLiteConnection db = GetConnection(tdDBPath))
+                    using (SQLiteConnection conn = GetConnection(tdDBPath))
                     {
                         Stopwatch m_timer = Stopwatch.StartNew();
 
-                        db.Open();
+                        conn.Open();
 
                         // wipe to prevent duplicates
                         if (stn_table.Rows.Count != 0)
@@ -857,19 +962,20 @@ namespace TDHelper
                         }
 
                         // match on System.system_id = Station.system_id, output in "System | Station" format
-                        SQLiteCommand cmd = db.CreateCommand();
+                        SQLiteCommand cmd = conn.CreateCommand();
 
                         stn_table.Columns.Clear();
+
                         stn_table.Columns.Add(new DataColumn("sys_name"));
                         stn_table.Columns.Add(new DataColumn("stn_name"));
 
-                        cmd.CommandText 
+                        cmd.CommandText
                             = " select"
                             + "     sys.name as sys_name,"
                             + "     stn.name as stn_name"
                             + " from"
                             + "     System sys"
-                            + " left join" 
+                            + " left join"
                             + "     Station stn on sys.system_id = stn.system_id";
 
                         using (SQLiteDataReader reader = cmd.ExecuteReader())
@@ -907,17 +1013,21 @@ namespace TDHelper
                             }
                         }
 
-                        db.Close();
-                        db.Dispose();
+                        conn.Close();
+                        conn.Dispose();
 
                         Debug.WriteLine("loadDatabase query took: " + m_timer.ElapsedMilliseconds + "ms");
 
                         m_timer.Stop();
+
+                        outputSysStnNames = new List<string>(); // wipe before we fill
+
+                        FilterDatabase(); // filter and fill our output
                     }
-
-                    outputSysStnNames = new List<string>(); // wipe before we fill
-
-                    FilterDatabase(); // filter and fill our output
+                }
+                catch (SQLiteException)
+                {
+                    //
                 }
                 catch (Exception e)
                 {
@@ -1473,6 +1583,7 @@ namespace TDHelper
                         VacuumPilotsLogDB(tdhDBConn);
                     }
                     catch (Exception) { throw; }
+
                     return true; // success!
                 }
             }
@@ -1489,17 +1600,18 @@ namespace TDHelper
                 {
                     try
                     {
-                        SQLiteTransaction transaction = dbConn.BeginTransaction();
-
-                        foreach (int i in rowsIndex)
+                        using (SQLiteTransaction transaction = dbConn.BeginTransaction())
                         {
-                            // delete all the rows specified by the index, using a transaction for efficiency
-                            cmd.Parameters.AddWithValue("@ID", i);
-                            cmd.ExecuteNonQuery();
-                            cmd.Parameters.Clear();
-                        }
+                            foreach (int i in rowsIndex)
+                            {
+                                // delete all the rows specified by the index, using a transaction for efficiency
+                                cmd.Parameters.AddWithValue("@ID", i);
+                                cmd.ExecuteNonQuery();
+                                cmd.Parameters.Clear();
+                            }
 
-                        transaction.Commit();
+                            transaction.Commit();
+                        }
 
                         VacuumPilotsLogDB(tdhDBConn);
                     }
@@ -1563,25 +1675,26 @@ namespace TDHelper
 
                     try
                     {
-                        var transaction = dbConn.BeginTransaction();
-
-                        for (int i = rows.Count - 1; i >= 0; i--)
+                        using (SQLiteTransaction transaction = dbConn.BeginTransaction())
                         {
-                            DataRow row = rows[i];
-                            int var1 = int.Parse(row["ID"].ToString());
-                            string var2 = (row["Timestamp"] ?? string.Empty).ToString();
-                            string var3 = (row["System"] ?? string.Empty).ToString();
-                            string var4 = (row["Notes"] ?? string.Empty).ToString();
+                            for (int i = rows.Count - 1; i >= 0; i--)
+                            {
+                                DataRow row = rows[i];
+                                int var1 = int.Parse(row["ID"].ToString());
+                                string var2 = (row["Timestamp"] ?? string.Empty).ToString();
+                                string var3 = (row["System"] ?? string.Empty).ToString();
+                                string var4 = (row["Notes"] ?? string.Empty).ToString();
 
-                            cmd.Parameters["@ID"].Value = var1;
-                            cmd.Parameters["@Timestamp"].Value = var2;
-                            cmd.Parameters["@System"].Value = var3;
-                            cmd.Parameters["@Notes"].Value = var4;
+                                cmd.Parameters["@ID"].Value = var1;
+                                cmd.Parameters["@Timestamp"].Value = var2;
+                                cmd.Parameters["@System"].Value = var3;
+                                cmd.Parameters["@Notes"].Value = var4;
 
-                            cmd.ExecuteNonQuery();
+                                cmd.ExecuteNonQuery();
+                            }
+
+                            transaction.Commit();
                         }
-
-                        transaction.Commit();
                     }
                     catch (Exception) { throw; }
 
@@ -1637,24 +1750,25 @@ namespace TDHelper
                     cmd.Parameters.AddWithValue("@Timestamp", string.Empty);
                     cmd.Parameters.AddWithValue("@System", string.Empty);
 
-                    var transaction = dbConn.BeginTransaction();
-
-                    foreach (var s in exceptKey)
+                    using (SQLiteTransaction transaction = dbConn.BeginTransaction())
                     {
-                        try
+                        foreach (KeyValuePair<string, string> s in exceptKey)
                         {
-                            cmd.Parameters["@Timestamp"].Value = s.Key;
-                            cmd.Parameters["@System"].Value = s.Value;
+                            try
+                            {
+                                cmd.Parameters["@Timestamp"].Value = s.Key;
+                                cmd.Parameters["@System"].Value = s.Value;
 
-                            cmd.ExecuteNonQuery();
+                                cmd.ExecuteNonQuery();
+                            }
+                            catch (Exception)
+                            {
+                                // Do nothing.
+                            }
                         }
-                        catch (Exception)
-                        {
-                            // Do nothing.
-                        }
+
+                        transaction.Commit();
                     }
-
-                    transaction.Commit();
 
                     InvalidatedRowUpdate(true, 0);
 
@@ -1671,7 +1785,9 @@ namespace TDHelper
             try
             {
                 if (dbConn != null && dbConn.State == ConnectionState.Closed)
+                {
                     dbConn.Open();
+                }
 
                 using (SQLiteCommand cmd = dbConn.CreateCommand())
                 {
