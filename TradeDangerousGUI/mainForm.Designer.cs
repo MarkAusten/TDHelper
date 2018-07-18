@@ -769,22 +769,42 @@
             // jumpsBox
             // 
             this.jumpsBox.Location = new System.Drawing.Point(66, 26);
+            this.jumpsBox.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.jumpsBox.Name = "jumpsBox";
             this.jumpsBox.Size = new System.Drawing.Size(39, 20);
             this.jumpsBox.TabIndex = 1;
             this.jumpsBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.jumpsBox, "A jump is any system between two hops");
+            this.jumpsBox.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.jumpsBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
             this.jumpsBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // hopsBox
             // 
             this.hopsBox.Location = new System.Drawing.Point(66, 3);
+            this.hopsBox.Minimum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
             this.hopsBox.Name = "hopsBox";
             this.hopsBox.Size = new System.Drawing.Size(39, 20);
             this.hopsBox.TabIndex = 0;
             this.hopsBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.hopsBox, "A hop is a station to load/unload from");
+            this.hopsBox.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
             this.hopsBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
             this.hopsBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
