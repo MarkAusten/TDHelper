@@ -101,7 +101,6 @@
             this.padSizeLabel = new System.Windows.Forms.Label();
             this.padSizeBox = new System.Windows.Forms.TextBox();
             this.ageLabel = new System.Windows.Forms.Label();
-            this.verboseLabel = new System.Windows.Forms.Label();
             this.ageBox = new System.Windows.Forms.NumericUpDown();
             this.gptLabel = new System.Windows.Forms.Label();
             this.shipsSoldLabel = new System.Windows.Forms.Label();
@@ -124,7 +123,6 @@
             this.updateNotifyIcon = new System.Windows.Forms.PictureBox();
             this.stockBox = new System.Windows.Forms.NumericUpDown();
             this.stockLabel = new System.Windows.Forms.Label();
-            this.testSystemsCheckBox = new System.Windows.Forms.CheckBox();
             this.stationsFilterCheckBox = new System.Windows.Forms.CheckBox();
             this.minAgeUpDown = new System.Windows.Forms.NumericUpDown();
             this.minAgeLabel = new System.Windows.Forms.Label();
@@ -142,7 +140,6 @@
             this.chkRouteNoPlanet = new System.Windows.Forms.CheckBox();
             this.chkLocalNoPlanet = new System.Windows.Forms.CheckBox();
             this.chkRouteStations = new System.Windows.Forms.CheckBox();
-            this.chkProgress = new System.Windows.Forms.CheckBox();
             this.lblPlanetary = new System.Windows.Forms.Label();
             this.txtPlanetary = new System.Windows.Forms.TextBox();
             this.lblLocalPlanetary = new System.Windows.Forms.Label();
@@ -150,7 +147,6 @@
             this.numNearLy = new System.Windows.Forms.NumericUpDown();
             this.lblNearLy = new System.Windows.Forms.Label();
             this.miscSettingsButton = new System.Windows.Forms.Button();
-            this.verbosityComboBox = new System.Windows.Forms.ComboBox();
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker4 = new System.ComponentModel.BackgroundWorker();
             this.panRunOptions = new System.Windows.Forms.Panel();
@@ -255,9 +251,9 @@
             // 
             this.runButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.runButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.runButton.Location = new System.Drawing.Point(883, 7);
+            this.runButton.Location = new System.Drawing.Point(883, 5);
             this.runButton.Name = "runButton";
-            this.runButton.Size = new System.Drawing.Size(75, 23);
+            this.runButton.Size = new System.Drawing.Size(75, 28);
             this.runButton.TabIndex = 1;
             this.runButton.TabStop = false;
             this.runButton.Text = "&Run";
@@ -1029,9 +1025,9 @@
             // updateButton
             // 
             this.updateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.updateButton.Location = new System.Drawing.Point(624, 7);
+            this.updateButton.Location = new System.Drawing.Point(624, 5);
             this.updateButton.Name = "updateButton";
-            this.updateButton.Size = new System.Drawing.Size(75, 23);
+            this.updateButton.Size = new System.Drawing.Size(75, 28);
             this.updateButton.TabIndex = 24;
             this.updateButton.TabStop = false;
             this.updateButton.Text = "Update DB";
@@ -1041,9 +1037,9 @@
             // 
             // getSystemButton
             // 
-            this.getSystemButton.Location = new System.Drawing.Point(320, 9);
+            this.getSystemButton.Location = new System.Drawing.Point(320, 5);
             this.getSystemButton.Name = "getSystemButton";
-            this.getSystemButton.Size = new System.Drawing.Size(21, 21);
+            this.getSystemButton.Size = new System.Drawing.Size(28, 28);
             this.getSystemButton.TabIndex = 7;
             this.getSystemButton.TabStop = false;
             this.getSystemButton.Text = "C";
@@ -1093,17 +1089,6 @@
             this.ageLabel.TabIndex = 51;
             this.ageLabel.Text = "Age:";
             this.toolTip1.SetToolTip(this.ageLabel, "Filter any hops based on the age of their recent data, up to 30 days");
-            // 
-            // verboseLabel
-            // 
-            this.verboseLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.verboseLabel.AutoSize = true;
-            this.verboseLabel.Location = new System.Drawing.Point(413, 12);
-            this.verboseLabel.Name = "verboseLabel";
-            this.verboseLabel.Size = new System.Drawing.Size(53, 13);
-            this.verboseLabel.TabIndex = 55;
-            this.verboseLabel.Text = "Verbosity:";
-            this.toolTip1.SetToolTip(this.verboseLabel, "Verbosity of output results");
             // 
             // ageBox
             // 
@@ -1316,9 +1301,9 @@
             // 
             // swapButton
             // 
-            this.swapButton.Location = new System.Drawing.Point(12, 8);
+            this.swapButton.Location = new System.Drawing.Point(9, 5);
             this.swapButton.Name = "swapButton";
-            this.swapButton.Size = new System.Drawing.Size(21, 21);
+            this.swapButton.Size = new System.Drawing.Size(28, 28);
             this.swapButton.TabIndex = 63;
             this.swapButton.TabStop = false;
             this.swapButton.Text = "S";
@@ -1329,9 +1314,9 @@
             // miniModeButton
             // 
             this.miniModeButton.Enabled = false;
-            this.miniModeButton.Location = new System.Drawing.Point(349, 8);
+            this.miniModeButton.Location = new System.Drawing.Point(349, 5);
             this.miniModeButton.Name = "miniModeButton";
-            this.miniModeButton.Size = new System.Drawing.Size(21, 21);
+            this.miniModeButton.Size = new System.Drawing.Size(28, 28);
             this.miniModeButton.TabIndex = 1;
             this.miniModeButton.TabStop = false;
             this.miniModeButton.Text = "&T";
@@ -1347,8 +1332,7 @@
             this.altConfigBox.Size = new System.Drawing.Size(272, 21);
             this.altConfigBox.TabIndex = 56;
             this.altConfigBox.TabStop = false;
-            this.toolTip1.SetToolTip(this.altConfigBox, "Select a previously used config file\r\n(Ctrl+Click a non-default config to delete " +
-        "it)");
+            this.toolTip1.SetToolTip(this.altConfigBox, "Select a ship");
             this.altConfigBox.DropDown += new System.EventHandler(this.AltConfigBox_DropDown);
             this.altConfigBox.SelectionChangeCommitted += new System.EventHandler(this.AltConfigBox_SelectionChangeCommitted);
             // 
@@ -1389,18 +1373,6 @@
             this.stockLabel.TabIndex = 57;
             this.stockLabel.Text = "    Stock:";
             this.toolTip1.SetToolTip(this.stockLabel, "Filter hops below this level of stock");
-            // 
-            // testSystemsCheckBox
-            // 
-            this.testSystemsCheckBox.AutoSize = true;
-            this.testSystemsCheckBox.Location = new System.Drawing.Point(374, 11);
-            this.testSystemsCheckBox.Name = "testSystemsCheckBox";
-            this.testSystemsCheckBox.Size = new System.Drawing.Size(15, 14);
-            this.testSystemsCheckBox.TabIndex = 58;
-            this.testSystemsCheckBox.TabStop = false;
-            this.toolTip1.SetToolTip(this.testSystemsCheckBox, "Notify when entering unknown systems");
-            this.testSystemsCheckBox.UseVisualStyleBackColor = true;
-            this.testSystemsCheckBox.CheckedChanged += new System.EventHandler(this.TestSystemsCheckBox_CheckedChanged);
             // 
             // stationsFilterCheckBox
             // 
@@ -1538,9 +1510,9 @@
             // btnCmdrProfile
             // 
             this.btnCmdrProfile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCmdrProfile.Location = new System.Drawing.Point(704, 7);
+            this.btnCmdrProfile.Location = new System.Drawing.Point(704, 5);
             this.btnCmdrProfile.Name = "btnCmdrProfile";
-            this.btnCmdrProfile.Size = new System.Drawing.Size(75, 23);
+            this.btnCmdrProfile.Size = new System.Drawing.Size(75, 28);
             this.btnCmdrProfile.TabIndex = 68;
             this.btnCmdrProfile.TabStop = false;
             this.btnCmdrProfile.Text = "Cmdr Profile";
@@ -1551,9 +1523,9 @@
             // btnSaveSettings
             // 
             this.btnSaveSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSaveSettings.Location = new System.Drawing.Point(785, 7);
+            this.btnSaveSettings.Location = new System.Drawing.Point(785, 5);
             this.btnSaveSettings.Name = "btnSaveSettings";
-            this.btnSaveSettings.Size = new System.Drawing.Size(92, 23);
+            this.btnSaveSettings.Size = new System.Drawing.Size(92, 28);
             this.btnSaveSettings.TabIndex = 69;
             this.btnSaveSettings.TabStop = false;
             this.btnSaveSettings.Text = "Save Settings";
@@ -1614,19 +1586,6 @@
             this.chkRouteStations.Text = "Stations";
             this.toolTip1.SetToolTip(this.chkRouteStations, "List all the stations enroute");
             this.chkRouteStations.UseVisualStyleBackColor = true;
-            // 
-            // chkProgress
-            // 
-            this.chkProgress.AutoSize = true;
-            this.chkProgress.Enabled = false;
-            this.chkProgress.Location = new System.Drawing.Point(238, 165);
-            this.chkProgress.Name = "chkProgress";
-            this.chkProgress.Size = new System.Drawing.Size(67, 17);
-            this.chkProgress.TabIndex = 67;
-            this.chkProgress.TabStop = false;
-            this.chkProgress.Text = "Progress";
-            this.toolTip1.SetToolTip(this.chkProgress, "Show the progress of the calculations.");
-            this.chkProgress.UseVisualStyleBackColor = true;
             // 
             // lblPlanetary
             // 
@@ -1717,7 +1676,7 @@
             // 
             this.miscSettingsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.miscSettingsButton.Image = ((System.Drawing.Image)(resources.GetObject("miscSettingsButton.Image")));
-            this.miscSettingsButton.Location = new System.Drawing.Point(10, 647);
+            this.miscSettingsButton.Location = new System.Drawing.Point(590, 5);
             this.miscSettingsButton.Name = "miscSettingsButton";
             this.miscSettingsButton.Size = new System.Drawing.Size(28, 28);
             this.miscSettingsButton.TabIndex = 70;
@@ -1725,21 +1684,6 @@
             this.toolTip1.SetToolTip(this.miscSettingsButton, "Configuration settings");
             this.miscSettingsButton.UseVisualStyleBackColor = true;
             this.miscSettingsButton.Click += new System.EventHandler(this.MiscSettingsButton_Click);
-            // 
-            // verbosityComboBox
-            // 
-            this.verbosityComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.verbosityComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.verbosityComboBox.Items.AddRange(new object[] {
-            "",
-            "-v",
-            "-vv",
-            "-vvv"});
-            this.verbosityComboBox.Location = new System.Drawing.Point(472, 7);
-            this.verbosityComboBox.Name = "verbosityComboBox";
-            this.verbosityComboBox.Size = new System.Drawing.Size(46, 21);
-            this.verbosityComboBox.TabIndex = 9;
-            this.verbosityComboBox.TabStop = false;
             // 
             // backgroundWorker3
             // 
@@ -1756,7 +1700,6 @@
             this.panRunOptions.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panRunOptions.Controls.Add(this.lblPlanetary);
             this.panRunOptions.Controls.Add(this.txtPlanetary);
-            this.panRunOptions.Controls.Add(this.chkProgress);
             this.panRunOptions.Controls.Add(this.chkRouteStations);
             this.panRunOptions.Controls.Add(this.chkRouteNoPlanet);
             this.panRunOptions.Controls.Add(this.showJumpsCheckBox);
@@ -2336,12 +2279,9 @@
             this.Controls.Add(this.btnCmdrProfile);
             this.Controls.Add(this.faqLinkLabel);
             this.Controls.Add(this.trackerLinkLabel);
-            this.Controls.Add(this.testSystemsCheckBox);
             this.Controls.Add(this.miniModeButton);
             this.Controls.Add(this.swapButton);
             this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.verboseLabel);
-            this.Controls.Add(this.verbosityComboBox);
             this.Controls.Add(this.updateButton);
             this.Controls.Add(this.srcSysLabel);
             this.Controls.Add(this.srcSystemComboBox);
@@ -2478,8 +2418,6 @@
         private System.Windows.Forms.Label padSizeLabel;
         private System.Windows.Forms.TextBox padSizeBox;
         private System.Windows.Forms.Label ageLabel;
-        private System.Windows.Forms.ComboBox verbosityComboBox;
-        private System.Windows.Forms.Label verboseLabel;
         private System.Windows.Forms.NumericUpDown maxLSDistanceBox;
         private System.Windows.Forms.NumericUpDown gptBox;
         private System.Windows.Forms.NumericUpDown limitBox;
@@ -2547,7 +2485,6 @@
         private System.ComponentModel.BackgroundWorker backgroundWorker5;
         private System.Windows.Forms.NumericUpDown stockBox;
         private System.Windows.Forms.Label stockLabel;
-        private System.Windows.Forms.CheckBox testSystemsCheckBox;
         private System.ComponentModel.BackgroundWorker backgroundWorker6;
         private System.Windows.Forms.CheckBox stationsFilterCheckBox;
         private System.Windows.Forms.Label minAgeLabel;
@@ -2589,7 +2526,6 @@
         private System.Windows.Forms.CheckBox chkRouteNoPlanet;
         private System.Windows.Forms.CheckBox chkLocalNoPlanet;
         private System.Windows.Forms.CheckBox chkRouteStations;
-        private System.Windows.Forms.CheckBox chkProgress;
         private System.Windows.Forms.Label lblPlanetary;
         private System.Windows.Forms.TextBox txtPlanetary;
         private System.Windows.Forms.Label lblLocalPlanetary;

@@ -38,6 +38,9 @@ namespace TDHelper
             settings.RebuyPercentage = this.rebuyPercentage.Value;
 
             settings.Quiet = !this.chkQuiet.Checked;
+            settings.Verbosity = this.verbosityComboBox.SelectedIndex;
+            settings.TestSystems = this.testSystemsCheckBox.Checked;
+            settings.ShowProgress = this.chkProgress.Checked;
         }
 
         private void FormValidator()
@@ -146,6 +149,9 @@ namespace TDHelper
 
             this.rebuyPercentage.Value = MainForm.settingsRef.RebuyPercentage;
             this.chkQuiet.Checked = !MainForm.settingsRef.Quiet;
+            this.testSystemsCheckBox.Checked = MainForm.settingsRef.TestSystems;
+            this.verbosityComboBox.SelectedIndex = (int)MainForm.settingsRef.Verbosity;
+            this.chkProgress.Checked = MainForm.settingsRef.ShowProgress;
         }
 
         private void TvFontSelectorButton_Click(object sender, EventArgs e)

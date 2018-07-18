@@ -1075,22 +1075,18 @@ namespace TDHelper
             {
                 case 0:
                     t_outputVerbosity = string.Empty;
-                    verbosityComboBox.SelectedIndex = 0;
                     break;
 
                 case 2:
                     t_outputVerbosity = "-vv";
-                    verbosityComboBox.SelectedIndex = 2;
                     break;
 
                 case 3:
                     t_outputVerbosity = "-vvv";
-                    verbosityComboBox.SelectedIndex = 3;
                     break;
 
                 default:
                     t_outputVerbosity = "-v";
-                    verbosityComboBox.SelectedIndex = 1;
                     break;
             }
 
@@ -1126,12 +1122,9 @@ namespace TDHelper
                 ? settingsRef.Planetary
                 : string.Empty;
 
-            testSystemsCheckBox.Checked = settingsRef.TestSystems;
-
             chkRouteNoPlanet.Checked = settingsRef.RouteNoPlanet;
             chkLocalNoPlanet.Checked = settingsRef.LocalNoPlanet;
             chkRouteStations.Checked = settingsRef.RouteStations;
-            chkProgress.Checked = settingsRef.ShowProgress;
             txtPlanetary.Text = settingsRef.Planetary;
         }
 
@@ -1405,7 +1398,6 @@ namespace TDHelper
             settingsRef.RouteNoPlanet = chkRouteNoPlanet.Checked;
             settingsRef.LocalNoPlanet = chkLocalNoPlanet.Checked;
             settingsRef.RouteStations = chkRouteStations.Checked;
-            settingsRef.ShowProgress = chkProgress.Checked;
 
             settingsRef.Planetary = txtPlanetary.Text;
 
@@ -1425,25 +1417,6 @@ namespace TDHelper
             //
             // exceptions
             //
-            switch (verbosityComboBox.SelectedIndex)
-            {
-                case 0:
-                    settingsRef.Verbosity = 0;
-                    break;
-
-                case 2:
-                    settingsRef.Verbosity = 2;
-                    break;
-
-                case 3:
-                    settingsRef.Verbosity = 3;
-                    break;
-
-                default:
-                    settingsRef.Verbosity = 1;
-                    break;
-            }
-
             if (ContainsPadSizes(padSizeBox.Text))
             {
                 settingsRef.Padsizes = padSizeBox.Text;
@@ -2654,7 +2627,6 @@ namespace TDHelper
 
                 oneStopCheckBox.Enabled = false;
                 chkRouteStations.Enabled = false;
-                chkProgress.Enabled = true;
 
                 towardsCheckBox.Enabled = srcSystemComboBox.Text.Length > 3 && destSystemComboBox.Text.Length > 3;
             }
@@ -3236,11 +3208,6 @@ namespace TDHelper
                 td_outputBox.ScrollToCaret();
                 td_outputBox.Refresh();
             }
-        }
-
-        private void TestSystemsCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            settingsRef.TestSystems = testSystemsCheckBox.Checked;
         }
 
         private void TestSystemsTimer_Delegate(object sender, ElapsedEventArgs e)
