@@ -121,14 +121,18 @@ namespace TDHelper
 
             // if we've saved a fontname and fontsize, use them, otherwise use default
             if (MainForm.settingsRef.TreeViewFont != null)
+            {
                 this.treeView.Font = MainForm.settingsRef.ConvertFromMemberFont();
+            }
 
             // only resize on our first parsing
             if (!MainForm.hasParsed)
             {
                 // try to remember and restore the window size
                 if (winSize.Length != 0 && winSize != null)
+                {
                     CompensateNodeLength(winSize); // check our width and compensate
+                }
                 else
                 {
                     // load our default size
