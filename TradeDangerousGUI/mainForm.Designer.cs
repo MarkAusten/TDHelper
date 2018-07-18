@@ -136,7 +136,6 @@
             this.demandBox = new System.Windows.Forms.NumericUpDown();
             this.demandLabel = new System.Windows.Forms.Label();
             this.showJumpsCheckBox = new System.Windows.Forms.CheckBox();
-            this.miscSettingsButton = new System.Windows.Forms.Button();
             this.btnCmdrProfile = new System.Windows.Forms.Button();
             this.btnSaveSettings = new System.Windows.Forms.Button();
             this.ResetFilterButton = new System.Windows.Forms.Button();
@@ -150,6 +149,7 @@
             this.txtLocalPlanetary = new System.Windows.Forms.TextBox();
             this.numNearLy = new System.Windows.Forms.NumericUpDown();
             this.lblNearLy = new System.Windows.Forms.Label();
+            this.miscSettingsButton = new System.Windows.Forms.Button();
             this.verbosityComboBox = new System.Windows.Forms.ComboBox();
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker4 = new System.ComponentModel.BackgroundWorker();
@@ -1535,18 +1535,6 @@
             this.toolTip1.SetToolTip(this.showJumpsCheckBox, "Show jumps between hops during a multi-hop route");
             this.showJumpsCheckBox.UseVisualStyleBackColor = true;
             // 
-            // miscSettingsButton
-            // 
-            this.miscSettingsButton.Image = global::TDHelper.Properties.Resources.Gear;
-            this.miscSettingsButton.Location = new System.Drawing.Point(9, 32);
-            this.miscSettingsButton.Name = "miscSettingsButton";
-            this.miscSettingsButton.Size = new System.Drawing.Size(16, 16);
-            this.miscSettingsButton.TabIndex = 63;
-            this.miscSettingsButton.TabStop = false;
-            this.toolTip1.SetToolTip(this.miscSettingsButton, "Modify additional configuration settings");
-            this.miscSettingsButton.UseVisualStyleBackColor = true;
-            this.miscSettingsButton.Click += new System.EventHandler(this.MiscSettingsButton_Click);
-            // 
             // btnCmdrProfile
             // 
             this.btnCmdrProfile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -1725,6 +1713,19 @@
             this.toolTip1.SetToolTip(this.lblNearLy, "Distance that can be travelled while fully laden (including fuel)");
             this.lblNearLy.Visible = false;
             // 
+            // miscSettingsButton
+            // 
+            this.miscSettingsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.miscSettingsButton.Image = ((System.Drawing.Image)(resources.GetObject("miscSettingsButton.Image")));
+            this.miscSettingsButton.Location = new System.Drawing.Point(10, 647);
+            this.miscSettingsButton.Name = "miscSettingsButton";
+            this.miscSettingsButton.Size = new System.Drawing.Size(28, 28);
+            this.miscSettingsButton.TabIndex = 70;
+            this.miscSettingsButton.TabStop = false;
+            this.toolTip1.SetToolTip(this.miscSettingsButton, "Configuration settings");
+            this.miscSettingsButton.UseVisualStyleBackColor = true;
+            this.miscSettingsButton.Click += new System.EventHandler(this.MiscSettingsButton_Click);
+            // 
             // verbosityComboBox
             // 
             this.verbosityComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -1758,7 +1759,6 @@
             this.panRunOptions.Controls.Add(this.chkProgress);
             this.panRunOptions.Controls.Add(this.chkRouteStations);
             this.panRunOptions.Controls.Add(this.chkRouteNoPlanet);
-            this.panRunOptions.Controls.Add(this.miscSettingsButton);
             this.panRunOptions.Controls.Add(this.showJumpsCheckBox);
             this.panRunOptions.Controls.Add(this.shortenCheckBox);
             this.panRunOptions.Controls.Add(this.destSysLabel);
@@ -1843,7 +1843,7 @@
             this.tabControl1.Location = new System.Drawing.Point(11, 236);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(947, 413);
+            this.tabControl1.Size = new System.Drawing.Size(947, 410);
             this.tabControl1.TabIndex = 23;
             this.tabControl1.TabStop = false;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.TabControl1_SelectedIndexChanged);
@@ -1854,7 +1854,7 @@
             this.outputPage.Location = new System.Drawing.Point(4, 22);
             this.outputPage.Name = "outputPage";
             this.outputPage.Padding = new System.Windows.Forms.Padding(3);
-            this.outputPage.Size = new System.Drawing.Size(939, 387);
+            this.outputPage.Size = new System.Drawing.Size(939, 384);
             this.outputPage.TabIndex = 0;
             this.outputPage.Text = "Output";
             this.outputPage.UseVisualStyleBackColor = true;
@@ -1869,7 +1869,7 @@
             this.td_outputBox.Location = new System.Drawing.Point(3, 6);
             this.td_outputBox.Name = "td_outputBox";
             this.td_outputBox.ReadOnly = true;
-            this.td_outputBox.Size = new System.Drawing.Size(933, 378);
+            this.td_outputBox.Size = new System.Drawing.Size(933, 375);
             this.td_outputBox.TabIndex = 0;
             this.td_outputBox.TabStop = false;
             this.td_outputBox.Text = "";
@@ -1881,7 +1881,7 @@
             this.savedPage1.Location = new System.Drawing.Point(4, 22);
             this.savedPage1.Name = "savedPage1";
             this.savedPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.savedPage1.Size = new System.Drawing.Size(939, 387);
+            this.savedPage1.Size = new System.Drawing.Size(939, 384);
             this.savedPage1.TabIndex = 1;
             this.savedPage1.Text = "Saved #1";
             this.savedPage1.UseVisualStyleBackColor = true;
@@ -1896,7 +1896,7 @@
             this.savedTextBox1.Location = new System.Drawing.Point(3, 3);
             this.savedTextBox1.Name = "savedTextBox1";
             this.savedTextBox1.ReadOnly = true;
-            this.savedTextBox1.Size = new System.Drawing.Size(935, 384);
+            this.savedTextBox1.Size = new System.Drawing.Size(935, 381);
             this.savedTextBox1.TabIndex = 2;
             this.savedTextBox1.TabStop = false;
             this.savedTextBox1.Text = "";
@@ -1906,7 +1906,7 @@
             this.savedPage2.Controls.Add(this.savedTextBox2);
             this.savedPage2.Location = new System.Drawing.Point(4, 22);
             this.savedPage2.Name = "savedPage2";
-            this.savedPage2.Size = new System.Drawing.Size(939, 387);
+            this.savedPage2.Size = new System.Drawing.Size(939, 384);
             this.savedPage2.TabIndex = 2;
             this.savedPage2.Text = "Saved #2";
             this.savedPage2.UseVisualStyleBackColor = true;
@@ -1921,7 +1921,7 @@
             this.savedTextBox2.Location = new System.Drawing.Point(3, 3);
             this.savedTextBox2.Name = "savedTextBox2";
             this.savedTextBox2.ReadOnly = true;
-            this.savedTextBox2.Size = new System.Drawing.Size(933, 383);
+            this.savedTextBox2.Size = new System.Drawing.Size(933, 380);
             this.savedTextBox2.TabIndex = 2;
             this.savedTextBox2.TabStop = false;
             this.savedTextBox2.Text = "";
@@ -1931,7 +1931,7 @@
             this.savedPage3.Controls.Add(this.savedTextBox3);
             this.savedPage3.Location = new System.Drawing.Point(4, 22);
             this.savedPage3.Name = "savedPage3";
-            this.savedPage3.Size = new System.Drawing.Size(939, 387);
+            this.savedPage3.Size = new System.Drawing.Size(939, 384);
             this.savedPage3.TabIndex = 3;
             this.savedPage3.Text = "Saved #3";
             this.savedPage3.UseVisualStyleBackColor = true;
@@ -1946,7 +1946,7 @@
             this.savedTextBox3.Location = new System.Drawing.Point(3, 3);
             this.savedTextBox3.Name = "savedTextBox3";
             this.savedTextBox3.ReadOnly = true;
-            this.savedTextBox3.Size = new System.Drawing.Size(935, 383);
+            this.savedTextBox3.Size = new System.Drawing.Size(935, 380);
             this.savedTextBox3.TabIndex = 2;
             this.savedTextBox3.TabStop = false;
             this.savedTextBox3.Text = "";
@@ -1957,7 +1957,7 @@
             this.notesPage.Location = new System.Drawing.Point(4, 22);
             this.notesPage.Name = "notesPage";
             this.notesPage.Padding = new System.Windows.Forms.Padding(3);
-            this.notesPage.Size = new System.Drawing.Size(939, 387);
+            this.notesPage.Size = new System.Drawing.Size(939, 384);
             this.notesPage.TabIndex = 4;
             this.notesPage.Text = "Notes";
             this.notesPage.UseVisualStyleBackColor = true;
@@ -1972,7 +1972,7 @@
             this.notesTextBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.notesTextBox.Location = new System.Drawing.Point(3, 3);
             this.notesTextBox.Name = "notesTextBox";
-            this.notesTextBox.Size = new System.Drawing.Size(933, 383);
+            this.notesTextBox.Size = new System.Drawing.Size(933, 380);
             this.notesTextBox.TabIndex = 3;
             this.notesTextBox.TabStop = false;
             this.notesTextBox.Text = "";
@@ -2318,6 +2318,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(966, 676);
+            this.Controls.Add(this.miscSettingsButton);
             this.Controls.Add(this.panRunOptions);
             this.Controls.Add(this.panLocalFilter);
             this.Controls.Add(this.panAgeCredits);
@@ -2559,7 +2560,6 @@
         private System.Windows.Forms.NumericUpDown demandBox;
         private System.Windows.Forms.Label demandLabel;
         private System.Windows.Forms.CheckBox showJumpsCheckBox;
-        private System.Windows.Forms.Button miscSettingsButton;
         private System.Windows.Forms.TabPage logPage;
         private System.Windows.Forms.DataGridView pilotsLogDataGrid;
         private System.Windows.Forms.LinkLabel trackerLinkLabel;
@@ -2596,6 +2596,7 @@
         private System.Windows.Forms.TextBox txtLocalPlanetary;
         private System.Windows.Forms.NumericUpDown numNearLy;
         private System.Windows.Forms.Label lblNearLy;
+        private System.Windows.Forms.Button miscSettingsButton;
     }
 }
 

@@ -129,6 +129,23 @@
   <metadata name="contextMenuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>181, 50</value>
   </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="miscSettingsButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsIAAA7CARUoSoAAAAJTSURBVEhLvdXLi85RGMDxl3EZotiMaKRIxNCEkn/AJUkK
+        C4mFhWSyMCxGiiK3PRsrl8wCuUTZYWHhkpLLQomiZFxzv/P9/t7z1PGa932Zhqc+NefM71x+z3nO7y39
+        RfTFAPQvWv8gNuMGrmO6Hb0d5/EjWWlHT6MF6zCoaJXD9NxDLLADeUzEegwsWjViCu7CSdzxVMzEfnxG
+        LHAf7RiJpXgI+w9gCKrGasQkeoWP6e8veIaXqa0u5Av7/FhUjUacQwzQC2zHDIzAaMzFMeTPfcda1A3z
+        6aQOsmomw4UXwdx3wMWMVfgAnz0Nz6puzMJ7PIWTj8cV5Ls1LXvhhBtS3wU0oGYMxSE4YBu8VNdSW77Z
+        p6y9BT5zO7UXoB9+CVf1QXfwAB6mk0yDaYnJ9sH8+4Z3Ut8jDMPO1H4N/3cK81GE+c1rXFZLE8y57Sep
+        HbEG9nuwptGLl4/XbhTh5fAw839abu52U2q/RSsiHGy/JewZVZa3tqKIPrAq3IWv6qX5hjnwm/MVDrgJ
+        y3APXNC+qzDnXjDbF+GmlsANdhuWoQ8fL1rlarFdyUqbDScypW8wDnWjGc/hYVvnUQQWgDk3LZfhZXP3
+        J+GCR/BHsQzxeXCXG+HvwHBMgjl34jE4gXijWxiFmuEEjxGDgnW+CyvggR5E3PbcUeRf4d/CT24+4Cwu
+        VfQFD7oTHn70vYNlWzUGw4rwK9lmB2F6FsJLFBNZLabK8JN9GJ7bcliVNcNX7K4a4vbKUszDb9KE8p89
+        jzOIBRbb0dsxD/4uWLJVL9F/jlLpJ8e+0F/p+PLiAAAAAElFTkSuQmCC
+</value>
+  </data>
   <metadata name="backgroundWorker3.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>331, 11</value>
   </metadata>
@@ -150,7 +167,6 @@
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>75</value>
   </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAQAEBAAAAAAIABoBAAARgAAACAgAAAAACAAqBAAAK4EAAAwMAAAAAAgAKglAABWFQAAQEAAAAAA
