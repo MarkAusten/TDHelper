@@ -366,10 +366,10 @@ namespace TDHelper
 				XmlDocument docXML = new XmlDocument();
 				docXML.Load(StoragePath);
 
-                XmlElement elValue = docXML.DocumentElement.SelectSingleNode(name) as XmlElement;
-
-				return (elValue == null) ? defaultValue : elValue.InnerText;
-			}
+                return (!(docXML.DocumentElement.SelectSingleNode(name) is XmlElement elValue)) 
+                    ? defaultValue 
+                    : elValue.InnerText;
+            }
 			catch
 			{
 				return defaultValue;
@@ -395,13 +395,11 @@ namespace TDHelper
 				elRoot = docXML.DocumentElement;
 			}
 
-            XmlElement value = docXML.DocumentElement.SelectSingleNode(name) as XmlElement;
-
-            if (value == null)
-			{
-				value = docXML.CreateElement(name);
-				elRoot.AppendChild(value);
-			}
+            if (!(docXML.DocumentElement.SelectSingleNode(name) is XmlElement value))
+            {
+                value = docXML.CreateElement(name);
+                elRoot.AppendChild(value);
+            }
 
             value.InnerText = stringValue;
 			docXML.Save(StoragePath);
