@@ -41,6 +41,7 @@ namespace TDHelper
             settings.Verbosity = this.verbosityComboBox.SelectedIndex;
             settings.TestSystems = this.testSystemsCheckBox.Checked;
             settings.ShowProgress = this.chkProgress.Checked;
+            settings.Summary = this.chkSummary.Checked;
         }
 
         private void FormValidator()
@@ -152,6 +153,7 @@ namespace TDHelper
             this.testSystemsCheckBox.Checked = MainForm.settingsRef.TestSystems;
             this.verbosityComboBox.SelectedIndex = (int)MainForm.settingsRef.Verbosity;
             this.chkProgress.Checked = MainForm.settingsRef.ShowProgress;
+            this.chkSummary.Checked = MainForm.settingsRef.Summary;
         }
 
         private void TvFontSelectorButton_Click(object sender, EventArgs e)

@@ -541,6 +541,12 @@ namespace TDHelper
                     t_path += " --progress";
                 }
 
+                // Add the summary command if required.
+                if (settingsRef.Summary && !t_path.Contains("--summary"))
+                {
+                    t_path += " --summary";
+                }
+
                 buttonCaller = 4; // mark as Run command
             }
 
@@ -2502,6 +2508,9 @@ namespace TDHelper
 
         private void RunButton_Click(object sender, EventArgs e)
         {
+            // Prevent double clicks.
+            this.runButton.Enabled = false;
+
             // mark as run button
             buttonCaller = 1;
 

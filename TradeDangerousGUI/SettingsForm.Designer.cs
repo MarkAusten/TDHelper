@@ -63,6 +63,7 @@
             this.verboseLabel = new System.Windows.Forms.Label();
             this.verbosityComboBox = new System.Windows.Forms.ComboBox();
             this.chkProgress = new System.Windows.Forms.CheckBox();
+            this.chkSummary = new System.Windows.Forms.CheckBox();
             this.overrideGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rebuyPercentage)).BeginInit();
             this.miscGroupBox.SuspendLayout();
@@ -140,6 +141,7 @@
             // 
             // overrideGroupBox
             // 
+            this.overrideGroupBox.Controls.Add(this.chkSummary);
             this.overrideGroupBox.Controls.Add(this.chkProgress);
             this.overrideGroupBox.Controls.Add(this.testSystemsCheckBox);
             this.overrideGroupBox.Controls.Add(this.verboseLabel);
@@ -408,6 +410,18 @@
             this.toolTip1.SetToolTip(this.chkProgress, "Show the progress of the calculations.");
             this.chkProgress.UseVisualStyleBackColor = true;
             // 
+            // chkSummary
+            // 
+            this.chkSummary.AutoSize = true;
+            this.chkSummary.Location = new System.Drawing.Point(259, 290);
+            this.chkSummary.Name = "chkSummary";
+            this.chkSummary.Size = new System.Drawing.Size(69, 17);
+            this.chkSummary.TabIndex = 69;
+            this.chkSummary.TabStop = false;
+            this.chkSummary.Text = "Summary";
+            this.toolTip1.SetToolTip(this.chkSummary, "Show run output in summary form.");
+            this.chkSummary.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -471,5 +485,6 @@
         private System.Windows.Forms.Label verboseLabel;
         private System.Windows.Forms.ComboBox verbosityComboBox;
         private System.Windows.Forms.CheckBox chkProgress;
+        private System.Windows.Forms.CheckBox chkSummary;
     }
 }

@@ -266,6 +266,7 @@ namespace TDHelper
                             // don't show cancelling for UpdateDB/Import/Upload/Editor
                             runButton.Font = new Font(runButton.Font, FontStyle.Bold);
                             runButton.Text = "&Cancel";
+                            runButton.Enabled = true;
                         }
                     }));
 

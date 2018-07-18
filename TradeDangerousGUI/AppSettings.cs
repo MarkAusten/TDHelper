@@ -154,6 +154,7 @@ namespace TDHelper
                 settings.LocalNoPlanet = SectionHasKey(configSection, "LocalNoPlanet") ? configSection["LocalNoPlanet"].BoolValue : false;
                 settings.RouteStations = SectionHasKey(configSection, "RouteStations") ? configSection["RouteStations"].BoolValue : false;
                 settings.ShowProgress = SectionHasKey(configSection, "ShowProgress") ? configSection["ShowProgress"].BoolValue : false;
+                settings.Summary = SectionHasKey(configSection, "Summary") ? configSection["Summary"].BoolValue : false;
 
                 // Commander settings
                 configSection = config["Commander"];
@@ -281,6 +282,7 @@ namespace TDHelper
             configSection["LocalNoPlanet"].BoolValue = settings.LocalNoPlanet;
             configSection["RouteStations"].BoolValue = settings.RouteStations;
             configSection["ShowProgress"].BoolValue = settings.ShowProgress;
+            configSection["Summary"].BoolValue = settings.Summary;
             configSection["Planetary"].StringValue = settings.Planetary ?? string.Empty;
 
             // Commander settings
@@ -759,6 +761,7 @@ namespace TDHelper
         public bool RouteStations { get; set; }
         public bool ShowJumps { get; set; }
         public bool ShowProgress { get; set; }
+        public bool Summary { get; set; }
         public string SizeChild { get; set; }
         public string SizeParent { get; set; }
         public decimal Stock { get; set; }
@@ -875,6 +878,7 @@ namespace TDHelper
             instance.ShowProgress = false;
             instance.Planetary = string.Empty;
             instance.Quiet = false;
+            instance.Summary = false;
         }
     }
 
