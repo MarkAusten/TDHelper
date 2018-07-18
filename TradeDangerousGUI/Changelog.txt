@@ -1,3 +1,12 @@
+v2.0.3.10
+---------
+* Moved verbosity, progress and notify unknown system controls to settings form.
+* Increase height of buttons.
+* Increase width of square buttons to match new height.
+* Changed settings button icon and position.
+* Run and Cancel buttons disable immediately on click to prevent repeated clicks.
+* Changed hops and jumps minimums to 2 and 1 respectively.
+
 v2.0.3.9
 --------
 * Fixed issue #10 - Exception when TD database is locked by eddblink_listener.
