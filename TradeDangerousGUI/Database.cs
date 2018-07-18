@@ -651,7 +651,7 @@ namespace TDHelper
                                 + "    stn.blackmarket as stn_bmkt"
                                 + " from"
                                 + "    system sys"
-                                + " left join"
+                                + " join"
                                 + "    station stn on stn.system_id = sys.system_id"
                                 + " where"
                                 + "    sys.name = @system and"
@@ -692,16 +692,16 @@ namespace TDHelper
                                 + " 	ship.cost as ship_cost"
                                 + " from "
                                 + " 	system sys"
-                                + " left join "
+                                + " join"
                                 + " 	station stn on stn.system_id = sys.system_id"
-                                + " left join "
+                                + " join"
                                 + " 	shipvendor shipv on stn.station_id = shipv.station_id"
-                                + " left join "
+                                + " join"
                                 + " 	ship on shipv.ship_id = ship.ship_id"
-                                + " where "
-                                + "     sys.name = @system and "
+                                + " where"
+                                + "     sys.name = @system and"
                                 + "     stn.name = @station"
-                                + " order by "
+                                + " order by"
                                 + "     ship.cost desc";
 
                             using (SQLiteDataReader reader = query.ExecuteReader())
@@ -975,7 +975,7 @@ namespace TDHelper
                             + "     stn.name as stn_name"
                             + " from"
                             + "     System sys"
-                            + " left join"
+                            + " join"
                             + "     Station stn on sys.system_id = stn.system_id";
 
                         using (SQLiteDataReader reader = cmd.ExecuteReader())
@@ -994,9 +994,9 @@ namespace TDHelper
 
                         cmd.CommandText
                             = " select "
-                            + "     a.name as sys_name "
+                            + "     a.name as sys_name"
                             + " from"
-                            + "     system as a "
+                            + "     system as a"
                             + " where"
                             + "     a.system_id not in"
                             + "     ("
