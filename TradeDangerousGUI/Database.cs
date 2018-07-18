@@ -918,7 +918,7 @@ namespace TDHelper
 
                         cmd.ExecuteNonQuery();
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         // It did not work so the database is locked.
                         isLocked = true;
