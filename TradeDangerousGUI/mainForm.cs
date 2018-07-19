@@ -1835,6 +1835,12 @@ namespace TDHelper
                 loopCheckBox.Checked = true;
             }
 
+            if (uniqueCheckBox.Checked)
+            {
+                uniqueCheckBox.Checked = false;
+                loopCheckBox.Checked = true;
+            }
+
             if (shortenCheckBox.Checked)
             {
                 shortenCheckBox.Checked = false;
@@ -1847,6 +1853,15 @@ namespace TDHelper
                 towardsCheckBox.Checked = false;
             }
 
+        }
+
+        private void UniqueCheckBox_Click(object sender, EventArgs e)
+        {
+            if (loopCheckBox.Checked)
+            {
+                loopCheckBox.Checked = false;
+                uniqueCheckBox.Checked = true;
+            }
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)

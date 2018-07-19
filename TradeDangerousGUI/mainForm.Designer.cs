@@ -730,6 +730,7 @@
             this.uniqueCheckBox.Text = "Unique";
             this.toolTip1.SetToolTip(this.uniqueCheckBox, "Require that stations on a route only be visited once");
             this.uniqueCheckBox.UseVisualStyleBackColor = true;
+            this.uniqueCheckBox.Click += new System.EventHandler(this.UniqueCheckBox_Click);
             // 
             // insuranceBox
             // 
