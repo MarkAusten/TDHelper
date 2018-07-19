@@ -1,5 +1,9 @@
 v2.0.4.0
 ---------
+* Fixed settings button location.
+
+v2.0.4.0
+---------
 * Moved verbosity, progress and notify unknown system controls to settings form.
 * Increase height of buttons.
 * Increase width of square buttons to match new height.

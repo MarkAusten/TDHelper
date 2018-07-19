@@ -1697,7 +1697,7 @@
             // 
             // miscSettingsButton
             // 
-            this.miscSettingsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.miscSettingsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.miscSettingsButton.Image = ((System.Drawing.Image)(resources.GetObject("miscSettingsButton.Image")));
             this.miscSettingsButton.Location = new System.Drawing.Point(590, 5);
             this.miscSettingsButton.Name = "miscSettingsButton";
