@@ -512,7 +512,6 @@ namespace TDHelper
                 if (settingsRef.Stock > 0) { t_path += " --supply=" + settingsRef.Stock; }
                 if (settingsRef.Demand > 0) { t_path += " --demand=" + settingsRef.Demand; }
                 if (settingsRef.Margin > 0.00m) { t_path += " --margin=" + settingsRef.Margin; }
-                if (settingsRef.Hops > 0) { t_path += " --hops=" + settingsRef.Hops; }
                 if (settingsRef.Jumps > 0) { t_path += " --jum=" + settingsRef.Jumps; }
                 if (t_StartJumps > 0) { t_path += " --start=" + t_StartJumps; }
                 if (settingsRef.LSPenalty > 0) { t_path += " --lsp=" + settingsRef.LSPenalty; }
@@ -534,6 +533,14 @@ namespace TDHelper
                 if (settingsRef.Verbosity > 0) { t_path += " " + t_outputVerbosity; }
 
                 t_path += this.AddPlanetary(settingsRef);
+
+                if (!directCheckBox.Checked)
+                {
+                    if (settingsRef.Hops > 0)
+                    {
+                        t_path += " --hops=" + settingsRef.Hops;
+                    }
+                }
 
                 // Add the progress command if required.
                 if (settingsRef.ShowProgress && !t_path.Contains("--progress"))
