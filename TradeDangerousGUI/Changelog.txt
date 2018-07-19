@@ -1,4 +1,4 @@
-v2.0.3.10
+v2.0.4.0
 ---------
 * Moved verbosity, progress and notify unknown system controls to settings form.
 * Increase height of buttons.
