@@ -121,8 +121,8 @@
             this.miniModeButton = new System.Windows.Forms.Button();
             this.altConfigBox = new System.Windows.Forms.ComboBox();
             this.updateNotifyIcon = new System.Windows.Forms.PictureBox();
-            this.stockBox = new System.Windows.Forms.NumericUpDown();
-            this.stockLabel = new System.Windows.Forms.Label();
+            this.numStock = new System.Windows.Forms.NumericUpDown();
+            this.lblStock = new System.Windows.Forms.Label();
             this.stationsFilterCheckBox = new System.Windows.Forms.CheckBox();
             this.minAgeUpDown = new System.Windows.Forms.NumericUpDown();
             this.minAgeLabel = new System.Windows.Forms.Label();
@@ -196,6 +196,8 @@
             this.panMisc = new System.Windows.Forms.Panel();
             this.panMethod = new System.Windows.Forms.Panel();
             this.panAgeCredits = new System.Windows.Forms.Panel();
+            this.numSupply = new System.Windows.Forms.NumericUpDown();
+            this.lblSupply = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.belowPriceBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.abovePriceBox)).BeginInit();
@@ -218,7 +220,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.marginBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.maxGPTBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.updateNotifyIcon)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.stockBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numStock)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minAgeUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.loopIntBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.demandBox)).BeginInit();
@@ -245,6 +247,7 @@
             this.panMisc.SuspendLayout();
             this.panMethod.SuspendLayout();
             this.panAgeCredits.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numSupply)).BeginInit();
             this.SuspendLayout();
             // 
             // runButton
@@ -1367,32 +1370,32 @@
             this.toolTip1.SetToolTip(this.updateNotifyIcon, "An update to TDHelper is available! Restart to update.");
             this.updateNotifyIcon.Visible = false;
             // 
-            // stockBox
+            // numStock
             // 
-            this.stockBox.Location = new System.Drawing.Point(67, 3);
-            this.stockBox.Maximum = new decimal(new int[] {
+            this.numStock.Location = new System.Drawing.Point(67, 3);
+            this.numStock.Maximum = new decimal(new int[] {
             9999999,
             0,
             0,
             0});
-            this.stockBox.Name = "stockBox";
-            this.stockBox.Size = new System.Drawing.Size(71, 20);
-            this.stockBox.TabIndex = 8;
-            this.stockBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.stockBox.ThousandsSeparator = true;
-            this.toolTip1.SetToolTip(this.stockBox, "Filter hops below this level of stock");
-            this.stockBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.stockBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numStock.Name = "numStock";
+            this.numStock.Size = new System.Drawing.Size(71, 20);
+            this.numStock.TabIndex = 8;
+            this.numStock.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numStock.ThousandsSeparator = true;
+            this.toolTip1.SetToolTip(this.numStock, "Filter hops below this level of stock");
+            this.numStock.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.numStock.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
-            // stockLabel
+            // lblStock
             // 
-            this.stockLabel.AutoSize = true;
-            this.stockLabel.Location = new System.Drawing.Point(15, 7);
-            this.stockLabel.Name = "stockLabel";
-            this.stockLabel.Size = new System.Drawing.Size(50, 13);
-            this.stockLabel.TabIndex = 57;
-            this.stockLabel.Text = "    Stock:";
-            this.toolTip1.SetToolTip(this.stockLabel, "Filter hops below this level of stock");
+            this.lblStock.AutoSize = true;
+            this.lblStock.Location = new System.Drawing.Point(15, 7);
+            this.lblStock.Name = "lblStock";
+            this.lblStock.Size = new System.Drawing.Size(50, 13);
+            this.lblStock.TabIndex = 57;
+            this.lblStock.Text = "    Stock:";
+            this.toolTip1.SetToolTip(this.lblStock, "Filter hops below this level of stock");
             // 
             // stationsFilterCheckBox
             // 
@@ -1946,7 +1949,7 @@
             this.logPage.Location = new System.Drawing.Point(4, 22);
             this.logPage.Name = "logPage";
             this.logPage.Padding = new System.Windows.Forms.Padding(3);
-            this.logPage.Size = new System.Drawing.Size(939, 387);
+            this.logPage.Size = new System.Drawing.Size(939, 384);
             this.logPage.TabIndex = 5;
             this.logPage.Text = "Pilot\'s Log";
             this.logPage.UseVisualStyleBackColor = true;
@@ -2180,9 +2183,11 @@
             this.panStock.Controls.Add(this.demandLabel);
             this.panStock.Controls.Add(this.demandBox);
             this.panStock.Controls.Add(this.limitBox);
-            this.panStock.Controls.Add(this.stockBox);
-            this.panStock.Controls.Add(this.stockLabel);
+            this.panStock.Controls.Add(this.numStock);
+            this.panStock.Controls.Add(this.lblStock);
             this.panStock.Controls.Add(this.limitLabel);
+            this.panStock.Controls.Add(this.numSupply);
+            this.panStock.Controls.Add(this.lblSupply);
             this.panStock.Location = new System.Drawing.Point(430, 98);
             this.panStock.Name = "panStock";
             this.panStock.Size = new System.Drawing.Size(145, 73);
@@ -2275,6 +2280,33 @@
             this.panAgeCredits.Size = new System.Drawing.Size(175, 56);
             this.panAgeCredits.TabIndex = 1;
             // 
+            // numSupply
+            // 
+            this.numSupply.Location = new System.Drawing.Point(67, 3);
+            this.numSupply.Maximum = new decimal(new int[] {
+            9999999,
+            0,
+            0,
+            0});
+            this.numSupply.Name = "numSupply";
+            this.numSupply.Size = new System.Drawing.Size(71, 20);
+            this.numSupply.TabIndex = 58;
+            this.numSupply.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numSupply.ThousandsSeparator = true;
+            this.toolTip1.SetToolTip(this.numSupply, "Limit to stations known to have at least this much supply");
+            this.numSupply.Visible = false;
+            // 
+            // lblSupply
+            // 
+            this.lblSupply.AutoSize = true;
+            this.lblSupply.Location = new System.Drawing.Point(15, 7);
+            this.lblSupply.Name = "lblSupply";
+            this.lblSupply.Size = new System.Drawing.Size(51, 13);
+            this.lblSupply.TabIndex = 59;
+            this.lblSupply.Text = "   Supply:";
+            this.toolTip1.SetToolTip(this.lblSupply, "Limit to stations known to have at least this much supply");
+            this.lblSupply.Visible = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2342,7 +2374,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.marginBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.maxGPTBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.updateNotifyIcon)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.stockBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numStock)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.minAgeUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.loopIntBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.demandBox)).EndInit();
@@ -2380,6 +2412,7 @@
             this.panMethod.ResumeLayout(false);
             this.panAgeCredits.ResumeLayout(false);
             this.panAgeCredits.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numSupply)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2503,8 +2536,8 @@
         private System.Windows.Forms.Label updateNotifyLabel;
         private System.Windows.Forms.PictureBox updateNotifyIcon;
         private System.ComponentModel.BackgroundWorker backgroundWorker5;
-        private System.Windows.Forms.NumericUpDown stockBox;
-        private System.Windows.Forms.Label stockLabel;
+        private System.Windows.Forms.NumericUpDown numStock;
+        private System.Windows.Forms.Label lblStock;
         private System.ComponentModel.BackgroundWorker backgroundWorker6;
         private System.Windows.Forms.CheckBox stationsFilterCheckBox;
         private System.Windows.Forms.Label minAgeLabel;
@@ -2553,6 +2586,8 @@
         private System.Windows.Forms.NumericUpDown numNearLy;
         private System.Windows.Forms.Label lblNearLy;
         private System.Windows.Forms.Button miscSettingsButton;
+        private System.Windows.Forms.NumericUpDown numSupply;
+        private System.Windows.Forms.Label lblSupply;
     }
 }
 

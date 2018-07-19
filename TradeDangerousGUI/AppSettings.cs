@@ -133,6 +133,7 @@ namespace TDHelper
                 settings.Hops = SectionHasKey(configSection, "Hops") ? configSection["Hops"].DecimalValue : 0;
                 settings.Jumps = SectionHasKey(configSection, "Jumps") ? configSection["Jumps"].DecimalValue : 0;
                 settings.Limit = SectionHasKey(configSection, "Limit") ? configSection["Limit"].DecimalValue : 0;
+                settings.LocalNoPlanet = SectionHasKey(configSection, "LocalNoPlanet") ? configSection["LocalNoPlanet"].BoolValue : false;
                 settings.Loop = SectionHasKey(configSection, "Loop") ? configSection["Loop"].BoolValue : false;
                 settings.LoopInt = SectionHasKey(configSection, "LoopInt") ? configSection["LoopInt"].DecimalValue : 0;
                 settings.LSPenalty = SectionHasKey(configSection, "LSPenalty") ? configSection["LSPenalty"].DecimalValue : 0;
@@ -140,22 +141,20 @@ namespace TDHelper
                 settings.MarkedStations = SectionHasKey(configSection, "MarkedStations") ? configSection["MarkedStations"].StringValue : string.Empty;
                 settings.MaxGPT = SectionHasKey(configSection, "MaxGPT") ? configSection["MaxGPT"].DecimalValue : 0;
                 settings.MaxLSDistance = SectionHasKey(configSection, "MaxLSDistance") ? configSection["MaxLSDistance"].DecimalValue : 0;
+                settings.Planetary = SectionHasKey(configSection, "Planetary") ? configSection["Planetary"].StringValue : string.Empty;
                 settings.PruneHops = SectionHasKey(configSection, "PruneHops") ? configSection["PruneHops"].DecimalValue : 0;
                 settings.PruneScore = SectionHasKey(configSection, "PruneScore") ? configSection["PruneScore"].DecimalValue : 0;
+                settings.RouteNoPlanet = SectionHasKey(configSection, "RouteNoPlanet") ? configSection["RouteNoPlanet"].BoolValue : false;
+                settings.RouteStations = SectionHasKey(configSection, "RouteStations") ? configSection["RouteStations"].BoolValue : false;
                 settings.ShowJumps = SectionHasKey(configSection, "ShowJumps") ? configSection["ShowJumps"].BoolValue : false;
+                settings.ShowProgress = SectionHasKey(configSection, "ShowProgress") ? configSection["ShowProgress"].BoolValue : false;
                 settings.Stock = SectionHasKey(configSection, "Stock") ? configSection["Stock"].DecimalValue : 0;
+                settings.Summary = SectionHasKey(configSection, "Summary") ? configSection["Summary"].BoolValue : false;
+                settings.Supply = SectionHasKey(configSection, "Supply") ? configSection["Supply"].DecimalValue : 0;
                 settings.Towards = SectionHasKey(configSection, "Towards") ? configSection["Towards"].BoolValue : false;
                 settings.Unique = SectionHasKey(configSection, "Unique") ? configSection["Unique"].BoolValue : false;
                 settings.Verbosity = SectionHasKey(configSection, "Verbosity") ? configSection["Verbosity"].DecimalValue : 0;
                 settings.Via = SectionHasKey(configSection, "Via") ? configSection["Via"].StringValue : string.Empty;
-                settings.Planetary = SectionHasKey(configSection, "Planetary") ? configSection["Planetary"].StringValue : string.Empty;
-
-                settings.RouteNoPlanet = SectionHasKey(configSection, "RouteNoPlanet") ? configSection["RouteNoPlanet"].BoolValue : false;
-                settings.LocalNoPlanet = SectionHasKey(configSection, "LocalNoPlanet") ? configSection["LocalNoPlanet"].BoolValue : false;
-                settings.RouteStations = SectionHasKey(configSection, "RouteStations") ? configSection["RouteStations"].BoolValue : false;
-                settings.ShowProgress = SectionHasKey(configSection, "ShowProgress") ? configSection["ShowProgress"].BoolValue : false;
-                settings.Summary = SectionHasKey(configSection, "Summary") ? configSection["Summary"].BoolValue : false;
-
                 // Commander settings
                 configSection = config["Commander"];
 
@@ -166,6 +165,7 @@ namespace TDHelper
                 // TD Helper system settings.
                 configSection = config["System"];
 
+                settings.AvailableShips = SectionHasKey(configSection, "AvailableShips") ? configSection["AvailableShips"].StringValue : string.Empty;
                 settings.CopySystemToClipboard = SectionHasKey(configSection, "CopySystemToClipboard") ? configSection["CopySystemToClipboard"].BoolValue : false;
                 settings.DisableNetLogs = SectionHasKey(configSection, "DisableNetLogs") ? configSection["DisableNetLogs"].BoolValue : false;
                 settings.DoNotUpdate = SectionHasKey(configSection, "DoNotUpdate") ? configSection["DoNotUpdate"].BoolValue : false;
@@ -178,14 +178,13 @@ namespace TDHelper
                 settings.MiniModeOnTop = SectionHasKey(configSection, "MiniModeOnTop") ? configSection["MiniModeOnTop"].BoolValue : false;
                 settings.NetLogPath = SectionHasKey(configSection, "NetLogPath") ? configSection["NetLogPath"].StringValue : string.Empty;
                 settings.PythonPath = SectionHasKey(configSection, "PythonPath") ? configSection["PythonPath"].StringValue : string.Empty;
+                settings.Quiet = SectionHasKey(configSection, "Quiet") ? configSection["Quiet"].BoolValue : false;
                 settings.SizeChild = SectionHasKey(configSection, "SizeChild") ? configSection["SizeChild"].StringValue : string.Empty;
                 settings.SizeParent = SectionHasKey(configSection, "SizeParent") ? configSection["SizeParent"].StringValue : string.Empty;
                 settings.TDPath = SectionHasKey(configSection, "TDPath") ? configSection["TDPath"].StringValue : string.Empty;
                 settings.TestSystems = SectionHasKey(configSection, "TestSystems") ? configSection["TestSystems"].BoolValue : false;
                 settings.TreeViewFont = SectionHasKey(configSection, "TreeViewFont") ? configSection["TreeViewFont"].StringValue : string.Empty;
                 settings.UploadPath = SectionHasKey(configSection, "UploadPath") ? configSection["UploadPath"].StringValue : string.Empty;
-                settings.AvailableShips = SectionHasKey(configSection, "AvailableShips") ? configSection["AvailableShips"].StringValue : string.Empty;
-                settings.Quiet = SectionHasKey(configSection, "Quiet") ? configSection["Quiet"].BoolValue : false;
 
                 if (string.IsNullOrEmpty(settings.AvailableShips))
                 {
@@ -263,6 +262,7 @@ namespace TDHelper
             configSection["Hops"].DecimalValue = settings.Hops;
             configSection["Jumps"].DecimalValue = settings.Jumps;
             configSection["Limit"].DecimalValue = settings.Limit;
+            configSection["LocalNoPlanet"].BoolValue = settings.LocalNoPlanet;
             configSection["Loop"].BoolValue = settings.Loop;
             configSection["LoopInt"].DecimalValue = settings.LoopInt;
             configSection["LSPenalty"].DecimalValue = settings.LSPenalty;
@@ -270,20 +270,20 @@ namespace TDHelper
             configSection["MarkedStations"].StringValue = settings.MarkedStations ?? string.Empty;
             configSection["MaxGPT"].DecimalValue = settings.MaxGPT;
             configSection["MaxLSDistance"].DecimalValue = settings.MaxLSDistance;
+            configSection["Planetary"].StringValue = settings.Planetary ?? string.Empty;
             configSection["PruneHops"].DecimalValue = settings.PruneHops;
             configSection["PruneScore"].DecimalValue = settings.PruneScore;
+            configSection["RouteNoPlanet"].BoolValue = settings.RouteNoPlanet;
+            configSection["RouteStations"].BoolValue = settings.RouteStations;
             configSection["ShowJumps"].BoolValue = settings.ShowJumps;
+            configSection["ShowProgress"].BoolValue = settings.ShowProgress;
             configSection["Stock"].DecimalValue = settings.Stock;
+            configSection["Summary"].BoolValue = settings.Summary;
+            configSection["Supply"].DecimalValue = settings.Supply;
             configSection["Towards"].BoolValue = settings.Towards;
             configSection["Unique"].BoolValue = settings.Unique;
             configSection["Verbosity"].DecimalValue = settings.Verbosity;
             configSection["Via"].StringValue = settings.Via ?? string.Empty;
-            configSection["RouteNoPlanet"].BoolValue = settings.RouteNoPlanet;
-            configSection["LocalNoPlanet"].BoolValue = settings.LocalNoPlanet;
-            configSection["RouteStations"].BoolValue = settings.RouteStations;
-            configSection["ShowProgress"].BoolValue = settings.ShowProgress;
-            configSection["Summary"].BoolValue = settings.Summary;
-            configSection["Planetary"].StringValue = settings.Planetary ?? string.Empty;
 
             // Commander settings
             configSection = config["Commander"];
@@ -295,6 +295,7 @@ namespace TDHelper
             // TD Helper system settings.
             configSection = config["System"];
 
+            configSection["AvailableShips"].StringValue = settings.AvailableShips ?? string.Empty;
             configSection["CopySystemToClipboard"].BoolValue = settings.CopySystemToClipboard;
             configSection["DisableNetLogs"].BoolValue = settings.DisableNetLogs;
             configSection["DoNotUpdate"].BoolValue = settings.DoNotUpdate;
@@ -307,14 +308,13 @@ namespace TDHelper
             configSection["MiniModeOnTop"].BoolValue = settings.MiniModeOnTop;
             configSection["NetLogPath"].StringValue = settings.NetLogPath ?? string.Empty;
             configSection["PythonPath"].StringValue = settings.PythonPath ?? string.Empty;
+            configSection["Quiet"].BoolValue = settings.Quiet;
             configSection["SizeChild"].StringValue = settings.SizeChild ?? string.Empty;
             configSection["SizeParent"].StringValue = settings.SizeParent ?? string.Empty;
             configSection["TDPath"].StringValue = settings.TDPath ?? string.Empty;
             configSection["TestSystems"].BoolValue = settings.TestSystems;
             configSection["TreeViewFont"].StringValue = settings.TreeViewFont ?? string.Empty;
             configSection["UploadPath"].StringValue = settings.UploadPath ?? string.Empty;
-            configSection["AvailableShips"].StringValue = settings.AvailableShips ?? string.Empty;
-            configSection["Quiet"].BoolValue = settings.Quiet;
 
             // Update the current ship if required.
             if (!string.IsNullOrEmpty(settings.LastUsedConfig))
@@ -765,6 +765,7 @@ namespace TDHelper
         public string SizeChild { get; set; }
         public string SizeParent { get; set; }
         public decimal Stock { get; set; }
+        public decimal Supply { get; set; }
         public string TDPath { get; set; }
         public bool TestSystems { get; set; }
         public bool Towards { get; set; }
@@ -814,71 +815,67 @@ namespace TDHelper
         public void Reset(TDSettings instance)
         {
             // go through and reset all accessors in instance
-            instance.LocationParent = string.Empty;
-            instance.LocationChild = string.Empty;
-            instance.SizeParent = string.Empty;
-            instance.SizeChild = string.Empty;
-            instance.TDPath = string.Empty;
-            instance.EdcePath = string.Empty;
-            instance.NetLogPath = string.Empty;
-            instance.PythonPath = string.Empty;
-            instance.ImportPath = string.Empty;
-            instance.UploadPath = string.Empty;
-            instance.LastUsedConfig = string.Empty;
-            instance.MarkedStations = string.Empty;
-            instance.CmdrName = string.Empty;
-            instance.Padsizes = string.Empty;
-            instance.Avoid = string.Empty;
-            instance.Via = string.Empty;
-            instance.ExtraRunParams = string.Empty;
-            instance.TreeViewFont = string.Empty;
-
-            instance.Hops = 0;
-            instance.Jumps = 0;
-            instance.Credits = 0;
-            instance.Insurance = 0;
-            instance.Capacity = 0;
-            instance.PruneHops = 0;
-            instance.PruneScore = 0;
-            instance.LSPenalty = 0;
-            instance.MaxLSDistance = 0;
-            instance.LoopInt = 0;
-            instance.Limit = 0;
             instance.AbovePrice = 0;
-            instance.BelowPrice = 0;
             instance.Age = 0;
-            instance.GPT = 0;
-            instance.MaxGPT = 0;
-            instance.Stock = 0;
-            instance.Demand = 0;
-            instance.Verbosity = 0;
-            instance.CSVSelect = 0;
-
-            instance.UnladenLY = 0;
-            instance.LadenLY = 0;
-            instance.Margin = 0;
-
-            instance.Towards = false;
-            instance.Loop = false;
-            instance.Unique = false;
-            instance.ShowJumps = false;
-            instance.TestSystems = false;
+            instance.AvailableShips = string.Empty;
+            instance.Avoid = string.Empty;
+            instance.BelowPrice = 0;
+            instance.Capacity = 0;
+            instance.CmdrName = string.Empty;
+            instance.CopySystemToClipboard = false;
             instance.Corrections = false;
-            instance.MiniModeOnTop = false;
+            instance.Credits = 0;
+            instance.CSVSelect = 0;
+            instance.Demand = 0;
             instance.DisableNetLogs = false;
             instance.DoNotUpdate = false;
+            instance.EdcePath = string.Empty;
+            instance.ExtraRunParams = string.Empty;
+            instance.GPT = 0;
             instance.HasUpdated = false;
-            instance.CopySystemToClipboard = false;
-
-            instance.RebuyPercentage = 5;
-            instance.AvailableShips = string.Empty;
-
-            instance.RouteNoPlanet = false;
+            instance.Hops = 0;
+            instance.ImportPath = string.Empty;
+            instance.Insurance = 0;
+            instance.Jumps = 0;
+            instance.LadenLY = 0;
+            instance.LastUsedConfig = string.Empty;
+            instance.Limit = 0;
             instance.LocalNoPlanet = false;
-            instance.ShowProgress = false;
+            instance.LocationChild = string.Empty;
+            instance.LocationParent = string.Empty;
+            instance.Loop = false;
+            instance.LoopInt = 0;
+            instance.LSPenalty = 0;
+            instance.Margin = 0;
+            instance.MarkedStations = string.Empty;
+            instance.MaxGPT = 0;
+            instance.MaxLSDistance = 0;
+            instance.MiniModeOnTop = false;
+            instance.NetLogPath = string.Empty;
+            instance.Padsizes = string.Empty;
             instance.Planetary = string.Empty;
+            instance.PruneHops = 0;
+            instance.PruneScore = 0;
+            instance.PythonPath = string.Empty;
             instance.Quiet = false;
+            instance.RebuyPercentage = 5;
+            instance.RouteNoPlanet = false;
+            instance.ShowJumps = false;
+            instance.ShowProgress = false;
+            instance.SizeChild = string.Empty;
+            instance.SizeParent = string.Empty;
+            instance.Stock = 0;
             instance.Summary = false;
+            instance.Supply = 0;
+            instance.TDPath = string.Empty;
+            instance.TestSystems = false;
+            instance.Towards = false;
+            instance.TreeViewFont = string.Empty;
+            instance.Unique = false;
+            instance.UnladenLY = 0;
+            instance.UploadPath = string.Empty;
+            instance.Verbosity = 0;
+            instance.Via = string.Empty;
         }
     }
 

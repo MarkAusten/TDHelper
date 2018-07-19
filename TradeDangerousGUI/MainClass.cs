@@ -605,13 +605,13 @@ namespace TDHelper
                 settingsRef.LSPenalty = lsPenaltyBox.Maximum;
             }
 
-            if (settingsRef.Stock < stockBox.Minimum)
+            if (settingsRef.Stock < numStock.Minimum)
             {
-                settingsRef.Stock = stockBox.Minimum;
+                settingsRef.Stock = numStock.Minimum;
             }
-            else if (settingsRef.Stock > stockBox.Maximum)
+            else if (settingsRef.Stock > numStock.Maximum)
             {
-                settingsRef.Stock = stockBox.Maximum;
+                settingsRef.Stock = numStock.Maximum;
             }
 
             if (settingsRef.GPT < gptBox.Minimum)

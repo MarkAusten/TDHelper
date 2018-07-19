@@ -7,6 +7,9 @@ v2.0.3.10
 * Run and Cancel buttons disable immediately on click to prevent repeated clicks.
 * Changed hops and jumps minimums to 2 and 1 respectively.
 * Only add hops to command if direct is not checked.
+* Added Supply controls for Buy command.
+* Cargo limit for Buy, Sell and Old Data now set by cargo limit box unless this is zero in the which case the limit is set to 50;
+* Direct and loop may not be ticked at the same time.
 
 v2.0.3.9
 --------

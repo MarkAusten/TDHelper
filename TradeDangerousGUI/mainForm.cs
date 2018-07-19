@@ -287,7 +287,8 @@ namespace TDHelper
                         && minAgeUpDown.Value < minAgeUpDown.Maximum)
                         t_path += " --min-age=" + minAgeUpDown.Value;
 
-                    t_path += " --lim=50 ";
+                    t_path += " --lim=" +  (settingsRef.Limit > 0 ? settingsRef.Limit.ToString() : "50");
+
                     if (settingsRef.Verbosity > 0) { t_path += " " + t_outputVerbosity; }
                     t_path += " --near=\"" + temp_src + "\"";
                 }
@@ -443,7 +444,7 @@ namespace TDHelper
 
                 t_path += this.AddPlanetary(settingsRef);
 
-                t_path += " --lim=50";
+                t_path += " --lim=" + (settingsRef.Limit > 0 ? settingsRef.Limit.ToString() : "50");
 
                 if (!string.IsNullOrEmpty(temp_commod))
                 {
@@ -456,7 +457,7 @@ namespace TDHelper
 
                 if (!string.IsNullOrEmpty(temp_src)) { t_path += " --near=\"" + temp_src + "\""; }
                 if (t1_ladenLY > 0) { t_path += " --ly=" + t1_ladenLY; }
-                if (stockBox.Value > 0) { t_path += " --supply=" + stockBox.Value; }
+                if (numSupply.Value > 0) { t_path += " --supply=" + numSupply.Value; }
                 if (settingsRef.AbovePrice > 0) { t_path += " --gt=" + settingsRef.AbovePrice; }
                 if (settingsRef.BelowPrice > 0) { t_path += " --lt=" + settingsRef.BelowPrice; }
                 if (oneStopCheckBox.Checked) { t_path += " -1"; }
@@ -471,7 +472,7 @@ namespace TDHelper
 
                 if (settingsRef.Verbosity > 0) { t_path += " " + t_outputVerbosity; }
 
-                t_path += " --lim=50";
+                t_path += " --lim=" + (settingsRef.Limit > 0 ? settingsRef.Limit.ToString() : "50");
 
                 if (!string.IsNullOrEmpty(temp_commod))
                 {
@@ -1035,9 +1036,13 @@ namespace TDHelper
                 ? settingsRef.PruneScore
                 : pruneScoreBox.Minimum;
 
-            stockBox.Value = settingsRef.Stock > stockBox.Minimum && settingsRef.Stock <= stockBox.Maximum
+            numStock.Value = settingsRef.Stock > numStock.Minimum && settingsRef.Stock <= numStock.Maximum
                 ? settingsRef.Stock
-                : stockBox.Minimum;
+                : numStock.Minimum;
+
+            numSupply.Value = settingsRef.Supply > numSupply.Minimum && settingsRef.Supply <= numSupply.Maximum
+                ? settingsRef.Supply
+                : numSupply.Minimum;
 
             demandBox.Value = settingsRef.Demand > demandBox.Minimum && settingsRef.Demand <= demandBox.Maximum
                 ? settingsRef.Demand
@@ -1269,15 +1274,26 @@ namespace TDHelper
                 pruneScoreBox.Text = settingsRef.PruneScore.ToString();
             }
 
-            if (decimal.TryParse(stockBox.Text, out decimal t_Stock))
+            if (decimal.TryParse(numStock.Text, out decimal t_Stock))
             {
-                stockBox.Text = t_Stock.ToString();
+                numStock.Text = t_Stock.ToString();
                 settingsRef.Stock = t_Stock;
             }
             else
             {
-                settingsRef.Stock = stockBox.Minimum;
-                stockBox.Text = settingsRef.Stock.ToString();
+                settingsRef.Stock = numStock.Minimum;
+                numStock.Text = settingsRef.Stock.ToString();
+            }
+
+            if (decimal.TryParse(numSupply.Text, out decimal t_Supply))
+            {
+                numSupply.Text = t_Supply.ToString();
+                settingsRef.Supply = t_Supply;
+            }
+            else
+            {
+                settingsRef.Supply = numSupply.Minimum;
+                numSupply.Text = settingsRef.Supply.ToString();
             }
 
             if (decimal.TryParse(demandBox.Text, out decimal t_Demand))
@@ -1625,6 +1641,12 @@ namespace TDHelper
 
         private void DirectCheckBox_Click(object sender, EventArgs e)
         {
+            if (loopCheckBox.Checked)
+            {
+                loopCheckBox.Checked = false;
+                directCheckBox.Checked = true;
+            }
+
             // an exception for the market command
             if (methodIndex == 4 && bmktCheckBox.Checked)
             {
@@ -1807,6 +1829,12 @@ namespace TDHelper
 
         private void LoopCheckBox_Click(object sender, EventArgs e)
         {
+            if (directCheckBox.Checked)
+            {
+                directCheckBox.Checked = false;
+                loopCheckBox.Checked = true;
+            }
+
             if (shortenCheckBox.Checked)
             {
                 shortenCheckBox.Checked = false;
@@ -1818,6 +1846,7 @@ namespace TDHelper
                 settingsRef.Towards = false;
                 towardsCheckBox.Checked = false;
             }
+
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -1949,6 +1978,25 @@ namespace TDHelper
             localNavCheckBox.Enabled = true;
         }
 
+        /// <summary>
+        /// Set the state of the stock and supply controls.
+        /// </summary>
+        /// <param name="state">The state to which the controls should be set.</param>
+        private void SetStockSupplyState(bool state)
+        {
+            lblStock.Visible = state;
+            lblStock.Enabled = state;
+
+            numStock.Enabled = state;
+            numStock.Visible = state;
+
+            lblSupply.Visible = !state;
+            lblSupply.Enabled = !state;
+
+            numSupply.Visible = !state;
+            numSupply.Enabled = !state;
+        }
+
         private void MethodSelectState()
         {
             /*
@@ -1982,8 +2030,8 @@ namespace TDHelper
                         List<string> shipVendorDrop = new List<string>(new string[] { "Distance", "Price", "Units" });
                         stationDropDown.DataSource = shipVendorDrop;
 
-                        stockLabel.Enabled = true;
-                        stockBox.Enabled = true;
+                        SetStockSupplyState(false);
+
                         oneStopCheckBox.Enabled = true;
                     }
                     else if (methodIndex == 2)
@@ -2558,12 +2606,6 @@ namespace TDHelper
             { // from buy
                 t1_ladenLY = ladenLYBox.Value;
 
-                // save our previous supply
-                if (stockBox.Value > 0)
-                {
-                    t_Supply = stockBox.Value;
-                }
-
                 // save below price
                 if (belowPriceBox.Value > 0)
                 {
@@ -2599,9 +2641,9 @@ namespace TDHelper
                     settingsRef.LadenLY = ladenLYBox.Value;
                 }
 
-                if (stockBox.Value > 0 && settingsRef.Stock != stockBox.Value)
+                if (numStock.Value > 0 && settingsRef.Stock != numStock.Value)
                 {
-                    settingsRef.Stock = stockBox.Value;
+                    settingsRef.Stock = numStock.Value;
                 }
 
                 if (demandBox.Value > 0 && settingsRef.Demand != demandBox.Value)
@@ -2633,9 +2675,9 @@ namespace TDHelper
                     belowPriceBox.Value = t_Routes;
                 }
 
-                stockBox.Value = settingsRef.Stock > 0
+                numStock.Value = settingsRef.Stock > 0
                     ? settingsRef.Stock
-                    : stockBox.Minimum;
+                    : numStock.Minimum;
 
                 demandBox.Value = settingsRef.Demand > 0
                     ? settingsRef.Demand
@@ -2675,11 +2717,11 @@ namespace TDHelper
 
                 if (methodIndex == 1 && t_Supply > 0)
                 {
-                    stockBox.Value = t_Supply;
+                    numSupply.Value = t_Supply;
                 }
                 else if (methodIndex == 1)
                 {
-                    stockBox.Value = stockBox.Minimum;
+                    numSupply.Value = numSupply.Minimum;
                 }
                 else if (methodIndex == 2 && t_Demand > 0)
                 {
@@ -2694,6 +2736,13 @@ namespace TDHelper
             {
                 // catch everything else (except shipvendor)
                 this.SetPanelEnabledState(panRunOptions);
+            }
+
+            if (methodIndex != 1)
+            {
+                SetStockSupplyState(true);
+
+                numStock.Value = settingsRef.Stock;
             }
 
             // change the bmkt/direct checkboxes
