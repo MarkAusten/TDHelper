@@ -1206,8 +1206,12 @@ namespace TDHelper
 
             switch (shipType)
             {
+                case "Asp":
+                    shipName = "Asp Explorer";
+                    break;
+
                 case "Asp_Scout":
-                    shipName = "Asp scout";
+                    shipName = "Asp Scout";
                     break;
 
                 case "BelugaLiner":
@@ -1302,6 +1306,53 @@ namespace TDHelper
             return shipName;
         }
 
+        private string GetShipName(JToken ship)
+        {
+            string shipId = string.Empty;
+            string shipName = string.Empty;
+
+            // Get the ship ID if assigned otherwise use the ID.
+            try
+            {
+                shipId = (string)ship["shipID"];
+            }
+            catch
+            {
+                shipId = string.Empty;
+            }
+
+            if (string.IsNullOrEmpty(shipId))
+            {
+                shipId = (string)ship["id"];
+            }
+
+            // Get the ship name if it has one.
+            try
+            {
+                shipName = (string)ship["shipName"];
+            }
+            catch
+            {
+                shipName = string.Empty;
+            }
+
+            if (!string.IsNullOrEmpty(shipName))
+            {
+                shipName = " ({0})".With(shipName);
+            }
+
+            // Finally, get the ship type.
+            string shipType = (string)ship["name"];
+
+            // Put the component parts together to form the ship name and type.
+            string result = "{0} {1}{2}".With(
+                TranslateShipType(shipType), 
+                shipId,
+                shipName);
+
+            return result;
+        }
+
         /// <summary>
         /// Read the Cmdr Profile file and update the credit balance.
         /// </summary>
@@ -1309,15 +1360,15 @@ namespace TDHelper
         {
             string json = this.RetrieveCommanderProfile();
 
-            JObject o = JObject.Parse(json);
+            JObject cmdrProfile = JObject.Parse(json);
 
             // Set the commander name and credit balance.
-            MainForm.settingsRef.CmdrName = (string)o["profile"]["commander"]["name"];
-            this.creditsBox.Value = (decimal)o["profile"]["commander"]["credits"];
+            MainForm.settingsRef.CmdrName = (string)cmdrProfile["profile"]["commander"]["name"];
+            this.creditsBox.Value = (decimal)cmdrProfile["profile"]["commander"]["credits"];
 
             // Determine the insurance of the current ship.
-            decimal hullValue = (decimal)o["profile"]["ship"]["value"]["hull"];
-            decimal modulesValue = (decimal)o["profile"]["ship"]["value"]["modules"];
+            decimal hullValue = (decimal)cmdrProfile["profile"]["ship"]["value"]["hull"];
+            decimal modulesValue = (decimal)cmdrProfile["profile"]["ship"]["value"]["modules"];
             decimal rebuyPercentage = MainForm.settingsRef.RebuyPercentage;
 
             this.insuranceBox.Value = (hullValue + modulesValue) * rebuyPercentage / 100;
@@ -1326,7 +1377,7 @@ namespace TDHelper
             decimal capacity = 0;
             int stringLength = "Int_CargoRack_Size".Length;
 
-            foreach (JToken slot in o["profile"]["ship"]["modules"])
+            foreach (JToken slot in cmdrProfile["profile"]["ship"]["modules"])
             {
                 string module = (string)slot.First["module"]["name"];
 
@@ -1345,12 +1396,7 @@ namespace TDHelper
             }
 
             // Set this ship as the currently selected ship.
-            string shipType = (string)o["profile"]["ship"]["name"];
-            string shipName = (string)o["profile"]["ship"]["shipName"] ?? string.Empty;
-
-            string currentlySelected
-                = this.TranslateShipType(shipType)
-                + (!string.IsNullOrEmpty(shipName) ? " (" + shipName + ")" : string.Empty);
+            string currentlySelected = GetShipName(cmdrProfile["profile"]["ship"]);
 
             MainForm.settingsRef.LastUsedConfig = currentlySelected;
 
@@ -1359,12 +1405,9 @@ namespace TDHelper
 
             string availableShips = string.Empty;
 
-            foreach (JToken ship in o["profile"]["ships"])
+            foreach (JToken ship in cmdrProfile["profile"]["ships"])
             {
-                shipType = (string)ship.First["name"];
-                shipName = (string)ship.First["shipName"] ?? string.Empty;
-
-                string sectionName = this.TranslateShipType(shipType) + (!string.IsNullOrEmpty(shipName) ? " (" + shipName + ")" : string.Empty);
+                string sectionName = GetShipName(ship.First);
 
                 availableShips += "," + sectionName;
 
@@ -1405,7 +1448,7 @@ namespace TDHelper
                 config[sectionName]["hullValue"].DecimalValue = hullValue;
                 config[sectionName]["modulesValue"].DecimalValue = modulesValue;
                 config[sectionName]["Insurance"].DecimalValue = (hullValue + modulesValue) * rebuyPercentage / 100;
-                config[sectionName]["Padsizes"].StringValue = this.GetPadSizes(shipType);
+                config[sectionName]["Padsizes"].StringValue = this.GetPadSizes((string)ship.First["name"]);
             }
 
             string currentShips = MainForm.settingsRef.AvailableShips;

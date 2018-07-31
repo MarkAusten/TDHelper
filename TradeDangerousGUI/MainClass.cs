@@ -477,11 +477,11 @@ namespace TDHelper
 
             if (hasSection)
             {
-                settings.Capacity = config[settings.LastUsedConfig]["Capacity"].DecimalValue;
-                settings.Insurance = config[settings.LastUsedConfig]["Insurance"].DecimalValue;
-                settings.LadenLY = config[settings.LastUsedConfig]["LadenLY"].DecimalValue;
+                settings.Capacity =  GetConfigSetting(config, settings.LastUsedConfig, "Capacity");
+                settings.Insurance = GetConfigSetting(config, settings.LastUsedConfig, "Insurance");
+                settings.LadenLY = GetConfigSetting(config, settings.LastUsedConfig, "LadenLY");
                 settings.Padsizes = config[settings.LastUsedConfig]["Padsizes"].StringValue;
-                settings.UnladenLY = config[settings.LastUsedConfig]["UnladenLY"].DecimalValue;
+                settings.UnladenLY = GetConfigSetting(config, settings.LastUsedConfig, "UnladenLY");
             }
             else
             {
@@ -502,6 +502,42 @@ namespace TDHelper
             ladenLYBox.Value = Math.Max(settings.LadenLY, ladenLYBox.Minimum);
             padSizeBox.Text = settings.Padsizes;
             unladenLYBox.Value = Math.Max(settings.UnladenLY, unladenLYBox.Minimum);
+        }
+
+        /// <summary>
+        /// Retrieve the setting from the config file as a decimal value.
+        /// </summary>
+        /// <param name="config">The configuration object,</param>
+        /// <param name="section">The required section.</param>
+        /// <param name="key">The required key.</param>
+        /// <param name="defaultValue">The default value.</param>
+        /// <returns>The decimal value of the setting or the default value.</returns>
+        public decimal GetConfigSetting(
+            SharpConfig.Configuration config,
+            string section, 
+            string key, 
+            decimal defaultValue = 0)
+        {
+            // Set up the result anad get the raw value.
+            decimal result = defaultValue;
+            string rawValue = config[section][key].RawValue;
+
+            // Check to see if the raw value is null or empty.
+            if (!string.IsNullOrEmpty(rawValue))
+            {
+                // We have a non-null, non-empty value so try to get the decimal value and
+                // set the result to the default value if there is an exception.
+                try
+                {
+                    result = config[section][key].DecimalValue;
+                }
+                catch
+                {
+                    result = defaultValue;
+                }
+            }
+
+            return result;
         }
 
         public void ValidateSettings(bool firstRun = false)
