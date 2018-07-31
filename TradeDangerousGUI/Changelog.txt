@@ -2,6 +2,7 @@ v2.0.4.3
 --------
 * Fixed issue #13 - Unhandled exception at startup.
 * Fixed issue #14 - Unhandled exception updating Cmdr Profile.
+* Some layout changes suggested bu CMDR eyeonus.
 
 v2.0.4.2
 ---------
