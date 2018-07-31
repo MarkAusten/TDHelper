@@ -1311,7 +1311,7 @@ namespace TDHelper
             string shipId = string.Empty;
             string shipName = string.Empty;
 
-            // Get the ship ID if assigned otherwise use the ID.
+            // Get the ship ID if assigned otherwise use the internal ID.
             try
             {
                 shipId = (string)ship["shipID"];
@@ -1345,12 +1345,10 @@ namespace TDHelper
             string shipType = (string)ship["name"];
 
             // Put the component parts together to form the ship name and type.
-            string result = "{0} {1}{2}".With(
+            return "{0} {1}{2}".With(
                 TranslateShipType(shipType), 
                 shipId,
                 shipName);
-
-            return result;
         }
 
         /// <summary>
