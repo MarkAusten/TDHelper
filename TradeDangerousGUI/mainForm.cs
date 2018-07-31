@@ -101,11 +101,11 @@ namespace TDHelper
             SetShipList();
         }
 
-        private void AvoidBox_TextChanged(object sender, EventArgs e)
+        private void txtAvoid_TextChanged(object sender, EventArgs e)
         {
             // account for startJumpsBox
             if (startJumpsBox.Value > 0)
-                settingsRef.Avoid = avoidBox.Text;
+                settingsRef.Avoid = txtAvoid.Text;
         }
 
         private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
@@ -997,8 +997,8 @@ namespace TDHelper
             // Load controls in the form from variables in memory
             //
 
-            avoidBox.Text = settingsRef.Avoid;
-            viaBox.Text = settingsRef.Via;
+            txtAvoid.Text = settingsRef.Avoid;
+            txtVia.Text = settingsRef.Via;
 
             capacityBox.Value = settingsRef.Capacity > capacityBox.Minimum && settingsRef.Capacity <= capacityBox.Maximum
                 ? settingsRef.Capacity
@@ -1020,9 +1020,9 @@ namespace TDHelper
                 ? settingsRef.MaxLSDistance
                 : maxLSDistanceBox.Minimum;
 
-            loopIntBox.Value = settingsRef.LoopInt > loopIntBox.Minimum && settingsRef.LoopInt <= loopIntBox.Maximum
+            numLoopInt.Value = settingsRef.LoopInt > numLoopInt.Minimum && settingsRef.LoopInt <= numLoopInt.Maximum
                 ? settingsRef.LoopInt
-                : loopIntBox.Minimum;
+                : numLoopInt.Minimum;
 
             ageBox.Value = settingsRef.Age > ageBox.Minimum && settingsRef.Age <= ageBox.Maximum
                 ? settingsRef.Age
@@ -1113,19 +1113,19 @@ namespace TDHelper
             {
                 // reset them both to prevent issues
                 settingsRef.Loop = false;
-                loopCheckBox.Checked = false;
+                chkLoop.Checked = false;
                 settingsRef.Towards = false;
                 towardsCheckBox.Checked = false;
             }
             else if (settingsRef.Loop)
             {
-                loopCheckBox.Checked = settingsRef.Loop;
+                chkLoop.Checked = settingsRef.Loop;
                 towardsCheckBox.Checked = false; // one or the other
             }
             else if (settingsRef.Towards)
             {
                 towardsCheckBox.Checked = settingsRef.Towards;
-                loopCheckBox.Checked = false;
+                chkLoop.Checked = false;
             }
 
             // exceptions
@@ -1170,14 +1170,14 @@ namespace TDHelper
 
             if (methodIndex == 3)
             {
-                r_fromBox = avoidBox.Text;
+                r_fromBox = txtAvoid.Text;
             }
             else
             {
-                settingsRef.Avoid = avoidBox.Text;
+                settingsRef.Avoid = txtAvoid.Text;
             }
 
-            settingsRef.Via = viaBox.Text;
+            settingsRef.Via = txtVia.Text;
 
             /*
              * The following is a set of workarounds to fix a bug in Framework 2.0+
@@ -1241,15 +1241,15 @@ namespace TDHelper
                 maxLSDistanceBox.Text = settingsRef.MaxLSDistance.ToString();
             }
 
-            if (decimal.TryParse(loopIntBox.Text, out decimal t_LoopInt))
+            if (decimal.TryParse(numLoopInt.Text, out decimal t_LoopInt))
             {
-                loopIntBox.Text = t_LoopInt.ToString();
+                numLoopInt.Text = t_LoopInt.ToString();
                 settingsRef.LoopInt = t_LoopInt;
             }
             else
             {
-                settingsRef.LoopInt = loopIntBox.Minimum;
-                loopIntBox.Text = settingsRef.LoopInt.ToString();
+                settingsRef.LoopInt = numLoopInt.Minimum;
+                numLoopInt.Text = settingsRef.LoopInt.ToString();
             }
 
             if (decimal.TryParse(pruneHopsBox.Text, out decimal t_pruneHops))
@@ -1420,7 +1420,7 @@ namespace TDHelper
                 minAgeUpDown.Text = minAgeUpDown.Minimum.ToString();
             }
 
-            settingsRef.Loop = loopCheckBox.Checked;
+            settingsRef.Loop = chkLoop.Checked;
             settingsRef.Towards = towardsCheckBox.Checked;
             settingsRef.Unique = uniqueCheckBox.Checked;
             settingsRef.ShowJumps = showJumpsCheckBox.Checked;
@@ -1641,9 +1641,9 @@ namespace TDHelper
 
         private void DirectCheckBox_Click(object sender, EventArgs e)
         {
-            if (loopCheckBox.Checked)
+            if (chkLoop.Checked)
             {
-                loopCheckBox.Checked = false;
+                chkLoop.Checked = false;
                 directCheckBox.Checked = true;
             }
 
@@ -1827,25 +1827,25 @@ namespace TDHelper
             }
         }
 
-        private void LoopCheckBox_Click(object sender, EventArgs e)
+        private void chkLoop_Click(object sender, EventArgs e)
         {
             if (directCheckBox.Checked)
             {
                 directCheckBox.Checked = false;
-                loopCheckBox.Checked = true;
+                chkLoop.Checked = true;
             }
 
             if (uniqueCheckBox.Checked)
             {
                 uniqueCheckBox.Checked = false;
-                loopCheckBox.Checked = true;
+                chkLoop.Checked = true;
             }
 
             if (shortenCheckBox.Checked)
             {
                 shortenCheckBox.Checked = false;
                 towardsCheckBox.Checked = false;
-                loopCheckBox.Checked = true;
+                chkLoop.Checked = true;
             }
             else if (settingsRef.Towards || towardsCheckBox.Checked)
             {
@@ -1857,9 +1857,9 @@ namespace TDHelper
 
         private void UniqueCheckBox_Click(object sender, EventArgs e)
         {
-            if (loopCheckBox.Checked)
+            if (chkLoop.Checked)
             {
-                loopCheckBox.Checked = false;
+                chkLoop.Checked = false;
                 uniqueCheckBox.Checked = true;
             }
         }
@@ -2077,8 +2077,8 @@ namespace TDHelper
 
                     // enable the appropriate controls
                     bmktCheckBox.Enabled = true;
-                    avoidBox.Enabled = true;
-                    avoidLabel.Enabled = true;
+                    txtAvoid.Enabled = true;
+                    lblAvoid.Enabled = true;
                     commodityLabel.Enabled = true;
                     commodityComboBox.Enabled = true;
                     abovePriceBox.Enabled = true;
@@ -2113,24 +2113,24 @@ namespace TDHelper
                     ladenLYLabel.Text = "  Near LY:";
                     unladenLYLabel.Font = new Font(unladenLYLabel.Font, FontStyle.Italic);
                     unladenLYLabel.Text = "    Away LY:";
-                    avoidLabel.Font = new Font(avoidLabel.Font, FontStyle.Italic);
-                    avoidLabel.Text = " From:";
-                    avoidBox.TabStop = true;
+                    lblAvoid.Font = new Font(lblAvoid.Font, FontStyle.Italic);
+                    lblAvoid.Text = " From:";
+                    txtAvoid.TabStop = true;
 
                     // only reenable the appropriate options
                     ladenLYBox.Enabled = true;
                     ladenLYLabel.Enabled = true;
                     unladenLYBox.Enabled = true;
                     unladenLYLabel.Enabled = true;
-                    avoidLabel.Enabled = true;
-                    avoidBox.Enabled = true;
+                    lblAvoid.Enabled = true;
+                    txtAvoid.Enabled = true;
                     chkRouteNoPlanet.Enabled = true;
                     chkRouteStations.Enabled = false;
 
                     // fix tooltips
                     toolTip1.SetToolTip(stationDropDown, "Filter rares by context");
                     toolTip1.SetToolTip(methodDropDown, "List all rares in the vicinity of a system");
-                    toolTip1.SetToolTip(avoidLabel, "Calculate LY \"Away\" from these systems, delimited by comma");
+                    toolTip1.SetToolTip(lblAvoid, "Calculate LY \"Away\" from these systems, delimited by comma");
                     toolTip1.SetToolTip(ladenLYBox, "Distance to search near the source system");
                     toolTip1.SetToolTip(ladenLYLabel, "Distance to search near the source system");
                     toolTip1.SetToolTip(unladenLYLabel, "Distance to calculate away from \"From\" systems");
@@ -2191,23 +2191,23 @@ namespace TDHelper
 
                     // fix the tooltips
                     toolTip1.SetToolTip(methodDropDown, "Attempt to calculate navigation between source/destination systems");
-                    toolTip1.SetToolTip(avoidBox, "Exclude a system from the route; if a station is entered the system it's in will be avoided");
-                    toolTip1.SetToolTip(avoidLabel, "Exclude a system from the route; if a station is entered the system it's in will be avoided");
+                    toolTip1.SetToolTip(txtAvoid, "Exclude a system from the route; if a station is entered the system it's in will be avoided");
+                    toolTip1.SetToolTip(lblAvoid, "Exclude a system from the route; if a station is entered the system it's in will be avoided");
                     toolTip1.SetToolTip(ladenLYBox, "Distance to search near the source system");
                     toolTip1.SetToolTip(ladenLYLabel, "Distance to search near the source system");
 
-                    avoidBox.TabStop = true;
-                    viaBox.TabStop = true;
+                    txtAvoid.TabStop = true;
+                    txtVia.TabStop = true;
 
                     // only reenable the appropriate options
                     destSysLabel.Enabled = true;
                     destSystemComboBox.Enabled = true;
                     ladenLYBox.Enabled = true;
                     ladenLYLabel.Enabled = true;
-                    avoidLabel.Enabled = true;
-                    avoidBox.Enabled = true;
-                    viaLabel.Enabled = true;
-                    viaBox.Enabled = true;
+                    lblAvoid.Enabled = true;
+                    txtAvoid.Enabled = true;
+                    lblVia.Enabled = true;
+                    txtVia.Enabled = true;
                     chkRouteNoPlanet.Enabled = true;
                     chkRouteStations.Enabled = true;
 
@@ -2237,6 +2237,12 @@ namespace TDHelper
                 {
                     // run command
                     RunMethodResetState();
+
+                    lblVia.Enabled = true;
+                    txtVia.Enabled = true;
+                    txtAvoid.Enabled = true;
+                    lblAvoid.Enabled = true;
+
                     toolTip1.SetToolTip(methodDropDown, "Calculates optimal trading routes from Source (Destination optional)");
                     methodFromIndex = 0;
                 }
@@ -2766,13 +2772,19 @@ namespace TDHelper
             bmktCheckBox.Checked = false;
             directCheckBox.Checked = false;
             methodDropDown.Enabled = true;
-            avoidBox.TabStop = false;
-            viaBox.TabStop = false;
+            txtAvoid.TabStop = false;
+            txtVia.TabStop = false;
 
             minAgeUpDown.Visible = false;
             minAgeLabel.Visible = false;
             oldRoutesCheckBox.Enabled = false;
             oldRoutesCheckBox.Visible = false;
+
+            lblVia.Enabled = false;
+            txtVia.Enabled = false;
+
+            lblAvoid.Enabled = false;
+            txtAvoid.Enabled = false;
 
             // always focus the Source box
             srcSystemComboBox.Focus();
@@ -2800,8 +2812,8 @@ namespace TDHelper
             }
 
             // and tooltips
-            toolTip1.SetToolTip(avoidLabel, "Avoids can include system/station and items delimited by comma");
-            toolTip1.SetToolTip(avoidBox, "Avoids can include system/station and items delimited by comma");
+            toolTip1.SetToolTip(lblAvoid, "Avoids can include system/station and items delimited by comma");
+            toolTip1.SetToolTip(txtAvoid, "Avoids can include system/station and items delimited by comma");
             toolTip1.SetToolTip(ladenLYLabel, "Distance that can be travelled while laden (including fuel)");
             toolTip1.SetToolTip(ladenLYBox, "Distance that can be travelled while laden (including fuel)");
             toolTip1.SetToolTip(unladenLYLabel, "Distance that can be travelled while unladen (including fuel)");
@@ -2816,8 +2828,8 @@ namespace TDHelper
             ladenLYLabel.Text = "Laden LY:";
             unladenLYLabel.Font = new Font(unladenLYLabel.Font, FontStyle.Regular);
             unladenLYLabel.Text = "Unladen LY:";
-            avoidLabel.Font = new Font(avoidLabel.Font, FontStyle.Regular);
-            avoidLabel.Text = "Avoid:";
+            lblAvoid.Font = new Font(lblAvoid.Font, FontStyle.Regular);
+            lblAvoid.Text = "Avoid:";
 
             // controls
             ageBox.Enabled = true;
@@ -2863,20 +2875,20 @@ namespace TDHelper
             if (methodFromIndex != 3 && methodIndex == 3)
             {
                 // from anywhere (but Rare) to Rare
-                settingsRef.Avoid = avoidBox.Text; // save Avoid list
+                settingsRef.Avoid = txtAvoid.Text; // save Avoid list
 
                 // restore the contents if it exists
-                avoidBox.Text = !string.IsNullOrEmpty(r_fromBox)
+                txtAvoid.Text = !string.IsNullOrEmpty(r_fromBox)
                     ? r_fromBox
                     : string.Empty;
             }
             else if (methodFromIndex == 3)
             {
                 // coming from Rare switching to anywhere
-                r_fromBox = avoidBox.Text; // save From list
+                r_fromBox = txtAvoid.Text; // save From list
 
                 // restore our contents from global
-                avoidBox.Text = !string.IsNullOrEmpty(settingsRef.Avoid)
+                txtAvoid.Text = !string.IsNullOrEmpty(settingsRef.Avoid)
                     ? settingsRef.Avoid
                     : string.Empty;
             }
@@ -2956,14 +2968,14 @@ namespace TDHelper
             {
                 if (!shortenCheckBox.Checked)
                 {
-                    loopCheckBox.Checked = false;
+                    chkLoop.Checked = false;
                     towardsCheckBox.Checked = false;
                 }
                 else if (shortenCheckBox.Checked)
                 {
-                    if (loopCheckBox.Checked)
+                    if (chkLoop.Checked)
                     {
-                        loopCheckBox.Checked = false;
+                        chkLoop.Checked = false;
                     }
 
                     shortenCheckBox.Checked = true;
@@ -3302,10 +3314,10 @@ namespace TDHelper
 
         private void TowardsCheckBox_Click(object sender, EventArgs e)
         {
-            if (settingsRef.Loop || loopCheckBox.Checked)
+            if (settingsRef.Loop || chkLoop.Checked)
             {
                 settingsRef.Loop = false;
-                loopCheckBox.Checked = false;
+                chkLoop.Checked = false;
             }
             else if (!string.IsNullOrEmpty(destSystemComboBox.Text))
             {

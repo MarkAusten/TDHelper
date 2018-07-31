@@ -129,14 +129,11 @@
   <metadata name="contextMenuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>181, 50</value>
   </metadata>
-  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>336, 50</value>
-  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="miscSettingsButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsEAAA7BAbiRa+0AAAJTSURBVEhLvdXLi85RGMDxl3EZotiMaKRIxNCEkn/AJUkK
+        YQUAAAAJcEhZcwAADr8AAA6/ATgFUyQAAAJTSURBVEhLvdXLi85RGMDxl3EZotiMaKRIxNCEkn/AJUkK
         C4mFhWSyMCxGiiK3PRsrl8wCuUTZYWHhkpLLQomiZFxzv/P9/t7z1PGa932Zhqc+NefM71x+z3nO7y39
         RfTFAPQvWv8gNuMGrmO6Hb0d5/EjWWlHT6MF6zCoaJXD9NxDLLADeUzEegwsWjViCu7CSdzxVMzEfnxG
         LHAf7RiJpXgI+w9gCKrGasQkeoWP6e8veIaXqa0u5Av7/FhUjUacQwzQC2zHDIzAaMzFMeTPfcda1A3z

@@ -547,8 +547,8 @@ v1.03d
 * Added "Delete" to the context menu for the notes pane
 * Fixed a few more worker delegate logic bugs
 * Moved the stopwatch to a separate running thread during processing
-* Fixed contents of from/avoidBox not being restored correctly when switching
-* Switched "From" box (for the "Rare" command) to the avoidBox for sensibility
+* Fixed contents of from/txtAvoid not being restored correctly when switching
+* Switched "From" box (for the "Rare" command) to the txtAvoid for sensibility
 * The update function is now smarter by checking the maddavo timestamp
 
 v1.03c

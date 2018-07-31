@@ -73,7 +73,7 @@ namespace TDHelper
         public List<string> currentMarkedStations;
 
         public string r_fromBox;
-        public string t_avoidBox;
+        public string t_txtAvoid;
         public string t_outputVerbosity;
         public string t_confirmCode;
         public string t_lastSystem;

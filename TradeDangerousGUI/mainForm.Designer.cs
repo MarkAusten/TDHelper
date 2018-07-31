@@ -41,7 +41,7 @@
             this.unladenLYLabel = new System.Windows.Forms.Label();
             this.ladenLYLabel = new System.Windows.Forms.Label();
             this.towardsCheckBox = new System.Windows.Forms.CheckBox();
-            this.loopCheckBox = new System.Windows.Forms.CheckBox();
+            this.chkLoop = new System.Windows.Forms.CheckBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -85,12 +85,12 @@
             this.methodDropDown = new System.Windows.Forms.ComboBox();
             this.commodityComboBox = new System.Windows.Forms.ComboBox();
             this.commodityLabel = new System.Windows.Forms.Label();
-            this.viaBox = new System.Windows.Forms.TextBox();
-            this.viaLabel = new System.Windows.Forms.Label();
+            this.txtVia = new System.Windows.Forms.TextBox();
+            this.lblVia = new System.Windows.Forms.Label();
             this.startJumpsLabel = new System.Windows.Forms.Label();
             this.endJumpsLabel = new System.Windows.Forms.Label();
-            this.avoidBox = new System.Windows.Forms.TextBox();
-            this.avoidLabel = new System.Windows.Forms.Label();
+            this.txtAvoid = new System.Windows.Forms.TextBox();
+            this.lblAvoid = new System.Windows.Forms.Label();
             this.bmktCheckBox = new System.Windows.Forms.CheckBox();
             this.localNavCheckBox = new System.Windows.Forms.CheckBox();
             this.hopsLabel = new System.Windows.Forms.Label();
@@ -127,8 +127,8 @@
             this.minAgeUpDown = new System.Windows.Forms.NumericUpDown();
             this.minAgeLabel = new System.Windows.Forms.Label();
             this.oldRoutesCheckBox = new System.Windows.Forms.CheckBox();
-            this.loopIntLabel = new System.Windows.Forms.Label();
-            this.loopIntBox = new System.Windows.Forms.NumericUpDown();
+            this.lblLoopInt = new System.Windows.Forms.Label();
+            this.numLoopInt = new System.Windows.Forms.NumericUpDown();
             this.shortenCheckBox = new System.Windows.Forms.CheckBox();
             this.shipsSoldBox = new System.Windows.Forms.ComboBox();
             this.demandBox = new System.Windows.Forms.NumericUpDown();
@@ -147,6 +147,8 @@
             this.numNearLy = new System.Windows.Forms.NumericUpDown();
             this.lblNearLy = new System.Windows.Forms.Label();
             this.miscSettingsButton = new System.Windows.Forms.Button();
+            this.numSupply = new System.Windows.Forms.NumericUpDown();
+            this.lblSupply = new System.Windows.Forms.Label();
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker4 = new System.ComponentModel.BackgroundWorker();
             this.panRunOptions = new System.Windows.Forms.Panel();
@@ -191,13 +193,10 @@
             this.panStock = new System.Windows.Forms.Panel();
             this.panHops = new System.Windows.Forms.Panel();
             this.panProfit = new System.Windows.Forms.Panel();
-            this.panDistance = new System.Windows.Forms.Panel();
             this.panOther = new System.Windows.Forms.Panel();
             this.panMisc = new System.Windows.Forms.Panel();
             this.panMethod = new System.Windows.Forms.Panel();
             this.panAgeCredits = new System.Windows.Forms.Panel();
-            this.numSupply = new System.Windows.Forms.NumericUpDown();
-            this.lblSupply = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.belowPriceBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.abovePriceBox)).BeginInit();
@@ -222,9 +221,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.updateNotifyIcon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numStock)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minAgeUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.loopIntBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numLoopInt)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.demandBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numNearLy)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numSupply)).BeginInit();
             this.panRunOptions.SuspendLayout();
             this.panLocalFilter.SuspendLayout();
             this.localFilterGroupBox.SuspendLayout();
@@ -242,12 +242,10 @@
             this.panStock.SuspendLayout();
             this.panHops.SuspendLayout();
             this.panProfit.SuspendLayout();
-            this.panDistance.SuspendLayout();
             this.panOther.SuspendLayout();
             this.panMisc.SuspendLayout();
             this.panMethod.SuspendLayout();
             this.panAgeCredits.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numSupply)).BeginInit();
             this.SuspendLayout();
             // 
             // runButton
@@ -359,7 +357,7 @@
             // 
             this.towardsCheckBox.AutoSize = true;
             this.towardsCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.towardsCheckBox.Location = new System.Drawing.Point(238, 32);
+            this.towardsCheckBox.Location = new System.Drawing.Point(179, 33);
             this.towardsCheckBox.Name = "towardsCheckBox";
             this.towardsCheckBox.Size = new System.Drawing.Size(67, 17);
             this.towardsCheckBox.TabIndex = 7;
@@ -370,19 +368,19 @@
             this.towardsCheckBox.UseVisualStyleBackColor = true;
             this.towardsCheckBox.Click += new System.EventHandler(this.TowardsCheckBox_Click);
             // 
-            // loopCheckBox
+            // chkLoop
             // 
-            this.loopCheckBox.AutoSize = true;
-            this.loopCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.loopCheckBox.Location = new System.Drawing.Point(181, 32);
-            this.loopCheckBox.Name = "loopCheckBox";
-            this.loopCheckBox.Size = new System.Drawing.Size(50, 17);
-            this.loopCheckBox.TabIndex = 6;
-            this.loopCheckBox.TabStop = false;
-            this.loopCheckBox.Text = "Loop";
-            this.toolTip1.SetToolTip(this.loopCheckBox, "Attempts to get a round-trip route");
-            this.loopCheckBox.UseVisualStyleBackColor = true;
-            this.loopCheckBox.Click += new System.EventHandler(this.LoopCheckBox_Click);
+            this.chkLoop.AutoSize = true;
+            this.chkLoop.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkLoop.Location = new System.Drawing.Point(252, 33);
+            this.chkLoop.Name = "chkLoop";
+            this.chkLoop.Size = new System.Drawing.Size(50, 17);
+            this.chkLoop.TabIndex = 6;
+            this.chkLoop.TabStop = false;
+            this.chkLoop.Text = "Loop";
+            this.toolTip1.SetToolTip(this.chkLoop, "Attempts to get a round-trip route");
+            this.chkLoop.UseVisualStyleBackColor = true;
+            this.chkLoop.Click += new System.EventHandler(this.chkLoop_Click);
             // 
             // contextMenuStrip1
             // 
@@ -569,7 +567,7 @@
             // 
             // belowPriceBox
             // 
-            this.belowPriceBox.Location = new System.Drawing.Point(251, 120);
+            this.belowPriceBox.Location = new System.Drawing.Point(251, 134);
             this.belowPriceBox.Maximum = new decimal(new int[] {
             50000,
             0,
@@ -586,7 +584,7 @@
             // 
             // abovePriceBox
             // 
-            this.abovePriceBox.Location = new System.Drawing.Point(134, 120);
+            this.abovePriceBox.Location = new System.Drawing.Point(134, 134);
             this.abovePriceBox.Maximum = new decimal(new int[] {
             50000,
             0,
@@ -603,7 +601,7 @@
             // 
             // endJumpsBox
             // 
-            this.endJumpsBox.Location = new System.Drawing.Point(134, 55);
+            this.endJumpsBox.Location = new System.Drawing.Point(134, 88);
             this.endJumpsBox.Name = "endJumpsBox";
             this.endJumpsBox.Size = new System.Drawing.Size(46, 20);
             this.endJumpsBox.TabIndex = 1;
@@ -615,7 +613,7 @@
             // 
             // startJumpsBox
             // 
-            this.startJumpsBox.Location = new System.Drawing.Point(259, 54);
+            this.startJumpsBox.Location = new System.Drawing.Point(259, 87);
             this.startJumpsBox.Name = "startJumpsBox";
             this.startJumpsBox.Size = new System.Drawing.Size(46, 20);
             this.startJumpsBox.TabIndex = 2;
@@ -643,9 +641,9 @@
             // 
             // pruneHopsBox
             // 
-            this.pruneHopsBox.Location = new System.Drawing.Point(66, 48);
+            this.pruneHopsBox.Location = new System.Drawing.Point(78, 26);
             this.pruneHopsBox.Name = "pruneHopsBox";
-            this.pruneHopsBox.Size = new System.Drawing.Size(39, 20);
+            this.pruneHopsBox.Size = new System.Drawing.Size(60, 20);
             this.pruneHopsBox.TabIndex = 16;
             this.pruneHopsBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.pruneHopsBox, "Number of hops before pruning starts, to enable set >=2");
@@ -654,14 +652,14 @@
             // 
             // pruneScoreBox
             // 
-            this.pruneScoreBox.Location = new System.Drawing.Point(75, 3);
+            this.pruneScoreBox.Location = new System.Drawing.Point(78, 3);
             this.pruneScoreBox.Maximum = new decimal(new int[] {
             99,
             0,
             0,
             0});
             this.pruneScoreBox.Name = "pruneScoreBox";
-            this.pruneScoreBox.Size = new System.Drawing.Size(46, 20);
+            this.pruneScoreBox.Size = new System.Drawing.Size(60, 20);
             this.pruneScoreBox.TabIndex = 17;
             this.pruneScoreBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.toolTip1.SetToolTip(this.pruneScoreBox, "Percentage of route score change, below which pruning occurs");
@@ -671,7 +669,7 @@
             // lsPenaltyBox
             // 
             this.lsPenaltyBox.DecimalPlaces = 1;
-            this.lsPenaltyBox.Location = new System.Drawing.Point(78, 26);
+            this.lsPenaltyBox.Location = new System.Drawing.Point(78, 72);
             this.lsPenaltyBox.Maximum = new decimal(new int[] {
             20000,
             0,
@@ -687,7 +685,7 @@
             // 
             // maxLSDistanceBox
             // 
-            this.maxLSDistanceBox.Location = new System.Drawing.Point(78, 3);
+            this.maxLSDistanceBox.Location = new System.Drawing.Point(78, 49);
             this.maxLSDistanceBox.Maximum = new decimal(new int[] {
             20000,
             0,
@@ -722,7 +720,7 @@
             // 
             this.uniqueCheckBox.AutoSize = true;
             this.uniqueCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.uniqueCheckBox.Location = new System.Drawing.Point(44, 32);
+            this.uniqueCheckBox.Location = new System.Drawing.Point(44, 33);
             this.uniqueCheckBox.Name = "uniqueCheckBox";
             this.uniqueCheckBox.Size = new System.Drawing.Size(60, 17);
             this.uniqueCheckBox.TabIndex = 5;
@@ -772,7 +770,7 @@
             // 
             // jumpsBox
             // 
-            this.jumpsBox.Location = new System.Drawing.Point(66, 26);
+            this.jumpsBox.Location = new System.Drawing.Point(45, 26);
             this.jumpsBox.Minimum = new decimal(new int[] {
             1,
             0,
@@ -793,7 +791,7 @@
             // 
             // hopsBox
             // 
-            this.hopsBox.Location = new System.Drawing.Point(66, 3);
+            this.hopsBox.Location = new System.Drawing.Point(45, 3);
             this.hopsBox.Minimum = new decimal(new int[] {
             2,
             0,
@@ -881,7 +879,7 @@
             // belowPriceLabel
             // 
             this.belowPriceLabel.AutoSize = true;
-            this.belowPriceLabel.Location = new System.Drawing.Point(207, 122);
+            this.belowPriceLabel.Location = new System.Drawing.Point(207, 136);
             this.belowPriceLabel.Name = "belowPriceLabel";
             this.belowPriceLabel.Size = new System.Drawing.Size(44, 13);
             this.belowPriceLabel.TabIndex = 58;
@@ -892,7 +890,7 @@
             // abovePriceLabel
             // 
             this.abovePriceLabel.AutoSize = true;
-            this.abovePriceLabel.Location = new System.Drawing.Point(93, 122);
+            this.abovePriceLabel.Location = new System.Drawing.Point(93, 136);
             this.abovePriceLabel.Name = "abovePriceLabel";
             this.abovePriceLabel.Size = new System.Drawing.Size(41, 13);
             this.abovePriceLabel.TabIndex = 56;
@@ -924,7 +922,7 @@
             // 
             this.commodityComboBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.commodityComboBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.commodityComboBox.Location = new System.Drawing.Point(134, 97);
+            this.commodityComboBox.Location = new System.Drawing.Point(134, 111);
             this.commodityComboBox.Name = "commodityComboBox";
             this.commodityComboBox.Size = new System.Drawing.Size(172, 21);
             this.commodityComboBox.TabIndex = 3;
@@ -936,38 +934,38 @@
             // 
             this.commodityLabel.AutoSize = true;
             this.commodityLabel.Enabled = false;
-            this.commodityLabel.Location = new System.Drawing.Point(73, 100);
+            this.commodityLabel.Location = new System.Drawing.Point(73, 114);
             this.commodityLabel.Name = "commodityLabel";
             this.commodityLabel.Size = new System.Drawing.Size(61, 13);
             this.commodityLabel.TabIndex = 31;
             this.commodityLabel.Text = "Commodity:";
             this.toolTip1.SetToolTip(this.commodityLabel, "Commodities to search for using Buy/Sell, and can be delimited by comma");
             // 
-            // viaBox
+            // txtVia
             // 
-            this.viaBox.Location = new System.Drawing.Point(61, 29);
-            this.viaBox.Name = "viaBox";
-            this.viaBox.Size = new System.Drawing.Size(311, 20);
-            this.viaBox.TabIndex = 19;
-            this.viaBox.TabStop = false;
-            this.toolTip1.SetToolTip(this.viaBox, "Attempt to route through these systems, delimited by comma");
+            this.txtVia.Location = new System.Drawing.Point(61, 29);
+            this.txtVia.Name = "txtVia";
+            this.txtVia.Size = new System.Drawing.Size(311, 20);
+            this.txtVia.TabIndex = 19;
+            this.txtVia.TabStop = false;
+            this.toolTip1.SetToolTip(this.txtVia, "Attempt to route through these systems, delimited by comma");
             // 
-            // viaLabel
+            // lblVia
             // 
-            this.viaLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.lblVia.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.viaLabel.AutoSize = true;
-            this.viaLabel.Location = new System.Drawing.Point(31, 31);
-            this.viaLabel.Name = "viaLabel";
-            this.viaLabel.Size = new System.Drawing.Size(25, 13);
-            this.viaLabel.TabIndex = 45;
-            this.viaLabel.Text = "Via:";
-            this.toolTip1.SetToolTip(this.viaLabel, "Attempt to route through these systems, delimited by comma");
+            this.lblVia.AutoSize = true;
+            this.lblVia.Location = new System.Drawing.Point(31, 31);
+            this.lblVia.Name = "lblVia";
+            this.lblVia.Size = new System.Drawing.Size(25, 13);
+            this.lblVia.TabIndex = 45;
+            this.lblVia.Text = "Via:";
+            this.toolTip1.SetToolTip(this.lblVia, "Attempt to route through these systems, delimited by comma");
             // 
             // startJumpsLabel
             // 
             this.startJumpsLabel.AutoSize = true;
-            this.startJumpsLabel.Location = new System.Drawing.Point(194, 56);
+            this.startJumpsLabel.Location = new System.Drawing.Point(194, 89);
             this.startJumpsLabel.Name = "startJumpsLabel";
             this.startJumpsLabel.Size = new System.Drawing.Size(65, 13);
             this.startJumpsLabel.TabIndex = 43;
@@ -979,7 +977,7 @@
             // 
             this.endJumpsLabel.AutoSize = true;
             this.endJumpsLabel.Enabled = false;
-            this.endJumpsLabel.Location = new System.Drawing.Point(72, 57);
+            this.endJumpsLabel.Location = new System.Drawing.Point(72, 96);
             this.endJumpsLabel.Name = "endJumpsLabel";
             this.endJumpsLabel.Size = new System.Drawing.Size(62, 13);
             this.endJumpsLabel.TabIndex = 41;
@@ -987,27 +985,27 @@
             this.toolTip1.SetToolTip(this.endJumpsLabel, "Try to finish this many jumps away from the destination, this requires a destinat" +
         "ion (volatile)");
             // 
-            // avoidBox
+            // txtAvoid
             // 
-            this.avoidBox.Location = new System.Drawing.Point(61, 5);
-            this.avoidBox.Name = "avoidBox";
-            this.avoidBox.Size = new System.Drawing.Size(311, 20);
-            this.avoidBox.TabIndex = 18;
-            this.avoidBox.TabStop = false;
-            this.toolTip1.SetToolTip(this.avoidBox, "Avoids can include system/station and items delimited by comma");
-            this.avoidBox.TextChanged += new System.EventHandler(this.AvoidBox_TextChanged);
+            this.txtAvoid.Location = new System.Drawing.Point(61, 5);
+            this.txtAvoid.Name = "txtAvoid";
+            this.txtAvoid.Size = new System.Drawing.Size(311, 20);
+            this.txtAvoid.TabIndex = 18;
+            this.txtAvoid.TabStop = false;
+            this.toolTip1.SetToolTip(this.txtAvoid, "Avoids can include system/station and items delimited by comma");
+            this.txtAvoid.TextChanged += new System.EventHandler(this.txtAvoid_TextChanged);
             // 
-            // avoidLabel
+            // lblAvoid
             // 
-            this.avoidLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.lblAvoid.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.avoidLabel.AutoSize = true;
-            this.avoidLabel.Location = new System.Drawing.Point(18, 7);
-            this.avoidLabel.Name = "avoidLabel";
-            this.avoidLabel.Size = new System.Drawing.Size(37, 13);
-            this.avoidLabel.TabIndex = 39;
-            this.avoidLabel.Text = "Avoid:";
-            this.toolTip1.SetToolTip(this.avoidLabel, "Avoids can include system/station and items delimited by comma");
+            this.lblAvoid.AutoSize = true;
+            this.lblAvoid.Location = new System.Drawing.Point(18, 7);
+            this.lblAvoid.Name = "lblAvoid";
+            this.lblAvoid.Size = new System.Drawing.Size(37, 13);
+            this.lblAvoid.TabIndex = 39;
+            this.lblAvoid.Text = "Avoid:";
+            this.toolTip1.SetToolTip(this.lblAvoid, "Avoids can include system/station and items delimited by comma");
             // 
             // bmktCheckBox
             // 
@@ -1026,7 +1024,7 @@
             // 
             this.localNavCheckBox.AutoSize = true;
             this.localNavCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.localNavCheckBox.Location = new System.Drawing.Point(37, 48);
+            this.localNavCheckBox.Location = new System.Drawing.Point(8, 106);
             this.localNavCheckBox.Name = "localNavCheckBox";
             this.localNavCheckBox.Size = new System.Drawing.Size(52, 17);
             this.localNavCheckBox.TabIndex = 2;
@@ -1039,7 +1037,7 @@
             // hopsLabel
             // 
             this.hopsLabel.AutoSize = true;
-            this.hopsLabel.Location = new System.Drawing.Point(31, 7);
+            this.hopsLabel.Location = new System.Drawing.Point(10, 7);
             this.hopsLabel.Name = "hopsLabel";
             this.hopsLabel.Size = new System.Drawing.Size(35, 13);
             this.hopsLabel.TabIndex = 29;
@@ -1449,32 +1447,32 @@
             this.oldRoutesCheckBox.UseVisualStyleBackColor = true;
             this.oldRoutesCheckBox.Visible = false;
             // 
-            // loopIntLabel
+            // lblLoopInt
             // 
-            this.loopIntLabel.AutoSize = true;
-            this.loopIntLabel.Location = new System.Drawing.Point(23, 30);
-            this.loopIntLabel.Name = "loopIntLabel";
-            this.loopIntLabel.Size = new System.Drawing.Size(49, 13);
-            this.loopIntLabel.TabIndex = 59;
-            this.loopIntLabel.Text = "Loop Int:";
-            this.toolTip1.SetToolTip(this.loopIntLabel, "Minimum hops between visiting the same station");
+            this.lblLoopInt.AutoSize = true;
+            this.lblLoopInt.Location = new System.Drawing.Point(201, 60);
+            this.lblLoopInt.Name = "lblLoopInt";
+            this.lblLoopInt.Size = new System.Drawing.Size(49, 13);
+            this.lblLoopInt.TabIndex = 59;
+            this.lblLoopInt.Text = "Loop Int:";
+            this.toolTip1.SetToolTip(this.lblLoopInt, "Minimum hops between visiting the same station");
             // 
-            // loopIntBox
+            // numLoopInt
             // 
-            this.loopIntBox.Location = new System.Drawing.Point(75, 26);
-            this.loopIntBox.Name = "loopIntBox";
-            this.loopIntBox.Size = new System.Drawing.Size(46, 20);
-            this.loopIntBox.TabIndex = 10;
-            this.loopIntBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.toolTip1.SetToolTip(this.loopIntBox, "Minimum hops between visiting the same station");
-            this.loopIntBox.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.loopIntBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numLoopInt.Location = new System.Drawing.Point(256, 56);
+            this.numLoopInt.Name = "numLoopInt";
+            this.numLoopInt.Size = new System.Drawing.Size(46, 20);
+            this.numLoopInt.TabIndex = 10;
+            this.numLoopInt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip1.SetToolTip(this.numLoopInt, "Minimum hops between visiting the same station");
+            this.numLoopInt.Enter += new System.EventHandler(this.NumericUpDown_Enter);
+            this.numLoopInt.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
             // 
             // shortenCheckBox
             // 
             this.shortenCheckBox.AutoSize = true;
             this.shortenCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.shortenCheckBox.Location = new System.Drawing.Point(111, 32);
+            this.shortenCheckBox.Location = new System.Drawing.Point(110, 33);
             this.shortenCheckBox.Name = "shortenCheckBox";
             this.shortenCheckBox.Size = new System.Drawing.Size(63, 17);
             this.shortenCheckBox.TabIndex = 61;
@@ -1574,7 +1572,7 @@
             // 
             this.chkRouteNoPlanet.AutoSize = true;
             this.chkRouteNoPlanet.Enabled = false;
-            this.chkRouteNoPlanet.Location = new System.Drawing.Point(10, 142);
+            this.chkRouteNoPlanet.Location = new System.Drawing.Point(10, 165);
             this.chkRouteNoPlanet.Name = "chkRouteNoPlanet";
             this.chkRouteNoPlanet.Size = new System.Drawing.Size(73, 17);
             this.chkRouteNoPlanet.TabIndex = 64;
@@ -1602,7 +1600,7 @@
             // 
             this.chkRouteStations.AutoSize = true;
             this.chkRouteStations.Enabled = false;
-            this.chkRouteStations.Location = new System.Drawing.Point(9, 165);
+            this.chkRouteStations.Location = new System.Drawing.Point(10, 144);
             this.chkRouteStations.Name = "chkRouteStations";
             this.chkRouteStations.Size = new System.Drawing.Size(64, 17);
             this.chkRouteStations.TabIndex = 65;
@@ -1614,7 +1612,7 @@
             // lblPlanetary
             // 
             this.lblPlanetary.AutoSize = true;
-            this.lblPlanetary.Location = new System.Drawing.Point(93, 163);
+            this.lblPlanetary.Location = new System.Drawing.Point(89, 167);
             this.lblPlanetary.Name = "lblPlanetary";
             this.lblPlanetary.Size = new System.Drawing.Size(54, 13);
             this.lblPlanetary.TabIndex = 69;
@@ -1624,7 +1622,7 @@
             // 
             // txtPlanetary
             // 
-            this.txtPlanetary.Location = new System.Drawing.Point(147, 160);
+            this.txtPlanetary.Location = new System.Drawing.Point(149, 163);
             this.txtPlanetary.MaxLength = 3;
             this.txtPlanetary.Name = "txtPlanetary";
             this.txtPlanetary.Size = new System.Drawing.Size(32, 20);
@@ -1709,6 +1707,33 @@
             this.miscSettingsButton.UseVisualStyleBackColor = true;
             this.miscSettingsButton.Click += new System.EventHandler(this.MiscSettingsButton_Click);
             // 
+            // numSupply
+            // 
+            this.numSupply.Location = new System.Drawing.Point(67, 3);
+            this.numSupply.Maximum = new decimal(new int[] {
+            9999999,
+            0,
+            0,
+            0});
+            this.numSupply.Name = "numSupply";
+            this.numSupply.Size = new System.Drawing.Size(71, 20);
+            this.numSupply.TabIndex = 58;
+            this.numSupply.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numSupply.ThousandsSeparator = true;
+            this.toolTip1.SetToolTip(this.numSupply, "Limit to stations known to have at least this much supply");
+            this.numSupply.Visible = false;
+            // 
+            // lblSupply
+            // 
+            this.lblSupply.AutoSize = true;
+            this.lblSupply.Location = new System.Drawing.Point(15, 7);
+            this.lblSupply.Name = "lblSupply";
+            this.lblSupply.Size = new System.Drawing.Size(51, 13);
+            this.lblSupply.TabIndex = 59;
+            this.lblSupply.Text = "   Supply:";
+            this.toolTip1.SetToolTip(this.lblSupply, "Limit to stations known to have at least this much supply");
+            this.lblSupply.Visible = false;
+            // 
             // backgroundWorker3
             // 
             this.backgroundWorker3.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker3_DoWork);
@@ -1722,8 +1747,10 @@
             // panRunOptions
             // 
             this.panRunOptions.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panRunOptions.Controls.Add(this.lblLoopInt);
             this.panRunOptions.Controls.Add(this.lblPlanetary);
             this.panRunOptions.Controls.Add(this.txtPlanetary);
+            this.panRunOptions.Controls.Add(this.numLoopInt);
             this.panRunOptions.Controls.Add(this.chkRouteStations);
             this.panRunOptions.Controls.Add(this.chkRouteNoPlanet);
             this.panRunOptions.Controls.Add(this.showJumpsCheckBox);
@@ -1738,7 +1765,7 @@
             this.panRunOptions.Controls.Add(this.commodityLabel);
             this.panRunOptions.Controls.Add(this.abovePriceBox);
             this.panRunOptions.Controls.Add(this.commodityComboBox);
-            this.panRunOptions.Controls.Add(this.loopCheckBox);
+            this.panRunOptions.Controls.Add(this.chkLoop);
             this.panRunOptions.Controls.Add(this.endJumpsBox);
             this.panRunOptions.Controls.Add(this.abovePriceLabel);
             this.panRunOptions.Controls.Add(this.startJumpsBox);
@@ -2045,7 +2072,7 @@
             // jumpsLabel
             // 
             this.jumpsLabel.AutoSize = true;
-            this.jumpsLabel.Location = new System.Drawing.Point(26, 30);
+            this.jumpsLabel.Location = new System.Drawing.Point(5, 30);
             this.jumpsLabel.Name = "jumpsLabel";
             this.jumpsLabel.Size = new System.Drawing.Size(40, 13);
             this.jumpsLabel.TabIndex = 31;
@@ -2054,7 +2081,7 @@
             // maxLSLabel
             // 
             this.maxLSLabel.AutoSize = true;
-            this.maxLSLabel.Location = new System.Drawing.Point(8, 7);
+            this.maxLSLabel.Location = new System.Drawing.Point(26, 53);
             this.maxLSLabel.Name = "maxLSLabel";
             this.maxLSLabel.Size = new System.Drawing.Size(46, 13);
             this.maxLSLabel.TabIndex = 10;
@@ -2063,7 +2090,7 @@
             // pruneHopsLabel
             // 
             this.pruneHopsLabel.AutoSize = true;
-            this.pruneHopsLabel.Location = new System.Drawing.Point(1, 52);
+            this.pruneHopsLabel.Location = new System.Drawing.Point(6, 30);
             this.pruneHopsLabel.Name = "pruneHopsLabel";
             this.pruneHopsLabel.Size = new System.Drawing.Size(66, 13);
             this.pruneHopsLabel.TabIndex = 15;
@@ -2081,7 +2108,7 @@
             // lsPenaltyLabel
             // 
             this.lsPenaltyLabel.AutoSize = true;
-            this.lsPenaltyLabel.Location = new System.Drawing.Point(1, 30);
+            this.lsPenaltyLabel.Location = new System.Drawing.Point(11, 76);
             this.lsPenaltyLabel.Name = "lsPenaltyLabel";
             this.lsPenaltyLabel.Size = new System.Drawing.Size(61, 13);
             this.lsPenaltyLabel.TabIndex = 8;
@@ -2201,11 +2228,9 @@
             this.panHops.Controls.Add(this.hopsLabel);
             this.panHops.Controls.Add(this.jumpsBox);
             this.panHops.Controls.Add(this.jumpsLabel);
-            this.panHops.Controls.Add(this.pruneHopsBox);
-            this.panHops.Controls.Add(this.pruneHopsLabel);
             this.panHops.Location = new System.Drawing.Point(715, 98);
             this.panHops.Name = "panHops";
-            this.panHops.Size = new System.Drawing.Size(111, 73);
+            this.panHops.Size = new System.Drawing.Size(92, 73);
             this.panHops.TabIndex = 2;
             // 
             // panProfit
@@ -2222,39 +2247,30 @@
             this.panProfit.Size = new System.Drawing.Size(128, 73);
             this.panProfit.TabIndex = 3;
             // 
-            // panDistance
-            // 
-            this.panDistance.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panDistance.Controls.Add(this.maxLSDistanceBox);
-            this.panDistance.Controls.Add(this.maxLSLabel);
-            this.panDistance.Controls.Add(this.lsPenaltyBox);
-            this.panDistance.Controls.Add(this.lsPenaltyLabel);
-            this.panDistance.Location = new System.Drawing.Point(430, 177);
-            this.panDistance.Name = "panDistance";
-            this.panDistance.Size = new System.Drawing.Size(145, 53);
-            this.panDistance.TabIndex = 4;
-            // 
             // panOther
             // 
             this.panOther.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panOther.Controls.Add(this.localNavCheckBox);
-            this.panOther.Controls.Add(this.loopIntLabel);
+            this.panOther.Controls.Add(this.maxLSDistanceBox);
+            this.panOther.Controls.Add(this.maxLSLabel);
             this.panOther.Controls.Add(this.pruneScoreBox);
-            this.panOther.Controls.Add(this.loopIntBox);
+            this.panOther.Controls.Add(this.lsPenaltyBox);
             this.panOther.Controls.Add(this.pruneScoreLabel);
-            this.panOther.Location = new System.Drawing.Point(832, 98);
+            this.panOther.Controls.Add(this.lsPenaltyLabel);
+            this.panOther.Controls.Add(this.pruneHopsBox);
+            this.panOther.Controls.Add(this.pruneHopsLabel);
+            this.panOther.Location = new System.Drawing.Point(813, 98);
             this.panOther.Name = "panOther";
-            this.panOther.Size = new System.Drawing.Size(126, 73);
+            this.panOther.Size = new System.Drawing.Size(145, 132);
             this.panOther.TabIndex = 5;
             // 
             // panMisc
             // 
             this.panMisc.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panMisc.Controls.Add(this.avoidBox);
-            this.panMisc.Controls.Add(this.avoidLabel);
-            this.panMisc.Controls.Add(this.viaBox);
-            this.panMisc.Controls.Add(this.viaLabel);
-            this.panMisc.Location = new System.Drawing.Point(581, 177);
+            this.panMisc.Controls.Add(this.txtAvoid);
+            this.panMisc.Controls.Add(this.lblAvoid);
+            this.panMisc.Controls.Add(this.txtVia);
+            this.panMisc.Controls.Add(this.lblVia);
+            this.panMisc.Location = new System.Drawing.Point(430, 177);
             this.panMisc.Name = "panMisc";
             this.panMisc.Size = new System.Drawing.Size(377, 53);
             this.panMisc.TabIndex = 1;
@@ -2262,6 +2278,7 @@
             // panMethod
             // 
             this.panMethod.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panMethod.Controls.Add(this.localNavCheckBox);
             this.panMethod.Controls.Add(this.stationDropDown);
             this.panMethod.Controls.Add(this.methodDropDown);
             this.panMethod.Location = new System.Drawing.Point(329, 98);
@@ -2281,33 +2298,6 @@
             this.panAgeCredits.Size = new System.Drawing.Size(175, 56);
             this.panAgeCredits.TabIndex = 1;
             // 
-            // numSupply
-            // 
-            this.numSupply.Location = new System.Drawing.Point(67, 3);
-            this.numSupply.Maximum = new decimal(new int[] {
-            9999999,
-            0,
-            0,
-            0});
-            this.numSupply.Name = "numSupply";
-            this.numSupply.Size = new System.Drawing.Size(71, 20);
-            this.numSupply.TabIndex = 58;
-            this.numSupply.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.numSupply.ThousandsSeparator = true;
-            this.toolTip1.SetToolTip(this.numSupply, "Limit to stations known to have at least this much supply");
-            this.numSupply.Visible = false;
-            // 
-            // lblSupply
-            // 
-            this.lblSupply.AutoSize = true;
-            this.lblSupply.Location = new System.Drawing.Point(15, 7);
-            this.lblSupply.Name = "lblSupply";
-            this.lblSupply.Size = new System.Drawing.Size(51, 13);
-            this.lblSupply.TabIndex = 59;
-            this.lblSupply.Text = "   Supply:";
-            this.toolTip1.SetToolTip(this.lblSupply, "Limit to stations known to have at least this much supply");
-            this.lblSupply.Visible = false;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2326,7 +2316,6 @@
             this.Controls.Add(this.panMethod);
             this.Controls.Add(this.panProfit);
             this.Controls.Add(this.panOther);
-            this.Controls.Add(this.panDistance);
             this.Controls.Add(this.panShipData);
             this.Controls.Add(this.btnSaveSettings);
             this.Controls.Add(this.btnCmdrProfile);
@@ -2377,9 +2366,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.updateNotifyIcon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numStock)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.minAgeUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.loopIntBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numLoopInt)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.demandBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numNearLy)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numSupply)).EndInit();
             this.panRunOptions.ResumeLayout(false);
             this.panRunOptions.PerformLayout();
             this.panLocalFilter.ResumeLayout(false);
@@ -2404,16 +2394,14 @@
             this.panHops.PerformLayout();
             this.panProfit.ResumeLayout(false);
             this.panProfit.PerformLayout();
-            this.panDistance.ResumeLayout(false);
-            this.panDistance.PerformLayout();
             this.panOther.ResumeLayout(false);
             this.panOther.PerformLayout();
             this.panMisc.ResumeLayout(false);
             this.panMisc.PerformLayout();
             this.panMethod.ResumeLayout(false);
+            this.panMethod.PerformLayout();
             this.panAgeCredits.ResumeLayout(false);
             this.panAgeCredits.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numSupply)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2432,7 +2420,7 @@
         private System.Windows.Forms.Label capacityLabel;
         private System.Windows.Forms.Label creditsLabel;
         private System.Windows.Forms.CheckBox towardsCheckBox;
-        private System.Windows.Forms.CheckBox loopCheckBox;
+        private System.Windows.Forms.CheckBox chkLoop;
         private System.Windows.Forms.ComboBox commodityComboBox;
         private System.Windows.Forms.Label commodityLabel;
         private System.Windows.Forms.ToolTip toolTip1;
@@ -2440,12 +2428,12 @@
         private System.Windows.Forms.Button updateButton;
         private System.Windows.Forms.CheckBox localNavCheckBox;
         private System.Windows.Forms.CheckBox bmktCheckBox;
-        private System.Windows.Forms.Label avoidLabel;
-        private System.Windows.Forms.TextBox avoidBox;
+        private System.Windows.Forms.Label lblAvoid;
+        private System.Windows.Forms.TextBox txtAvoid;
         private System.Windows.Forms.Label startJumpsLabel;
         private System.Windows.Forms.Label endJumpsLabel;
-        private System.Windows.Forms.TextBox viaBox;
-        private System.Windows.Forms.Label viaLabel;
+        private System.Windows.Forms.TextBox txtVia;
+        private System.Windows.Forms.Label lblVia;
         private System.Windows.Forms.ComboBox methodDropDown;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem cutMenuItem;
@@ -2544,8 +2532,8 @@
         private System.Windows.Forms.Label minAgeLabel;
         private System.Windows.Forms.NumericUpDown minAgeUpDown;
         private System.Windows.Forms.CheckBox oldRoutesCheckBox;
-        private System.Windows.Forms.Label loopIntLabel;
-        private System.Windows.Forms.NumericUpDown loopIntBox;
+        private System.Windows.Forms.Label lblLoopInt;
+        private System.Windows.Forms.NumericUpDown numLoopInt;
         private System.Windows.Forms.CheckBox shortenCheckBox;
         private System.Windows.Forms.ComboBox shipsSoldBox;
         private System.Windows.Forms.NumericUpDown demandBox;
@@ -2570,7 +2558,6 @@
         private System.Windows.Forms.Panel panShipData;
         private System.Windows.Forms.Button ResetFilterButton;
         private System.Windows.Forms.Panel panMisc;
-        private System.Windows.Forms.Panel panDistance;
         private System.Windows.Forms.Panel panOther;
         private System.Windows.Forms.Panel panHops;
         private System.Windows.Forms.Panel panProfit;
