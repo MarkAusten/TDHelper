@@ -223,6 +223,11 @@ namespace TDHelper
             // only run the delegate if we have a path
             if (!string.IsNullOrEmpty(path))
             {
+                Invoke(new Action(() =>
+                {
+                    DisableAllOptionPanels();
+                }));
+
                 try
                 {
                     procCode = -1; // reset the exit code
@@ -258,7 +263,7 @@ namespace TDHelper
                         StackCircularBuffer("\nCommand line: " + path + "\n");
                     }
 
-                    this.Invoke(new Action(() =>
+                    Invoke(new Action(() =>
                     {
                         if (buttonCaller != 5 && buttonCaller != 10 && buttonCaller != 11
                             && buttonCaller != 12 && buttonCaller != 13)
@@ -294,7 +299,9 @@ namespace TDHelper
                     try
                     {
                         if (td_proc.HasExited)
+                        {
                             procCode = td_proc.ExitCode; // save our exit code
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -306,10 +313,18 @@ namespace TDHelper
                 {
                     td_proc.Close();
                     td_proc.Dispose();
+
+                    Invoke(new Action(() =>
+                    {
+                        EnableAllOptionPanels();
+                        RefreshCurrentOptionsPanel();
+                    }));                    
                 }
             }
             else
+            {
                 buttonCaller = 20; // flag to play an error sound if we can't execute the command
+            }
 
             // catch a few outcomes
 
@@ -323,10 +338,12 @@ namespace TDHelper
             else if (buttonCaller == 11)
             {
                 if (procCode == 0) // exit code should be 0
+                {
                     StackCircularBuffer("\nZero'ing all commodities in the prices.last file, and saving to: " + settingsRef.TDPath + "\\updated.prices\nNOTE: This will -NOT- import/upload the changes, you must do so manually.");
+                }
             }
 
-            commandString = ""; // reset the path for thread safety
+            commandString = string.Empty; // reset the path for thread safety
         }
 
         private void GetDataUpdates()

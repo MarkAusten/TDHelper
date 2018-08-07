@@ -24,7 +24,7 @@ namespace TDHelper
 
         static public DialogResult Show(bool onTop, bool playAlert, string message, string title, MessageBoxButtons buttons)
         {
-            System.Drawing.Rectangle rect = SystemInformation.VirtualScreen;
+            Rectangle rect = SystemInformation.VirtualScreen;
 
             // Create a host form that is a TopMost window which will be the
             // parent of the MessageBox.
@@ -37,7 +37,7 @@ namespace TDHelper
                 ShowIcon = true,
                 Text = title,
                 StartPosition = FormStartPosition.Manual,
-                Location = new System.Drawing.Point(rect.Bottom + 10, rect.Right + 10),
+                Location = new Point(rect.Bottom + 10, rect.Right + 10),
             };
 
             topmostForm.Show();
@@ -57,7 +57,7 @@ namespace TDHelper
 
             if (playAlert)
             {
-                TDHelper.MainForm.PlayAlert(); // make noise to alert the user
+                MainForm.PlayAlert(); // make noise to alert the user
             }
 
             DialogResult result = MessageBox.Show(topmostForm, message, title, buttons);

@@ -63,6 +63,7 @@ namespace TDHelper
         private int methodFromIndex;
         private int methodIndex;
         private string notesFile = Path.GetDirectoryName(Application.ExecutablePath) + @"\saved_notes.txt";
+        private IList<Panel> optionPanels = new List<Panel>();
         private int procCode = -1;
         private string savedFile1 = Path.GetDirectoryName(Application.ExecutablePath) + @"\saved_1.txt";
         private string savedFile2 = Path.GetDirectoryName(Application.ExecutablePath) + @"\saved_2.txt";
@@ -93,7 +94,7 @@ namespace TDHelper
             // Build variables from config
             BuildSettings();
 
-            SplashScreen.SetStatus("Reaading configuration...");
+            SplashScreen.SetStatus("Reading configuration...");
             // Copy the setting to the form controls
             CopySettingsFromConfig();
 
@@ -108,8 +109,16 @@ namespace TDHelper
             testSystemsTimer.Elapsed += this.TestSystemsTimer_Delegate;
 
             this.btnCmdrProfile.Enabled = ValidateEdce();
+
+            SetOptionPanelList();
+            ShowOrHideOptionsPanel(0);
         }
 
+        /// <summary>
+        /// Add the avoid option.
+        /// </summary>
+        /// <param name="toAvoid">The option to populate the avoid parameter.</param>
+        /// <returns>The avoid parameter.</returns>
         private string AddAvoidOption(string toAvoid)
         {
             return string.IsNullOrEmpty(toAvoid)
@@ -117,9 +126,15 @@ namespace TDHelper
                 : " --avoid=\"{0}\"".With(toAvoid);
         }
 
+        /// <summary>
+        /// Add a checked option.
+        /// </summary>
+        /// <param name="toAdd">True to add the parameter.</param>
+        /// <param name="option">The parameter to add.</param>
+        /// <returns>The parameter or a blank string.</returns>
         private string AddCheckedOption(
-                            bool toAdd,
-                    string option)
+            bool toAdd,
+            string option)
         {
             return toAdd
                 ? " {0}".With(option)
@@ -127,10 +142,10 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Add the limit modifiers if required.
+        /// Add the limit parameter if required.
         /// </summary>
         /// <param name="limit">The settings value.</param>
-        /// <returns>the planetary modifiers.</returns>
+        /// <returns>The limit parameter.</returns>
         private string AddLimitOption(decimal limit)
         {
             return limit > 0
@@ -138,6 +153,11 @@ namespace TDHelper
                 : " --lim={0}".With(limit);
         }
 
+        /// <summary>
+        /// Add the near parameter if required.
+        /// </summary>
+        /// <param name="system">The near system to add.</param>
+        /// <returns>The near parameter.</returns>
         private string AddNear(string system)
         {
             return string.IsNullOrEmpty(system)
@@ -145,9 +165,15 @@ namespace TDHelper
                 : " --near=\"{0}\"".With(system);
         }
 
+        /// <summary>
+        /// Add a numeric parameter.
+        /// </summary>
+        /// <param name="value">The value of the parameter.</param>
+        /// <param name="option">The parameter option.</param>
+        /// <returns>The parameter string.</returns>
         private string AddNumericOption(
-                    decimal value,
-                    string option)
+            decimal value,
+            string option)
         {
             return value == 0
                 ? string.Empty
@@ -178,13 +204,24 @@ namespace TDHelper
                 : " --planetary={0}".With(planetary);
         }
 
-        private string AddQuotedOption(string system)
+        /// <summary>
+        /// Add a quoted parameter.
+        /// </summary>
+        /// <param name="value">The value to be added in quotes.</param>
+        /// <returns>The quoted parameter.</returns>
+        private string AddQuotedOption(string value)
         {
-            return string.IsNullOrEmpty(system)
+            return string.IsNullOrEmpty(value)
                 ? string.Empty
-                : " \"{0}\"".With(system);
+                : " \"{0}\"".With(value);
         }
 
+        /// <summary>
+        /// Add a text parameter.
+        /// </summary>
+        /// <param name="value">the value to be added.</param>
+        /// <param name="option">The parameter option.</param>
+        /// <returns>The parameter string.</returns>
         private string AddTextOption(
             string value,
             string option)
@@ -194,19 +231,15 @@ namespace TDHelper
                 : " {0}={1}".With(option, value);
         }
 
+        /// <summary>
+        /// Add the verbosity parameter.
+        /// </summary>
+        /// <returns>The parameter string.</returns>
         private string AddVerbosity()
         {
             return settingsRef.Verbosity == 0
                 ? string.Empty
                 : " {0}".With(t_outputVerbosity);
-        }
-
-        private void AltConfigBox_DropDown(object sender, EventArgs e)
-        {
-            // refresh our index
-            //validConfigs = parseValidConfigs();
-            //altConfigBox.DataSource = null;
-            //altConfigBox.DataSource = validConfigs[1];
         }
 
         private void AltConfigBox_SelectionChangeCommitted(object sender, EventArgs e)
@@ -215,12 +248,13 @@ namespace TDHelper
             SetShipList();
         }
 
+        /// <summary>
+        /// This worker delegate updates the commodities and recent systems lists
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            /*
-             * This worker delegate updates the commodities and recent systems lists
-             */
-
             // let the refresh methods decide what to refresh
             this.Invoke(new Action(() =>
             {
@@ -230,7 +264,7 @@ namespace TDHelper
 
         private void BackgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            EnablebtnStarts();
+            EnableBtnStarts();
 
             // we were called by getSystemButton
             if (buttonCaller == 2 && output_unclean.Count > 0)
@@ -248,13 +282,14 @@ namespace TDHelper
             buttonCaller = 0; // reset caller semaphore
         }
 
+        /// <summary>
+        /// This worker delegate is the main work horse for the application.
+        /// it controls the logic for all the primary commands.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void BackgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
         {
-            /*
-             * This worker delegate is the main work horse for the application--
-             * it controls the logic for all the primary commands.
-             */
-
             switch (methodIndex)
             {
                 // Station command
@@ -355,7 +390,7 @@ namespace TDHelper
                 }
 
                 // reenable after uncancellable task is done
-                EnablebtnStarts();
+                EnableBtnStarts();
                 btnStart.Font = new Font(btnStart.Font, FontStyle.Bold);
                 btnStart.Text = "Start";
 
@@ -444,7 +479,7 @@ namespace TDHelper
                 stopwatch.Stop(); // stop the timer
                 circularBuffer = new System.Text.StringBuilder(2 * circularBufferSize);
 
-                EnablebtnStarts();
+                EnableBtnStarts();
                 td_proc.Dispose();
 
                 // we have to update the comboboxes now
@@ -590,7 +625,7 @@ namespace TDHelper
                 circularBuffer = new System.Text.StringBuilder(2 * circularBufferSize);
 
                 btnStart.Text = "Start";
-                EnablebtnStarts();
+                EnableBtnStarts();
                 td_proc.Dispose();
 
                 // make a sound when we're done with a long operation (>10s)
@@ -784,8 +819,11 @@ namespace TDHelper
             if (!string.IsNullOrEmpty(rtbSaved1.Text))
             {
                 rtbSaved1.Text = string.Empty;
+
                 if (File.Exists(savedFile1))
+                {
                     File.Delete(savedFile1);
+                }
             }
         }
 
@@ -794,8 +832,11 @@ namespace TDHelper
             if (!string.IsNullOrEmpty(rtbSaved2.Text))
             {
                 rtbSaved2.Text = string.Empty;
+
                 if (File.Exists(savedFile2))
+                {
                     File.Delete(savedFile2);
+                }
             }
         }
 
@@ -804,8 +845,11 @@ namespace TDHelper
             if (!string.IsNullOrEmpty(rtbSaved3.Text))
             {
                 rtbSaved3.Text = string.Empty;
+
                 if (File.Exists(savedFile3))
+                {
                     File.Delete(savedFile3);
+                }
             }
         }
 
@@ -959,10 +1003,6 @@ namespace TDHelper
                 ? settingsRef.Limit
                 : numRouteOptionsLimit.Minimum;
 
-            //abovePriceBox.Value = settingsRef.AbovePrice > abovePriceBox.Minimum && settingsRef.AbovePrice <= abovePriceBox.Maximum
-            //    ? settingsRef.AbovePrice
-            //    : abovePriceBox.Minimum;
-
             numRunOptionsRoutes.Value = settingsRef.BelowPrice > numRunOptionsRoutes.Minimum && settingsRef.BelowPrice <= numRunOptionsRoutes.Maximum
                 ? settingsRef.BelowPrice
                 : numRunOptionsRoutes.Minimum;
@@ -1040,18 +1080,6 @@ namespace TDHelper
             // make sure we strip the excess whitespace in src/dest
             temp_src = RemoveExtraWhitespace(cboSourceSystem.Text);
             temp_dest = RemoveExtraWhitespace(cboRunOptionsDestination.Text);
-
-            //            temp_commod = commodityComboBox.Text;
-
-            // make sure we don't pass the "Ship's Sold" box if its still unchanged
-            //if (cboShipsSold.Text.Equals(outputStationShips.ToString(), StringComparison.OrdinalIgnoreCase))
-            //{
-            //    temp_shipsSold = string.Empty;
-            //}
-            //else
-            //{
-            //    temp_shipsSold = cboShipsSold.Text;
-            //}
 
             if (methodIndex == 3)
             {
@@ -1170,17 +1198,6 @@ namespace TDHelper
                 numRouteOptionsStock.Text = settingsRef.Stock.ToString();
             }
 
-            //if (decimal.TryParse(numSupply.Text, out decimal t_Supply))
-            //{
-            //    numSupply.Text = t_Supply.ToString();
-            //    settingsRef.Supply = t_Supply;
-            //}
-            //else
-            //{
-            //    settingsRef.Supply = numSupply.Minimum;
-            //    numSupply.Text = settingsRef.Supply.ToString();
-            //}
-
             if (decimal.TryParse(numRouteOptionsDemand.Text, out decimal t_Demand))
             {
                 numRouteOptionsDemand.Text = t_Demand.ToString();
@@ -1274,17 +1291,6 @@ namespace TDHelper
                 numRunOptionsStartJumps.Text = t_StartJumps.ToString();
             }
 
-            //if (decimal.TryParse(abovePriceBox.Text, out decimal t_abovePrice))
-            //{
-            //    abovePriceBox.Text = t_abovePrice.ToString();
-            //    settingsRef.AbovePrice = t_abovePrice;
-            //}
-            //else
-            //{
-            //    settingsRef.AbovePrice = abovePriceBox.Minimum;
-            //    abovePriceBox.Text = settingsRef.AbovePrice.ToString();
-            //}
-
             if (decimal.TryParse(numRunOptionsRoutes.Text, out t_belowPrice))
             {
                 numRunOptionsRoutes.Text = t_belowPrice.ToString();
@@ -1296,34 +1302,21 @@ namespace TDHelper
                 numRunOptionsRoutes.Text = settingsRef.BelowPrice.ToString();
             }
 
-            //if (decimal.TryParse(numMinAge.Text, out decimal t_MinAge))
-            //{
-            //    numMinAge.Text = t_MinAge.ToString();
-            //}
-            //else
-            //{
-            //    numMinAge.Text = numMinAge.Minimum.ToString();
-            //}
+            if (decimal.TryParse(numRouteOptionsAge.Text, out decimal t_MinAge))
+            {
+                numRouteOptionsAge.Text = t_MinAge.ToString();
+            }
+            else
+            {
+                numRouteOptionsAge.Text = numRouteOptionsAge.Minimum.ToString();
+            }
 
             settingsRef.Loop = chkRunOptionsLoop.Checked;
             settingsRef.Towards = chkRunOptionsTowards.Checked;
             settingsRef.Unique = chkRunOptionsUnique.Checked;
             settingsRef.ShowJumps = chkRunOptionsJumps.Checked;
-            //            settingsRef.RouteStations = chkRouteStations.Checked;
 
             settingsRef.Planetary = txtRunOptionsPlanetary.Text;
-
-            //            stationsFilterChecked = stationsFilterCheckBox.Checked;
-            //            oldDataRouteChecked = chkOldRoutes.Checked;
-
-            // convert the local checkstates to ints as well
-            //blackmarketBoxChecked = GetCheckBoxCheckState(bmktFilterCheckBox.CheckState);
-            //shipyardBoxChecked = GetCheckBoxCheckState(shipyardFilterCheckBox.CheckState);
-            //marketBoxChecked = GetCheckBoxCheckState(itemsFilterCheckBox.CheckState);
-            //repairBoxChecked = GetCheckBoxCheckState(repairFilterCheckBox.CheckState);
-            //rearmBoxChecked = GetCheckBoxCheckState(rearmFilterCheckBox.CheckState);
-            //refuelBoxChecked = GetCheckBoxCheckState(refuelFilterCheckBox.CheckState);
-            //outfitBoxChecked = GetCheckBoxCheckState(outfitFilterCheckBox.CheckState);
 
             //
             // exceptions
@@ -1514,11 +1507,18 @@ namespace TDHelper
 
         private void DisablebtnStarts()
         {
+            DisableAllOptionPanels();
+
             // disable buttons during uncancellable operation
             btnDbUpdate.Enabled = false;
             btnCmdrProfile.Enabled = false;
             btnGetSystem.Enabled = false;
             btnMiniMode.Enabled = false;
+            btnSettings.Enabled = false;
+            btnSaveSettings.Enabled = false;
+            cboSourceSystem.Enabled = false;
+            lblSourceSystem.Enabled = false;
+            cboMethod.Enabled = false;
 
             // an exception for Run commands
             if (buttonCaller != 1)
@@ -1551,18 +1551,51 @@ namespace TDHelper
             }
         }
 
-        private void EnablebtnStarts()
+        private void EnableBtnStarts()
         {
-            // reenable other worker callers when done
+            //ShowOrHideOptionsPanel(methodFromIndex);
+
+            // reenable other controls when done
             btnDbUpdate.Enabled = true;
             btnCmdrProfile.Enabled = ValidateEdce();
             btnGetSystem.Enabled = true;
+            btnSettings.Enabled = true;
+            btnSaveSettings.Enabled = true;
+            cboSourceSystem.Enabled = true;
+            lblSourceSystem.Enabled = true;
+            cboMethod.Enabled = true;
 
             // fix Run button when returning from non-Run commands
             if (buttonCaller == 1 || !btnStart.Enabled)
             {
                 btnStart.Enabled = true;
             }
+        }
+
+        /// <summary>
+        /// Disable all the option panels.
+        /// </summary>
+        private void DisableAllOptionPanels()
+        {
+            foreach (Panel panel in optionPanels)
+            {
+                panel.Enabled = false;
+            }
+
+            panRouteOptions.Enabled = false;
+        }
+
+        /// <summary>
+        /// Disable all the option panels.
+        /// </summary>
+        private void EnableAllOptionPanels()
+        {
+            foreach (Panel panel in optionPanels)
+            {
+                panel.Enabled = true;
+            }
+
+            panRouteOptions.Enabled = true;
         }
 
         /// <summary>
@@ -1579,7 +1612,7 @@ namespace TDHelper
 
         private void FaqLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/MarkAusten/TDHelper/wiki/Home");
+            Process.Start("https://github.com/MarkAusten/TDHelper/wiki/Home");
         }
 
         private void ForceRefreshGridView_Click(object sender, EventArgs e)
@@ -1655,22 +1688,22 @@ namespace TDHelper
             return cmdPath;
         }
 
-        private int GetCheckBoxCheckState(CheckState checkState)
+        /// <summary>
+        /// Show/enable or hide/disable the panel specified by the index.
+        /// </summary>
+        /// <param name="optionsIndex">The index of the required panel.</param>
+        private Panel GetCurrentOptionsPanel(int optionsIndex)
         {
-            switch (checkState)
+            Panel panel = null;
+
+            if (optionPanels.Count > 0 &&
+                optionsIndex >= 0 && 
+                optionsIndex < optionPanels.Count)
             {
-                case CheckState.Unchecked:
-                    return 0;
-
-                case CheckState.Checked:
-                    return 1;
-
-                case CheckState.Indeterminate:
-                    return 2;
-
-                default:
-                    throw new ArgumentException("Can't get the checkState from the checkBox: " + checkState.ToString());
+                panel = optionPanels[optionsIndex];
             }
+
+            return panel;
         }
 
         /// <summary>
@@ -1701,24 +1734,6 @@ namespace TDHelper
 
                 cmdPath += AddVerbosity();
 
-                cmdPath += AddQuotedOption(sourceSystem);
-            }
-
-            return cmdPath;
-        }
-
-        /// <summary>
-        /// Get the station command string.
-        /// </summary>
-        /// <param name="sourceSystem">The name of the source system.</param>
-        /// <returns>A correctly formatted command string.</returns>
-        private string GetStationCommand(string sourceSystem)
-        {
-            string cmdPath = string.Empty;
-
-            if (!string.IsNullOrEmpty(sourceSystem))
-            {
-                cmdPath += "station -v";
                 cmdPath += AddQuotedOption(sourceSystem);
             }
 
@@ -1845,21 +1860,21 @@ namespace TDHelper
 
                 RadioButton option = grpRaresOptionsType.Controls.OfType<RadioButton>().FirstOrDefault(x => x.Checked);
 
-                if (option != null && 
-                    option.Text!= "All")
+                if (option != null &&
+                    option.Text != "All")
                 {
                     cmdPath += " --{0}".With(option.Text);
                 }
 
                 option = grpRaresOptionsSort.Controls.OfType<RadioButton>().FirstOrDefault(x => x.Checked);
 
-                if (option != null && 
+                if (option != null &&
                     option.Text == "Price")
                 {
                     cmdPath += " --P";
                 }
 
-                if (!string.IsNullOrEmpty(txtRaresOptionsFrom.Text) && 
+                if (!string.IsNullOrEmpty(txtRaresOptionsFrom.Text) &&
                     numRaresOptionsAway.Value > 0)
                 {
                     cmdPath += AddNumericOption(numRaresOptionsAway.Value, "--away");
@@ -1962,6 +1977,34 @@ namespace TDHelper
         }
 
         /// <summary>
+        /// Set up the selected commodity data.
+        /// </summary>
+        private void GetSelectedCommodity()
+        {
+            string commodity = string.Empty;
+
+            switch (methodFromIndex)
+            {
+                case 1: // Buy
+                    commodity = cboBuyOptionsCommodities.Text;
+                    break;
+
+                case 2: // Sell
+                    commodity = cboSellOptionsCommodities.Text;
+                    break;
+
+                default:
+                    SelectedCommodity = string.Empty;
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(commodity))
+            {
+                SelectedCommodity = RemoveExtraWhitespace(commodity);
+            }
+        }
+
+        /// <summary>
         /// Get the sell command string.
         /// </summary>
         /// <param name="selectedCommodity">The name of the selected commodity.</param>
@@ -2016,15 +2059,6 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Set up the correct source and targeet system and selected commodity data.
-        /// </summary>
-        private void GetSourceTargetAndCommodity()
-        {
-            GetSourceAndDestinationSystems();
-            GetSelectedCommodity();
-        }
-
-         /// <summary>
         /// Set up the correct source and targeet system.
         /// </summary>
         private void GetSourceAndDestinationSystems()
@@ -2058,34 +2092,33 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Set up the selected commodity data.
+        /// Set up the correct source and targeet system and selected commodity data.
         /// </summary>
-        private void GetSelectedCommodity()
+        private void GetSourceTargetAndCommodity()
         {
-            string commodity = string.Empty;
-
-            switch (methodFromIndex)
-            {
-                case 1: // Buy
-                    commodity = cboBuyOptionsCommodities.Text;
-                    break;
-
-                case 2: // Sell
-                    commodity = cboSellOptionsCommodities.Text;
-                    break;
-
-                default:
-                    SelectedCommodity = string.Empty;
-                    break;
-            }
-
-            if (!string.IsNullOrEmpty(commodity))
-            {
-                SelectedCommodity = RemoveExtraWhitespace(commodity);
-            }
+            GetSourceAndDestinationSystems();
+            GetSelectedCommodity();
         }
 
-       private void GetSystemButton_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Get the station command string.
+        /// </summary>
+        /// <param name="sourceSystem">The name of the source system.</param>
+        /// <returns>A correctly formatted command string.</returns>
+        private string GetStationCommand(string sourceSystem)
+        {
+            string cmdPath = string.Empty;
+
+            if (!string.IsNullOrEmpty(sourceSystem))
+            {
+                cmdPath += "station -v";
+                cmdPath += AddQuotedOption(sourceSystem);
+            }
+
+            return cmdPath;
+        }
+
+        private void GetSystemButton_Click(object sender, EventArgs e)
         {
             buttonCaller = 2;
 
@@ -2130,18 +2163,12 @@ namespace TDHelper
 
         private void HideAllOptionPanels()
         {
-            bool show = false;
-            ShowOptions(panRunOptions, show);
-            EnableOptions(panRouteOptions, show);
-            ShowOptions(panBuyOptions, show);
-            ShowOptions(panSellOptions, show);
-            ShowOptions(panRaresOptions, show);
-            ShowOptions(panTradeOptions, show);
-            ShowOptions(panMarketOptions, show);
-            ShowOptions(panShipVendorOptions, show);
-            ShowOptions(panNavOptions, show);
-            ShowOptions(panOldDataOptions, show);
-            ShowOptions(panLocalOptions, show);
+            foreach (Panel panel in optionPanels)
+            {
+                ShowOptions(panel, false);
+            }
+
+            EnableOptions(panRouteOptions, false);
         }
 
         private void InsertAtGridRow_Click(object sender, EventArgs e)
@@ -2151,6 +2178,7 @@ namespace TDHelper
                 // add a row with the timestamp of the selected row
                 // basically an insert-below-index when we use select(*)
                 string timestamp = grdPilotsLog.Rows[dRowIndex].Cells["Timestamp"].Value.ToString();
+
                 AddAtTimestampDBRow(tdhDBConn, GenerateRecentTimestamp(timestamp));
                 InvalidatedRowUpdate(true, -1);
             }
@@ -2196,7 +2224,7 @@ namespace TDHelper
             int[] winSize = LoadWinSize(settingsRef.SizeParent);
 
             // restore window size from config
-            if (winSize.Length != 0 && 
+            if (winSize.Length != 0 &&
                 winSize != null)
             {
                 this.Size = new Size(winSize[0], winSize[1]);
@@ -2304,9 +2332,8 @@ namespace TDHelper
         {
             SuspendLayout();
 
-            // Firstly hide/disable the currently enabled options panel.
+            // Firstly hide all the options panel.
             HideAllOptionPanels();
-            // ShowOrHideOptionsPanel(methodFromIndex, false);
 
             // Now show/enable the required options panel.
             ShowOrHideOptionsPanel(methodIndex);
@@ -2323,6 +2350,7 @@ namespace TDHelper
 
             // populate the treeview from the last valid run output
             ParseRunOutput(tv_outputBox, childForm.TreeViewBox);
+
             childForm.Text = t_childTitle; // set our profit estimate
 
             // show our minimode
@@ -2447,7 +2475,9 @@ namespace TDHelper
             clickedControl.Paste();
         }
 
-        private void PilotsLogDataGrid_CellContextMenuStripNeeded(object sender, DataGridViewCellContextMenuStripNeededEventArgs e)
+        private void PilotsLogDataGrid_CellContextMenuStripNeeded(
+            object sender, 
+            DataGridViewCellContextMenuStripNeededEventArgs e)
         {
             // prevent OOR exception
             if (e.RowIndex == -1 || e.ColumnIndex == -1)
@@ -2465,7 +2495,9 @@ namespace TDHelper
             }
         }
 
-        private void PilotsLogDataGrid_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
+        private void PilotsLogDataGrid_CellValueNeeded(
+            object sender, 
+            DataGridViewCellValueEventArgs e)
         {
             if (e.RowIndex < retriever.RowCount && e.ColumnIndex < retriever.RowCount)
             {
@@ -2473,7 +2505,9 @@ namespace TDHelper
             }
         }
 
-        private void PilotsLogDataGrid_CellValuePushed(object sender, DataGridViewCellValueEventArgs e)
+        private void PilotsLogDataGrid_CellValuePushed(
+            object sender, 
+            DataGridViewCellValueEventArgs e)
         {
             if (e.RowIndex < retriever.RowCount && e.ColumnIndex < retriever.RowCount)
             {
@@ -2487,7 +2521,9 @@ namespace TDHelper
             }
         }
 
-        private void PilotsLogDataGrid_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        private void PilotsLogDataGrid_UserDeletingRow(
+            object sender, 
+            DataGridViewRowCancelEventArgs e)
         {
             if (e.Row.Index < retriever.RowCount && e.Row.Index >= 0
                 && grdPilotsLog.SelectedRows.Count > 0)
@@ -2539,7 +2575,9 @@ namespace TDHelper
         /// </summary>
         /// <param name="sender">The text box.</param>
         /// <param name="e">The current key press.</param>
-        private void Planetary_KeyPress(object sender, KeyPressEventArgs e)
+        private void Planetary_KeyPress(
+            object sender, 
+            KeyPressEventArgs e)
         {
             TextBox planetary = ((TextBox)sender);
 
@@ -2564,7 +2602,9 @@ namespace TDHelper
             e.Handled = true;
         }
 
-        private void ProcErrorDataHandler(object sender, DataReceivedEventArgs output)
+        private void ProcErrorDataHandler(
+            object sender, 
+            DataReceivedEventArgs output)
         {
             if (output.Data != null)
             {
@@ -2572,7 +2612,9 @@ namespace TDHelper
             }
         }
 
-        private void ProcOutputDataHandler(object sender, DataReceivedEventArgs output)
+        private void ProcOutputDataHandler(
+            object sender, 
+            DataReceivedEventArgs output)
         {
             string[] exceptions = new string[] { "NOTE:", "####" };
             string filteredOutput = string.Empty;
@@ -2628,19 +2670,19 @@ namespace TDHelper
                 {
                     if (methodIndex == 1)
                     {
-                        //stream.WriteLine("Buy " + commodityComboBox.Text.ToString()
-                        //    + " (near "
-                        //    + srcSystemComboBox.Text.ToString()
-                        //    + "):\n"
-                        //    + Clipboard.GetData(DataFormats.Text).ToString());
+                        stream.WriteLine("Buy " + cboBuyOptionsCommodities.Text.ToString()
+                            + " (near "
+                            + cboSourceSystem.Text.ToString()
+                            + "):\n"
+                            + Clipboard.GetData(DataFormats.Text).ToString());
                     }
                     else if (methodIndex == 2)
                     {
-                        //stream.WriteLine("Sell " + commodityComboBox.Text.ToString()
-                        //    + " (near "
-                        //    + srcSystemComboBox.Text.ToString()
-                        //    + "):\n"
-                        //    + Clipboard.GetData(DataFormats.Text).ToString());
+                        stream.WriteLine("Sell " + cboSellOptionsCommodities.Text.ToString()
+                            + " (near "
+                            + cboSourceSystem.Text.ToString()
+                            + "):\n"
+                            + Clipboard.GetData(DataFormats.Text).ToString());
                     }
                     else
                     {
@@ -2655,59 +2697,15 @@ namespace TDHelper
         /// </summary>
         private void RefreshCurrentOptionsPanel()
         {
-            Panel panel = null;
-
-            switch (methodFromIndex)
-            {
-                case 0: // Run
-                    panel = panRunOptions;
-                    break;
-
-                case 1: // Buy
-                    panel = panBuyOptions;
-                    break;
-
-                case 2: // Sell
-                    panel = panSellOptions;
-                    break;
-
-                case 3: // Rares
-                    panel = panRaresOptions;
-                    break;
-
-                case 4: // Trade
-                    panel = panTradeOptions;
-                    break;
-
-                case 5: // Market
-                    panel = panMarketOptions;
-                    break;
-
-                case 6: // Ship vendor
-                    panel = panShipVendorOptions;
-                    break;
-
-                case 7: // Navigation
-                    panel = panNavOptions;
-                    break;
-
-                case 8: // Old data
-                    panel = panOldDataOptions;
-                    break;
-
-                case 9: // Local
-                    panel = panLocalOptions;
-                    break;
-
-                default:
-                    // Do nothing.
-                    break;
-            }
+            Panel panel = GetCurrentOptionsPanel(methodFromIndex);
 
             if (panel != null)
             {
                 OptionsPanelRefresh(panel);
+                ShowOptions(panel);
             }
+
+            EnableOptions(panRouteOptions, methodFromIndex == 0);
         }
 
         private void RemoveAtGridRow_Click(object sender, EventArgs e)
@@ -2721,7 +2719,25 @@ namespace TDHelper
             }
         }
 
-        private void ResetLocalFilters(object sender, EventArgs e)
+        /// <summary>
+        /// Remove the station from the supplied string. If only the system is passed then
+        /// remove that.
+        /// </summary>
+        /// <param name="filteredString">The string upon which to filter.</param>
+        /// <returns>The filtered string.</returns>
+        private string RemoveSystemOrStation(string filteredString)
+        {
+            string[] tokens = filteredString.Split(new string[] { "/" }, StringSplitOptions.None);
+
+            return tokens != null && tokens.Length == 2
+                ? tokens[0]
+                : string.Empty;
+        }
+
+        /// <summary>
+        /// Reset the local filters.
+        /// </summary>
+        private void ResetAllLocalFilters()
         {
             foreach (CheckBox control in panLocalOptions.Controls.OfType<CheckBox>())
             {
@@ -2732,8 +2748,14 @@ namespace TDHelper
             btnLocalOptionsReset.Enabled = false;
         }
 
-        private void RunMethodResetState()
+        /// <summary>
+        /// Reset the local filters.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void ResetLocalFilters(object sender, EventArgs e)
         {
+            ResetAllLocalFilters();
         }
 
         private void SavePage1MenuItem_Click(object sender, EventArgs e)
@@ -2781,6 +2803,20 @@ namespace TDHelper
         }
 
         /// <summary>
+        /// Set the local filters.
+        /// </summary>
+        private void SetAllLocalFilters()
+        {
+            foreach (CheckBox control in panLocalOptions.Controls.OfType<CheckBox>())
+            {
+                control.Checked = true;
+            }
+
+            btnLocalOptionsAll.Enabled = false;
+            btnLocalOptionsReset.Enabled = true;
+        }
+
+        /// <summary>
         /// See if the specified panel has a ships combo box and set it.
         /// </summary>
         /// <param name="panel">The panel to be checked.</param>
@@ -2803,7 +2839,7 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// The the value of the specified control to the correct vale.
+        /// The the value of the specified control to blank.
         /// </summary>
         /// <param name="control">The control to be set.</param>
         /// <param name="requiredSource">The key to the source value.</param>
@@ -2811,7 +2847,6 @@ namespace TDHelper
             ComboBox control,
             string requiredSource)
         {
-            // Determine the corect source control.
             string source = string.Empty;
 
             switch (requiredSource)
@@ -2830,7 +2865,7 @@ namespace TDHelper
         /// <param name="panel">The panel to be checked.</param>
         private void SetCommodities(Panel panel)
         {
-            // See if this options panel has a pad sizes text box.
+            // See if this options panel has a commodity combo box.
             ComboBox commodities = panel.Controls.OfType<ComboBox>()
                 .FirstOrDefault(x => x.Name.Contains("Commodities"));
 
@@ -2839,14 +2874,14 @@ namespace TDHelper
                 // Detach and reattach the destinations data source.
                 commodities.DataSource = null;
 
-                switch (panel.Name)
+                switch (methodFromIndex)
                 {
-                    case "panBuyOptions":
+                    case 1:
                         // All commodities & ships
                         commodities.DataSource = outputItems;
                         break;
 
-                    case "panSellOptions":
+                    case 2:
                         // Just commodities.
                         commodities.DataSource = CommoditiesList;
                         break;
@@ -2855,7 +2890,7 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// The the value of the specified control to the correct vale.
+        /// The the value of the specified control to the correct value.
         /// </summary>
         /// <param name="control">The control to be set.</param>
         /// <param name="requiredSource">The key to the source value.</param>
@@ -2894,7 +2929,7 @@ namespace TDHelper
         /// <param name="panel">The panel to be checked.</param>
         private void SetDestinations(Panel panel)
         {
-            // See if this options panel has a pad sizes text box.
+            // See if this options panel has a destination combobox.
             ComboBox destinations = panel.Controls.OfType<ComboBox>()
                 .FirstOrDefault(x => x.Name.Contains("Destination"));
 
@@ -2909,15 +2944,31 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Set the local filters.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void SetLocalFilters(object sender, EventArgs e)
         {
-            foreach (CheckBox control in panLocalOptions.Controls.OfType<CheckBox>())
-            {
-                control.Checked = true;
-            }
+            SetAllLocalFilters();
+        }
 
-            btnLocalOptionsAll.Enabled = false;
-            btnLocalOptionsReset.Enabled = true;
+        /// <summary>
+        /// Set up the option panels list.
+        /// </summary>
+        private void SetOptionPanelList()
+        {
+            optionPanels.Add(panRunOptions);
+            optionPanels.Add(panBuyOptions);
+            optionPanels.Add(panSellOptions);
+            optionPanels.Add(panRaresOptions);
+            optionPanels.Add(panTradeOptions);
+            optionPanels.Add(panMarketOptions);
+            optionPanels.Add(panShipVendorOptions);
+            optionPanels.Add(panNavOptions);
+            optionPanels.Add(panOldDataOptions);
+            optionPanels.Add(panLocalOptions);
         }
 
         /// <summary>
@@ -3069,52 +3120,16 @@ namespace TDHelper
             int optionsIndex,
             bool show = true)
         {
-            switch (optionsIndex)
+            Panel panel = GetCurrentOptionsPanel(optionsIndex);
+
+            if (panel != null)
             {
-                case 0: // Run
-                    ShowOptions(panRunOptions, show);
+                ShowOptions(panel, show);
+
+                if (optionsIndex == 0)
+                {
                     EnableOptions(panRouteOptions, show);
-                    break;
-
-                case 1: // Buy
-                    ShowOptions(panBuyOptions, show);
-                    break;
-
-                case 2: // Sell
-                    ShowOptions(panSellOptions, show);
-                    break;
-
-                case 3: // Rares
-                    ShowOptions(panRaresOptions, show);
-                    break;
-
-                case 4: // Trade
-                    ShowOptions(panTradeOptions, show);
-                    break;
-
-                case 5: // Market
-                    ShowOptions(panMarketOptions, show);
-                    break;
-
-                case 6: // Ship vendor
-                    ShowOptions(panShipVendorOptions, show);
-                    break;
-
-                case 7: // Navigation
-                    ShowOptions(panNavOptions, show);
-                    break;
-
-                case 8: // Old data
-                    ShowOptions(panOldDataOptions, show);
-                    break;
-
-                case 9: // Local
-                    ShowOptions(panLocalOptions, show);
-                    break;
-
-                default:
-                    // Do nothing.
-                    break;
+                }
             }
         }
 
@@ -3156,21 +3171,6 @@ namespace TDHelper
                     e.Handled = true;
                 }
             }
-        }
-
-        /// <summary>
-        /// Remove the station from the supplied string. If only the system is passed then
-        /// remove that.
-        /// </summary>
-        /// <param name="filteredString">The string upon which to filter.</param>
-        /// <returns>The filtered string.</returns>
-        private string RemoveSystemOrStation(string filteredString)
-        {
-            string[] tokens = filteredString.Split(new string[] { "/" }, StringSplitOptions.None);
-
-            return tokens != null && tokens.Length == 2
-                ? tokens[0]
-                : string.Empty;
         }
 
         private void SrcSystemComboBox_TextChanged(object sender, EventArgs e)

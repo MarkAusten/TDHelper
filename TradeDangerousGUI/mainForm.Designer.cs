@@ -1353,7 +1353,6 @@
             this.cboCommandersShips.TabIndex = 56;
             this.cboCommandersShips.TabStop = false;
             this.tipToolTips.SetToolTip(this.cboCommandersShips, "Select a ship");
-            this.cboCommandersShips.DropDown += new System.EventHandler(this.AltConfigBox_DropDown);
             this.cboCommandersShips.SelectionChangeCommitted += new System.EventHandler(this.AltConfigBox_SelectionChangeCommitted);
             // 
             // icoUpdateNotify
