@@ -206,40 +206,27 @@ namespace TDHelper
 
                         this.Invoke(new Action(() =>
                         {
+                            SetSourceAndDestinationLists(true);
                             // bind the recent systems/stations first
-                            srcSystemComboBox.Items.Clear();
-                            srcSystemComboBox.Items.Add(string.Empty);
 
-                            destSystemComboBox.Items.Clear();
-                            destSystemComboBox.Items.Add(string.Empty);
+                            cboSourceSystem.DataSource = null;
+                            cboSourceSystem.DataSource = SourceList;
 
-                            // we should add an indicator to every entry in our favorites
-                            if (currentMarkedStations.Count > 0)
-                            {
-                                srcSystemComboBox.Items.AddRange(currentMarkedStations.Select(x => "!" + x).ToArray());
-                            }
-
-                            if (currentMarkedStations.Count > 0)
-                            {
-                                destSystemComboBox.Items.AddRange(currentMarkedStations.Select(x => "!" + x).ToArray());
-                            }
-
-                            srcSystemComboBox.Items.AddRange(output_unclean.ToArray());
-                            destSystemComboBox.Items.AddRange(output_unclean.ToArray());
+                            cboRunOptionsDestination.DataSource = null;
+                            cboRunOptionsDestination.DataSource = DestinationList;
 
                             if (buttonCaller == 16)
                             {
                                 // we're marked as needing a database refresh
                                 // bind the database output for autocompletion
-                                srcSystemComboBox.AutoCompleteCustomSource.Clear();
-                                srcSystemComboBox.AutoCompleteCustomSource.AddRange(outputSysStnNames.ToArray());
+                                cboSourceSystem.AutoCompleteCustomSource.Clear();
+                                cboSourceSystem.AutoCompleteCustomSource.AddRange(outputSysStnNames.ToArray());
 
-                                commodityComboBox.SelectedIndex = 0;
+                                //cboRunOptionsDestination.AutoCompleteCustomSource.Clear();
+                                //cboRunOptionsDestination.AutoCompleteCustomSource.AddRange(outputSysStnNames.ToArray());
 
-                                destSystemComboBox.AutoCompleteCustomSource.Clear();
-                                destSystemComboBox.AutoCompleteCustomSource.AddRange(outputSysStnNames.ToArray());
-
-                                commodityComboBox.SelectedIndex = 0;
+                                //cboBuyOptionsItem.SelectedIndex = 0;
+                                //cboSellOptionsItem.SelectedIndex = 0;
                             }
                         }));
                     }
@@ -253,37 +240,23 @@ namespace TDHelper
                             // only call if we have an update
                             this.Invoke(new Action(() =>
                             {
-                                // rebind our dropdowns
-                                srcSystemComboBox.Items.Clear();
-                                destSystemComboBox.Items.Clear();
+                                SetSourceAndDestinationLists();
 
-                                srcSystemComboBox.Items.Add(string.Empty); // add a blank entry to the top
-                                destSystemComboBox.Items.Add(string.Empty);
+                                cboSourceSystem.DataSource = null;
+                                cboSourceSystem.DataSource = SourceList;
 
-                                // favorites first
-                                if (currentMarkedStations.Count > 0)
-                                {
-                                    srcSystemComboBox.Items.AddRange(currentMarkedStations.Select(x => "!" + x).ToArray());
-                                }
-
-                                if (currentMarkedStations.Count > 0)
-                                {
-                                    destSystemComboBox.Items.AddRange(currentMarkedStations.Select(x => "!" + x).ToArray());
-                                }
-
-                                // finally the system list
-                                srcSystemComboBox.Items.AddRange(output_unclean.ToArray());
-                                destSystemComboBox.Items.AddRange(output_unclean.ToArray());
+                                //cboRunOptionsDestination.DataSource = null;
+                                //cboRunOptionsDestination.DataSource = DestinationList;
 
                                 // reset our cursor after the refresh if the user had input focus
-                                if (srcSystemComboBox.Text.Length > 0)
+                                if (cboSourceSystem.Text.Length > 0)
                                 {
-                                    srcSystemComboBox.Select(srcSystemComboBox.Text.Length, 0);
+                                    cboSourceSystem.Select(cboSourceSystem.Text.Length, 0);
                                 }
 
-                                if (destSystemComboBox.Text.Length > 0)
+                                if (cboRunOptionsDestination.Text.Length > 0)
                                 {
-                                    destSystemComboBox.Select(srcSystemComboBox.Text.Length, 0);
+                                    cboRunOptionsDestination.Select(cboSourceSystem.Text.Length, 0);
                                 }
                             }));
 
@@ -298,20 +271,16 @@ namespace TDHelper
 
                         this.Invoke(new Action(() =>
                         {
-                            srcSystemComboBox.Items.Add(string.Empty);
-                            destSystemComboBox.Items.Add(string.Empty);
+                            SetSourceAndDestinationLists(true);
 
-                            if (currentMarkedStations.Count > 0)
-                            {
-                                srcSystemComboBox.Items.AddRange(currentMarkedStations.Select(x => "!" + x).ToArray());
-                                destSystemComboBox.Items.AddRange(currentMarkedStations.Select(x => "!" + x).ToArray());
-                            }
+                            cboSourceSystem.DataSource = null;
+                            cboSourceSystem.DataSource = SourceList;
 
-                            srcSystemComboBox.Items.AddRange(output_unclean.ToArray());
-                            destSystemComboBox.Items.AddRange(output_unclean.ToArray());
+                            //cboRunOptionsDestination.DataSource = null;
+                            //cboRunOptionsDestination.DataSource = DestinationList;
 
-                            srcSystemComboBox.AutoCompleteCustomSource.AddRange(outputSysStnNames.ToArray());
-                            destSystemComboBox.AutoCompleteCustomSource.AddRange(outputSysStnNames.ToArray());
+                            cboSourceSystem.AutoCompleteCustomSource.AddRange(outputSysStnNames.ToArray());
+                            //cboRunOptionsDestination.AutoCompleteCustomSource.AddRange(outputSysStnNames.ToArray());
                         }));
 
                         hasRun = true; // set the semaphore so we don't hork our data tables
@@ -333,12 +302,35 @@ namespace TDHelper
             }
         }
 
+        private void SetSourceAndDestinationLists(bool first = false)
+        {
+            // bind the recent systems/stations first
+            SourceList.Clear();
+
+            // Add a blank entry at the top is this is the first run.
+            if (first)
+            {
+                SourceList.Add(string.Empty);
+            }
+
+            // we should add an indicator to every entry in our favorites
+            if (currentMarkedStations.Count > 0)
+            {
+                SourceList.AddRange(currentMarkedStations.Select(x => "!" + x).ToArray());
+            }
+
+            SourceList.AddRange(output_unclean.ToArray());
+
+            // Clone the source list to the destination list.
+            DestinationList.AddRange(SourceList.GetRange(0, SourceList.Count));
+        }
+
         private void BuildPilotsLog()
         {
             // here we either build or load our database
             tdhDBConn = GetConnection(pilotsLogDBPath);
 
-            if (pilotsLogDataGrid.Rows.Count == 0)
+            if (grdPilotsLog.Rows.Count == 0)
             {
                 if (HasValidRows(tdhDBConn, "SystemLog"))
                 {
@@ -466,19 +458,19 @@ namespace TDHelper
                         retriever = new DataRetriever(dbConn, "SystemLog");
                         foreach (DataColumn c in retriever.Columns)
                         {
-                            pilotsLogDataGrid.Columns.Add(c.ColumnName, c.ColumnName);
+                            grdPilotsLog.Columns.Add(c.ColumnName, c.ColumnName);
                         }
 
                         // setup the gridview
                         UpdateLocalTable(tdhDBConn);
                         memoryCache = new Cache(retriever, 24);
 
-                        pilotsLogDataGrid.RowCount = retriever.RowCount;
+                        grdPilotsLog.RowCount = retriever.RowCount;
 
-                        pilotsLogDataGrid.Columns["ID"].Visible = false;
-                        pilotsLogDataGrid.Columns["Timestamp"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-                        pilotsLogDataGrid.Columns["System"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-                        pilotsLogDataGrid.Columns["Notes"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                        grdPilotsLog.Columns["ID"].Visible = false;
+                        grdPilotsLog.Columns["Timestamp"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+                        grdPilotsLog.Columns["System"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+                        grdPilotsLog.Columns["Notes"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                     }));
                 }
             }
@@ -824,8 +816,8 @@ namespace TDHelper
                 // force a refresh/repaint
                 this.Invoke(new Action(() =>
                 {
-                    pilotsLogDataGrid.RowCount = retriever.RowCount;
-                    pilotsLogDataGrid.Refresh();
+                    grdPilotsLog.RowCount = retriever.RowCount;
+                    grdPilotsLog.Refresh();
                 }));
             }
             else
@@ -838,8 +830,8 @@ namespace TDHelper
 
                 this.Invoke(new Action(() =>
                 {
-                    pilotsLogDataGrid.RowCount = retriever.RowCount;
-                    pilotsLogDataGrid.InvalidateRow(rowIndex);
+                    grdPilotsLog.RowCount = retriever.RowCount;
+                    grdPilotsLog.InvalidateRow(rowIndex);
                 }));
             }
 
@@ -983,28 +975,28 @@ namespace TDHelper
 
                     this.Invoke(new Action(() =>
                     {
-                        if (pilotsLogDataGrid.Columns.Count != localTable.Columns.Count)
+                        if (grdPilotsLog.Columns.Count != localTable.Columns.Count)
                         {
                             foreach (DataColumn c in retriever.Columns)
                             {
-                                pilotsLogDataGrid.Columns.Add(c.ColumnName, c.ColumnName);
+                                grdPilotsLog.Columns.Add(c.ColumnName, c.ColumnName);
                             }
                         }
 
-                        pilotsLogDataGrid.Rows.Clear();
+                        grdPilotsLog.Rows.Clear();
 
                         memoryCache = new Cache(retriever, 24);
 
-                        pilotsLogDataGrid.Refresh();
+                        grdPilotsLog.Refresh();
 
-                        pilotsLogDataGrid.RowCount = retriever.RowCount;
+                        grdPilotsLog.RowCount = retriever.RowCount;
 
-                        if (pilotsLogDataGrid.RowCount > 0)
+                        if (grdPilotsLog.RowCount > 0)
                         {
-                            pilotsLogDataGrid.Columns["ID"].Visible = false;
-                            pilotsLogDataGrid.Columns["Timestamp"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-                            pilotsLogDataGrid.Columns["System"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-                            pilotsLogDataGrid.Columns["Notes"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                            grdPilotsLog.Columns["ID"].Visible = false;
+                            grdPilotsLog.Columns["Timestamp"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+                            grdPilotsLog.Columns["System"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+                            grdPilotsLog.Columns["Notes"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                         }
                     }));
                 }
@@ -1337,7 +1329,7 @@ namespace TDHelper
 
         private void ParseItemCSV()
         {
-            outputItems = new List<string>();
+            List<string> commodities = new List<string>();
 
             // read items from csv files
             using (StreamReader reader1 = new StreamReader(File.OpenRead(t_itemListPath)))
@@ -1355,9 +1347,14 @@ namespace TDHelper
                     string[] values = line.Split(',');
                     string output = Convert.ToString(values[1]).Trim(new char[] { '\'', '\"' });
 
-                    outputItems.Add(output);
+                    commodities.Add(output);
                 }
             }
+
+            CommoditiesList.Clear();
+            CommoditiesList.AddRange(commodities);
+
+            commodities.Clear();
 
             using (var reader2 = new StreamReader(File.OpenRead(t_shipListPath)))
             {
@@ -1374,18 +1371,32 @@ namespace TDHelper
                     string[] values = line.Split(',');
                     string output = Convert.ToString(values[1]).Trim(new char[] { '\'', '\"' });
 
-                    outputItems.Add(output);
+                    commodities.Add(output);
                 }
             }
 
-            if (outputItems.Count != 0)
+            ShipList.Clear();
+            ShipList.AddRange(commodities);
+
+            CommoditiesList = CommoditiesList.OrderBy(x => x)
+                .ToList();
+
+            ShipList = ShipList.OrderBy(x => x)
+                .ToList();
+
+            outputItems.Clear();
+
+            if (CommoditiesList.Count > 0)
             {
-                // sort alphabetically
-                outputItems = outputItems
-                    .OrderBy(x => x)
-                    .ToList();
+                outputItems.AddRange(CommoditiesList);
             }
-            else
+
+            if (ShipList.Count > 0)
+            {
+                outputItems.AddRange(ShipList);
+            }
+
+            if (outputItems.Count == 0)
             {
                 Debug.WriteLine("outputItems is empty, must be a path or access failure");
             }
@@ -1481,20 +1492,7 @@ namespace TDHelper
 
             ParseItemCSV(); // refresh the commodities
 
-            // avoid null
-            if (outputItems.Count > 0 && hasRun)
-            {
-                // refreshing, let's rebind
-                commodityComboBox.Items.Clear();
-                commodityComboBox.Items.AddRange(outputItems.ToArray());
-            }
-            else if (!hasRun)
-            {
-                // if we're starting fresh, just bind
-                commodityComboBox.Items.AddRange(outputItems.ToArray());
-            }
-
-            commodityComboBox.SelectedIndex = 0;
+            RefreshCurrentOptionsPanel();
 
             Debug.WriteLine("refreshItems took: " + m_timer.ElapsedMilliseconds + "ms");
             m_timer.Stop();

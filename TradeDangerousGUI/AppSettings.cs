@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
@@ -133,7 +134,6 @@ namespace TDHelper
                 settings.Hops = SectionHasKey(configSection, "Hops") ? configSection["Hops"].DecimalValue : 0;
                 settings.Jumps = SectionHasKey(configSection, "Jumps") ? configSection["Jumps"].DecimalValue : 0;
                 settings.Limit = SectionHasKey(configSection, "Limit") ? configSection["Limit"].DecimalValue : 0;
-                settings.LocalNoPlanet = SectionHasKey(configSection, "LocalNoPlanet") ? configSection["LocalNoPlanet"].BoolValue : false;
                 settings.Loop = SectionHasKey(configSection, "Loop") ? configSection["Loop"].BoolValue : false;
                 settings.LoopInt = SectionHasKey(configSection, "LoopInt") ? configSection["LoopInt"].DecimalValue : 0;
                 settings.LSPenalty = SectionHasKey(configSection, "LSPenalty") ? configSection["LSPenalty"].DecimalValue : 0;
@@ -144,7 +144,6 @@ namespace TDHelper
                 settings.Planetary = SectionHasKey(configSection, "Planetary") ? configSection["Planetary"].StringValue : string.Empty;
                 settings.PruneHops = SectionHasKey(configSection, "PruneHops") ? configSection["PruneHops"].DecimalValue : 0;
                 settings.PruneScore = SectionHasKey(configSection, "PruneScore") ? configSection["PruneScore"].DecimalValue : 0;
-                settings.RouteNoPlanet = SectionHasKey(configSection, "RouteNoPlanet") ? configSection["RouteNoPlanet"].BoolValue : false;
                 settings.RouteStations = SectionHasKey(configSection, "RouteStations") ? configSection["RouteStations"].BoolValue : false;
                 settings.ShowJumps = SectionHasKey(configSection, "ShowJumps") ? configSection["ShowJumps"].BoolValue : false;
                 settings.ShowProgress = SectionHasKey(configSection, "ShowProgress") ? configSection["ShowProgress"].BoolValue : false;
@@ -262,7 +261,6 @@ namespace TDHelper
             configSection["Hops"].DecimalValue = settings.Hops;
             configSection["Jumps"].DecimalValue = settings.Jumps;
             configSection["Limit"].DecimalValue = settings.Limit;
-            configSection["LocalNoPlanet"].BoolValue = settings.LocalNoPlanet;
             configSection["Loop"].BoolValue = settings.Loop;
             configSection["LoopInt"].DecimalValue = settings.LoopInt;
             configSection["LSPenalty"].DecimalValue = settings.LSPenalty;
@@ -273,7 +271,6 @@ namespace TDHelper
             configSection["Planetary"].StringValue = settings.Planetary ?? string.Empty;
             configSection["PruneHops"].DecimalValue = settings.PruneHops;
             configSection["PruneScore"].DecimalValue = settings.PruneScore;
-            configSection["RouteNoPlanet"].BoolValue = settings.RouteNoPlanet;
             configSection["RouteStations"].BoolValue = settings.RouteStations;
             configSection["ShowJumps"].BoolValue = settings.ShowJumps;
             configSection["ShowProgress"].BoolValue = settings.ShowProgress;
@@ -594,44 +591,46 @@ namespace TDHelper
             }
         }
 
-        private bool ContainsPadSizes(string text)
+        private string ContainsPadSizes(string text)
         {
-            bool containsPadSizes = false;
-
-            // we only want one of each from the key
-            if (!string.IsNullOrEmpty(text))
-            {
-                char[] c = new char[] { 'M', 'L', '?' };
-                char[] z = text.ToUpperInvariant().ToCharArray();
-
-                // count how many we found
-                var intersect = z.Intersect(c).ToList();
-
-                // check for only M/L/? and no more than that
-                containsPadSizes = !(intersect.Count > 3 || intersect.Count < 1);
-            }
-
-            return containsPadSizes;
+            return ToggleAndSort(text, "ML?");
         }
 
-        private bool ContainsPlanetary(string text)
+        private string ContainsPlanetary(string text)
         {
-            bool containsPlanetary = false;
+            return ToggleAndSort(text, "YN?");
+        }
 
-            // we only want one of each from the key
-            if (!string.IsNullOrEmpty(text))
+        /// <summary>
+        /// Search the text for characters in match and return in the same order as match.
+        /// </summary>
+        /// <param name="text">The text to be searched.</param>
+        /// <param name="match">The required matching charcters.</param>
+        /// <returns></returns>
+        private string ToggleAndSort(
+            string text, 
+            string match)
+        {
+            string result = text;
+
+            if (!string.IsNullOrEmpty(result))
             {
-                char[] c = new char[] { 'Y', 'N', '?' };
-                char[] z = text.ToUpperInvariant().ToCharArray();
+                char[] sortedArray = text.ToUpper()
+                    .Distinct()
+                    .ToArray();
 
-                // count how many we found
-                var intersect = z.Intersect(c).ToList();
+                result = string.Empty;
 
-                // check for only M/L/? and no more than that
-                containsPlanetary = !(intersect.Count > 3 || intersect.Count < 1);
+                foreach (char letter in match.Select(x => x))
+                {
+                    if (sortedArray.Contains(letter))
+                    {
+                        result += letter.ToString();
+                    }
+                }
             }
 
-            return containsPlanetary;
+            return result;
         }
 
         private bool IsMarkedStation(string input, List<string> parentList)
@@ -732,7 +731,6 @@ namespace TDHelper
 
         public string LastUsedConfig { get; set; }
         public decimal Limit { get; set; }
-        public bool LocalNoPlanet { get; set; }
         public string LocationChild { get; set; }
         public string LocationParent { get; set; }
         public bool Loop { get; set; }
@@ -757,7 +755,6 @@ namespace TDHelper
         public string PythonPath { get; set; }
         public bool Quiet { get; set; }
         public decimal RebuyPercentage { get; set; }
-        public bool RouteNoPlanet { get; set; }
         public bool RouteStations { get; set; }
         public bool ShowJumps { get; set; }
         public bool ShowProgress { get; set; }
@@ -840,7 +837,6 @@ namespace TDHelper
             instance.LadenLY = 0;
             instance.LastUsedConfig = string.Empty;
             instance.Limit = 0;
-            instance.LocalNoPlanet = false;
             instance.LocationChild = string.Empty;
             instance.LocationParent = string.Empty;
             instance.Loop = false;
@@ -859,7 +855,6 @@ namespace TDHelper
             instance.PythonPath = string.Empty;
             instance.Quiet = false;
             instance.RebuyPercentage = 5;
-            instance.RouteNoPlanet = false;
             instance.ShowJumps = false;
             instance.ShowProgress = false;
             instance.SizeChild = string.Empty;

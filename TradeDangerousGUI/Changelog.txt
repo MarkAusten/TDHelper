@@ -1,8 +1,15 @@
+v2.0.5.0
+--------
+* Changes the layout such that controls for a particular query are now all in one place.
+
 v2.0.4.3
 --------
 * Fixed issue #13 - Unhandled exception at startup.
 * Fixed issue #14 - Unhandled exception updating Cmdr Profile.
-* Some layout changes suggested bu CMDR eyeonus.
+* Some layout changes suggested by CMDRs eyeonus and Tromador.
+* Removed Local and Route 'No Planet' check boxes. Use planetary N instead.
+* Changes caption on run button to 'Start' since 'Run' is a route calculation mode.
+* Large number of changes to ensure that only the required controls are visible for each query.
 
 v2.0.4.2
 ---------

@@ -54,7 +54,6 @@ namespace TDHelper
         public bool hasRun;
         public bool dropdownOpened;
         public bool rebuildCache;
-        public bool t_localNavEnabled;
         public bool t_csvExportCheckBox;
         public bool stationsFilterChecked;
         public bool oldDataRouteChecked;
@@ -69,7 +68,7 @@ namespace TDHelper
         public int fromPane = -1;
         public int runOutputState = -1;
 
-        public List<string> outputItems;
+        public List<string> outputItems = new List<string>();
         public List<string> currentMarkedStations;
 
         public string r_fromBox;
@@ -461,8 +460,8 @@ namespace TDHelper
             if (refreshList)
             {
                 validConfigs = SetAvailableShips();
-                altConfigBox.DataSource = null;
-                altConfigBox.DataSource = validConfigs;
+                cboCommandersShips.DataSource = null;
+                cboCommandersShips.DataSource = validConfigs;
             }
 
             TDSettings settings = MainForm.settingsRef;
@@ -480,7 +479,7 @@ namespace TDHelper
                 settings.Capacity =  GetConfigSetting(config, settings.LastUsedConfig, "Capacity");
                 settings.Insurance = GetConfigSetting(config, settings.LastUsedConfig, "Insurance");
                 settings.LadenLY = GetConfigSetting(config, settings.LastUsedConfig, "LadenLY");
-                settings.Padsizes = config[settings.LastUsedConfig]["Padsizes"].StringValue;
+                settings.Padsizes = ContainsPadSizes(config[settings.LastUsedConfig]["Padsizes"].StringValue);
                 settings.UnladenLY = GetConfigSetting(config, settings.LastUsedConfig, "UnladenLY");
             }
             else
@@ -488,20 +487,20 @@ namespace TDHelper
                 settings.Capacity = 1;
                 settings.Insurance = 0;
                 settings.LadenLY = 1;
-                settings.Padsizes = "?";
+                settings.Padsizes = string.Empty;
                 settings.UnladenLY = 1;
             }
 
-            altConfigBox.SelectedIndex
+            cboCommandersShips.SelectedIndex
                = !string.IsNullOrEmpty(settings.LastUsedConfig)
-               ? altConfigBox.FindStringExact(settings.LastUsedConfig)
+               ? cboCommandersShips.FindStringExact(settings.LastUsedConfig)
                : 0;
 
-            capacityBox.Value = settings.Capacity;
-            insuranceBox.Value = Math.Max(settings.Insurance, insuranceBox.Minimum);
-            ladenLYBox.Value = Math.Max(settings.LadenLY, ladenLYBox.Minimum);
-            padSizeBox.Text = settings.Padsizes;
-            unladenLYBox.Value = Math.Max(settings.UnladenLY, unladenLYBox.Minimum);
+            numRouteOptionsShipCapacity.Value = settings.Capacity;
+            numShipInsurance.Value = Math.Max(settings.Insurance, numShipInsurance.Minimum);
+            numLadenLy.Value = Math.Max(settings.LadenLY, numLadenLy.Minimum);
+            txtPadSize.Text = settings.Padsizes;
+            numUnladenLy.Value = Math.Max(settings.UnladenLY, numUnladenLy.Minimum);
         }
 
         /// <summary>
@@ -560,157 +559,157 @@ namespace TDHelper
             ValidateNetLogPath(null);
 
             // sanity check our inputs
-            if (settingsRef.Credits < creditsBox.Minimum)
+            if (settingsRef.Credits < numCommandersCredits.Minimum)
             {
-                settingsRef.Credits = creditsBox.Minimum; // this is a requirement
+                settingsRef.Credits = numCommandersCredits.Minimum; // this is a requirement
             }
-            else if (settingsRef.Credits > creditsBox.Maximum)
+            else if (settingsRef.Credits > numCommandersCredits.Maximum)
             {
-                settingsRef.Credits = creditsBox.Maximum;
-            }
-
-            if (settingsRef.Capacity < capacityBox.Minimum)
-            {
-                settingsRef.Capacity = capacityBox.Minimum;
-            }
-            else if (settingsRef.Capacity > capacityBox.Maximum)
-            {
-                settingsRef.Capacity = capacityBox.Maximum;
+                settingsRef.Credits = numCommandersCredits.Maximum;
             }
 
-            if (settingsRef.AbovePrice < abovePriceBox.Minimum)
+            if (settingsRef.Capacity < numRouteOptionsShipCapacity.Minimum)
             {
-                settingsRef.AbovePrice = abovePriceBox.Minimum;
+                settingsRef.Capacity = numRouteOptionsShipCapacity.Minimum;
             }
-            else if (settingsRef.AbovePrice > abovePriceBox.Maximum)
+            else if (settingsRef.Capacity > numRouteOptionsShipCapacity.Maximum)
             {
-                settingsRef.AbovePrice = abovePriceBox.Maximum;
-            }
-
-            if (settingsRef.BelowPrice < belowPriceBox.Minimum)
-            {
-                settingsRef.BelowPrice = belowPriceBox.Minimum;
-            }
-            else if (settingsRef.BelowPrice > belowPriceBox.Maximum)
-            {
-                settingsRef.BelowPrice = belowPriceBox.Maximum;
+                settingsRef.Capacity = numRouteOptionsShipCapacity.Maximum;
             }
 
-            if (settingsRef.PruneHops < pruneHopsBox.Minimum)
+            //if (settingsRef.AbovePrice < abovePriceBox.Minimum)
+            //{
+            //    settingsRef.AbovePrice = abovePriceBox.Minimum;
+            //}
+            //else if (settingsRef.AbovePrice > abovePriceBox.Maximum)
+            //{
+            //    settingsRef.AbovePrice = abovePriceBox.Maximum;
+            //}
+
+            if (settingsRef.BelowPrice < numRunOptionsRoutes.Minimum)
             {
-                settingsRef.PruneHops = pruneHopsBox.Minimum;
+                settingsRef.BelowPrice = numRunOptionsRoutes.Minimum;
             }
-            else if (settingsRef.PruneHops > pruneHopsBox.Maximum)
+            else if (settingsRef.BelowPrice > numRunOptionsRoutes.Maximum)
             {
-                settingsRef.PruneHops = pruneHopsBox.Maximum;
+                settingsRef.BelowPrice = numRunOptionsRoutes.Maximum;
             }
 
-            if (settingsRef.PruneScore < pruneScoreBox.Minimum)
+            if (settingsRef.PruneHops < numRouteOptionsPruneHops.Minimum)
             {
-                settingsRef.PruneScore = pruneScoreBox.Minimum;
+                settingsRef.PruneHops = numRouteOptionsPruneHops.Minimum;
             }
-            else if (settingsRef.PruneScore > pruneScoreBox.Maximum)
+            else if (settingsRef.PruneHops > numRouteOptionsPruneHops.Maximum)
             {
-                settingsRef.PruneScore = pruneScoreBox.Maximum;
-            }
-
-            if (settingsRef.Limit < limitBox.Minimum)
-            {
-                settingsRef.Limit = limitBox.Minimum;
-            }
-            else if (settingsRef.Limit > limitBox.Maximum)
-            {
-                settingsRef.Limit = limitBox.Maximum;
+                settingsRef.PruneHops = numRouteOptionsPruneHops.Maximum;
             }
 
-            if (settingsRef.MaxLSDistance < maxLSDistanceBox.Minimum)
+            if (settingsRef.PruneScore < numRouteOptionsPruneScore.Minimum)
             {
-                settingsRef.MaxLSDistance = maxLSDistanceBox.Minimum;
+                settingsRef.PruneScore = numRouteOptionsPruneScore.Minimum;
             }
-            else if (settingsRef.MaxLSDistance > maxLSDistanceBox.Maximum)
+            else if (settingsRef.PruneScore > numRouteOptionsPruneScore.Maximum)
             {
-                settingsRef.MaxLSDistance = maxLSDistanceBox.Maximum;
-            }
-
-            if (settingsRef.LSPenalty < lsPenaltyBox.Minimum)
-            {
-                settingsRef.LSPenalty = lsPenaltyBox.Minimum;
-            }
-            else if (settingsRef.LSPenalty > lsPenaltyBox.Maximum)
-            {
-                settingsRef.LSPenalty = lsPenaltyBox.Maximum;
+                settingsRef.PruneScore = numRouteOptionsPruneScore.Maximum;
             }
 
-            if (settingsRef.Stock < numStock.Minimum)
+            if (settingsRef.Limit < numRouteOptionsLimit.Minimum)
             {
-                settingsRef.Stock = numStock.Minimum;
+                settingsRef.Limit = numRouteOptionsLimit.Minimum;
             }
-            else if (settingsRef.Stock > numStock.Maximum)
+            else if (settingsRef.Limit > numRouteOptionsLimit.Maximum)
             {
-                settingsRef.Stock = numStock.Maximum;
-            }
-
-            if (settingsRef.GPT < gptBox.Minimum)
-            {
-                settingsRef.GPT = gptBox.Minimum;
-            }
-            else if (settingsRef.GPT > gptBox.Maximum)
-            {
-                settingsRef.GPT = gptBox.Maximum;
+                settingsRef.Limit = numRouteOptionsLimit.Maximum;
             }
 
-            if (settingsRef.MaxGPT < maxGPTBox.Minimum)
+            if (settingsRef.MaxLSDistance < numRouteOptionsMaxLSDistance.Minimum)
             {
-                settingsRef.MaxGPT = maxGPTBox.Minimum;
+                settingsRef.MaxLSDistance = numRouteOptionsMaxLSDistance.Minimum;
             }
-            else if (settingsRef.MaxGPT > maxGPTBox.Maximum)
+            else if (settingsRef.MaxLSDistance > numRouteOptionsMaxLSDistance.Maximum)
             {
-                settingsRef.MaxGPT = maxGPTBox.Maximum;
-            }
-
-            if (settingsRef.Insurance < insuranceBox.Minimum)
-            {
-                settingsRef.Insurance = insuranceBox.Minimum;
-            }
-            else if (settingsRef.Insurance > insuranceBox.Maximum)
-            {
-                settingsRef.Insurance = insuranceBox.Maximum;
+                settingsRef.MaxLSDistance = numRouteOptionsMaxLSDistance.Maximum;
             }
 
-            if (settingsRef.Margin < marginBox.Minimum)
+            if (settingsRef.LSPenalty < numRouteOptionsLsPenalty.Minimum)
             {
-                settingsRef.Margin = marginBox.Minimum;
+                settingsRef.LSPenalty = numRouteOptionsLsPenalty.Minimum;
             }
-            else if (settingsRef.Margin > marginBox.Maximum)
+            else if (settingsRef.LSPenalty > numRouteOptionsLsPenalty.Maximum)
             {
-                settingsRef.Margin = marginBox.Maximum;
-            }
-
-            if (settingsRef.Age < ageBox.Minimum)
-            {
-                settingsRef.Age = ageBox.Minimum;
-            }
-            else if (settingsRef.Age > ageBox.Maximum)
-            {
-                settingsRef.Age = ageBox.Maximum;
+                settingsRef.LSPenalty = numRouteOptionsLsPenalty.Maximum;
             }
 
-            if (settingsRef.LadenLY < ladenLYBox.Minimum)
+            if (settingsRef.Stock < numRouteOptionsStock.Minimum)
             {
-                settingsRef.LadenLY = ladenLYBox.Minimum; // this is a requirement
+                settingsRef.Stock = numRouteOptionsStock.Minimum;
             }
-            else if (settingsRef.LadenLY > ladenLYBox.Maximum)
+            else if (settingsRef.Stock > numRouteOptionsStock.Maximum)
             {
-                settingsRef.LadenLY = ladenLYBox.Maximum;
+                settingsRef.Stock = numRouteOptionsStock.Maximum;
             }
 
-            if (settingsRef.UnladenLY < unladenLYBox.Minimum)
+            if (settingsRef.GPT < numRouteOptionsGpt.Minimum)
             {
-                settingsRef.UnladenLY = unladenLYBox.Minimum;
+                settingsRef.GPT = numRouteOptionsGpt.Minimum;
             }
-            else if (settingsRef.UnladenLY > unladenLYBox.Maximum)
+            else if (settingsRef.GPT > numRouteOptionsGpt.Maximum)
             {
-                settingsRef.UnladenLY = unladenLYBox.Maximum;
+                settingsRef.GPT = numRouteOptionsGpt.Maximum;
+            }
+
+            if (settingsRef.MaxGPT < numRouteOptionsMaxGpt.Minimum)
+            {
+                settingsRef.MaxGPT = numRouteOptionsMaxGpt.Minimum;
+            }
+            else if (settingsRef.MaxGPT > numRouteOptionsMaxGpt.Maximum)
+            {
+                settingsRef.MaxGPT = numRouteOptionsMaxGpt.Maximum;
+            }
+
+            if (settingsRef.Insurance < numShipInsurance.Minimum)
+            {
+                settingsRef.Insurance = numShipInsurance.Minimum;
+            }
+            else if (settingsRef.Insurance > numShipInsurance.Maximum)
+            {
+                settingsRef.Insurance = numShipInsurance.Maximum;
+            }
+
+            if (settingsRef.Margin < numRouteOptionsMargin.Minimum)
+            {
+                settingsRef.Margin = numRouteOptionsMargin.Minimum;
+            }
+            else if (settingsRef.Margin > numRouteOptionsMargin.Maximum)
+            {
+                settingsRef.Margin = numRouteOptionsMargin.Maximum;
+            }
+
+            if (settingsRef.Age < numRouteOptionsAge.Minimum)
+            {
+                settingsRef.Age = numRouteOptionsAge.Minimum;
+            }
+            else if (settingsRef.Age > numRouteOptionsAge.Maximum)
+            {
+                settingsRef.Age = numRouteOptionsAge.Maximum;
+            }
+
+            if (settingsRef.LadenLY < numLadenLy.Minimum)
+            {
+                settingsRef.LadenLY = numLadenLy.Minimum; // this is a requirement
+            }
+            else if (settingsRef.LadenLY > numLadenLy.Maximum)
+            {
+                settingsRef.LadenLY = numLadenLy.Maximum;
+            }
+
+            if (settingsRef.UnladenLY < numUnladenLy.Minimum)
+            {
+                settingsRef.UnladenLY = numUnladenLy.Minimum;
+            }
+            else if (settingsRef.UnladenLY > numUnladenLy.Maximum)
+            {
+                settingsRef.UnladenLY = numUnladenLy.Maximum;
             }
 
             // convert verbosity to a string
@@ -734,46 +733,46 @@ namespace TDHelper
 
             }
 
-            if (settingsRef.Hops < hopsBox.Minimum && !settingsRef.Loop)
+            if (settingsRef.Hops < numRouteOptionsHops.Minimum && !settingsRef.Loop)
             {
-                settingsRef.Hops = hopsBox.Minimum;
+                settingsRef.Hops = numRouteOptionsHops.Minimum;
             }
             else if (settingsRef.Loop && settingsRef.Hops < 2)
             {
                 settingsRef.Hops = 2;
-                hopsBox.Text = "2";
+                numRouteOptionsHops.Text = "2";
             }
-            else if (settingsRef.Hops > hopsBox.Maximum)
+            else if (settingsRef.Hops > numRouteOptionsHops.Maximum)
             {
-                settingsRef.Hops = hopsBox.Maximum;
+                settingsRef.Hops = numRouteOptionsHops.Maximum;
             }
 
-            if (settingsRef.Jumps < jumpsBox.Minimum)
+            if (settingsRef.Jumps < numRouteOptionsJumps.Minimum)
             {
-                settingsRef.Jumps = jumpsBox.Minimum;
+                settingsRef.Jumps = numRouteOptionsJumps.Minimum;
             }
-            else if (settingsRef.Jumps > jumpsBox.Maximum)
+            else if (settingsRef.Jumps > numRouteOptionsJumps.Maximum)
             {
-                settingsRef.Jumps = jumpsBox.Maximum;
+                settingsRef.Jumps = numRouteOptionsJumps.Maximum;
             }
 
             // these only apply if we haven't copied them already
-            if (t_StartJumps < startJumpsBox.Minimum)
+            if (t_StartJumps < numRunOptionsStartJumps.Minimum)
             {
-                t_StartJumps = startJumpsBox.Minimum;
+                t_StartJumps = numRunOptionsStartJumps.Minimum;
             }
-            else if (t_StartJumps > startJumpsBox.Maximum)
+            else if (t_StartJumps > numRunOptionsStartJumps.Maximum)
             {
-                t_StartJumps = startJumpsBox.Maximum;
+                t_StartJumps = numRunOptionsStartJumps.Maximum;
             }
 
-            if (t_EndJumps < endJumpsBox.Minimum)
+            if (t_EndJumps < numRunOptionsEndJumps.Minimum)
             {
-                t_EndJumps = endJumpsBox.Minimum;
+                t_EndJumps = numRunOptionsEndJumps.Minimum;
             }
-            else if (t_EndJumps > endJumpsBox.Maximum)
+            else if (t_EndJumps > numRunOptionsEndJumps.Maximum)
             {
-                t_EndJumps = endJumpsBox.Maximum;
+                t_EndJumps = numRunOptionsEndJumps.Maximum;
             }
 
             if (settingsRef.CSVSelect < 0 && settingsRef.CSVSelect > 5)
@@ -781,15 +780,8 @@ namespace TDHelper
                 settingsRef.CSVSelect = 0;
             }
 
-            if (!ContainsPadSizes(settingsRef.Padsizes))
-            {
-                settingsRef.Padsizes = string.Empty;
-            }
-
-            if (!ContainsPlanetary(settingsRef.Planetary))
-            {
-                settingsRef.Planetary = string.Empty;
-            }
+            settingsRef.Padsizes = ContainsPadSizes(settingsRef.Padsizes);
+            settingsRef.Planetary = ContainsPlanetary(settingsRef.Planetary);
 
             // an exception is made for checkboxes, we shouldn't ever get here
             if (settingsRef.Towards && settingsRef.Loop)
@@ -812,7 +804,7 @@ namespace TDHelper
             }
 
             // default to Run command if unset
-            methodDropDown.SelectedIndex = methodIndex;
+            cboMethod.SelectedIndex = methodIndex;
 
             // make sure we pull CSV paths after we validate our inputs
             if (!string.IsNullOrEmpty(settingsRef.TDPath))
@@ -1002,11 +994,11 @@ namespace TDHelper
             // populate the notes page
             if (File.Exists(notesFile))
             {
-                notesTextBox.LoadFile(notesFile, RichTextBoxStreamType.PlainText);
+                txtNotes.LoadFile(notesFile, RichTextBoxStreamType.PlainText);
             }
 
             // reset our selected command for safety
-            methodDropDown.SelectedIndex = 0;
+            cboMethod.SelectedIndex = 0;
 
             // reset to our previous culture type
             Thread.CurrentThread.CurrentCulture = userCulture;
@@ -1030,16 +1022,7 @@ namespace TDHelper
                         GrabStationData(t_system, t_station);
                     }
 
-                    // shipvendor textbox
-                    if (outputStationShips.Count > 0)
-                    {
-                        shipsSoldBox.DataSource = null;
-                        shipsSoldBox.DataSource = outputStationShips;
-                    }
-                    else
-                    {
-                        shipsSoldBox.DataSource = null;
-                    }
+                    RefreshCurrentOptionsPanel();
                 }
             }
         }
@@ -1050,9 +1033,9 @@ namespace TDHelper
             if (circularBuffer.Length > 0 && circularBuffer.Length <= circularBuffer.Capacity)
             {
                 // if our buffer is full, display it
-                this.td_outputBox.Invoke(new Action(() =>
+                this.rtbOutput.Invoke(new Action(() =>
                 {
-                    this.td_outputBox.Text = circularBuffer.ToString();
+                    this.rtbOutput.Text = circularBuffer.ToString();
                 }));
             }
             else
@@ -1260,7 +1243,7 @@ namespace TDHelper
 
             if (tabControl1.SelectedTab == tabControl1.TabPages["notesPage"])
             {
-                notesTextBox.SaveFile(notesFile, RichTextBoxStreamType.PlainText);
+                txtNotes.SaveFile(notesFile, RichTextBoxStreamType.PlainText);
             }
 
             //// Serialize(configFile);

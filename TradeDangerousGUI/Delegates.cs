@@ -198,7 +198,7 @@ namespace TDHelper
             if (!backgroundWorker2.IsBusy)
             {
                 // disable other worker callers
-                DisableRunButtons();
+                DisablebtnStarts();
 
                 backgroundWorker2.RunWorkerAsync();
             }
@@ -264,9 +264,9 @@ namespace TDHelper
                             && buttonCaller != 12 && buttonCaller != 13)
                         {
                             // don't show cancelling for UpdateDB/Import/Upload/Editor
-                            runButton.Font = new Font(runButton.Font, FontStyle.Bold);
-                            runButton.Text = "&Cancel";
-                            runButton.Enabled = true;
+                            btnStart.Font = new Font(btnStart.Font, FontStyle.Bold);
+                            btnStart.Text = "&Cancel";
+                            btnStart.Enabled = true;
                         }
                     }));
 
@@ -501,7 +501,7 @@ namespace TDHelper
                     break;
 
                 default:
-                    padSizes = "?";
+                    padSizes = string.Empty;
                     break;
             }
 
@@ -522,7 +522,7 @@ namespace TDHelper
             // hop to the worker delegate to grab updated prices for a station
             if (!backgroundWorker2.IsBusy)
             {
-                DisableRunButtons();
+                DisablebtnStarts();
                 backgroundWorker2.RunWorkerAsync();
                 // head over to the worker delegate event RunWorkerCompleted for the next step
             }
@@ -1362,14 +1362,14 @@ namespace TDHelper
 
             // Set the commander name and credit balance.
             MainForm.settingsRef.CmdrName = (string)cmdrProfile["profile"]["commander"]["name"];
-            this.creditsBox.Value = (decimal)cmdrProfile["profile"]["commander"]["credits"];
+            this.numCommandersCredits.Value = (decimal)cmdrProfile["profile"]["commander"]["credits"];
 
             // Determine the insurance of the current ship.
             decimal hullValue = (decimal)cmdrProfile["profile"]["ship"]["value"]["hull"];
             decimal modulesValue = (decimal)cmdrProfile["profile"]["ship"]["value"]["modules"];
             decimal rebuyPercentage = MainForm.settingsRef.RebuyPercentage;
 
-            this.insuranceBox.Value = (hullValue + modulesValue) * rebuyPercentage / 100;
+            this.numShipInsurance.Value = (hullValue + modulesValue) * rebuyPercentage / 100;
 
             // Determine the cargo capacity of the current ship.
             decimal capacity = 0;
@@ -1390,7 +1390,7 @@ namespace TDHelper
 
             if (capacity > 0)
             {
-                this.capacityBox.Value = capacity;
+                this.numRouteOptionsShipCapacity.Value = capacity;
             }
 
             // Set this ship as the currently selected ship.
