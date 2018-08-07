@@ -11,6 +11,42 @@ using System.Threading;
 using System.Timers;
 using System.Windows.Forms;
 
+/* Indexes are as follows:
+ *
+ * Index = 0 is the Run command
+ * Index = 1 is the Buy command
+ * Index = 2 is the Sell command
+ * Index = 3 is the Rare command
+ * Index = 4 is the Trade command
+ * Index = 5 is the Market command
+ * Index = 6 is the Ship Vendor command
+ * Index = 7 is the Navigation command
+ * Index = 8 is the OldData command
+ *
+ * buttonCaller = 1 is a semaphore for the Run button
+ * buttonCaller = 2 is a semaphore for the "C" button
+ * buttonCaller = 4 is a semaphore for the Run delegate
+ * buttonCaller = 5 is a semaphore for the Cancel button
+ *
+ * buttonCaller = 16 forces a full database update
+ * buttonCaller = 17 forces a call to populateStationPanel
+ * buttonCaller = 18 is an override for the Local box
+ *
+ * buttonCaller = 5 is the "Update DB" button
+ * buttonCaller = 10 is the Station Commodities Editor button
+ * buttonCaller = 11 is the Station Editor button (Ctrl+Click)
+ * buttonCaller = 12 is the Import button
+ * buttonCaller = 14 is the Shift+Import button
+ * buttonCaller = 13 is the Upload button
+ *
+ * buttonCaller = 20 is an explicit semaphore for playAlert()
+ * buttonCaller = 21 is the config file selection box
+ *
+ * buttonCaller = 22 is the Cmdr Profile button
+ *
+ * Buttons should always be placed above normal indexes!
+ */
+
 namespace TDHelper
 {
     public partial class MainForm : Form
@@ -31,6 +67,7 @@ namespace TDHelper
         private string savedFile1 = Path.GetDirectoryName(Application.ExecutablePath) + @"\saved_1.txt";
         private string savedFile2 = Path.GetDirectoryName(Application.ExecutablePath) + @"\saved_2.txt";
         private string savedFile3 = Path.GetDirectoryName(Application.ExecutablePath) + @"\saved_3.txt";
+        private string SelectedCommodity = string.Empty;
         private List<string> ShipList = new List<string>();
         private List<string> SourceList = new List<string>();
         private string SourceSystem = string.Empty;
@@ -39,7 +76,6 @@ namespace TDHelper
         private string tv_outputBox = string.Empty;
         private CultureInfo userCulture = CultureInfo.CurrentCulture;
         private IList<string> validConfigs = new List<string>();
-        private string SelectedCommodity = string.Empty;
 
         #endregion FormProps
 
@@ -74,12 +110,19 @@ namespace TDHelper
             this.btnCmdrProfile.Enabled = ValidateEdce();
         }
 
+        private string AddAvoidOption(string toAvoid)
+        {
+            return string.IsNullOrEmpty(toAvoid)
+                ? string.Empty
+                : " --avoid=\"{0}\"".With(toAvoid);
+        }
+
         private string AddCheckedOption(
-                    bool toAdd,
+                            bool toAdd,
                     string option)
         {
-            return toAdd 
-                ? " {0}".With(option) 
+            return toAdd
+                ? " {0}".With(option)
                 : string.Empty;
         }
 
@@ -97,8 +140,8 @@ namespace TDHelper
 
         private string AddNear(string system)
         {
-            return string.IsNullOrEmpty(system) 
-                ? string.Empty 
+            return string.IsNullOrEmpty(system)
+                ? string.Empty
                 : " --near=\"{0}\"".With(system);
         }
 
@@ -106,8 +149,8 @@ namespace TDHelper
                     decimal value,
                     string option)
         {
-            return value == 0 
-                ? string.Empty 
+            return value == 0
+                ? string.Empty
                 : " {0}={1}".With(option, value);
         }
 
@@ -135,17 +178,10 @@ namespace TDHelper
                 : " --planetary={0}".With(planetary);
         }
 
-        private string AddAvoidOption(string toAvoid)
-        {
-            return string.IsNullOrEmpty(toAvoid) 
-                ? string.Empty 
-                : " --avoid=\"{0}\"".With(toAvoid);
-        }
-
         private string AddQuotedOption(string system)
         {
-            return string.IsNullOrEmpty(system) 
-                ? string.Empty 
+            return string.IsNullOrEmpty(system)
+                ? string.Empty
                 : " \"{0}\"".With(system);
         }
 
@@ -153,15 +189,15 @@ namespace TDHelper
             string value,
             string option)
         {
-            return string.IsNullOrEmpty(value) 
-                ? string.Empty 
+            return string.IsNullOrEmpty(value)
+                ? string.Empty
                 : " {0}={1}".With(option, value);
         }
 
         private string AddVerbosity()
         {
-            return settingsRef.Verbosity == 0 
-                ? string.Empty 
+            return settingsRef.Verbosity == 0
+                ? string.Empty
                 : " {0}".With(t_outputVerbosity);
         }
 
@@ -219,147 +255,78 @@ namespace TDHelper
              * it controls the logic for all the primary commands.
              */
 
-            // avoid issues by enforcing InvariantCulture
-            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+            switch (methodIndex)
+            {
+                // Station command
+                case 10:
+                    commandString = GetStationCommand(SourceSystem);
+                    break;
 
-            td_proc = new Process();
-            td_proc.StartInfo.FileName = settingsRef.PythonPath;
+                // Local command
+                case 9:
+                    commandString = GetLocalCommand(SourceSystem);
+                    break;
 
-            if (settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase))
-            {
-                t_path = string.Empty; // go in blank so we don't pass silliness to trade.exe
-            }
-            else
-            {
-                t_path = "-u \"" + Path.Combine(settingsRef.TDPath, "trade.py") + "\" ";
-            }
+                // OldData command
+                case 8:
+                    commandString = GetOldDataCommand(SourceSystem);
+                    break;
 
-            /* Indexes are as follows:
-             *
-             * Index = 0 is the Run command
-             * Index = 1 is the Buy command
-             * Index = 2 is the Sell command
-             * Index = 3 is the Rare command
-             * Index = 4 is the Trade command
-             * Index = 5 is the Market command
-             * Index = 6 is the Ship Vendor command
-             * Index = 7 is the Navigation command
-             * Index = 8 is the OldData command
-             *
-             * buttonCaller = 1 is a semaphore for the Run button
-             * buttonCaller = 2 is a semaphore for the "C" button
-             * buttonCaller = 4 is a semaphore for the Run delegate
-             * buttonCaller = 5 is a semaphore for the Cancel button
-             *
-             * buttonCaller = 16 forces a full database update
-             * buttonCaller = 17 forces a call to populateStationPanel
-             * buttonCaller = 18 is an override for the Local box
-             *
-             * buttonCaller = 5 is the "Update DB" button
-             * buttonCaller = 10 is the Station Commodities Editor button
-             * buttonCaller = 11 is the Station Editor button (Ctrl+Click)
-             * buttonCaller = 12 is the Import button
-             * buttonCaller = 14 is the Shift+Import button
-             * buttonCaller = 13 is the Upload button
-             *
-             * buttonCaller = 20 is an explicit semaphore for playAlert()
-             * buttonCaller = 21 is the config file selection box
-             *
-             * buttonCaller = 22 is the Cmdr Profile button
-             *
-             * Buttons should always be placed above normal indexes!
-             */
+                // Nav command
+                case 7:
+                    commandString = GetNavCommand(SourceSystem, TargetSystem);
+                    break;
 
-            if (methodIndex == 9)
-            {
-                // local is a global override, let's catch it first
-                if (!string.IsNullOrEmpty(SourceSystem))
-                {
-                    t_path += GetLocalCommand(SourceSystem);
-                }
-                else
-                {
-                    t_path = string.Empty;
-                }
-            }
-            else if (methodIndex == 8)
-            {
-                if (!string.IsNullOrEmpty(SourceSystem))
-                {
-                    t_path += GetOldDataCommand(SourceSystem);
-                }
-                else
-                {
-                    t_path = string.Empty;
-                }
-            }
-            else if (methodIndex == 7)
-            {
-                // mark us as coming from the nav command
-                if (!string.IsNullOrEmpty(SourceSystem) && !string.IsNullOrEmpty(TargetSystem))
-                {
-                    t_path += GetNavCommand(SourceSystem, TargetSystem);
-                }
-                else
-                {
-                    t_path = string.Empty;
-                }
-            }
-            else if (methodIndex == 5)
-            { // Market command
-                if (!string.IsNullOrEmpty(SourceSystem))
-                {
-                    t_path += GetMarketCommand(SourceSystem);
-                }
-                else
-                {
-                    t_path = string.Empty;
-                }
-            }
-            else if (methodIndex == 4)
-            {
-                // mark us as coming from the trade command
-                if (!string.IsNullOrEmpty(SourceSystem) && !string.IsNullOrEmpty(TargetSystem))
-                {
-                    t_path += GetTradeCommand(SourceSystem, TargetSystem);
-                }
-                else
-                {
-                    t_path = string.Empty;
-                }
-            }
-            else if (methodIndex == 3)
-            { // Rares command
-                if (!string.IsNullOrEmpty(SourceSystem))
-                {
-                    t_path += GetRaresCommand(SourceSystem);
-                }
-                else
-                {
-                    t_path = string.Empty;
-                }
-            }
-            else if (methodIndex == 2)
-            { // Sell command
-                t_path += GetSellCommand(SelectedCommodity, SourceSystem);
-            }
-            else if (methodIndex == 1)
-            { // Buy command
-                t_path += GetBuyCommand(SelectedCommodity, SourceSystem);
-            }
-            else if (methodIndex == 0)
-            { // Run command
-                t_path += GetRunCommand(SourceSystem, TargetSystem);
+                // Market command
+                case 5:
+                    commandString = GetMarketCommand(SourceSystem);
+                    break;
+
+                // Trade command
+                case 4:
+                    commandString = GetTradeCommand(SourceSystem, TargetSystem);
+                    break;
+
+                // Rares command
+                case 3:
+                    commandString = GetRaresCommand(SourceSystem);
+                    break;
+
+                // Sell command
+                case 2:
+                    commandString = GetSellCommand(SelectedCommodity, SourceSystem);
+                    break;
+
+                // Buy command
+                case 1:
+                    commandString = GetBuyCommand(SelectedCommodity, SourceSystem);
+                    break;
+
+                // Run command
+                case 0:
+                    commandString = GetRunCommand(SourceSystem, TargetSystem);
+                    break;
             }
 
             // pass the built command-line to the delegate
-            if (string.IsNullOrEmpty(t_path))
+            if (string.IsNullOrEmpty(commandString))
             {
                 PlayAlert();
             }
             else
             {
-                DoTDProc(t_path);
+                // Avoid issues by enforcing InvariantCulture
+                Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+
+                td_proc = new Process();
+                td_proc.StartInfo.FileName = settingsRef.PythonPath;
+
+                if (!settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase))
+                {
+                    commandString = "-u \"" + Path.Combine(settingsRef.TDPath, "trade.py") + "\" " + commandString;
+                }
+
+                DoTDProc(commandString);
             }
         }
 
@@ -372,22 +339,20 @@ namespace TDHelper
 
                 // let's alert the user that the Output pane has changed
                 if (!string.IsNullOrEmpty(rtbOutput.Text) && tabControl1.SelectedTab != pagOutput)
+                {
                     tabControl1.SelectedTab = pagOutput;
+                }
 
                 // assume we're coming from getUpdatedPricesFile()
                 if (!string.IsNullOrEmpty(settingsRef.ImportPath) && buttonCaller == 11)
+                {
                     CleanUpdatedPricesFile();
-                else if (buttonCaller == 16)
+                }
+                else if (!backgroundWorker1.IsBusy && buttonCaller == 16)
                 {
                     // force a db sync if we're marked
-                    if (!backgroundWorker1.IsBusy)
-                        backgroundWorker1.RunWorkerAsync();
+                    backgroundWorker1.RunWorkerAsync();
                 }
-                //else if (buttonCaller == 17)
-                //{
-                //    // force a station/shipvendor panel update
-                //    PopulateStationPanel(temp_src);
-                //}
 
                 // reenable after uncancellable task is done
                 EnablebtnStarts();
@@ -409,6 +374,7 @@ namespace TDHelper
                 else if (buttonCaller == 4)
                 {
                     string filteredOutput = FilterOutput(rtbOutput.Text);
+
                     // validate the run output before we enable the mini-mode button
                     runOutputState = IsValidRunOutput(filteredOutput);
 
@@ -419,7 +385,9 @@ namespace TDHelper
                         btnMiniMode.Enabled = true;
                     }
                     else
+                    {
                         btnMiniMode.Enabled = false;
+                    }
                 }
 
                 buttonCaller = 0;
@@ -464,9 +432,9 @@ namespace TDHelper
              */
 
             GetDataUpdates(); // update conditionally
-            DoTDProc(t_path); // pass this to the worker delegate
+            DoTDProc(commandString); // pass this to the worker delegate
 
-            t_path = string.Empty; // reset path for thread safety
+            commandString = string.Empty; // reset path for thread safety
         }
 
         private void BackgroundWorker4_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -583,7 +551,7 @@ namespace TDHelper
                 if (ValidateEdce())
                 {
                     // EDCE is valid so set up the call.
-                    t_path = "\"" + Path.Combine(MainForm.settingsRef.EdcePath, "edce_client.py") + "\"";
+                    commandString = "\"" + Path.Combine(MainForm.settingsRef.EdcePath, "edce_client.py") + "\"";
                 }
                 else
                 {
@@ -603,7 +571,7 @@ namespace TDHelper
                     td_proc = new Process();
                     td_proc.StartInfo.FileName = settingsRef.PythonPath;
 
-                    DoTDProc(t_path);
+                    DoTDProc(commandString);
                 }
                 finally
                 {
@@ -611,7 +579,7 @@ namespace TDHelper
                 }
             }
 
-            t_path = string.Empty; // reset path for thread safety
+            commandString = string.Empty; // reset path for thread safety
         }
 
         private void BackgroundWorker7_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -729,9 +697,25 @@ namespace TDHelper
             // mark as run button
             buttonCaller = 1;
 
-            GetSourceAndTarget();
+            GetSourceTargetAndCommodity();
 
             DoRunEvent(); // externalized
+        }
+
+        private void BuyOptionsOneStop_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkBuyOptionsOneStop.Checked)
+            {
+                optBuyOptionsPrice.Checked = false;
+            }
+        }
+
+        private void BuyOptionsPrice_CheckedChanged(object sender, EventArgs e)
+        {
+            if (optBuyOptionsPrice.Checked)
+            {
+                chkBuyOptionsOneStop.Checked = false;
+            }
         }
 
         private void CboShipsSold_KeyDown(object sender, KeyEventArgs e)
@@ -1475,7 +1459,9 @@ namespace TDHelper
 
         private void DestSystemComboBox_KeyDown(object sender, KeyEventArgs e)
         {
-            string filteredString = RemoveExtraWhitespace(cboRunOptionsDestination.Text);
+            ComboBox control = (ComboBox)sender;
+
+            string filteredString = RemoveExtraWhitespace(control.Text);
 
             if ((e.KeyCode == Keys.Enter & e.Modifiers == Keys.Control)
                 && StringInList(filteredString, outputSysStnNames))
@@ -1484,6 +1470,7 @@ namespace TDHelper
                 AddMarkedStation(filteredString, currentMarkedStations);
                 BuildOutput(true);
                 SaveSettingsToIniFile();
+
                 e.Handled = true;
             }
             else if ((e.KeyCode == Keys.Enter & e.Modifiers == Keys.Shift)
@@ -1491,28 +1478,18 @@ namespace TDHelper
             {
                 // if shift+enter, item is in our list, remove it
                 RemoveMarkedStation(filteredString, currentMarkedStations);
+
                 int index = IndexInList(filteredString, output_unclean);
+
                 BuildOutput(true);
                 SaveSettingsToIniFile();
+
                 e.Handled = true;
             }
             else if (e.KeyCode == Keys.Escape
-                && !string.IsNullOrEmpty(cboRunOptionsDestination.Text))
+                && !string.IsNullOrEmpty(control.Text))
             {
-                // wipe our box selectively if we hit escape
-                //first wipe until the delimiter
-                string[] tokens = cboRunOptionsDestination.Text.Split(new string[] { "/" }, StringSplitOptions.None);
-
-                if (tokens != null && tokens.Length == 2)
-                {
-                    // make sure we have a system/station
-                    // delete the front of the string until the system
-                    cboRunOptionsDestination.Text = tokens[0];
-                }
-                else if (!cboRunOptionsDestination.Text.Contains("/"))
-                {
-                    cboRunOptionsDestination.Text = string.Empty;
-                }
+                control.Text = RemoveSystemOrStation(filteredString);
 
                 e.Handled = true;
             }
@@ -1547,6 +1524,30 @@ namespace TDHelper
             if (buttonCaller != 1)
             {
                 btnStart.Enabled = false;
+            }
+        }
+
+        /// <summary>
+        /// Caled on clicking one of the distance menu items.
+        /// </summary>
+        /// <param name="sender">The menu item clicked.</param>
+        /// <param name="e">The event arguments.</param>
+        private void DistanceMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
+            var sourceControl = ((ContextMenuStrip)(menuItem.GetCurrentParent())).SourceControl;
+
+            if (sourceControl is NumericUpDown)
+            {
+                SetDecimalControlValue((NumericUpDown)sourceControl, menuItem.Name);
+            }
+            else if (sourceControl is TextBox)
+            {
+                SetTextBoxControlValue((TextBox)sourceControl, menuItem.Name);
+            }
+            else if (sourceControl is ComboBox)
+            {
+                SetComboBoxControlValue((ComboBox)sourceControl, menuItem.Name);
             }
         }
 
@@ -1593,6 +1594,67 @@ namespace TDHelper
             grdPilotsLog.Columns["Notes"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
         }
 
+        /// <summary>
+        /// Get the buy command string.
+        /// </summary>
+        /// <param name="selectedCommodity">The name of the selected commodity.</param>
+        /// <param name="nearSystem">The select source system.</param>
+        /// <returns>A correctly formatted command string.</returns>
+        private string GetBuyCommand(
+            string selectedCommodity,
+            string nearSystem)
+        {
+            string cmdPath = string.Empty;
+
+            if (!string.IsNullOrEmpty(selectedCommodity))
+            {
+                cmdPath += "buy";
+
+                cmdPath += AddNear(nearSystem);
+
+                if (!string.IsNullOrEmpty(nearSystem))
+                {
+                    cmdPath += AddNumericOption(numBuyOptionsNearLy.Value, "--ly");
+                }
+
+                cmdPath += AddNumericOption(numBuyOptionsAbove.Value, "--gt");
+                cmdPath += AddNumericOption(numBuyOptionsBelow.Value, "--lt");
+                cmdPath += AddNumericOption(numBuyOptionsSupply.Value, "--supply");
+
+                cmdPath += AddCheckedOption(chkBuyOptionsBlkMkt.Checked, "--bm");
+                cmdPath += AddCheckedOption(chkBuyOptionsOneStop.Checked, "-1");
+
+                cmdPath += AddPadOption(txtBuyOptionsPads.Text);
+                cmdPath += AddPlanetaryOption(txtBuyOptionsPlanetary.Text);
+                cmdPath += AddLimitOption(numBuyOptionsLimit.Value);
+
+                cmdPath += AddAvoidOption(txtBuyOptionsAvoid.Text);
+
+                cmdPath += AddVerbosity();
+
+                RadioButton option = grpBuyOptionsSort.Controls.OfType<RadioButton>()
+                    .FirstOrDefault(x => x.Checked);
+
+                if (option != null)
+                {
+                    switch (option.Text.ToLower())
+                    {
+                        case "price":
+                            cmdPath += " -P";
+                            break;
+
+                        case "supply":
+                            cmdPath += " -S";
+                            break;
+                    }
+                }
+
+                cmdPath += AddQuotedOption(selectedCommodity);
+            }
+
+            return cmdPath;
+        }
+
         private int GetCheckBoxCheckState(CheckState checkState)
         {
             switch (checkState)
@@ -1618,122 +1680,47 @@ namespace TDHelper
         /// <returns>A correctly formatted command string.</returns>
         private string GetLocalCommand(string sourceSystem)
         {
-            string cmdPath = "local";
+            string cmdPath = string.Empty;
 
-            cmdPath += AddNumericOption(numLocalOptionsLy.Value, "--ly");
+            if (!string.IsNullOrEmpty(sourceSystem))
+            {
+                cmdPath += "local";
+                cmdPath += AddNumericOption(numLocalOptionsLy.Value, "--ly");
 
-            cmdPath += AddCheckedOption(chkLocalOptionsRearm.Checked, "--rearm");
-            cmdPath += AddCheckedOption(chkLocalOptionsRefuel.Checked, "--refuel");
-            cmdPath += AddCheckedOption(chkLocalOptionsRepair.Checked, "--repair");
-            cmdPath += AddCheckedOption(chkLocalOptionsTrading.Checked, "--trading");
-            cmdPath += AddCheckedOption(chkLocalOptionsBlkMkt.Checked, "--bm");
-            cmdPath += AddCheckedOption(chkLocalOptionsShipyard.Checked, "--shipyard");
-            cmdPath += AddCheckedOption(chkLocalOptionsOutfitting.Checked, "--outfitting");
-            cmdPath += AddCheckedOption(chkLocalOptionsStations.Checked, "--stations");
+                cmdPath += AddCheckedOption(chkLocalOptionsRearm.Checked, "--rearm");
+                cmdPath += AddCheckedOption(chkLocalOptionsRefuel.Checked, "--refuel");
+                cmdPath += AddCheckedOption(chkLocalOptionsRepair.Checked, "--repair");
+                cmdPath += AddCheckedOption(chkLocalOptionsTrading.Checked, "--trading");
+                cmdPath += AddCheckedOption(chkLocalOptionsBlkMkt.Checked, "--bm");
+                cmdPath += AddCheckedOption(chkLocalOptionsShipyard.Checked, "--shipyard");
+                cmdPath += AddCheckedOption(chkLocalOptionsOutfitting.Checked, "--outfitting");
+                cmdPath += AddCheckedOption(chkLocalOptionsStations.Checked, "--stations");
 
-            cmdPath += AddPlanetaryOption(txtLocalOptionsPlanetary.Text);
-            cmdPath += AddPadOption(txtLocalOptionsPads.Text);
+                cmdPath += AddPlanetaryOption(txtLocalOptionsPlanetary.Text);
+                cmdPath += AddPadOption(txtLocalOptionsPads.Text);
 
-            cmdPath += AddVerbosity();
+                cmdPath += AddVerbosity();
 
-            cmdPath += AddQuotedOption(sourceSystem);
+                cmdPath += AddQuotedOption(sourceSystem);
+            }
 
             return cmdPath;
         }
 
         /// <summary>
-        /// Get the sell command string.
+        /// Get the station command string.
         /// </summary>
-        /// <param name="selectedCommodity">The name of the selected commodity.</param>
-        /// <param name="source">The select source system.</param>
+        /// <param name="sourceSystem">The name of the source system.</param>
         /// <returns>A correctly formatted command string.</returns>
-        private string GetSellCommand(
-            string selectedCommodity,
-            string source)
+        private string GetStationCommand(string sourceSystem)
         {
-            string cmdPath = "sell";
+            string cmdPath = string.Empty;
 
-            cmdPath += AddNear(source);
-
-            cmdPath += AddNumericOption(numSellOptionsNearLy.Value, "--ly");
-            cmdPath += AddNumericOption(numSellOptionsAbove.Value, "--gt");
-            cmdPath += AddNumericOption(numSellOptionsBelow.Value, "--lt");
-            cmdPath += AddNumericOption(numSellOptionsDemand.Value, "--demand");
-
-            cmdPath += AddCheckedOption(chkSellOptionsBlkMkt.Checked, "--bm");
-
-            cmdPath += AddPadOption(txtSellOptionsPads.Text);
-            cmdPath += AddPlanetaryOption(txtSellOptionsPlanetary.Text);
-            cmdPath += AddLimitOption(numSellOptionsLimit.Value);
-
-            cmdPath += AddAvoidOption(txtSellOptionsAvoid.Text);
-
-            cmdPath += AddVerbosity();
-
-            RadioButton option = grpSellOptionsSort.Controls.OfType<RadioButton>()
-                .FirstOrDefault(x => x.Checked);
-
-            if (option != null)
+            if (!string.IsNullOrEmpty(sourceSystem))
             {
-                if (option.Text == "Price")
-                {
-                    cmdPath += " -P";
-                }
+                cmdPath += "station -v";
+                cmdPath += AddQuotedOption(sourceSystem);
             }
-
-            cmdPath += AddQuotedOption(selectedCommodity);
-
-            return cmdPath;
-        }
-
-        /// <summary>
-        /// Get the buy command string.
-        /// </summary>
-        /// <param name="selectedCommodity">The name of the selected commodity.</param>
-        /// <param name="source">The select source system.</param>
-        /// <returns>A correctly formatted command string.</returns>
-        private string GetBuyCommand(
-            string selectedCommodity,
-            string source)
-        {
-            string cmdPath = "buy";
-
-            cmdPath += AddNear(source);
-
-            cmdPath += AddNumericOption(numBuyOptionsNearLy.Value, "--ly");
-            cmdPath += AddNumericOption(numBuyOptionsAbove.Value, "--gt");
-            cmdPath += AddNumericOption(numBuyOptionsBelow.Value, "--lt");
-            cmdPath += AddNumericOption(numBuyOptionsSupply.Value, "--supply");
-
-            cmdPath += AddCheckedOption(chkBuyOptionsBlkMkt.Checked, "--bm");
-            cmdPath += AddCheckedOption(chkBuyOptionsOneStop.Checked, "-1");
-
-            cmdPath += AddPadOption(txtBuyOptionsPads.Text);
-            cmdPath += AddPlanetaryOption(txtBuyOptionsPlanetary.Text);
-            cmdPath += AddLimitOption(numBuyOptionsLimit.Value);
-
-            cmdPath += AddAvoidOption(txtBuyOptionsAvoid.Text);
-
-            cmdPath += AddVerbosity();
-
-            RadioButton option = grpBuyOptionsSort.Controls.OfType<RadioButton>()
-                .FirstOrDefault(x => x.Checked);
-
-            if (option != null)
-            {
-                switch (option.Text.ToLower())
-                {
-                    case "price":
-                        cmdPath += " -P";
-                        break;
-
-                    case "supply":
-                        cmdPath += " -S";
-                        break;
-                }
-            }
-
-            cmdPath += AddQuotedOption(selectedCommodity);
 
             return cmdPath;
         }
@@ -1745,26 +1732,31 @@ namespace TDHelper
         /// <returns>A correctly formatted command string.</returns>
         private string GetMarketCommand(string sourceSystem)
         {
-            string cmdPath = "market";
+            string cmdPath = string.Empty;
 
-            RadioButton option = grpMarketOptionsType.Controls.OfType<RadioButton>().FirstOrDefault(x => x.Checked);
-
-            if (option != null)
+            if (!string.IsNullOrEmpty(sourceSystem))
             {
-                switch (option.Text.ToLower())
+                cmdPath = "market";
+
+                RadioButton option = grpMarketOptionsType.Controls.OfType<RadioButton>().FirstOrDefault(x => x.Checked);
+
+                if (option != null)
                 {
-                    case "buy":
-                        cmdPath += " --b";
-                        break;
+                    switch (option.Text.ToLower())
+                    {
+                        case "buy":
+                            cmdPath += " --b";
+                            break;
 
-                    case "sell":
-                        cmdPath += " --s";
-                        break;
+                        case "sell":
+                            cmdPath += " --s";
+                            break;
+                    }
                 }
-            }
 
-            cmdPath += AddVerbosity();
-            cmdPath += AddQuotedOption(sourceSystem);
+                cmdPath += AddVerbosity();
+                cmdPath += AddQuotedOption(sourceSystem);
+            }
 
             return cmdPath;
         }
@@ -1778,22 +1770,111 @@ namespace TDHelper
             string sourceSystem,
             string destinationSystem)
         {
-            string cmdPath = "nav";
+            string cmdPath = string.Empty;
 
-            cmdPath += AddTextOption(txtNavOptionsVia.Text, "--via");
-            cmdPath += AddTextOption(txtNavOptionsAvoid.Text, "--avoid");
-            cmdPath += AddPlanetaryOption(txtNavOptionsPlanetary.Text);
-            cmdPath += AddPadOption(txtNavOptionsPads.Text);
+            if (!string.IsNullOrEmpty(sourceSystem) &&
+                !string.IsNullOrEmpty(destinationSystem))
+            {
+                cmdPath += "nav";
 
-            cmdPath += AddNumericOption(numNavOptionsLy.Value, "--ly");
-            cmdPath += AddNumericOption(numNavOptionsRefuelJumps.Value, "--ref");
+                cmdPath += AddTextOption(txtNavOptionsVia.Text, "--via");
+                cmdPath += AddTextOption(txtNavOptionsAvoid.Text, "--avoid");
+                cmdPath += AddPlanetaryOption(txtNavOptionsPlanetary.Text);
+                cmdPath += AddPadOption(txtNavOptionsPads.Text);
 
-            cmdPath += AddCheckedOption(chkNavOptionsStations.Checked, "--stations");
+                cmdPath += AddNumericOption(numNavOptionsLy.Value, "--ly");
+                cmdPath += AddNumericOption(numNavOptionsRefuelJumps.Value, "--ref");
 
-            cmdPath += AddVerbosity();
+                cmdPath += AddCheckedOption(chkNavOptionsStations.Checked, "--stations");
 
-            cmdPath += AddQuotedOption(sourceSystem);
-            cmdPath += AddQuotedOption(destinationSystem);
+                cmdPath += AddVerbosity();
+
+                cmdPath += AddQuotedOption(sourceSystem);
+                cmdPath += AddQuotedOption(destinationSystem);
+            }
+
+            return cmdPath;
+        }
+
+        /// <summary>
+        /// Get the old data command string.
+        /// </summary>
+        /// <param name="sourceSystem">The name of the source system.</param>
+        /// <returns>A correctly formatted command string.</returns>
+        private string GetOldDataCommand(string sourceSystem)
+        {
+            string cmdPath = string.Empty;
+
+            if (!string.IsNullOrEmpty(sourceSystem))
+            {
+                cmdPath += "olddata";
+
+                cmdPath += AddCheckedOption(chkOldDataOptionsRoute.Checked, "--route");
+                cmdPath += AddNumericOption(numOldDataOptionsNearLy.Value, "--ly");
+                cmdPath += AddNumericOption(numOldDataOptionsMinAge.Value, "--min-age");
+                cmdPath += AddLimitOption(numOldDataOptionsLimit.Value);
+
+                cmdPath += AddVerbosity();
+                cmdPath += AddNear(sourceSystem);
+            }
+
+            return cmdPath;
+        }
+
+        /// <summary>
+        /// Get the rares command string.
+        /// </summary>
+        /// <param name="sourceSystem">The name of the source system.</param>
+        /// <returns>A correctly formatted command string.</returns>
+        private string GetRaresCommand(string sourceSystem)
+        {
+            string cmdPath = string.Empty;
+
+            if (!string.IsNullOrEmpty(sourceSystem))
+            {
+                cmdPath = "rares";
+
+                cmdPath += AddNumericOption(numRaresOptionsLy.Value, "--ly");
+
+                cmdPath += AddPadOption(txtRaresOptionsPads.Text);
+                cmdPath += AddPlanetaryOption(txtRaresOptionsPlanetary.Text);
+                cmdPath += AddLimitOption(numRaresOptionsLimit.Value);
+
+                cmdPath += AddCheckedOption(chkRaresOptionsReverse.Checked, "--reverse");
+                cmdPath += AddCheckedOption(chkRaresOptionsQuiet.Checked, "--quiet");
+
+                RadioButton option = grpRaresOptionsType.Controls.OfType<RadioButton>().FirstOrDefault(x => x.Checked);
+
+                if (option != null && 
+                    option.Text!= "All")
+                {
+                    cmdPath += " --{0}".With(option.Text);
+                }
+
+                option = grpRaresOptionsSort.Controls.OfType<RadioButton>().FirstOrDefault(x => x.Checked);
+
+                if (option != null && 
+                    option.Text == "Price")
+                {
+                    cmdPath += " --P";
+                }
+
+                if (!string.IsNullOrEmpty(txtRaresOptionsFrom.Text) && 
+                    numRaresOptionsAway.Value > 0)
+                {
+                    cmdPath += AddNumericOption(numRaresOptionsAway.Value, "--away");
+
+                    foreach (string output in txtRaresOptionsFrom.Text.Split(',')
+                        .Select(x => x.Trim())
+                        .Where(x => !string.IsNullOrWhiteSpace(x)))
+                    {
+                        cmdPath += " --from=\"{0}\"".With(output);
+                    }
+                }
+
+                cmdPath += AddVerbosity();
+                cmdPath += AddQuotedOption(sourceSystem);
+            }
 
             return cmdPath;
         }
@@ -1813,12 +1894,10 @@ namespace TDHelper
             {
                 cmdPath += " --fr=\"{0}\"".With(sourceSystem);
 
-                if (!string.IsNullOrEmpty(destinationSystem))
+                if (!string.IsNullOrEmpty(destinationSystem) &&
+                    chkRunOptionsTowards.Checked)
                 {
-                    if (chkRunOptionsTowards.Checked)
-                    {
-                        cmdPath += " --towards\"{0}\"".With(destinationSystem);
-                    }
+                    cmdPath += " --towards=\"{0}\"".With(destinationSystem);
                 }
             }
 
@@ -1883,87 +1962,55 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Get the old data command string.
+        /// Get the sell command string.
         /// </summary>
-        /// <param name="sourceSystem">The name of the source system.</param>
+        /// <param name="selectedCommodity">The name of the selected commodity.</param>
+        /// <param name="nearSystem">The select source system.</param>
         /// <returns>A correctly formatted command string.</returns>
-        private string GetOldDataCommand(string sourceSystem)
+        private string GetSellCommand(
+            string selectedCommodity,
+            string nearSystem)
         {
-            string cmdPath = "olddata";
+            string cmdPath = string.Empty;
 
-            cmdPath += AddCheckedOption(chkOldDataOptionsRoute.Checked, "--route");
-            cmdPath += AddNumericOption(numOldDataOptionsNearLy.Value, "--ly");
-            cmdPath += AddNumericOption(numOldDataOptionsMinAge.Value, "--min-age");
-            cmdPath += AddLimitOption(numOldDataOptionsLimit.Value);
-
-            cmdPath += AddVerbosity();
-            cmdPath += AddNear(sourceSystem);
-
-            return cmdPath;
-        }
-
-        /// <summary>
-        /// Get the rares command string.
-        /// </summary>
-        /// <param name="sourceSystem">The name of the source system.</param>
-        /// <returns>A correctly formatted command string.</returns>
-        private string GetRaresCommand(string sourceSystem)
-        {
-            string cmdPath = "rares";
-
-            cmdPath += AddNumericOption(numRaresOptionsLy.Value, "--ly");
-
-            cmdPath += AddPadOption(txtRaresOptionsPads.Text);
-            cmdPath += AddPlanetaryOption(txtRaresOptionsPlanetary.Text);
-            cmdPath += AddLimitOption(numRaresOptionsLimit.Value);
-
-            cmdPath += AddCheckedOption(chkRaresOptionsReverse.Checked, "--reverse");
-            cmdPath += AddCheckedOption(chkRaresOptionsQuiet.Checked, "--quiet");
-
-
-
-            RadioButton option = grpRaresOptionsType.Controls.OfType<RadioButton>().FirstOrDefault(x => x.Checked);
-
-            if (option != null)
+            if (!string.IsNullOrEmpty(selectedCommodity))
             {
-                switch (option.Text.ToLower())
+                cmdPath += "sell";
+
+                cmdPath += AddNear(nearSystem);
+
+                if (!string.IsNullOrEmpty(nearSystem))
                 {
-                    case "legal":
-                        cmdPath += " --legal";
-                        break;
-
-                    case "illegal":
-                        cmdPath += " --illegal";
-                        break;
+                    cmdPath += AddNumericOption(numSellOptionsNearLy.Value, "--ly");
                 }
-            }
 
-            option = grpRaresOptionsSort.Controls.OfType<RadioButton>().FirstOrDefault(x => x.Checked);
+                cmdPath += AddNumericOption(numSellOptionsAbove.Value, "--gt");
+                cmdPath += AddNumericOption(numSellOptionsBelow.Value, "--lt");
+                cmdPath += AddNumericOption(numSellOptionsDemand.Value, "--demand");
 
-            if (option != null)
-            {
-                switch (option.Text.ToLower())
+                cmdPath += AddCheckedOption(chkSellOptionsBlkMkt.Checked, "--bm");
+
+                cmdPath += AddPadOption(txtSellOptionsPads.Text);
+                cmdPath += AddPlanetaryOption(txtSellOptionsPlanetary.Text);
+                cmdPath += AddLimitOption(numSellOptionsLimit.Value);
+
+                cmdPath += AddAvoidOption(txtSellOptionsAvoid.Text);
+
+                cmdPath += AddVerbosity();
+
+                RadioButton option = grpSellOptionsSort.Controls.OfType<RadioButton>()
+                    .FirstOrDefault(x => x.Checked);
+
+                if (option != null)
                 {
-                    case "price":
-                        cmdPath += " --P";
-                        break;
+                    if (option.Text == "Price")
+                    {
+                        cmdPath += " -P";
+                    }
                 }
+
+                cmdPath += AddQuotedOption(selectedCommodity);
             }
-
-            if (!string.IsNullOrEmpty(txtRaresOptionsFrom.Text) && numRaresOptionsAway.Value > 0)
-            {
-                cmdPath += AddNumericOption(numRaresOptionsAway.Value, "--away");
-
-                foreach (string output in txtRaresOptionsFrom.Text.Split(',')
-                    .Select(x => x.Trim())
-                    .Where(x => !string.IsNullOrWhiteSpace(x)))
-                {
-                    cmdPath += " --from=\"{0}\"".With(output);
-                }
-            }
-
-            cmdPath += AddVerbosity();
-            cmdPath += AddQuotedOption(sourceSystem);
 
             return cmdPath;
         }
@@ -1971,11 +2018,19 @@ namespace TDHelper
         /// <summary>
         /// Set up the correct source and targeet system and selected commodity data.
         /// </summary>
-        private void GetSourceAndTarget()
+        private void GetSourceTargetAndCommodity()
+        {
+            GetSourceAndDestinationSystems();
+            GetSelectedCommodity();
+        }
+
+         /// <summary>
+        /// Set up the correct source and targeet system.
+        /// </summary>
+        private void GetSourceAndDestinationSystems()
         {
             SourceSystem = RemoveExtraWhitespace(cboSourceSystem.Text);
             string destination = string.Empty;
-            string commodity = string.Empty;
 
             switch (methodFromIndex)
             {
@@ -2000,6 +2055,14 @@ namespace TDHelper
             {
                 TargetSystem = RemoveExtraWhitespace(destination);
             }
+        }
+
+        /// <summary>
+        /// Set up the selected commodity data.
+        /// </summary>
+        private void GetSelectedCommodity()
+        {
+            string commodity = string.Empty;
 
             switch (methodFromIndex)
             {
@@ -2022,7 +2085,7 @@ namespace TDHelper
             }
         }
 
-        private void GetSystemButton_Click(object sender, EventArgs e)
+       private void GetSystemButton_Click(object sender, EventArgs e)
         {
             buttonCaller = 2;
 
@@ -2049,14 +2112,36 @@ namespace TDHelper
             string sourceSystem,
             string destinationSystem)
         {
-            string cmdPath = "trade";
+            string cmdPath = string.Empty;
 
-            cmdPath += AddVerbosity();
+            if (!string.IsNullOrEmpty(sourceSystem) &&
+                !string.IsNullOrEmpty(destinationSystem))
+            {
+                cmdPath = "trade";
 
-            cmdPath += AddQuotedOption(sourceSystem);
-            cmdPath += AddQuotedOption(destinationSystem);
+                cmdPath += AddVerbosity();
+
+                cmdPath += AddQuotedOption(sourceSystem);
+                cmdPath += AddQuotedOption(destinationSystem);
+            }
 
             return cmdPath;
+        }
+
+        private void HideAllOptionPanels()
+        {
+            bool show = false;
+            ShowOptions(panRunOptions, show);
+            EnableOptions(panRouteOptions, show);
+            ShowOptions(panBuyOptions, show);
+            ShowOptions(panSellOptions, show);
+            ShowOptions(panRaresOptions, show);
+            ShowOptions(panTradeOptions, show);
+            ShowOptions(panMarketOptions, show);
+            ShowOptions(panShipVendorOptions, show);
+            ShowOptions(panNavOptions, show);
+            ShowOptions(panOldDataOptions, show);
+            ShowOptions(panLocalOptions, show);
         }
 
         private void InsertAtGridRow_Click(object sender, EventArgs e)
@@ -2079,27 +2164,10 @@ namespace TDHelper
 
         private void LocalFilterCheckBoxChanged(object sender, EventArgs e)
         {
-            btnLocalOptionsReset.Enabled
-                = chkLocalOptionsRearm.Checked
-                || chkLocalOptionsRefuel.Checked
-                || chkLocalOptionsRepair.Checked
-                || chkLocalOptionsCommodities.Checked
-                || chkLocalOptionsBlkMkt.Checked
-                || chkLocalOptionsOutfitting.Checked
-                || chkLocalOptionsShipyard.Checked
-                || chkLocalOptionsStations.Checked
-                || chkLocalOptionsTrading.Checked;
+            IEnumerable<CheckBox> checkboxes = panLocalOptions.Controls.OfType<CheckBox>();
 
-            btnLocalOptionsAll.Enabled
-                = !chkLocalOptionsRearm.Checked
-                || !chkLocalOptionsRefuel.Checked
-                || !chkLocalOptionsRepair.Checked
-                || !chkLocalOptionsCommodities.Checked
-                || !chkLocalOptionsBlkMkt.Checked
-                || !chkLocalOptionsOutfitting.Checked
-                || !chkLocalOptionsShipyard.Checked
-                || !chkLocalOptionsStations.Checked
-                || !chkLocalOptionsTrading.Checked;
+            btnLocalOptionsReset.Enabled = checkboxes.Count(x => x.Checked) > 0;
+            btnLocalOptionsAll.Enabled = checkboxes.Count(x => x.Checked) > 0;
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -2128,7 +2196,8 @@ namespace TDHelper
             int[] winSize = LoadWinSize(settingsRef.SizeParent);
 
             // restore window size from config
-            if (winSize.Length != 0 && winSize != null)
+            if (winSize.Length != 0 && 
+                winSize != null)
             {
                 this.Size = new Size(winSize[0], winSize[1]);
             }
@@ -2143,7 +2212,7 @@ namespace TDHelper
             {
                 this.Location = new Point(winLoc[0], winLoc[1]);
                 // if we're restoring the location, let's force it to be visible on screen
-                MainForm.ForceFormOnScreen(this);
+                ForceFormOnScreen(this);
             }
             else
             {
@@ -2157,15 +2226,13 @@ namespace TDHelper
             // bind our alternate config files
             SetShipList(true);
 
-            if (!CheckIfFileOpens(configFile))
-            {
-                SaveSettingsToIniFile();
-            }
+            SaveSettingsToIniFile();
 
             if (settingsRef.HasUpdated)
             {
                 // display the changelog for the user
                 settingsRef.HasUpdated = false; // we've updated
+
                 SaveSettingsToIniFile();
                 DoHotSwapCleanup(); // call cleanup to remove unnecessary files if they exist
 
@@ -2248,22 +2315,6 @@ namespace TDHelper
             methodFromIndex = methodIndex;
 
             ResumeLayout();
-        }
-
-        private void HideAllOptionPanels()
-        {
-            bool show = false;
-            ShowOptions(panRunOptions, show);
-            EnableOptions(panRouteOptions, show);
-            ShowOptions(panBuyOptions, show);
-            ShowOptions(panSellOptions, show);
-            ShowOptions(panRaresOptions, show);
-            ShowOptions(panTradeOptions, show);
-            ShowOptions(panMarketOptions, show);
-            ShowOptions(panShipVendorOptions, show);
-            ShowOptions(panNavOptions, show);
-            ShowOptions(panOldDataOptions, show);
-            ShowOptions(panLocalOptions, show);
         }
 
         private void MiniModeButton_Click(object sender, EventArgs e)
@@ -2507,11 +2558,6 @@ namespace TDHelper
                     selected += key;
                 }
 
-                if (selected.Trim().Length == 0)
-                {
-                    selected = string.Empty;
-                }
-
                 planetary.Text = ContainsPlanetary(selected);
             }
 
@@ -2609,51 +2655,58 @@ namespace TDHelper
         /// </summary>
         private void RefreshCurrentOptionsPanel()
         {
+            Panel panel = null;
+
             switch (methodFromIndex)
             {
                 case 0: // Run
-                    OptionsPanelRefresh(panRunOptions);
+                    panel = panRunOptions;
                     break;
 
                 case 1: // Buy
-                    OptionsPanelRefresh(panBuyOptions);
+                    panel = panBuyOptions;
                     break;
 
                 case 2: // Sell
-                    OptionsPanelRefresh(panSellOptions);
+                    panel = panSellOptions;
                     break;
 
                 case 3: // Rares
-                    OptionsPanelRefresh(panRaresOptions);
+                    panel = panRaresOptions;
                     break;
 
                 case 4: // Trade
-                    OptionsPanelRefresh(panTradeOptions);
+                    panel = panTradeOptions;
                     break;
 
                 case 5: // Market
-                    OptionsPanelRefresh(panMarketOptions);
+                    panel = panMarketOptions;
                     break;
 
                 case 6: // Ship vendor
-                    OptionsPanelRefresh(panShipVendorOptions);
+                    panel = panShipVendorOptions;
                     break;
 
                 case 7: // Navigation
-                    OptionsPanelRefresh(panNavOptions);
+                    panel = panNavOptions;
                     break;
 
                 case 8: // Old data
-                    OptionsPanelRefresh(panOldDataOptions);
+                    panel = panOldDataOptions;
                     break;
 
                 case 9: // Local
-                    OptionsPanelRefresh(panLocalOptions);
+                    panel = panLocalOptions;
                     break;
 
                 default:
                     // Do nothing.
                     break;
+            }
+
+            if (panel != null)
+            {
+                OptionsPanelRefresh(panel);
             }
         }
 
@@ -2750,6 +2803,28 @@ namespace TDHelper
         }
 
         /// <summary>
+        /// The the value of the specified control to the correct vale.
+        /// </summary>
+        /// <param name="control">The control to be set.</param>
+        /// <param name="requiredSource">The key to the source value.</param>
+        private void SetComboBoxControlValue(
+            ComboBox control,
+            string requiredSource)
+        {
+            // Determine the corect source control.
+            string source = string.Empty;
+
+            switch (requiredSource)
+            {
+                case "mnuReset":
+                    source = string.Empty;
+                    break;
+            }
+
+            control.Text = source;
+        }
+
+        /// <summary>
         /// Set the commodities.
         /// </summary>
         /// <param name="panel">The panel to be checked.</param>
@@ -2777,6 +2852,40 @@ namespace TDHelper
                         break;
                 }
             }
+        }
+
+        /// <summary>
+        /// The the value of the specified control to the correct vale.
+        /// </summary>
+        /// <param name="control">The control to be set.</param>
+        /// <param name="requiredSource">The key to the source value.</param>
+        private void SetDecimalControlValue(
+            NumericUpDown control,
+            string requiredSource)
+        {
+            // Determine the corect source control.
+            decimal source = 0M;
+
+            switch (requiredSource)
+            {
+                case "mnuLadenLY":
+                    source = numLadenLy.Value;
+                    break;
+
+                case "mnuUnladenLY":
+                    source = numUnladenLy.Value;
+                    break;
+
+                case "mnuCapacity":
+                    source = numRouteOptionsShipCapacity.Value;
+                    break;
+
+                case "mnuReset":
+                    source = control.Minimum;
+                    break;
+            }
+
+            control.Value = source;
         }
 
         /// <summary>
@@ -2843,6 +2952,74 @@ namespace TDHelper
             {
                 ctrl.Enabled = state;
             }
+        }
+
+        /// <summary>
+        /// The the value of the specified control to the correct vale.
+        /// </summary>
+        /// <param name="control">The control to be set.</param>
+        /// <param name="requiredSource">The key to the source value.</param>
+        private void SetTextBoxControlValue(
+            TextBox control,
+            string requiredSource)
+        {
+            // Determine the corect source control.
+            string source = string.Empty;
+
+            switch (requiredSource)
+            {
+                case "mnuReset":
+                    source = string.Empty;
+                    break;
+            }
+
+            control.Text = source;
+        }
+
+        /// <summary>
+        /// Set up the context menu state depending on the controls clicked.
+        /// </summary>
+        /// <param name="sender">The context menu strip.</param>
+        /// <param name="e">The event arguments.</param>
+        private void SetValuesMenu_Opening(object sender, CancelEventArgs e)
+        {
+            string clickedControlName = ((ContextMenuStrip)sender).SourceControl.Name;
+
+            // Setup the menu.
+            switch (clickedControlName)
+            {
+                case "numBuyOptionsSupply":
+                case "numSellOptionsDemand":
+                case "numRouteOptionsDemand":
+                case "numRouteOptionsStock":
+                    mnuLadenLY.Visible = false;
+                    mnuUnladenLY.Visible = false;
+                    mnuCapacity.Visible = true;
+                    mnuSep3.Visible = true;
+                    break;
+
+                case "numBuyOptionsNearLy":
+                case "numLocalOptionsLy":
+                case "numNavOptionsLy":
+                case "numOldDataOptionsNearLy":
+                case "numRaresOptionsLy":
+                case "numSellOptionsNearLy":
+                    mnuLadenLY.Visible = true;
+                    mnuUnladenLY.Visible = true;
+                    mnuCapacity.Visible = false;
+                    mnuSep3.Visible = true;
+                    break;
+
+                default:
+                    mnuLadenLY.Visible = false;
+                    mnuUnladenLY.Visible = false;
+                    mnuCapacity.Visible = false;
+                    mnuSep3.Visible = false;
+                    break;
+            }
+
+            mnuReset.Enabled = true;
+            mnuSep2.Visible = false;
         }
 
         private void ShortenCheckBox_Click(object sender, EventArgs e)
@@ -2955,6 +3132,7 @@ namespace TDHelper
                     AddMarkedStation(filteredString, currentMarkedStations);
                     BuildOutput(true);
                     SaveSettingsToIniFile();
+
                     e.Handled = true;
                 }
                 else if ((e.KeyCode == Keys.Enter & e.Modifiers == Keys.Shift)
@@ -2962,32 +3140,37 @@ namespace TDHelper
                 {
                     // if shift+enter, item is in our list, remove it
                     RemoveMarkedStation(filteredString, currentMarkedStations);
+
                     int index = IndexInList(filteredString, output_unclean);
+
                     BuildOutput(true);
                     SaveSettingsToIniFile();
+
                     e.Handled = true;
                 }
                 else if (e.KeyCode == Keys.Escape
                     && !string.IsNullOrEmpty(filteredString))
                 {
-                    // wipe our box selectively if we hit escape
-                    //first wipe until the delimiter
-                    string[] tokens = filteredString.Split(new string[] { "/" }, StringSplitOptions.None);
-
-                    if (tokens != null && tokens.Length == 2)
-                    {
-                        // make sure we have a system/station
-                        // delete the front of the string until the system
-                        cboSourceSystem.Text = tokens[0];
-                    }
-                    else if (!filteredString.Contains("/"))
-                    {
-                        cboSourceSystem.Text = string.Empty; // wipe entirely if only a system is left
-                    }
+                    cboSourceSystem.Text = RemoveSystemOrStation(filteredString);
 
                     e.Handled = true;
                 }
             }
+        }
+
+        /// <summary>
+        /// Remove the station from the supplied string. If only the system is passed then
+        /// remove that.
+        /// </summary>
+        /// <param name="filteredString">The string upon which to filter.</param>
+        /// <returns>The filtered string.</returns>
+        private string RemoveSystemOrStation(string filteredString)
+        {
+            string[] tokens = filteredString.Split(new string[] { "/" }, StringSplitOptions.None);
+
+            return tokens != null && tokens.Length == 2
+                ? tokens[0]
+                : string.Empty;
         }
 
         private void SrcSystemComboBox_TextChanged(object sender, EventArgs e)
@@ -3227,170 +3410,6 @@ namespace TDHelper
                 numRunOptionsEndJumps.Enabled = false;
                 lblRunOptionsEndJumps.Enabled = false;
             }
-        }
-
-        private void BuyOptionsPrice_CheckedChanged(object sender, EventArgs e)
-        {
-            if (optBuyOptionsPrice.Checked)
-            {
-                chkBuyOptionsOneStop.Checked = false;
-            }
-        }
-
-        private void BuyOptionsOneStop_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkBuyOptionsOneStop.Checked)
-            {
-                optBuyOptionsPrice.Checked = false;
-            }
-        }
-
-        /// <summary>
-        /// Caled on clicking one of the distance menu items. 
-        /// </summary>
-        /// <param name="sender">The menu item clicked.</param>
-        /// <param name="e">The event arguments.</param>
-        private void DistanceMenuItem_Click(object sender, EventArgs e)
-        {
-            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
-            var sourceControl = ((ContextMenuStrip)(menuItem.GetCurrentParent())).SourceControl;
-
-            if (sourceControl is NumericUpDown)
-            {
-                SetDecimalControlValue((NumericUpDown)sourceControl, menuItem.Name);
-            }
-            else if (sourceControl is TextBox)
-            {
-                SetTextBoxControlValue((TextBox)sourceControl, menuItem.Name);
-            }
-            else if (sourceControl is ComboBox)
-            {
-                SetComboBoxControlValue((ComboBox)sourceControl, menuItem.Name);
-            }
-        }
-
-        /// <summary>
-        /// The the value of the specified control to the correct vale.
-        /// </summary>
-        /// <param name="control">The control to be set.</param>
-        /// <param name="requiredSource">The key to the source value.</param>
-        private void SetDecimalControlValue(
-            NumericUpDown control, 
-            string requiredSource)
-        {
-            // Determine the corect source control.
-            decimal source = 0M;
-
-            switch (requiredSource)
-            {
-                case "mnuLadenLY":
-                    source = numLadenLy.Value;
-                    break;
-
-                case "mnuUnladenLY":
-                    source = numUnladenLy.Value;
-                    break;
-
-                case "mnuCapacity":
-                    source = numRouteOptionsShipCapacity.Value;
-                    break;
-
-                case "mnuReset":
-                    source = control.Minimum;
-                    break;
-            }
-
-            control.Value = source;
-        }
-
-        /// <summary>
-        /// The the value of the specified control to the correct vale.
-        /// </summary>
-        /// <param name="control">The control to be set.</param>
-        /// <param name="requiredSource">The key to the source value.</param>
-        private void SetTextBoxControlValue(
-            TextBox control, 
-            string requiredSource)
-        {
-            // Determine the corect source control.
-            string source = string.Empty;
-
-            switch (requiredSource)
-            {
-                case "mnuReset":
-                    source = string.Empty;
-                    break;
-            }
-
-            control.Text = source;
-        }
-
-        /// <summary>
-        /// The the value of the specified control to the correct vale.
-        /// </summary>
-        /// <param name="control">The control to be set.</param>
-        /// <param name="requiredSource">The key to the source value.</param>
-        private void SetComboBoxControlValue(
-            ComboBox control, 
-            string requiredSource)
-        {
-            // Determine the corect source control.
-            string source = string.Empty;
-
-            switch (requiredSource)
-            {
-                case "mnuReset":
-                    source = string.Empty;
-                    break;
-            }
-
-            control.Text = source;
-        }
-
-        /// <summary>
-        /// Set up the context menu state depending on the controls clicked.
-        /// </summary>
-        /// <param name="sender">The context menu strip.</param>
-        /// <param name="e">The event arguments.</param>
-        private void SetValuesMenu_Opening(object sender, CancelEventArgs e)
-        {
-            string clickedControlName = ((ContextMenuStrip)sender).SourceControl.Name;
-
-            // Setup the menu.
-            switch (clickedControlName)
-            {
-                case "numBuyOptionsSupply":
-                case "numSellOptionsDemand":
-                case "numRouteOptionsDemand":
-                case "numRouteOptionsStock":
-                    mnuLadenLY.Visible = false;
-                    mnuUnladenLY.Visible = false;
-                    mnuCapacity.Visible = true;
-                    mnuSep3.Visible = true;
-                    break;
-
-                case "numBuyOptionsNearLy":
-                case "numLocalOptionsLy":
-                case "numNavOptionsLy":
-                case "numOldDataOptionsNearLy":
-                case "numRaresOptionsLy":
-                case "numSellOptionsNearLy":
-                    mnuLadenLY.Visible = true;
-                    mnuUnladenLY.Visible = true;
-                    mnuCapacity.Visible = false;
-                    mnuSep3.Visible = true;
-                    break;
-
-                default:
-                    mnuLadenLY.Visible = false;
-                    mnuUnladenLY.Visible = false;
-                    mnuCapacity.Visible = false;
-                    mnuSep3.Visible = false;
-                    break;
-            }
-
-            mnuReset.Enabled = true;
-            mnuSep2.Visible = false;
         }
     }
 }

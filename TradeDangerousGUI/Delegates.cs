@@ -326,7 +326,7 @@ namespace TDHelper
                     StackCircularBuffer("\nZero'ing all commodities in the prices.last file, and saving to: " + settingsRef.TDPath + "\\updated.prices\nNOTE: This will -NOT- import/upload the changes, you must do so manually.");
             }
 
-            t_path = ""; // reset the path for thread safety
+            commandString = ""; // reset the path for thread safety
         }
 
         private void GetDataUpdates()
@@ -337,7 +337,7 @@ namespace TDHelper
             td_proc = new Process();
             td_proc.StartInfo.FileName = settingsRef.PythonPath;
 
-            t_path = settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase)
+            commandString = settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase)
                 ? "" // go in blank so we don't pass silliness to trade.exe
                 : "-u \"" + Path.Combine(settingsRef.TDPath, "trade.py") + "\" ";
 
@@ -345,7 +345,7 @@ namespace TDHelper
             if (buttonCaller == 5)
             {
                 // catch the database update button
-                t_path += "import -P eddblink -O listings,progbar";
+                commandString += "import -P eddblink -O listings,progbar";
             }
         }
 

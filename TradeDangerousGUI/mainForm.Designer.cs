@@ -1053,7 +1053,8 @@
             "ShipVendor",
             "Navigation",
             "OldData",
-            "Local"});
+            "Local",
+            "Station"});
             this.cboMethod.Location = new System.Drawing.Point(699, 2);
             this.cboMethod.Name = "cboMethod";
             this.cboMethod.Size = new System.Drawing.Size(82, 21);
@@ -2410,6 +2411,7 @@
         "em/Station to the favorites\r\nShift+Enter removes a System/Station from the favor" +
         "ites");
             this.cboTradeOptionDestination.SelectedIndexChanged += new System.EventHandler(this.DestinationChanged);
+            this.cboTradeOptionDestination.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DestSystemComboBox_KeyDown);
             // 
             // lblMarketOptionsType
             // 
@@ -2544,6 +2546,7 @@
         "em/Station to the favorites\r\nShift+Enter removes a System/Station from the favor" +
         "ites");
             this.cboNavOptionsDestination.SelectedIndexChanged += new System.EventHandler(this.DestinationChanged);
+            this.cboNavOptionsDestination.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DestSystemComboBox_KeyDown);
             // 
             // txtNavOptionsAvoid
             // 

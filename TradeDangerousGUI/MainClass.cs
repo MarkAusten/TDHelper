@@ -112,7 +112,7 @@ namespace TDHelper
         public string temp_dest;
         public string temp_commod;
         public string temp_shipsSold;
-        public string t_path;
+        public string commandString;
         public string t_maxPadSize;
 
         // for circular buffering in the output log
