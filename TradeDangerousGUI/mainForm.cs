@@ -147,7 +147,7 @@ namespace TDHelper
         /// <returns>The limit parameter.</returns>
         private string AddLimitOption(decimal limit)
         {
-            return AddNumericOption(limit, "lim");
+            return AddNumericOption(limit, "limit");
         }
 
         /// <summary>
@@ -2402,16 +2402,24 @@ namespace TDHelper
             methodIndex = cboMethod.SelectedIndex;
             MethodSelectState();
 
-            if (methodIndex == 6 && 
+            cboMethod.Enabled = true;
+        }
+
+        /// <summary>
+        /// Display the ships available at the current station in the output window.
+        /// </summary>
+        private void DisplayAvailableShipsAtcurrentstation()
+        {
+            if (methodIndex == 6 &&
                 cboSourceSystem.Text.Length > 0 &&
-                btnStart.Enabled && 
+                btnStart.Enabled &&
                 btnStart.Text.Contains("Start"))
             {
                 circularBuffer.Clear();
 
                 StackCircularBuffer("Ships currently available at {0}:{1}{2}".With(
-                    cboSourceSystem.Text, 
-                    Environment.NewLine, 
+                    cboSourceSystem.Text,
+                    Environment.NewLine,
                     Environment.NewLine));
 
                 if (outputStationShips.Count == 0)
@@ -2433,14 +2441,12 @@ namespace TDHelper
                         string[] data = ship.Split(new string[] { "[" }, StringSplitOptions.RemoveEmptyEntries);
 
                         StackCircularBuffer("{0}[{1}{2}".With(
-                            data[0].PadRight(maxNameLength), 
-                            data[1].PadLeft(maxCostLength), 
+                            data[0].PadRight(maxNameLength),
+                            data[1].PadLeft(maxCostLength),
                             Environment.NewLine));
                     }
                 }
             }
-
-            cboMethod.Enabled = true;
         }
 
         private void MethodSelectState()
@@ -3042,17 +3048,28 @@ namespace TDHelper
         private void SetAvailableShips(Panel panel)
         {
             // See if this options panel has a pad sizes text box.
-            ComboBox ships = panel.Controls.OfType<ComboBox>()
+            ListView ships = panel.Controls.OfType<ListView>()
                 .FirstOrDefault(x => x.Name.Contains("Ships"));
 
             if (ships != null)
             {
-                ships.DataSource = null;
-
                 // shipvendor textbox
                 if (outputStationShips.Count > 0)
                 {
-                    ships.DataSource = outputStationShips;
+                    ships.Items.Clear();
+
+                    foreach (string shipCost in outputStationShips)
+                    {
+                        int index = shipCost.IndexOf("[") - 1;
+
+                        ListViewItem item = new ListViewItem(new[]
+                        {
+                            shipCost.Substring(0, index),
+                            shipCost.Substring(index + 2).Replace("]", string.Empty)
+                        });
+
+                        ships.Items.Add(item);
+                    }
                 }
             }
         }
