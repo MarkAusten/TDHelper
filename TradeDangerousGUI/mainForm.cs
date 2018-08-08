@@ -54,23 +54,24 @@ namespace TDHelper
         #region FormProps
 
         private const int SnapDist = 10;
-        private string appVersion = "v" + Application.ProductVersion;
+        private readonly List<string> DestinationList = new List<string>();
+        private readonly IList<Panel> optionPanels = new List<Panel>();
+        private readonly IDictionary<string, string> ShipTranslation = new Dictionary<string, string>();
+        private readonly List<string> SourceList = new List<string>();
+        private string appVersion = "v{0}".With(Application.ProductVersion);
 
         private int buttonCaller;
         private List<string> CommoditiesList = new List<string>();
-        private List<string> DestinationList = new List<string>();
         private int hasUpdated;
         private int methodFromIndex;
         private int methodIndex;
-        private string notesFile = Path.GetDirectoryName(Application.ExecutablePath) + @"\saved_notes.txt";
-        private IList<Panel> optionPanels = new List<Panel>();
+        private string notesFile = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "saved_notes.txt");
         private int procCode = -1;
-        private string savedFile1 = Path.GetDirectoryName(Application.ExecutablePath) + @"\saved_1.txt";
-        private string savedFile2 = Path.GetDirectoryName(Application.ExecutablePath) + @"\saved_2.txt";
-        private string savedFile3 = Path.GetDirectoryName(Application.ExecutablePath) + @"\saved_3.txt";
+        private string savedFile1 = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "saved_1.txt");
+        private string savedFile2 = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "saved_2.txt");
+        private string savedFile3 = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "saved_3.txt");
         private string SelectedCommodity = string.Empty;
         private List<string> ShipList = new List<string>();
-        private List<string> SourceList = new List<string>();
         private string SourceSystem = string.Empty;
         private string TargetSystem = string.Empty;
         private System.Timers.Timer testSystemsTimer = new System.Timers.Timer();
@@ -91,11 +92,9 @@ namespace TDHelper
             this.numCommandersCredits.Maximum = Decimal.MaxValue;
 
             SplashScreen.SetStatus("Building settings...");
-            // Build variables from config
             BuildSettings();
 
             SplashScreen.SetStatus("Reading configuration...");
-            // Copy the setting to the form controls
             CopySettingsFromConfig();
 
             // And validate the settings to get rid of any nonsense.
@@ -137,7 +136,7 @@ namespace TDHelper
             string option)
         {
             return toAdd
-                ? " {0}".With(option)
+                ? " --{0}".With(option)
                 : string.Empty;
         }
 
@@ -148,9 +147,7 @@ namespace TDHelper
         /// <returns>The limit parameter.</returns>
         private string AddLimitOption(decimal limit)
         {
-            return limit > 0
-                ? string.Empty
-                : " --lim={0}".With(limit);
+            return AddNumericOption(limit, "lim");
         }
 
         /// <summary>
@@ -177,7 +174,7 @@ namespace TDHelper
         {
             return value == 0
                 ? string.Empty
-                : " {0}={1}".With(option, value);
+                : " --{0}={1}".With(option, value);
         }
 
         /// <summary>
@@ -187,9 +184,7 @@ namespace TDHelper
         /// <returns>the planetary modifiers.</returns>
         private string AddPadOption(string pads)
         {
-            return string.IsNullOrEmpty(pads)
-                ? string.Empty
-                : " --pad={0}".With(pads);
+            return AddTextOption(pads, "pad");
         }
 
         /// <summary>
@@ -199,9 +194,7 @@ namespace TDHelper
         /// <returns>the planetary modifiers.</returns>
         private string AddPlanetaryOption(string planetary)
         {
-            return string.IsNullOrEmpty(planetary)
-                ? string.Empty
-                : " --planetary={0}".With(planetary);
+            return AddTextOption(planetary, "planetary");
         }
 
         /// <summary>
@@ -228,7 +221,7 @@ namespace TDHelper
         {
             return string.IsNullOrEmpty(value)
                 ? string.Empty
-                : " {0}={1}".With(option, value);
+                : " --{0}={1}".With(option, value);
         }
 
         /// <summary>
@@ -271,9 +264,13 @@ namespace TDHelper
             {
                 // skip our favorites to get our most recent system/station
                 if (output_unclean.Count > 0 && currentMarkedStations.Count > 0)
+                {
                     cboSourceSystem.SelectedIndex = 1 + currentMarkedStations.Count;
+                }
                 else if (output_unclean.Count > 0)
+                {
                     cboSourceSystem.SelectedIndex = 1; // if the favorites are empty
+                }
 
                 cboSourceSystem.Focus();
             }
@@ -290,58 +287,7 @@ namespace TDHelper
         /// <param name="e">The event arguments.</param>
         private void BackgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
         {
-            switch (methodIndex)
-            {
-                // Station command
-                case 10:
-                    commandString = GetStationCommand(SourceSystem);
-                    break;
-
-                // Local command
-                case 9:
-                    commandString = GetLocalCommand(SourceSystem);
-                    break;
-
-                // OldData command
-                case 8:
-                    commandString = GetOldDataCommand(SourceSystem);
-                    break;
-
-                // Nav command
-                case 7:
-                    commandString = GetNavCommand(SourceSystem, TargetSystem);
-                    break;
-
-                // Market command
-                case 5:
-                    commandString = GetMarketCommand(SourceSystem);
-                    break;
-
-                // Trade command
-                case 4:
-                    commandString = GetTradeCommand(SourceSystem, TargetSystem);
-                    break;
-
-                // Rares command
-                case 3:
-                    commandString = GetRaresCommand(SourceSystem);
-                    break;
-
-                // Sell command
-                case 2:
-                    commandString = GetSellCommand(SelectedCommodity, SourceSystem);
-                    break;
-
-                // Buy command
-                case 1:
-                    commandString = GetBuyCommand(SelectedCommodity, SourceSystem);
-                    break;
-
-                // Run command
-                case 0:
-                    commandString = GetRunCommand(SourceSystem, TargetSystem);
-                    break;
-            }
+            commandString = GetMethodCommandString(methodIndex);
 
             // pass the built command-line to the delegate
             if (string.IsNullOrEmpty(commandString))
@@ -400,32 +346,15 @@ namespace TDHelper
                     PlayAlert(); // when not marked as cancelled, or explicit
                 }
 
-                if (methodIndex == 10)
-                {
-                    methodIndex = cboMethod.SelectedIndex;
-                }
+                methodIndex = cboMethod.SelectedIndex;
 
-                if (buttonCaller != 4) // not if we're coming from Run
+                if (buttonCaller == 4)
+                {
+                    CheckForParsableOutput(rtbOutput);
+                }
+                else
                 {
                     btnMiniMode.Enabled = false;
-                }
-                else if (buttonCaller == 4)
-                {
-                    string filteredOutput = FilterOutput(rtbOutput.Text);
-
-                    // validate the run output before we enable the mini-mode button
-                    runOutputState = IsValidRunOutput(filteredOutput);
-
-                    if (runOutputState > -1)
-                    {
-                        hasParsed = false; // reset the semaphore
-                        tv_outputBox = filteredOutput; // copy our validated input
-                        btnMiniMode.Enabled = true;
-                    }
-                    else
-                    {
-                        btnMiniMode.Enabled = false;
-                    }
                 }
 
                 buttonCaller = 0;
@@ -544,12 +473,18 @@ namespace TDHelper
                 {
                     // alert the user if we're starting in an unknown system
                     PlayUnknown();
+
                     this.Invoke(new Action(() =>
                     {
                         // run this on the UI thread
-                        this.rtbOutput.Text += "We're currently in an unrecognized system: " + t_lastSystem + "\r\n";
-                        if (settingsRef.CopySystemToClipboard) { Clipboard.SetData(DataFormats.Text, t_lastSystem); }
+                        this.rtbOutput.Text += "We're currently in an unrecognized system: {0}\r\n".With(t_lastSystem);
+
+                        if (settingsRef.CopySystemToClipboard)
+                        {
+                            Clipboard.SetData(DataFormats.Text, t_lastSystem);
+                        }
                     }));
+
                     t_lastSysCheck = t_lastSystem;
                 }
                 else if ((!string.IsNullOrEmpty(t_lastSysCheck) && !t_lastSysCheck.Equals(t_lastSystem)
@@ -563,7 +498,11 @@ namespace TDHelper
                     {
                         // run this on the UI thread
                         this.rtbOutput.Text += "Entering an unrecognized system: " + t_lastSystem + "\r\n";
-                        if (settingsRef.CopySystemToClipboard) { Clipboard.SetData(DataFormats.Text, t_lastSystem); }
+
+                        if (settingsRef.CopySystemToClipboard)
+                        {
+                            Clipboard.SetData(DataFormats.Text, t_lastSystem);
+                        }
                     }));
 
                     t_lastSysCheck = t_lastSystem; // prevent rechecking the same system
@@ -581,8 +520,6 @@ namespace TDHelper
             /*
              * This worker delegate is for the Cmdr Profile process
              */
-            bool okayToRun = true;
-
             if (buttonCaller == 22)
             {
                 // Check to see if the EDCE folder and files are valid
@@ -590,30 +527,24 @@ namespace TDHelper
                 {
                     // EDCE is valid so set up the call.
                     commandString = "\"" + Path.Combine(MainForm.settingsRef.EdcePath, "edce_client.py") + "\"";
+                    string currentFolder = Directory.GetCurrentDirectory();
+                    Directory.SetCurrentDirectory(MainForm.settingsRef.EdcePath);
+
+                    try
+                    {
+                        td_proc = new Process();
+                        td_proc.StartInfo.FileName = settingsRef.PythonPath;
+
+                        DoTDProc(commandString);
+                    }
+                    finally
+                    {
+                        Directory.SetCurrentDirectory(currentFolder);
+                    }
                 }
                 else
                 {
-                    okayToRun = false;
                     PlayAlert();
-                }
-            }
-
-            // pass the built command-line to the delegate
-            if (okayToRun)
-            {
-                string currentFolder = Directory.GetCurrentDirectory();
-                Directory.SetCurrentDirectory(MainForm.settingsRef.EdcePath);
-
-                try
-                {
-                    td_proc = new Process();
-                    td_proc.StartInfo.FileName = settingsRef.PythonPath;
-
-                    DoTDProc(commandString);
-                }
-                finally
-                {
-                    Directory.SetCurrentDirectory(currentFolder);
                 }
             }
 
@@ -733,19 +664,6 @@ namespace TDHelper
             btnStationInfo.Enabled = false;
 
             ProcessCommand();
-        }
-
-        /// <summary>
-        /// Process the currently set up command.
-        /// </summary>
-        private void ProcessCommand()
-        {
-            // mark as run button
-            buttonCaller = 1;
-
-            GetSourceTargetAndCommodity();
-
-            DoRunEvent(); // externalized
         }
 
         private void BuyOptionsOneStop_CheckedChanged(object sender, EventArgs e)
@@ -929,149 +847,22 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// The event handler for the mnuCopy1 click event.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void Copy1_Click(object sender, EventArgs e)
+        {
+            CopyTextToClipboard(sender);
+        }
+
         private void CopyMenuItem_Click(object sender, EventArgs e)
         {
             RichTextBox clickedControl = (RichTextBox)this.mnuStrip1.SourceControl;
 
             clickedControl.Focus();
             clickedControl.Copy();
-        }
-
-        /// <summary>
-        /// Cut the text from the control to the clipboard.
-        /// </summary>
-        /// <param name="control">The clicked control.</param>
-        private void CutTextToClipboard(TextBox control)
-        {
-            control.Focus();
-            control.Cut();
-        }
-
-        /// <summary>
-        /// Copy the text from the control to the clipboard.
-        /// </summary>
-        /// <param name="control">The clicked control.</param>
-        private void CopyTextToClipboard(TextBox control)
-        {
-            control.Focus();
-            control.Copy();
-        }
-
-        /// <summary>
-        /// Paste the text from the clipboard to the control.
-        /// </summary>
-        /// <param name="control">The clicked control.</param>
-        private void PasteTextToControl(TextBox control)
-        {
-            control.Focus();
-            control.Paste();
-        }
-
-        ///// <summary>
-        ///// Select all the text on the control.
-        ///// </summary>
-        ///// <param name="control">The clicked control.</param>
-        //private void SelectAllControlText(TextBox control)
-        //{
-        //    control.Focus();
-        //    control.SelectAll();
-        //}
-
-        /// <summary>
-        /// Cut the text from the control to the clipboard.
-        /// </summary>
-        /// <param name="control">The clicked control.</param>
-        private void CutTextToClipboard(object sender)
-        {
-            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
-            var control = ((ContextMenuStrip)(menuItem.GetCurrentParent())).SourceControl;
-
-            if (control is TextBox)
-            {
-                ((TextBox)control).Cut();
-            }
-            else if (control is ComboBox cbo)
-            {
-                if (cbo.SelectedText != string.Empty)
-                {
-                    Clipboard.SetText(cbo.SelectedText);
-
-                    int sPos = cbo.SelectionStart;
-                    cbo.SelectedText = cbo.SelectedText.Replace(cbo.SelectedText, string.Empty);
-                    cbo.SelectionStart = sPos;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Copy the text from the control to the clipboard.
-        /// </summary>
-        /// <param name="sender">The clicked control.</param>
-        private void CopyTextToClipboard(object sender)
-        {
-            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
-            var control = ((ContextMenuStrip)(menuItem.GetCurrentParent())).SourceControl;
-
-            if (control is TextBox)
-            {
-                ((TextBox)control).Copy();
-            }
-            else if (control is ComboBox)
-            {
-                Clipboard.SetText(((ComboBox)control).SelectedText);
-            }
-        }
-
-        /// <summary>
-        /// Paste the text from the clipboard to the control.
-        /// </summary>
-        /// <param name="sender">The clicked control.</param>
-        private void PasteTextToControl(object sender)
-        {
-            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
-            var control = ((ContextMenuStrip)(menuItem.GetCurrentParent())).SourceControl;
-
-            if (control is TextBox)
-            {
-                ((TextBox)control).Paste();
-            }
-            else if (control is ComboBox cbo)
-            {
-                string txtInClip = Clipboard.GetText();
-
-                int sPos = cbo.SelectionStart;
-
-                if (cbo.SelectedText != string.Empty)
-                {
-                    cbo.SelectedText = cbo.SelectedText.Replace(cbo.SelectedText, txtInClip);
-                }
-                else
-                {
-                    cbo.Text = cbo.Text.Insert(cbo.SelectionStart, txtInClip);
-                    cbo.SelectionStart = sPos + txtInClip.Length;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Select all the text on the control.
-        /// </summary>
-        /// <param name="sender">The clicked control.</param>
-        private void SelectAllControlText(object sender)
-        {
-            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
-            var control = ((ContextMenuStrip)(menuItem.GetCurrentParent())).SourceControl;
-
-            control.Focus();
-
-            if (control is TextBox)
-            {
-                ((TextBox)control).SelectAll();
-            }
-            else if (control is ComboBox)
-            {
-                ((ComboBox)control).SelectAll();
-            }
         }
 
         private void CopySettingsFromConfig()
@@ -1550,12 +1341,87 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Copy the text from the control to the clipboard.
+        /// </summary>
+        /// <param name="control">The clicked control.</param>
+        private void CopyTextToClipboard(TextBox control)
+        {
+            control.Focus();
+            control.Copy();
+        }
+
+        /// <summary>
+        /// Copy the text from the control to the clipboard.
+        /// </summary>
+        /// <param name="sender">The clicked control.</param>
+        private void CopyTextToClipboard(object sender)
+        {
+            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
+            var control = ((ContextMenuStrip)(menuItem.GetCurrentParent())).SourceControl;
+
+            if (control is TextBox)
+            {
+                ((TextBox)control).Copy();
+            }
+            else if (control is ComboBox)
+            {
+                Clipboard.SetText(((ComboBox)control).SelectedText);
+            }
+        }
+
+        /// <summary>
+        /// The event handler for the mnuCut1 click event.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void Cut1_Click(object sender, EventArgs e)
+        {
+            CutTextToClipboard(sender);
+        }
+
         private void CutMenuItem_Click(object sender, EventArgs e)
         {
             RichTextBox clickedControl = (RichTextBox)this.mnuStrip1.SourceControl;
 
             clickedControl.Focus();
             clickedControl.Cut();
+        }
+
+        /// <summary>
+        /// Cut the text from the control to the clipboard.
+        /// </summary>
+        /// <param name="control">The clicked control.</param>
+        private void CutTextToClipboard(TextBox control)
+        {
+            control.Focus();
+            control.Cut();
+        }
+
+        /// <summary>
+        /// Cut the text from the control to the clipboard.
+        /// </summary>
+        /// <param name="control">The clicked control.</param>
+        private void CutTextToClipboard(object sender)
+        {
+            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
+            var control = ((ContextMenuStrip)(menuItem.GetCurrentParent())).SourceControl;
+
+            if (control is TextBox)
+            {
+                ((TextBox)control).Cut();
+            }
+            else if (control is ComboBox cbo)
+            {
+                if (cbo.SelectedText != string.Empty)
+                {
+                    Clipboard.SetText(cbo.SelectedText);
+
+                    int sPos = cbo.SelectionStart;
+                    cbo.SelectedText = cbo.SelectedText.Replace(cbo.SelectedText, string.Empty);
+                    cbo.SelectionStart = sPos;
+                }
+            }
         }
 
         private void DeleteMenuItem_Click(object sender, EventArgs e)
@@ -1653,6 +1519,19 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Disable all the option panels.
+        /// </summary>
+        private void DisableAllOptionPanels()
+        {
+            foreach (Panel panel in optionPanels)
+            {
+                panel.Enabled = false;
+            }
+
+            panRouteOptions.Enabled = false;
+        }
+
         private void DisablebtnStarts()
         {
             // disable buttons during uncancellable operation
@@ -1693,6 +1572,19 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Disable all the option panels.
+        /// </summary>
+        private void EnableAllOptionPanels()
+        {
+            foreach (Panel panel in optionPanels)
+            {
+                panel.Enabled = true;
+            }
+
+            panRouteOptions.Enabled = true;
+        }
+
         private void EnableBtnStarts()
         {
             //ShowOrHideOptionsPanel(methodFromIndex);
@@ -1712,53 +1604,6 @@ namespace TDHelper
             btnStart.Text = "Start";
 
             SetStationInfoButtonState();
-        }
-
-        /// <summary>
-        /// Set the state of the Station Info Button.
-        /// </summary>
-        private void SetStationInfoButtonState()
-        {
-            // If a command is not already running...
-            if (btnStart.Enabled && btnStart.Text.Contains("Start"))
-            {
-                // ...then the button is enable if a source system/station is selected.
-                string[] data = cboSourceSystem.Text.Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
-
-
-                btnStationInfo.Enabled = data.Length == 2 && data[0].Length > 3 & data[1].Length > 3;
-            }
-            else
-            {
-                // ...otherwise it should be disabled.
-                btnStationInfo.Enabled = false;
-            }
-        }
-
-        /// <summary>
-        /// Disable all the option panels.
-        /// </summary>
-        private void DisableAllOptionPanels()
-        {
-            foreach (Panel panel in optionPanels)
-            {
-                panel.Enabled = false;
-            }
-
-            panRouteOptions.Enabled = false;
-        }
-
-        /// <summary>
-        /// Disable all the option panels.
-        /// </summary>
-        private void EnableAllOptionPanels()
-        {
-            foreach (Panel panel in optionPanels)
-            {
-                panel.Enabled = true;
-            }
-
-            panRouteOptions.Enabled = true;
         }
 
         /// <summary>
@@ -1810,15 +1655,15 @@ namespace TDHelper
 
                 if (!string.IsNullOrEmpty(nearSystem))
                 {
-                    cmdPath += AddNumericOption(numBuyOptionsNearLy.Value, "--ly");
+                    cmdPath += AddNumericOption(numBuyOptionsNearLy.Value, "ly");
                 }
 
-                cmdPath += AddNumericOption(numBuyOptionsAbove.Value, "--gt");
-                cmdPath += AddNumericOption(numBuyOptionsBelow.Value, "--lt");
-                cmdPath += AddNumericOption(numBuyOptionsSupply.Value, "--supply");
+                cmdPath += AddNumericOption(numBuyOptionsAbove.Value, "gt");
+                cmdPath += AddNumericOption(numBuyOptionsBelow.Value, "lt");
+                cmdPath += AddNumericOption(numBuyOptionsSupply.Value, "supply");
 
-                cmdPath += AddCheckedOption(chkBuyOptionsBlkMkt.Checked, "--bm");
-                cmdPath += AddCheckedOption(chkBuyOptionsOneStop.Checked, "-1");
+                cmdPath += AddCheckedOption(chkBuyOptionsBlkMkt.Checked, "bm");
+                cmdPath += AddCheckedOption(chkBuyOptionsOneStop.Checked, "one-stop");
 
                 cmdPath += AddPadOption(txtBuyOptionsPads.Text);
                 cmdPath += AddPlanetaryOption(txtBuyOptionsPlanetary.Text);
@@ -1860,7 +1705,7 @@ namespace TDHelper
             Panel panel = null;
 
             if (optionPanels.Count > 0 &&
-                optionsIndex >= 0 && 
+                optionsIndex >= 0 &&
                 optionsIndex < optionPanels.Count)
             {
                 panel = optionPanels[optionsIndex];
@@ -1881,16 +1726,16 @@ namespace TDHelper
             if (!string.IsNullOrEmpty(sourceSystem))
             {
                 cmdPath += "local";
-                cmdPath += AddNumericOption(numLocalOptionsLy.Value, "--ly");
+                cmdPath += AddNumericOption(numLocalOptionsLy.Value, "ly");
 
-                cmdPath += AddCheckedOption(chkLocalOptionsRearm.Checked, "--rearm");
-                cmdPath += AddCheckedOption(chkLocalOptionsRefuel.Checked, "--refuel");
-                cmdPath += AddCheckedOption(chkLocalOptionsRepair.Checked, "--repair");
-                cmdPath += AddCheckedOption(chkLocalOptionsTrading.Checked, "--trading");
-                cmdPath += AddCheckedOption(chkLocalOptionsBlkMkt.Checked, "--bm");
-                cmdPath += AddCheckedOption(chkLocalOptionsShipyard.Checked, "--shipyard");
-                cmdPath += AddCheckedOption(chkLocalOptionsOutfitting.Checked, "--outfitting");
-                cmdPath += AddCheckedOption(chkLocalOptionsStations.Checked, "--stations");
+                cmdPath += AddCheckedOption(chkLocalOptionsRearm.Checked, "rearm");
+                cmdPath += AddCheckedOption(chkLocalOptionsRefuel.Checked, "refuel");
+                cmdPath += AddCheckedOption(chkLocalOptionsRepair.Checked, "repair");
+                cmdPath += AddCheckedOption(chkLocalOptionsTrading.Checked, "trading");
+                cmdPath += AddCheckedOption(chkLocalOptionsBlkMkt.Checked, "bm");
+                cmdPath += AddCheckedOption(chkLocalOptionsShipyard.Checked, "shipyard");
+                cmdPath += AddCheckedOption(chkLocalOptionsOutfitting.Checked, "outfitting");
+                cmdPath += AddCheckedOption(chkLocalOptionsStations.Checked, "stations");
 
                 cmdPath += AddPlanetaryOption(txtLocalOptionsPlanetary.Text);
                 cmdPath += AddPadOption(txtLocalOptionsPads.Text);
@@ -1940,6 +1785,71 @@ namespace TDHelper
         }
 
         /// <summary>
+        /// This worker delegate is the main work horse for the application.
+        /// it controls the logic for all the primary commands.
+        /// </summary>
+        /// <param name="index">The method index.</param>
+        private string GetMethodCommandString(int index)
+        {
+            string command = string.Empty;
+
+            switch (index)
+            {
+                // Station command
+                case 10:
+                    command = GetStationCommand(SourceSystem);
+                    break;
+
+                // Local command
+                case 9:
+                    command = GetLocalCommand(SourceSystem);
+                    break;
+
+                // OldData command
+                case 8:
+                    command = GetOldDataCommand(SourceSystem);
+                    break;
+
+                // Nav command
+                case 7:
+                    command = GetNavCommand(SourceSystem, TargetSystem);
+                    break;
+
+                // Market command
+                case 5:
+                    command = GetMarketCommand(SourceSystem);
+                    break;
+
+                // Trade command
+                case 4:
+                    command = GetTradeCommand(SourceSystem, TargetSystem);
+                    break;
+
+                // Rares command
+                case 3:
+                    command = GetRaresCommand(SourceSystem);
+                    break;
+
+                // Sell command
+                case 2:
+                    command = GetSellCommand(SelectedCommodity, SourceSystem);
+                    break;
+
+                // Buy command
+                case 1:
+                    command = GetBuyCommand(SelectedCommodity, SourceSystem);
+                    break;
+
+                // Run command
+                case 0:
+                    command = GetRunCommand(SourceSystem, TargetSystem);
+                    break;
+            }
+
+            return command;
+        }
+
+        /// <summary>
         /// Get the nav command string.
         /// </summary>
         /// <param name="sourceSystem">The name of the source system.</param>
@@ -1955,15 +1865,15 @@ namespace TDHelper
             {
                 cmdPath += "nav";
 
-                cmdPath += AddTextOption(txtNavOptionsVia.Text, "--via");
-                cmdPath += AddTextOption(txtNavOptionsAvoid.Text, "--avoid");
+                cmdPath += AddTextOption(txtNavOptionsVia.Text, "via");
+                cmdPath += AddTextOption(txtNavOptionsAvoid.Text, "avoid");
                 cmdPath += AddPlanetaryOption(txtNavOptionsPlanetary.Text);
                 cmdPath += AddPadOption(txtNavOptionsPads.Text);
 
-                cmdPath += AddNumericOption(numNavOptionsLy.Value, "--ly");
-                cmdPath += AddNumericOption(numNavOptionsRefuelJumps.Value, "--ref");
+                cmdPath += AddNumericOption(numNavOptionsLy.Value, "ly");
+                cmdPath += AddNumericOption(numNavOptionsRefuelJumps.Value, "ref");
 
-                cmdPath += AddCheckedOption(chkNavOptionsStations.Checked, "--stations");
+                cmdPath += AddCheckedOption(chkNavOptionsStations.Checked, "stations");
 
                 cmdPath += AddVerbosity();
 
@@ -1987,9 +1897,9 @@ namespace TDHelper
             {
                 cmdPath += "olddata";
 
-                cmdPath += AddCheckedOption(chkOldDataOptionsRoute.Checked, "--route");
-                cmdPath += AddNumericOption(numOldDataOptionsNearLy.Value, "--ly");
-                cmdPath += AddNumericOption(numOldDataOptionsMinAge.Value, "--min-age");
+                cmdPath += AddCheckedOption(chkOldDataOptionsRoute.Checked, "route");
+                cmdPath += AddNumericOption(numOldDataOptionsNearLy.Value, "ly");
+                cmdPath += AddNumericOption(numOldDataOptionsMinAge.Value, "min-age");
                 cmdPath += AddLimitOption(numOldDataOptionsLimit.Value);
 
                 cmdPath += AddVerbosity();
@@ -2012,14 +1922,14 @@ namespace TDHelper
             {
                 cmdPath = "rares";
 
-                cmdPath += AddNumericOption(numRaresOptionsLy.Value, "--ly");
+                cmdPath += AddNumericOption(numRaresOptionsLy.Value, "ly");
 
                 cmdPath += AddPadOption(txtRaresOptionsPads.Text);
                 cmdPath += AddPlanetaryOption(txtRaresOptionsPlanetary.Text);
                 cmdPath += AddLimitOption(numRaresOptionsLimit.Value);
 
-                cmdPath += AddCheckedOption(chkRaresOptionsReverse.Checked, "--reverse");
-                cmdPath += AddCheckedOption(chkRaresOptionsQuiet.Checked, "--quiet");
+                cmdPath += AddCheckedOption(chkRaresOptionsReverse.Checked, "reverse");
+                cmdPath += AddCheckedOption(chkRaresOptionsQuiet.Checked, "quiet");
 
                 RadioButton option = grpRaresOptionsType.Controls.OfType<RadioButton>().FirstOrDefault(x => x.Checked);
 
@@ -2040,7 +1950,7 @@ namespace TDHelper
                 if (!string.IsNullOrEmpty(txtRaresOptionsFrom.Text) &&
                     numRaresOptionsAway.Value > 0)
                 {
-                    cmdPath += AddNumericOption(numRaresOptionsAway.Value, "--away");
+                    cmdPath += AddNumericOption(numRaresOptionsAway.Value, "away");
 
                     foreach (string output in txtRaresOptionsFrom.Text.Split(',')
                         .Select(x => x.Trim())
@@ -2084,39 +1994,39 @@ namespace TDHelper
                 !chkRunOptionsLoop.Checked)
             {
                 cmdPath += " --to=\"{0}\"".With(destinationSystem);
-                cmdPath += AddNumericOption(numRunOptionsEndJumps.Value, "--end");
+                cmdPath += AddNumericOption(numRunOptionsEndJumps.Value, "end");
             }
 
-            cmdPath += AddNumericOption(numRouteOptionsShipCapacity.Value, "--cap");
-            cmdPath += AddNumericOption(numRouteOptionsLimit.Value, "--lim");
-            cmdPath += AddNumericOption(numShipInsurance.Value, "--ins");
-            cmdPath += AddNumericOption(numCommandersCredits.Value, "--cr");
-            cmdPath += AddNumericOption(numLadenLy.Value, "--ly");
-            cmdPath += AddNumericOption(numUnladenLy.Value, "--empty");
-            cmdPath += AddNumericOption(numRouteOptionsGpt.Value, "--gpt");
-            cmdPath += AddNumericOption(numRouteOptionsMaxGpt.Value, "--mgpt");
-            cmdPath += AddNumericOption(numRouteOptionsStock.Value, "--supply");
-            cmdPath += AddNumericOption(numRouteOptionsDemand.Value, "--demand");
-            cmdPath += AddNumericOption(numRouteOptionsMargin.Value, "--margin");
-            cmdPath += AddNumericOption(numRouteOptionsJumps.Value, "--jum");
-            cmdPath += AddNumericOption(numRunOptionsStartJumps.Value, "--start");
-            cmdPath += AddNumericOption(numRouteOptionsLsPenalty.Value, "--lsp");
-            cmdPath += AddNumericOption(numRouteOptionsMaxLSDistance.Value, "--ls-max");
-            cmdPath += AddNumericOption(numRouteOptionsPruneHops.Value, "--prune-hops");
-            cmdPath += AddNumericOption(numRouteOptionsPruneScore.Value, "--prune-score");
-            cmdPath += AddNumericOption(numRouteOptionsAge.Value, "--age");
-            cmdPath += AddNumericOption(numRunOptionsLoopInt.Value, "--loop-int");
-            cmdPath += AddNumericOption(numRunOptionsRoutes.Value, "--routes");
+            cmdPath += AddNumericOption(numRouteOptionsShipCapacity.Value, "cap");
+            cmdPath += AddNumericOption(numRouteOptionsLimit.Value, "lim");
+            cmdPath += AddNumericOption(numShipInsurance.Value, "ins");
+            cmdPath += AddNumericOption(numCommandersCredits.Value, "cr");
+            cmdPath += AddNumericOption(numLadenLy.Value, "ly");
+            cmdPath += AddNumericOption(numUnladenLy.Value, "empty");
+            cmdPath += AddNumericOption(numRouteOptionsGpt.Value, "gpt");
+            cmdPath += AddNumericOption(numRouteOptionsMaxGpt.Value, "mgpt");
+            cmdPath += AddNumericOption(numRouteOptionsStock.Value, "supply");
+            cmdPath += AddNumericOption(numRouteOptionsDemand.Value, "demand");
+            cmdPath += AddNumericOption(numRouteOptionsMargin.Value, "margin");
+            cmdPath += AddNumericOption(numRouteOptionsJumps.Value, "jum");
+            cmdPath += AddNumericOption(numRunOptionsStartJumps.Value, "start");
+            cmdPath += AddNumericOption(numRouteOptionsLsPenalty.Value, "lsp");
+            cmdPath += AddNumericOption(numRouteOptionsMaxLSDistance.Value, "ls-max");
+            cmdPath += AddNumericOption(numRouteOptionsPruneHops.Value, "prune-hops");
+            cmdPath += AddNumericOption(numRouteOptionsPruneScore.Value, "prune-score");
+            cmdPath += AddNumericOption(numRouteOptionsAge.Value, "age");
+            cmdPath += AddNumericOption(numRunOptionsLoopInt.Value, "loop-int");
+            cmdPath += AddNumericOption(numRunOptionsRoutes.Value, "routes");
 
-            cmdPath += AddCheckedOption(chkRunOptionsBlkMkt.Checked, "--bm");
-            cmdPath += AddCheckedOption(chkRunOptionsDirect.Checked, "--direct");
-            cmdPath += AddCheckedOption(chkRunOptionsShorten.Checked, "--shorten");
-            cmdPath += AddCheckedOption(chkRunOptionsUnique.Checked, "--unique");
-            cmdPath += AddCheckedOption(chkRunOptionsLoop.Checked, "--loop");
-            cmdPath += AddCheckedOption(chkRunOptionsJumps.Checked, "-J");
+            cmdPath += AddCheckedOption(chkRunOptionsBlkMkt.Checked, "bm");
+            cmdPath += AddCheckedOption(chkRunOptionsDirect.Checked, "direct");
+            cmdPath += AddCheckedOption(chkRunOptionsShorten.Checked, "shorten");
+            cmdPath += AddCheckedOption(chkRunOptionsUnique.Checked, "unique");
+            cmdPath += AddCheckedOption(chkRunOptionsLoop.Checked, "loop");
+            cmdPath += AddCheckedOption(chkRunOptionsJumps.Checked, "show-jumps");
 
-            cmdPath += AddTextOption(txtAvoid.Text, "--avoid");
-            cmdPath += AddTextOption(txtVia.Text, "--via");
+            cmdPath += AddTextOption(txtAvoid.Text, "avoid");
+            cmdPath += AddTextOption(txtVia.Text, "via");
 
             cmdPath += AddPlanetaryOption(txtRunOptionsPlanetary.Text);
             cmdPath += AddPadOption(txtPadSize.Text);
@@ -2133,8 +2043,8 @@ namespace TDHelper
                 cmdPath += " --hops={0}".With(numRouteOptionsHops.Value);
             }
 
-            cmdPath += AddCheckedOption(settingsRef.ShowProgress, "--progress");
-            cmdPath += AddCheckedOption(settingsRef.Summary, "--summary");
+            cmdPath += AddCheckedOption(settingsRef.ShowProgress, "progress");
+            cmdPath += AddCheckedOption(settingsRef.Summary, "summary");
 
             return cmdPath;
         }
@@ -2187,14 +2097,14 @@ namespace TDHelper
 
                 if (!string.IsNullOrEmpty(nearSystem))
                 {
-                    cmdPath += AddNumericOption(numSellOptionsNearLy.Value, "--ly");
+                    cmdPath += AddNumericOption(numSellOptionsNearLy.Value, "ly");
                 }
 
-                cmdPath += AddNumericOption(numSellOptionsAbove.Value, "--gt");
-                cmdPath += AddNumericOption(numSellOptionsBelow.Value, "--lt");
-                cmdPath += AddNumericOption(numSellOptionsDemand.Value, "--demand");
+                cmdPath += AddNumericOption(numSellOptionsAbove.Value, "gt");
+                cmdPath += AddNumericOption(numSellOptionsBelow.Value, "lt");
+                cmdPath += AddNumericOption(numSellOptionsDemand.Value, "demand");
 
-                cmdPath += AddCheckedOption(chkSellOptionsBlkMkt.Checked, "--bm");
+                cmdPath += AddCheckedOption(chkSellOptionsBlkMkt.Checked, "bm");
 
                 cmdPath += AddPadOption(txtSellOptionsPads.Text);
                 cmdPath += AddPlanetaryOption(txtSellOptionsPlanetary.Text);
@@ -2630,6 +2540,16 @@ namespace TDHelper
             return state;
         }
 
+        /// <summary>
+        /// The event handler for the mnuPaste1 click event.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void Paste1_Click(object sender, EventArgs e)
+        {
+            PasteTextToControl(sender);
+        }
+
         private void PasteMenuItem_Click(object sender, EventArgs e)
         {
             RichTextBox clickedControl = (RichTextBox)this.mnuStrip1.SourceControl;
@@ -2638,9 +2558,59 @@ namespace TDHelper
             clickedControl.Paste();
         }
 
+        /// <summary>
+        /// Paste the text from the clipboard to the control.
+        /// </summary>
+        /// <param name="control">The clicked control.</param>
+        private void PasteTextToControl(TextBox control)
+        {
+            control.Focus();
+            control.Paste();
+        }
+
+        ///// <summary>
+        ///// Select all the text on the control.
+        ///// </summary>
+        ///// <param name="control">The clicked control.</param>
+        //private void SelectAllControlText(TextBox control)
+        //{
+        //    control.Focus();
+        //    control.SelectAll();
+        //}
+        /// <summary>
+        /// Paste the text from the clipboard to the control.
+        /// </summary>
+        /// <param name="sender">The clicked control.</param>
+        private void PasteTextToControl(object sender)
+        {
+            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
+            var control = ((ContextMenuStrip)(menuItem.GetCurrentParent())).SourceControl;
+
+            if (control is TextBox)
+            {
+                ((TextBox)control).Paste();
+            }
+            else if (control is ComboBox cbo)
+            {
+                string txtInClip = Clipboard.GetText();
+
+                int sPos = cbo.SelectionStart;
+
+                if (cbo.SelectedText != string.Empty)
+                {
+                    cbo.SelectedText = cbo.SelectedText.Replace(cbo.SelectedText, txtInClip);
+                }
+                else
+                {
+                    cbo.Text = cbo.Text.Insert(cbo.SelectionStart, txtInClip);
+                    cbo.SelectionStart = sPos + txtInClip.Length;
+                }
+            }
+        }
+
         private void PilotsLogDataGrid_CellContextMenuStripNeeded(
-            object sender, 
-            DataGridViewCellContextMenuStripNeededEventArgs e)
+                    object sender,
+                    DataGridViewCellContextMenuStripNeededEventArgs e)
         {
             // prevent OOR exception
             if (e.RowIndex == -1 || e.ColumnIndex == -1)
@@ -2659,8 +2629,8 @@ namespace TDHelper
         }
 
         private void PilotsLogDataGrid_CellValueNeeded(
-            object sender, 
-            DataGridViewCellValueEventArgs e)
+                    object sender,
+                    DataGridViewCellValueEventArgs e)
         {
             if (e.RowIndex < retriever.RowCount && e.ColumnIndex < retriever.RowCount)
             {
@@ -2669,8 +2639,8 @@ namespace TDHelper
         }
 
         private void PilotsLogDataGrid_CellValuePushed(
-            object sender, 
-            DataGridViewCellValueEventArgs e)
+                    object sender,
+                    DataGridViewCellValueEventArgs e)
         {
             if (e.RowIndex < retriever.RowCount && e.ColumnIndex < retriever.RowCount)
             {
@@ -2685,8 +2655,8 @@ namespace TDHelper
         }
 
         private void PilotsLogDataGrid_UserDeletingRow(
-            object sender, 
-            DataGridViewRowCancelEventArgs e)
+                    object sender,
+                    DataGridViewRowCancelEventArgs e)
         {
             if (e.Row.Index < retriever.RowCount && e.Row.Index >= 0
                 && grdPilotsLog.SelectedRows.Count > 0)
@@ -2739,7 +2709,7 @@ namespace TDHelper
         /// <param name="sender">The text box.</param>
         /// <param name="e">The current key press.</param>
         private void Planetary_KeyPress(
-            object sender, 
+            object sender,
             KeyPressEventArgs e)
         {
             TextBox planetary = ((TextBox)sender);
@@ -2766,8 +2736,8 @@ namespace TDHelper
         }
 
         private void ProcErrorDataHandler(
-            object sender, 
-            DataReceivedEventArgs output)
+                    object sender,
+                    DataReceivedEventArgs output)
         {
             if (output.Data != null)
             {
@@ -2775,9 +2745,22 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Process the currently set up command.
+        /// </summary>
+        private void ProcessCommand()
+        {
+            // mark as run button
+            buttonCaller = 1;
+
+            GetSourceTargetAndCommodity();
+
+            DoRunEvent(); // externalized
+        }
+
         private void ProcOutputDataHandler(
-            object sender, 
-            DataReceivedEventArgs output)
+                    object sender,
+                    DataReceivedEventArgs output)
         {
             string[] exceptions = new string[] { "NOTE:", "####" };
             string filteredOutput = string.Empty;
@@ -2954,6 +2937,37 @@ namespace TDHelper
             else
             {
                 WriteSavedPage(rtbOutput.Text, savedFile3);
+            }
+        }
+
+        /// <summary>
+        /// The event handler for the mnuSelectAll1 click event.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void SelectAll1_Click(object sender, EventArgs e)
+        {
+            SelectAllControlText(sender);
+        }
+
+        /// <summary>
+        /// Select all the text on the control.
+        /// </summary>
+        /// <param name="sender">The clicked control.</param>
+        private void SelectAllControlText(object sender)
+        {
+            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
+            var control = ((ContextMenuStrip)(menuItem.GetCurrentParent())).SourceControl;
+
+            control.Focus();
+
+            if (control is TextBox)
+            {
+                ((TextBox)control).SelectAll();
+            }
+            else if (control is ComboBox)
+            {
+                ((ComboBox)control).SelectAll();
             }
         }
 
@@ -3165,6 +3179,26 @@ namespace TDHelper
             foreach (Control ctrl in panel.Controls)
             {
                 ctrl.Enabled = state;
+            }
+        }
+
+        /// <summary>
+        /// Set the state of the Station Info Button.
+        /// </summary>
+        private void SetStationInfoButtonState()
+        {
+            // If a command is not already running...
+            if (btnStart.Enabled && btnStart.Text.Contains("Start"))
+            {
+                // ...then the button is enable if a source system/station is selected.
+                string[] data = cboSourceSystem.Text.Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
+
+                btnStationInfo.Enabled = data.Length == 2 && data[0].Length > 3 & data[1].Length > 3;
+            }
+            else
+            {
+                // ...otherwise it should be disabled.
+                btnStationInfo.Enabled = false;
             }
         }
 
@@ -3421,6 +3455,17 @@ namespace TDHelper
             //}
         }
 
+        private void StationInfo_Click(object sender, EventArgs e)
+        {
+            // Prevent double clicks
+            btnStationInfo.Enabled = false;
+            btnStart.Enabled = false;
+
+            methodIndex = 10;
+
+            ProcessCommand();
+        }
+
         private void SwapSourceAndDestination(object sender, EventArgs e)
         {
             // Locate the destination control for the currently enabled options panel.
@@ -3439,29 +3484,16 @@ namespace TDHelper
 
         private void TabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (fromPane == 5) { /* Pilot's Log tab */ }
-            else if (fromPane == 4)
+            if (fromPane == 4)
             {
                 // if we're coming from the notes pane we should save when we switch
                 txtNotes.SaveFile(notesFile, RichTextBoxStreamType.PlainText);
             }
 
-            if (tabControl1.SelectedTab == tabControl1.TabPages["outputPage"] && !string.IsNullOrEmpty(rtbOutput.Text))
+            if (tabControl1.SelectedTab == tabControl1.TabPages["outputPage"] && 
+                !string.IsNullOrEmpty(rtbOutput.Text))
             {
-                string filteredOutput = FilterOutput(rtbOutput.Text);
-                runOutputState = IsValidRunOutput(filteredOutput);
-
-                // check for parsable Run output
-                if (runOutputState > -1)
-                {
-                    hasParsed = false; // reset the semaphore
-                    tv_outputBox = filteredOutput; // copy our validated input
-                    btnMiniMode.Enabled = true;
-                }
-                else
-                {
-                    btnMiniMode.Enabled = false;
-                }
+                CheckForParsableOutput(rtbOutput);
 
                 rtbOutput.Focus(); // always focus our text box
 
@@ -3472,93 +3504,76 @@ namespace TDHelper
             {
                 fromPane = 5;
             }
-            else if (tabControl1.SelectedTab == tabControl1.TabPages["notesPage"] && CheckIfFileOpens(notesFile))
+            else if (tabControl1.SelectedTab == tabControl1.TabPages["notesPage"] && 
+                CheckIfFileOpens(notesFile))
             {
                 txtNotes.LoadFile(notesFile, RichTextBoxStreamType.PlainText);
 
                 txtNotes.Focus();
                 fromPane = 4;
             }
-            else if (tabControl1.SelectedTab == tabControl1.TabPages["savedPage1"] && CheckIfFileOpens(savedFile1))
+            else if (tabControl1.SelectedTab == tabControl1.TabPages["savedPage1"])
             {
-                rtbSaved1.Focus();
+                LoadFileIntoPage(savedFile1, rtbSaved1);
 
-                if (File.Exists(savedFile1))
-                {
-                    rtbSaved1.LoadFile(savedFile1, RichTextBoxStreamType.PlainText);
-                }
-
-                string filteredOutput = FilterOutput(rtbSaved1.Text);
-                runOutputState = IsValidRunOutput(filteredOutput);
-
-                // check for parsable Run output
-                if (runOutputState > -1)
-                {
-                    hasParsed = false; // reset the semaphore
-                    tv_outputBox = filteredOutput; // copy our validated input
-                    btnMiniMode.Enabled = true;
-                }
-                else
-                {
-                    btnMiniMode.Enabled = false;
-                }
-
-                rtbSaved1.Focus();
                 fromPane = 1;
             }
-            else if (tabControl1.SelectedTab == tabControl1.TabPages["savedPage2"] && CheckIfFileOpens(savedFile2))
+            else if (tabControl1.SelectedTab == tabControl1.TabPages["savedPage2"])
             {
-                rtbSaved2.Focus();
+                LoadFileIntoPage(savedFile2, rtbSaved2);
 
-                if (File.Exists(savedFile2))
-                {
-                    rtbSaved2.LoadFile(savedFile2, RichTextBoxStreamType.PlainText);
-                }
-
-                string filteredOutput = FilterOutput(rtbSaved2.Text);
-                runOutputState = IsValidRunOutput(filteredOutput);
-
-                // check for parsable Run output
-                if (runOutputState > -1)
-                {
-                    hasParsed = false; // reset the semaphore
-                    tv_outputBox = filteredOutput; // copy our validated input
-                    btnMiniMode.Enabled = true;
-                }
-                else
-                {
-                    btnMiniMode.Enabled = false;
-                }
-
-                rtbSaved2.Focus();
                 fromPane = 2;
             }
-            else if (tabControl1.SelectedTab == tabControl1.TabPages["savedPage3"] && CheckIfFileOpens(savedFile3))
+            else if (tabControl1.SelectedTab == tabControl1.TabPages["savedPage3"])
             {
-                rtbSaved3.Focus();
+                LoadFileIntoPage(savedFile3, rtbSaved3);
 
-                if (File.Exists(savedFile3))
-                {
-                    rtbSaved3.LoadFile(savedFile3, RichTextBoxStreamType.PlainText);
-                }
-
-                string filteredOutput = FilterOutput(rtbSaved3.Text);
-                runOutputState = IsValidRunOutput(filteredOutput);
-
-                // check for parsable Run output
-                if (runOutputState > -1)
-                {
-                    hasParsed = false; // reset the semaphore
-                    tv_outputBox = filteredOutput; // copy our validated input
-                    btnMiniMode.Enabled = true;
-                }
-                else
-                {
-                    btnMiniMode.Enabled = false;
-                }
-
-                rtbSaved3.Focus();
                 fromPane = 3;
+            }
+        }
+
+        /// <summary>
+        /// Load the speicifed file into the specified control.
+        /// </summary>
+        /// <param name="fileName">The name of the file to load.</param>
+        /// <param name="page">A reference to the control.</param>
+        private void LoadFileIntoPage(
+            string fileName, 
+            RichTextBox page)
+        {
+            if (CheckIfFileOpens(fileName))
+            {
+                page.Focus();
+
+                if (File.Exists(fileName))
+                {
+                    page.LoadFile(savedFile1, RichTextBoxStreamType.PlainText);
+                }
+
+                CheckForParsableOutput(page);
+
+                page.Focus();
+            }
+        }
+
+        /// <summary>
+        /// check for parsable Run output.
+        /// </summary>
+        /// <param name="page">A reference to the control.</param>
+        private void CheckForParsableOutput(RichTextBox page)
+        {
+            string filteredOutput = FilterOutput(page.Text);
+            runOutputState = IsValidRunOutput(filteredOutput);
+
+            if (runOutputState > -1)
+            {
+                hasParsed = false; // reset the semaphore
+                tv_outputBox = filteredOutput; // copy our validated input
+                btnMiniMode.Enabled = true;
+            }
+            else
+            {
+                btnMiniMode.Enabled = false;
             }
         }
 
@@ -3621,57 +3636,6 @@ namespace TDHelper
                 numRunOptionsEndJumps.Enabled = false;
                 lblRunOptionsEndJumps.Enabled = false;
             }
-        }
-
-        /// <summary>
-        /// The event handler for the mnuCut1 click event.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void Cut1_Click(object sender, EventArgs e)
-        {
-            CutTextToClipboard(sender);
-        }
-
-        /// <summary>
-        /// The event handler for the mnuCopy1 click event.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void Copy1_Click(object sender, EventArgs e)
-        {
-            CopyTextToClipboard(sender);
-        }
-
-        /// <summary>
-        /// The event handler for the mnuPaste1 click event.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void Paste1_Click(object sender, EventArgs e)
-        {
-            PasteTextToControl(sender);
-        }
-
-        /// <summary>
-        /// The event handler for the mnuSelectAll1 click event.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void SelectAll1_Click(object sender, EventArgs e)
-        {
-            SelectAllControlText(sender);
-        }
-
-        private void StationInfo_Click(object sender, EventArgs e)
-        {
-            // Prevent double clicks
-            btnStationInfo.Enabled = false;
-            btnStart.Enabled = false;
-
-            methodIndex = 10;
-
-            ProcessCommand();
         }
     }
 }

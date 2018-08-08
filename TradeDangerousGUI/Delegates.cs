@@ -367,143 +367,47 @@ namespace TDHelper
             switch (shipType)
             {
                 case "Adder":
+                case "CobraMkIII":
+                case "CobraMkIV":
+                case "DiamondBack":
+                case "DiamondBackXL":
+                case "Dolphin":
+                case "Eagle":
+                case "Empire_Courier":
+                case "Empire_Eagle":
+                case "Hauler":
+                case "SideWinder":
+                case "Viper":
+                case "Viper_MkIV":
+                case "Vulture":
                     padSizes = "SML";
                     break;
 
                 case "Anaconda":
-                    padSizes = "L";
-                    break;
-
-                case "Asp":
-                    padSizes = "ML";
-                    break;
-
-                case "Asp_Scout":
-                    padSizes = "ML";
-                    break;
-
                 case "BelugaLiner":
-                    padSizes = "L";
-                    break;
-
-                case "CobraMkIII":
-                    padSizes = "SML";
-                    break;
-
-                case "CobraMkIV":
-                    padSizes = "SML";
-                    break;
-
                 case "Cutter":
-                    padSizes = "L";
-                    break;
-
-                case "DiamondBack":
-                    padSizes = "SML";
-                    break;
-
-                case "DiamondBackXL":
-                    padSizes = "SML";
-                    break;
-
-                case "Dolphin":
-                    padSizes = "SML";
-                    break;
-
-                case "Eagle":
-                    padSizes = "SML";
-                    break;
-
-                case "Empire_Courier":
-                    padSizes = "SML";
-                    break;
-
-                case "Empire_Eagle":
-                    padSizes = "SML";
-                    break;
-
                 case "Empire_Trader":
-                    padSizes = "L";
-                    break;
-
                 case "Federation_Corvette":
-                    padSizes = "L";
-                    break;
-
-                case "Federation_Dropship":
-                    padSizes = "ML";
-                    break;
-
-                case "Federation_Dropship_MkII":
-                    padSizes = "ML";
-                    break;
-
-                case "Federation_Gunship":
-                    padSizes = "ML";
-                    break;
-
-                case "FerDeLance":
-                    padSizes = "ML";
-                    break;
-
-                case "Hauler":
-                    padSizes = "S";
-                    break;
-
-                case "Independant_Trader": // Keelback
-                    padSizes = "ML";
-                    break;
-
-                case "Krait_MkII":
-                    padSizes = "ML";
-                    break;
-
                 case "Orca":
-                    padSizes = "L";
-                    break;
-
-                case "Python":
-                    padSizes = "ML";
-                    break;
-
-                case "SideWinder":
-                    padSizes = "SML";
-                    break;
-
-                case "Type6":
-                    padSizes = "ML";
-                    break;
-
                 case "Type7":
-                    padSizes = "L";
-                    break;
-
                 case "Type9":
-                    padSizes = "L";
-                    break;
-
                 case "Type9_Military": // Type 10
                     padSizes = "L";
                     break;
 
+                case "Asp":
+                case "Asp_Scout":
+                case "Federation_Dropship":
+                case "Federation_Dropship_MkII":
+                case "Federation_Gunship":
+                case "FerDeLance":
+                case "Independant_Trader": // Keelback
+                case "Krait_MkII":
+                case "Python":
+                case "Type6":
                 case "TypeX": // Chieftain
-                    padSizes = "ML";
-                    break;
-
                 case "TypeX_3": // Challenger
                     padSizes = "ML";
-                    break;
-
-                case "Viper":
-                    padSizes = "SML";
-                    break;
-
-                case "Viper_MkIV":
-                    padSizes = "SML";
-                    break;
-
-                case "Vulture":
-                    padSizes = "SML";
                     break;
 
                 default:
@@ -1115,6 +1019,7 @@ namespace TDHelper
         {
             // this takes an XDocument and parses to a TreeView
             XElement el = xmlInput.Descendants("Route").FirstOrDefault();
+
             if (el != null)
             {
                 TreeNode node = new TreeNode()
@@ -1125,43 +1030,42 @@ namespace TDHelper
                 // put details in a childnode
                 if (el.Element("SummaryDetails") != null)
                 {
-                    TreeNode summaryNode = new TreeNode(el.Element("SummaryDetails").Value);
-                    node.Nodes.Add(summaryNode);
+                    node.Nodes.Add(new TreeNode(el.Element("SummaryDetails").Value));
                 }
 
                 foreach (XElement l in el.Descendants("Hop"))
                 {
                     TreeNode tnGroupStart = new TreeNode(l.Element("LoadAt").Value);
                     node.Nodes.Add(tnGroupStart);
+
                     if (l.Element("LoadDetails") != null)
                     {
-                        TreeNode tnGroupStartDetails = new TreeNode(l.Element("LoadDetails").Value);
-                        tnGroupStart.Nodes.Add(tnGroupStartDetails);
+                        tnGroupStart.Nodes.Add(new TreeNode(l.Element("LoadDetails").Value));
                     }
 
                     foreach (XElement j in l.Elements("Load"))
                     {
-                        TreeNode tnSubGroup = new TreeNode(j.Value);
-                        tnGroupStart.Nodes.Add(tnSubGroup);
+                        tnGroupStart.Nodes.Add(new TreeNode(j.Value));
                     }
 
                     if (l.Descendants("Jumps") != null && l.Descendants("Jumps").Count() > 0)
                     {
                         TreeNode tnJumpGroup = new TreeNode("Jumps");
+
                         foreach (XElement k in l.Element("Jumps").Elements())
                         {
-                            TreeNode tnJumpGroupDetails = new TreeNode(k.Value);
-                            tnJumpGroup.Nodes.Add(tnJumpGroupDetails);
+                            tnJumpGroup.Nodes.Add(new TreeNode(k.Value));
                         }
+
                         tnGroupStart.Nodes.Add(tnJumpGroup);
                     }
 
                     TreeNode tnGroupEnd = new TreeNode(l.Element("UnloadAt").Value);
                     tnGroupStart.Nodes.Add(tnGroupEnd);
+
                     if (l.Element("UnloadDetails") != null)
                     {
-                        TreeNode tnGroupEndDetails = new TreeNode(l.Element("UnloadDetails").Value);
-                        tnGroupEnd.Nodes.Add(tnGroupEndDetails);
+                        tnGroupEnd.Nodes.Add(new TreeNode(l.Element("UnloadDetails").Value));
                     }
                 }
 
@@ -1208,108 +1112,45 @@ namespace TDHelper
         /// <returns>The padsizes upon which the ship may land.</returns>
         private string TranslateShipType(string shipType)
         {
-            string shipName = shipType;
-
-            switch (shipType)
+            if (ShipTranslation.Count == 0)
             {
-                case "Asp":
-                    shipName = "Asp Explorer";
-                    break;
-
-                case "Asp_Scout":
-                    shipName = "Asp Scout";
-                    break;
-
-                case "BelugaLiner":
-                    shipName = "Beluga";
-                    break;
-
-                case "CobraMkIII":
-                    shipName = "Cobra MkIII";
-                    break;
-
-                case "CobraMkIV":
-                    shipName = "Cobra MkIV";
-                    break;
-
-                case "Cutter":
-                    shipName = "Imperial Cutter";
-                    break;
-
-                case "DiamondBack":
-                    shipName = "DiamondBack Scout";
-                    break;
-
-                case "DiamondBackXL":
-                    shipName = "DiamondBack Explorer";
-                    break;
-
-                case "Empire_Courier":
-                    shipName = "Imperial Courier";
-                    break;
-
-                case "Empire_Eagle":
-                    shipName = "Imperial Eagle";
-                    break;
-
-                case "Empire_Trader":
-                    shipName = "Imperial Clipper";
-                    break;
-
-                case "Federation_Corvette":
-                    shipName = "Federal Corvette";
-                    break;
-
-                case "Federation_Dropship":
-                    shipName = "Federal Dropship";
-                    break;
-
-                case "Federation_Dropship_MkII":
-                    shipName = "Federal Assault Ship";
-                    break;
-
-                case "Federation_Gunship":
-                    shipName = "Federal Gunship";
-                    break;
-
-                case "Independant_Trader":
-                    shipName = "Keelback";
-                    break;
-
-                case "Krait_MkII":
-                    shipName = "Krait MkII";
-                    break;
-
-                case "Type6":
-                    shipName = "Type 6";
-                    break;
-
-                case "Type7":
-                    shipName = "Type 7";
-                    break;
-
-                case "Type9":
-                    shipName = "Type 9";
-                    break;
-
-                case "Type9_Military":
-                    shipName = "Type 10";
-                    break;
-
-                case "TypeX":
-                    shipName = "Alliance Chieftain";
-                    break;
-
-                case "TypeX_3":
-                    shipName = "Alliance Challenger";
-                    break;
-
-                case "Viper_MkIV":
-                    shipName = "Viper MkIV";
-                    break;
+                SetupShipTranslations();
             }
 
-            return shipName;
+            return ShipTranslation[shipType];
+        }
+
+        /// <summary>
+        /// Sets the ship translations.
+        /// </summary>
+        private void SetupShipTranslations()
+        {
+            ShipTranslation.Clear();
+
+            ShipTranslation.Add("Asp", "Asp Explorer");
+            ShipTranslation.Add("Asp_Scout", "Asp Scout");
+            ShipTranslation.Add("BelugaLiner", "Beluga");
+            ShipTranslation.Add("CobraMkIII", "Cobra MkIII");
+            ShipTranslation.Add("CobraMkIV", "Cobra MkIV");
+            ShipTranslation.Add("Cutter", "Imperial Cutter");
+            ShipTranslation.Add("DiamondBack", "DiamondBack Scout");
+            ShipTranslation.Add("DiamondBackXL", "DiamondBack Explorer");
+            ShipTranslation.Add("Empire_Courier", "Imperial Courier");
+            ShipTranslation.Add("Empire_Eagle", "Imperial Eagle");
+            ShipTranslation.Add("Empire_Trader", "Imperial Clipper");
+            ShipTranslation.Add("Federation_Corvette", "Federal Corvette");
+            ShipTranslation.Add("Federation_Dropship", "Federal Dropship");
+            ShipTranslation.Add("Federation_Dropship_MkII", "Federal Assault Ship");
+            ShipTranslation.Add("Federation_Gunship", "Federal Gunship");
+            ShipTranslation.Add("Independant_Trader", "Keelback");
+            ShipTranslation.Add("Krait_MkII", "Krait MkII");
+            ShipTranslation.Add("Type6", "Type 6");
+            ShipTranslation.Add("Type7", "Type 7");
+            ShipTranslation.Add("Type9", "Type 9");
+            ShipTranslation.Add("Type9_Military", "Type 10");
+            ShipTranslation.Add("TypeX", "Alliance Chieftain");
+            ShipTranslation.Add("TypeX_3", "Alliance Challenger");
+            ShipTranslation.Add("Viper_MkIV", "Viper MkIV");
         }
 
         private string GetShipName(JToken ship)
@@ -1362,18 +1203,18 @@ namespace TDHelper
         /// </summary>
         private void UpdateCommanderAndShipDetails()
         {
-            string json = this.RetrieveCommanderProfile();
+            string json = RetrieveCommanderProfile();
 
             JObject cmdrProfile = JObject.Parse(json);
 
             // Set the commander name and credit balance.
-            MainForm.settingsRef.CmdrName = (string)cmdrProfile["profile"]["commander"]["name"];
-            this.numCommandersCredits.Value = (decimal)cmdrProfile["profile"]["commander"]["credits"];
+            settingsRef.CmdrName = (string)cmdrProfile["profile"]["commander"]["name"];
+            numCommandersCredits.Value = (decimal)cmdrProfile["profile"]["commander"]["credits"];
 
             // Determine the insurance of the current ship.
             decimal hullValue = (decimal)cmdrProfile["profile"]["ship"]["value"]["hull"];
             decimal modulesValue = (decimal)cmdrProfile["profile"]["ship"]["value"]["modules"];
-            decimal rebuyPercentage = MainForm.settingsRef.RebuyPercentage;
+            decimal rebuyPercentage = settingsRef.RebuyPercentage;
 
             this.numShipInsurance.Value = (hullValue + modulesValue) * rebuyPercentage / 100;
 
@@ -1396,13 +1237,13 @@ namespace TDHelper
 
             if (capacity > 0)
             {
-                this.numRouteOptionsShipCapacity.Value = capacity;
+                numRouteOptionsShipCapacity.Value = capacity;
             }
 
             // Set this ship as the currently selected ship.
             string currentlySelected = GetShipName(cmdrProfile["profile"]["ship"]);
 
-            MainForm.settingsRef.LastUsedConfig = currentlySelected;
+            settingsRef.LastUsedConfig = currentlySelected;
 
             // Get the details of all the commander's ships and set up the available ships.
             Configuration config = Configuration.LoadFromFile(configFile);
@@ -1413,7 +1254,7 @@ namespace TDHelper
             {
                 string sectionName = GetShipName(ship.First);
 
-                availableShips += "," + sectionName;
+                availableShips += ",{0}".With(sectionName);
 
                 decimal shipCapacity
                     = sectionName == currentlySelected
@@ -1462,12 +1303,9 @@ namespace TDHelper
             // Determine if any ships have been sold and remove if found.
             IList<string> missingShips = DeterminMissingShips(currentShips, availableShips);
 
-            if (missingShips.Count > 0)
+            foreach (string ship in missingShips)
             {
-                foreach (string ship in missingShips)
-                {
-                    config.RemoveAllNamed(ship);
-                }
+                config.RemoveAllNamed(ship);
             }
 
             config.SaveToFile(configFile);

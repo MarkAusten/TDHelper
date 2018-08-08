@@ -1104,6 +1104,7 @@
             this.cboMethod.TabIndex = 1;
             this.cboMethod.TabStop = false;
             this.tipToolTips.SetToolTip(this.cboMethod, "Select the command to run");
+            this.cboMethod.SelectedIndexChanged += new System.EventHandler(this.MethodComboBox_SelectedIndexChanged);
             // 
             // txtVia
             // 
