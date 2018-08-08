@@ -391,8 +391,6 @@ namespace TDHelper
 
                 // reenable after uncancellable task is done
                 EnableBtnStarts();
-                btnStart.Font = new Font(btnStart.Font, FontStyle.Bold);
-                btnStart.Text = "Start";
 
                 td_proc.Dispose();
 
@@ -400,6 +398,11 @@ namespace TDHelper
                 if ((stopwatch.ElapsedMilliseconds > 10000 && buttonCaller != 5) || buttonCaller == 20)
                 {
                     PlayAlert(); // when not marked as cancelled, or explicit
+                }
+
+                if (methodIndex == 10)
+                {
+                    methodIndex = cboMethod.SelectedIndex;
                 }
 
                 if (buttonCaller != 4) // not if we're coming from Run
@@ -624,7 +627,6 @@ namespace TDHelper
                 stopwatch.Stop(); // stop the timer
                 circularBuffer = new System.Text.StringBuilder(2 * circularBufferSize);
 
-                btnStart.Text = "Start";
                 EnableBtnStarts();
                 td_proc.Dispose();
 
@@ -727,8 +729,17 @@ namespace TDHelper
         private void BtnStart_Click(object sender, EventArgs e)
         {
             // Prevent double clicks.
-            this.btnStart.Enabled = false;
+            btnStart.Enabled = false;
+            btnStationInfo.Enabled = false;
 
+            ProcessCommand();
+        }
+
+        /// <summary>
+        /// Process the currently set up command.
+        /// </summary>
+        private void ProcessCommand()
+        {
             // mark as run button
             buttonCaller = 1;
 
@@ -924,6 +935,143 @@ namespace TDHelper
 
             clickedControl.Focus();
             clickedControl.Copy();
+        }
+
+        /// <summary>
+        /// Cut the text from the control to the clipboard.
+        /// </summary>
+        /// <param name="control">The clicked control.</param>
+        private void CutTextToClipboard(TextBox control)
+        {
+            control.Focus();
+            control.Cut();
+        }
+
+        /// <summary>
+        /// Copy the text from the control to the clipboard.
+        /// </summary>
+        /// <param name="control">The clicked control.</param>
+        private void CopyTextToClipboard(TextBox control)
+        {
+            control.Focus();
+            control.Copy();
+        }
+
+        /// <summary>
+        /// Paste the text from the clipboard to the control.
+        /// </summary>
+        /// <param name="control">The clicked control.</param>
+        private void PasteTextToControl(TextBox control)
+        {
+            control.Focus();
+            control.Paste();
+        }
+
+        ///// <summary>
+        ///// Select all the text on the control.
+        ///// </summary>
+        ///// <param name="control">The clicked control.</param>
+        //private void SelectAllControlText(TextBox control)
+        //{
+        //    control.Focus();
+        //    control.SelectAll();
+        //}
+
+        /// <summary>
+        /// Cut the text from the control to the clipboard.
+        /// </summary>
+        /// <param name="control">The clicked control.</param>
+        private void CutTextToClipboard(object sender)
+        {
+            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
+            var control = ((ContextMenuStrip)(menuItem.GetCurrentParent())).SourceControl;
+
+            if (control is TextBox)
+            {
+                ((TextBox)control).Cut();
+            }
+            else if (control is ComboBox cbo)
+            {
+                if (cbo.SelectedText != string.Empty)
+                {
+                    Clipboard.SetText(cbo.SelectedText);
+
+                    int sPos = cbo.SelectionStart;
+                    cbo.SelectedText = cbo.SelectedText.Replace(cbo.SelectedText, string.Empty);
+                    cbo.SelectionStart = sPos;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Copy the text from the control to the clipboard.
+        /// </summary>
+        /// <param name="sender">The clicked control.</param>
+        private void CopyTextToClipboard(object sender)
+        {
+            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
+            var control = ((ContextMenuStrip)(menuItem.GetCurrentParent())).SourceControl;
+
+            if (control is TextBox)
+            {
+                ((TextBox)control).Copy();
+            }
+            else if (control is ComboBox)
+            {
+                Clipboard.SetText(((ComboBox)control).SelectedText);
+            }
+        }
+
+        /// <summary>
+        /// Paste the text from the clipboard to the control.
+        /// </summary>
+        /// <param name="sender">The clicked control.</param>
+        private void PasteTextToControl(object sender)
+        {
+            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
+            var control = ((ContextMenuStrip)(menuItem.GetCurrentParent())).SourceControl;
+
+            if (control is TextBox)
+            {
+                ((TextBox)control).Paste();
+            }
+            else if (control is ComboBox cbo)
+            {
+                string txtInClip = Clipboard.GetText();
+
+                int sPos = cbo.SelectionStart;
+
+                if (cbo.SelectedText != string.Empty)
+                {
+                    cbo.SelectedText = cbo.SelectedText.Replace(cbo.SelectedText, txtInClip);
+                }
+                else
+                {
+                    cbo.Text = cbo.Text.Insert(cbo.SelectionStart, txtInClip);
+                    cbo.SelectionStart = sPos + txtInClip.Length;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Select all the text on the control.
+        /// </summary>
+        /// <param name="sender">The clicked control.</param>
+        private void SelectAllControlText(object sender)
+        {
+            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
+            var control = ((ContextMenuStrip)(menuItem.GetCurrentParent())).SourceControl;
+
+            control.Focus();
+
+            if (control is TextBox)
+            {
+                ((TextBox)control).SelectAll();
+            }
+            else if (control is ComboBox)
+            {
+                ((ComboBox)control).SelectAll();
+            }
         }
 
         private void CopySettingsFromConfig()
@@ -1507,18 +1655,12 @@ namespace TDHelper
 
         private void DisablebtnStarts()
         {
-            DisableAllOptionPanels();
-
             // disable buttons during uncancellable operation
             btnDbUpdate.Enabled = false;
             btnCmdrProfile.Enabled = false;
             btnGetSystem.Enabled = false;
             btnMiniMode.Enabled = false;
-            btnSettings.Enabled = false;
-            btnSaveSettings.Enabled = false;
-            cboSourceSystem.Enabled = false;
-            lblSourceSystem.Enabled = false;
-            cboMethod.Enabled = false;
+            btnStationInfo.Enabled = false;
 
             // an exception for Run commands
             if (buttonCaller != 1)
@@ -1528,7 +1670,7 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Caled on clicking one of the distance menu items.
+        /// Called on clicking one of the distance menu items.
         /// </summary>
         /// <param name="sender">The menu item clicked.</param>
         /// <param name="e">The event arguments.</param>
@@ -1559,16 +1701,37 @@ namespace TDHelper
             btnDbUpdate.Enabled = true;
             btnCmdrProfile.Enabled = ValidateEdce();
             btnGetSystem.Enabled = true;
-            btnSettings.Enabled = true;
-            btnSaveSettings.Enabled = true;
-            cboSourceSystem.Enabled = true;
-            lblSourceSystem.Enabled = true;
-            cboMethod.Enabled = true;
 
             // fix Run button when returning from non-Run commands
             if (buttonCaller == 1 || !btnStart.Enabled)
             {
                 btnStart.Enabled = true;
+            }
+
+            btnStart.Font = new Font(btnStart.Font, FontStyle.Bold);
+            btnStart.Text = "Start";
+
+            SetStationInfoButtonState();
+        }
+
+        /// <summary>
+        /// Set the state of the Station Info Button.
+        /// </summary>
+        private void SetStationInfoButtonState()
+        {
+            // If a command is not already running...
+            if (btnStart.Enabled && btnStart.Text.Contains("Start"))
+            {
+                // ...then the button is enable if a source system/station is selected.
+                string[] data = cboSourceSystem.Text.Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
+
+
+                btnStationInfo.Enabled = data.Length == 2 && data[0].Length > 3 & data[1].Length > 3;
+            }
+            else
+            {
+                // ...otherwise it should be disabled.
+                btnStationInfo.Enabled = false;
             }
         }
 
@@ -3043,10 +3206,9 @@ namespace TDHelper
                 case "numSellOptionsDemand":
                 case "numRouteOptionsDemand":
                 case "numRouteOptionsStock":
-                    mnuLadenLY.Visible = false;
-                    mnuUnladenLY.Visible = false;
-                    mnuCapacity.Visible = true;
-                    mnuSep3.Visible = true;
+                    mnuLadenLY.Enabled = false;
+                    mnuUnladenLY.Enabled = false;
+                    mnuCapacity.Enabled = true;
                     break;
 
                 case "numBuyOptionsNearLy":
@@ -3055,22 +3217,69 @@ namespace TDHelper
                 case "numOldDataOptionsNearLy":
                 case "numRaresOptionsLy":
                 case "numSellOptionsNearLy":
-                    mnuLadenLY.Visible = true;
-                    mnuUnladenLY.Visible = true;
-                    mnuCapacity.Visible = false;
-                    mnuSep3.Visible = true;
+                    mnuLadenLY.Enabled = true;
+                    mnuUnladenLY.Enabled = true;
+                    mnuCapacity.Enabled = false;
                     break;
 
                 default:
-                    mnuLadenLY.Visible = false;
-                    mnuUnladenLY.Visible = false;
-                    mnuCapacity.Visible = false;
-                    mnuSep3.Visible = false;
+                    mnuLadenLY.Enabled = false;
+                    mnuUnladenLY.Enabled = false;
+                    mnuCapacity.Enabled = false;
                     break;
             }
 
+            var control = ((ContextMenuStrip)sender).SourceControl;
+
+            if (control is TextBox ||
+                control is ComboBox)
+            {
+                string text = string.Empty;
+                string selectedText = string.Empty;
+
+                if (control is TextBox)
+                {
+                    text = ((TextBox)control).Text;
+                    selectedText = ((TextBox)control).SelectedText;
+                }
+                else if (control is ComboBox)
+                {
+                    text = ((ComboBox)control).Text;
+                    selectedText = ((ComboBox)control).SelectedText;
+                }
+
+                if (text.Length > 0)
+                {
+                    if (selectedText.Length > 0)
+                    {
+                        mnuCut1.Enabled = true;
+                        mnuCopy1.Enabled = true;
+                    }
+                    else
+                    {
+                        mnuCut1.Enabled = false;
+                        mnuCopy1.Enabled = false;
+                    }
+
+                    mnuSelectAll1.Enabled = true;
+                }
+                else
+                {
+                    mnuCut1.Enabled = false;
+                    mnuCopy1.Enabled = false;
+                }
+
+                mnuPaste1.Enabled = true;
+            }
+            else
+            {
+                mnuCut1.Enabled = false;
+                mnuCopy1.Enabled = false;
+                mnuPaste1.Enabled = false;
+                mnuSelectAll1.Enabled = false;
+            }
+
             mnuReset.Enabled = true;
-            mnuSep2.Visible = false;
         }
 
         private void ShortenCheckBox_Click(object sender, EventArgs e)
@@ -3187,6 +3396,8 @@ namespace TDHelper
             {
                 chkRunOptionsTowards.Enabled = false;
             }
+
+            SetStationInfoButtonState();
         }
 
         private void StationDropDown_SelectedIndexChanged(object sender, EventArgs e)
@@ -3410,6 +3621,57 @@ namespace TDHelper
                 numRunOptionsEndJumps.Enabled = false;
                 lblRunOptionsEndJumps.Enabled = false;
             }
+        }
+
+        /// <summary>
+        /// The event handler for the mnuCut1 click event.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void Cut1_Click(object sender, EventArgs e)
+        {
+            CutTextToClipboard(sender);
+        }
+
+        /// <summary>
+        /// The event handler for the mnuCopy1 click event.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void Copy1_Click(object sender, EventArgs e)
+        {
+            CopyTextToClipboard(sender);
+        }
+
+        /// <summary>
+        /// The event handler for the mnuPaste1 click event.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void Paste1_Click(object sender, EventArgs e)
+        {
+            PasteTextToControl(sender);
+        }
+
+        /// <summary>
+        /// The event handler for the mnuSelectAll1 click event.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void SelectAll1_Click(object sender, EventArgs e)
+        {
+            SelectAllControlText(sender);
+        }
+
+        private void StationInfo_Click(object sender, EventArgs e)
+        {
+            // Prevent double clicks
+            btnStationInfo.Enabled = false;
+            btnStart.Enabled = false;
+
+            methodIndex = 10;
+
+            ProcessCommand();
         }
     }
 }

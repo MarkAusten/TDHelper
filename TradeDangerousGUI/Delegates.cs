@@ -223,11 +223,6 @@ namespace TDHelper
             // only run the delegate if we have a path
             if (!string.IsNullOrEmpty(path))
             {
-                Invoke(new Action(() =>
-                {
-                    DisableAllOptionPanels();
-                }));
-
                 try
                 {
                     procCode = -1; // reset the exit code
@@ -313,12 +308,6 @@ namespace TDHelper
                 {
                     td_proc.Close();
                     td_proc.Dispose();
-
-                    Invoke(new Action(() =>
-                    {
-                        EnableAllOptionPanels();
-                        RefreshCurrentOptionsPanel();
-                    }));                    
                 }
             }
             else

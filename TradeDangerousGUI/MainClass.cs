@@ -577,15 +577,6 @@ namespace TDHelper
                 settingsRef.Capacity = numRouteOptionsShipCapacity.Maximum;
             }
 
-            //if (settingsRef.AbovePrice < abovePriceBox.Minimum)
-            //{
-            //    settingsRef.AbovePrice = abovePriceBox.Minimum;
-            //}
-            //else if (settingsRef.AbovePrice > abovePriceBox.Maximum)
-            //{
-            //    settingsRef.AbovePrice = abovePriceBox.Maximum;
-            //}
-
             if (settingsRef.BelowPrice < numRunOptionsRoutes.Minimum)
             {
                 settingsRef.BelowPrice = numRunOptionsRoutes.Minimum;
@@ -804,7 +795,10 @@ namespace TDHelper
             }
 
             // default to Run command if unset
-            cboMethod.SelectedIndex = methodIndex;
+            if (methodIndex > -1 && methodIndex < cboMethod.Items.Count)
+            {
+                cboMethod.SelectedIndex = methodIndex;
+            }
 
             // make sure we pull CSV paths after we validate our inputs
             if (!string.IsNullOrEmpty(settingsRef.TDPath))

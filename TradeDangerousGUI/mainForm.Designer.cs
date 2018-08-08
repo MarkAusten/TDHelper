@@ -40,6 +40,11 @@
             this.mnuSep2 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuCapacity = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSep3 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuCut1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuCopy1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuPaste1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuSelectAll1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuSep4 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuReset = new System.Windows.Forms.ToolStripMenuItem();
             this.lblStopWatch = new System.Windows.Forms.Label();
             this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
@@ -241,6 +246,7 @@
             this.chkLocalOptionsShipyard = new System.Windows.Forms.CheckBox();
             this.btnLocalOptionsAll = new System.Windows.Forms.Button();
             this.chkSellOptionsBlkMkt = new System.Windows.Forms.CheckBox();
+            this.btnStationInfo = new System.Windows.Forms.Button();
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker4 = new System.ComponentModel.BackgroundWorker();
             this.panRunOptions = new System.Windows.Forms.Panel();
@@ -436,11 +442,16 @@
             this.mnuSep2,
             this.mnuCapacity,
             this.mnuSep3,
+            this.mnuCut1,
+            this.mnuCopy1,
+            this.mnuPaste1,
+            this.mnuSelectAll1,
+            this.mnuSep4,
             this.mnuReset});
             this.mnuSetValues.Name = "contextMenuStrip1";
             this.mnuSetValues.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.mnuSetValues.ShowImageMargin = false;
-            this.mnuSetValues.Size = new System.Drawing.Size(110, 104);
+            this.mnuSetValues.Size = new System.Drawing.Size(110, 198);
             this.mnuSetValues.Opening += new System.ComponentModel.CancelEventHandler(this.SetValuesMenu_Opening);
             // 
             // mnuLadenLY
@@ -473,6 +484,39 @@
             // 
             this.mnuSep3.Name = "mnuSep3";
             this.mnuSep3.Size = new System.Drawing.Size(106, 6);
+            // 
+            // mnuCut1
+            // 
+            this.mnuCut1.Name = "mnuCut1";
+            this.mnuCut1.Size = new System.Drawing.Size(109, 22);
+            this.mnuCut1.Text = "Cut";
+            this.mnuCut1.Click += new System.EventHandler(this.Cut1_Click);
+            // 
+            // mnuCopy1
+            // 
+            this.mnuCopy1.Name = "mnuCopy1";
+            this.mnuCopy1.Size = new System.Drawing.Size(109, 22);
+            this.mnuCopy1.Text = "Copy";
+            this.mnuCopy1.Click += new System.EventHandler(this.Copy1_Click);
+            // 
+            // mnuPaste1
+            // 
+            this.mnuPaste1.Name = "mnuPaste1";
+            this.mnuPaste1.Size = new System.Drawing.Size(109, 22);
+            this.mnuPaste1.Text = "Paste";
+            this.mnuPaste1.Click += new System.EventHandler(this.Paste1_Click);
+            // 
+            // mnuSelectAll1
+            // 
+            this.mnuSelectAll1.Name = "mnuSelectAll1";
+            this.mnuSelectAll1.Size = new System.Drawing.Size(109, 22);
+            this.mnuSelectAll1.Text = "Select All";
+            this.mnuSelectAll1.Click += new System.EventHandler(this.SelectAll1_Click);
+            // 
+            // mnuSep4
+            // 
+            this.mnuSep4.Name = "mnuSep4";
+            this.mnuSep4.Size = new System.Drawing.Size(106, 6);
             // 
             // mnuReset
             // 
@@ -1053,15 +1097,13 @@
             "ShipVendor",
             "Navigation",
             "OldData",
-            "Local",
-            "Station"});
+            "Local"});
             this.cboMethod.Location = new System.Drawing.Point(699, 2);
             this.cboMethod.Name = "cboMethod";
             this.cboMethod.Size = new System.Drawing.Size(82, 21);
             this.cboMethod.TabIndex = 1;
             this.cboMethod.TabStop = false;
             this.tipToolTips.SetToolTip(this.cboMethod, "Select the command to run");
-            this.cboMethod.SelectedIndexChanged += new System.EventHandler(this.MethodComboBox_SelectedIndexChanged);
             // 
             // txtVia
             // 
@@ -3005,6 +3047,20 @@
             this.tipToolTips.SetToolTip(this.chkSellOptionsBlkMkt, "Require stations with a black market");
             this.chkSellOptionsBlkMkt.UseVisualStyleBackColor = true;
             // 
+            // btnStationInfo
+            // 
+            this.btnStationInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnStationInfo.ForeColor = System.Drawing.Color.Red;
+            this.btnStationInfo.Location = new System.Drawing.Point(0, 0);
+            this.btnStationInfo.Name = "btnStationInfo";
+            this.btnStationInfo.Size = new System.Drawing.Size(23, 23);
+            this.btnStationInfo.TabIndex = 71;
+            this.btnStationInfo.TabStop = false;
+            this.btnStationInfo.Text = "i";
+            this.tipToolTips.SetToolTip(this.btnStationInfo, "Show some details of the selected station.");
+            this.btnStationInfo.UseVisualStyleBackColor = true;
+            this.btnStationInfo.Click += new System.EventHandler(this.StationInfo_Click);
+            // 
             // backgroundWorker3
             // 
             this.backgroundWorker3.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker3_DoWork);
@@ -3039,7 +3095,7 @@
             this.panRunOptions.Controls.Add(this.chkRunOptionsUnique);
             this.panRunOptions.Location = new System.Drawing.Point(1, 1);
             this.panRunOptions.Name = "panRunOptions";
-            this.panRunOptions.Size = new System.Drawing.Size(320, 140);
+            this.panRunOptions.Size = new System.Drawing.Size(320, 195);
             this.panRunOptions.TabIndex = 1;
             // 
             // lblUpdateNotify
@@ -3322,7 +3378,7 @@
             this.panSellOptions.Controls.Add(this.lblSellOptionsDemand);
             this.panSellOptions.Location = new System.Drawing.Point(1, 1);
             this.panSellOptions.Name = "panSellOptions";
-            this.panSellOptions.Size = new System.Drawing.Size(320, 160);
+            this.panSellOptions.Size = new System.Drawing.Size(320, 195);
             this.panSellOptions.TabIndex = 4;
             this.panSellOptions.EnabledChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
             this.panSellOptions.VisibleChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
@@ -3363,7 +3419,7 @@
             this.panBuyOptions.Controls.Add(this.lblBuyOptionsSupply);
             this.panBuyOptions.Location = new System.Drawing.Point(1, 1);
             this.panBuyOptions.Name = "panBuyOptions";
-            this.panBuyOptions.Size = new System.Drawing.Size(320, 160);
+            this.panBuyOptions.Size = new System.Drawing.Size(320, 195);
             this.panBuyOptions.TabIndex = 3;
             this.panBuyOptions.Visible = false;
             this.panBuyOptions.EnabledChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
@@ -3587,6 +3643,7 @@
             // 
             // panMethods
             // 
+            this.panMethods.Controls.Add(this.btnStationInfo);
             this.panMethods.Controls.Add(this.btnSaveSettings);
             this.panMethods.Controls.Add(this.btnCmdrProfile);
             this.panMethods.Controls.Add(this.btnMiniMode);
@@ -3621,7 +3678,7 @@
             this.panRaresOptions.Controls.Add(this.lblRaresOptionsLy);
             this.panRaresOptions.Location = new System.Drawing.Point(1, 1);
             this.panRaresOptions.Name = "panRaresOptions";
-            this.panRaresOptions.Size = new System.Drawing.Size(320, 144);
+            this.panRaresOptions.Size = new System.Drawing.Size(320, 195);
             this.panRaresOptions.TabIndex = 5;
             this.panRaresOptions.Visible = false;
             this.panRaresOptions.EnabledChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
@@ -3657,7 +3714,7 @@
             this.panTradeOptions.Controls.Add(this.cboTradeOptionDestination);
             this.panTradeOptions.Location = new System.Drawing.Point(1, 1);
             this.panTradeOptions.Name = "panTradeOptions";
-            this.panTradeOptions.Size = new System.Drawing.Size(320, 33);
+            this.panTradeOptions.Size = new System.Drawing.Size(320, 195);
             this.panTradeOptions.TabIndex = 3;
             this.panTradeOptions.Visible = false;
             this.panTradeOptions.EnabledChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
@@ -3668,7 +3725,7 @@
             this.panMarketOptions.Controls.Add(this.grpMarketOptionsType);
             this.panMarketOptions.Location = new System.Drawing.Point(1, 1);
             this.panMarketOptions.Name = "panMarketOptions";
-            this.panMarketOptions.Size = new System.Drawing.Size(320, 47);
+            this.panMarketOptions.Size = new System.Drawing.Size(320, 195);
             this.panMarketOptions.TabIndex = 5;
             this.panMarketOptions.Visible = false;
             this.panMarketOptions.EnabledChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
@@ -3692,7 +3749,7 @@
             this.panShipVendorOptions.Controls.Add(this.lblShipVendorOptionShips);
             this.panShipVendorOptions.Location = new System.Drawing.Point(1, 1);
             this.panShipVendorOptions.Name = "panShipVendorOptions";
-            this.panShipVendorOptions.Size = new System.Drawing.Size(320, 35);
+            this.panShipVendorOptions.Size = new System.Drawing.Size(320, 195);
             this.panShipVendorOptions.TabIndex = 6;
             this.panShipVendorOptions.Visible = false;
             this.panShipVendorOptions.EnabledChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
@@ -3718,7 +3775,7 @@
             this.panNavOptions.Controls.Add(this.cboNavOptionsDestination);
             this.panNavOptions.Location = new System.Drawing.Point(1, 1);
             this.panNavOptions.Name = "panNavOptions";
-            this.panNavOptions.Size = new System.Drawing.Size(320, 139);
+            this.panNavOptions.Size = new System.Drawing.Size(320, 195);
             this.panNavOptions.TabIndex = 3;
             this.panNavOptions.Visible = false;
             this.panNavOptions.EnabledChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
@@ -3735,7 +3792,7 @@
             this.panOldDataOptions.Controls.Add(this.lblOldDataOptionsNearLy);
             this.panOldDataOptions.Location = new System.Drawing.Point(1, 1);
             this.panOldDataOptions.Name = "panOldDataOptions";
-            this.panOldDataOptions.Size = new System.Drawing.Size(320, 109);
+            this.panOldDataOptions.Size = new System.Drawing.Size(320, 195);
             this.panOldDataOptions.TabIndex = 6;
             this.panOldDataOptions.Visible = false;
             this.panOldDataOptions.EnabledChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
@@ -3762,7 +3819,7 @@
             this.panLocalOptions.Controls.Add(this.chkLocalOptionsShipyard);
             this.panLocalOptions.Location = new System.Drawing.Point(1, 1);
             this.panLocalOptions.Name = "panLocalOptions";
-            this.panLocalOptions.Size = new System.Drawing.Size(320, 116);
+            this.panLocalOptions.Size = new System.Drawing.Size(320, 195);
             this.panLocalOptions.TabIndex = 5;
             this.panLocalOptions.Visible = false;
             this.panLocalOptions.EnabledChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
@@ -4188,6 +4245,12 @@
         private System.Windows.Forms.ToolStripMenuItem mnuCapacity;
         private System.Windows.Forms.ToolStripSeparator mnuSep3;
         private System.Windows.Forms.ToolStripMenuItem mnuReset;
+        private System.Windows.Forms.ToolStripMenuItem mnuCut1;
+        private System.Windows.Forms.ToolStripMenuItem mnuCopy1;
+        private System.Windows.Forms.ToolStripMenuItem mnuPaste1;
+        private System.Windows.Forms.ToolStripMenuItem mnuSelectAll1;
+        private System.Windows.Forms.ToolStripSeparator mnuSep4;
+        private System.Windows.Forms.Button btnStationInfo;
     }
 }
 
