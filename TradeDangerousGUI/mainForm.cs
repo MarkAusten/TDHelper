@@ -157,9 +157,7 @@ namespace TDHelper
         /// <returns>The near parameter.</returns>
         private string AddNear(string system)
         {
-            return string.IsNullOrEmpty(system)
-                ? string.Empty
-                : " --near=\"{0}\"".With(system);
+            return AddTextOption(system, "near", true);
         }
 
         /// <summary>
@@ -217,8 +215,14 @@ namespace TDHelper
         /// <returns>The parameter string.</returns>
         private string AddTextOption(
             string value,
-            string option)
+            string option,
+            bool quoted = false)
         {
+            if (quoted)
+            {
+                value = "\"{0}\"".With(value);
+            }
+
             return string.IsNullOrEmpty(value)
                 ? string.Empty
                 : " --{0}={1}".With(option, value);
@@ -2397,6 +2401,44 @@ namespace TDHelper
         {
             methodIndex = cboMethod.SelectedIndex;
             MethodSelectState();
+
+            if (methodIndex == 6 && 
+                cboSourceSystem.Text.Length > 0 &&
+                btnStart.Enabled && 
+                btnStart.Text.Contains("Start"))
+            {
+                circularBuffer.Clear();
+
+                StackCircularBuffer("Ships currently available at {0}:{1}{2}".With(
+                    cboSourceSystem.Text, 
+                    Environment.NewLine, 
+                    Environment.NewLine));
+
+                if (outputStationShips.Count == 0)
+                {
+                    StackCircularBuffer("None");
+                }
+                else
+                {
+                    int maxNameLength = outputStationShips
+                        .Select(x => x.Substring(0, x.IndexOf("[")).Length)
+                        .Max();
+
+                    int maxCostLength = outputStationShips
+                        .Select(x => x.Substring(x.IndexOf("[")).Length)
+                        .Max();
+
+                    foreach (string ship in outputStationShips)
+                    {
+                        string[] data = ship.Split(new string[] { "[" }, StringSplitOptions.RemoveEmptyEntries);
+
+                        StackCircularBuffer("{0}[{1}{2}".With(
+                            data[0].PadRight(maxNameLength), 
+                            data[1].PadLeft(maxCostLength), 
+                            Environment.NewLine));
+                    }
+                }
+            }
 
             cboMethod.Enabled = true;
         }
