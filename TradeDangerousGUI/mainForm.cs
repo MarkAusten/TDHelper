@@ -3110,7 +3110,12 @@ namespace TDHelper
                 // Detach and reattach the destinations data source.
                 commodities.DataSource = null;
 
-                switch (methodFromIndex)
+                int index 
+                    = methodFromIndex == 0 
+                    ? methodIndex 
+                    : methodFromIndex;
+
+                switch (index)
                 {
                     case 1:
                         // All commodities & ships
