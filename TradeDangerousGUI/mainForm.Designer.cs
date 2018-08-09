@@ -245,6 +245,9 @@
             this.btnLocalOptionsAll = new System.Windows.Forms.Button();
             this.chkSellOptionsBlkMkt = new System.Windows.Forms.CheckBox();
             this.btnStationInfo = new System.Windows.Forms.Button();
+            this.lvShipVendorOptionsShips = new System.Windows.Forms.ListView();
+            this.hdrShip = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.hdrCost = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker4 = new System.ComponentModel.BackgroundWorker();
             this.panRunOptions = new System.Windows.Forms.Panel();
@@ -305,9 +308,6 @@
             this.panOldDataOptions = new System.Windows.Forms.Panel();
             this.panLocalOptions = new System.Windows.Forms.Panel();
             this.panOptions = new System.Windows.Forms.Panel();
-            this.lvShipVendorOptionsShips = new System.Windows.Forms.ListView();
-            this.hdrShip = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.hdrCost = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.mnuSetValues.SuspendLayout();
             this.mnuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRunOptionsRoutes)).BeginInit();
@@ -3045,6 +3045,32 @@
             this.btnStationInfo.UseVisualStyleBackColor = true;
             this.btnStationInfo.Click += new System.EventHandler(this.StationInfo_Click);
             // 
+            // lvShipVendorOptionsShips
+            // 
+            this.lvShipVendorOptionsShips.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.hdrShip,
+            this.hdrCost});
+            this.lvShipVendorOptionsShips.FullRowSelect = true;
+            this.lvShipVendorOptionsShips.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.lvShipVendorOptionsShips.Location = new System.Drawing.Point(0, 2);
+            this.lvShipVendorOptionsShips.Name = "lvShipVendorOptionsShips";
+            this.lvShipVendorOptionsShips.Size = new System.Drawing.Size(317, 190);
+            this.lvShipVendorOptionsShips.TabIndex = 15;
+            this.tipToolTips.SetToolTip(this.lvShipVendorOptionsShips, "Ships sold at this ship vendor.");
+            this.lvShipVendorOptionsShips.UseCompatibleStateImageBehavior = false;
+            this.lvShipVendorOptionsShips.View = System.Windows.Forms.View.Details;
+            // 
+            // hdrShip
+            // 
+            this.hdrShip.Text = "Ship";
+            this.hdrShip.Width = 140;
+            // 
+            // hdrCost
+            // 
+            this.hdrCost.Text = "Cost";
+            this.hdrCost.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.hdrCost.Width = 150;
+            // 
             // backgroundWorker3
             // 
             this.backgroundWorker3.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker3_DoWork);
@@ -3811,8 +3837,8 @@
             // panOptions
             // 
             this.panOptions.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panOptions.Controls.Add(this.panShipVendorOptions);
             this.panOptions.Controls.Add(this.panRunOptions);
+            this.panOptions.Controls.Add(this.panShipVendorOptions);
             this.panOptions.Controls.Add(this.panBuyOptions);
             this.panOptions.Controls.Add(this.panSellOptions);
             this.panOptions.Controls.Add(this.panRaresOptions);
@@ -3825,32 +3851,6 @@
             this.panOptions.Name = "panOptions";
             this.panOptions.Size = new System.Drawing.Size(322, 197);
             this.panOptions.TabIndex = 1;
-            // 
-            // lvShipVendorOptionsShips
-            // 
-            this.lvShipVendorOptionsShips.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.hdrShip,
-            this.hdrCost});
-            this.lvShipVendorOptionsShips.FullRowSelect = true;
-            this.lvShipVendorOptionsShips.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.lvShipVendorOptionsShips.Location = new System.Drawing.Point(0, 2);
-            this.lvShipVendorOptionsShips.Name = "lvShipVendorOptionsShips";
-            this.lvShipVendorOptionsShips.Size = new System.Drawing.Size(317, 190);
-            this.lvShipVendorOptionsShips.TabIndex = 15;
-            this.tipToolTips.SetToolTip(this.lvShipVendorOptionsShips, "Ships sold at this ship vendor.");
-            this.lvShipVendorOptionsShips.UseCompatibleStateImageBehavior = false;
-            this.lvShipVendorOptionsShips.View = System.Windows.Forms.View.Details;
-            // 
-            // hdrShip
-            // 
-            this.hdrShip.Text = "Ship";
-            this.hdrShip.Width = 140;
-            // 
-            // hdrCost
-            // 
-            this.hdrCost.Text = "Cost";
-            this.hdrCost.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.hdrCost.Width = 150;
             // 
             // MainForm
             // 

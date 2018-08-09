@@ -13,7 +13,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web.Security;
 using System.Windows.Forms;
-using SharpConfig;
 
 namespace TDHelper
 {
@@ -24,107 +23,101 @@ namespace TDHelper
         public static string assemblyFolder = System.Reflection.Assembly.GetEntryAssembly().Location;
         public static string assemblyPath = Path.GetDirectoryName(assemblyFolder);
 
+        public static string authCode;
         public static string configFile = Path.Combine(assemblyPath, "tdh.ini");
 
+        public static string configFileDefault = Path.Combine(assemblyPath, "tdh.ini");
+        public static string DBUpdateCommandString = string.Empty;
         public static bool hasParsed = false, callForReset = false;
 
         public static List<string> latestLogPaths;
-
-        public static string configFileDefault = Path.Combine(assemblyPath, "tdh.ini");
-
         public static string localManifestPath = Path.Combine(assemblyPath, "TDHelper.manifest.tmp");
 
+        public static string recentLogPath;
         public static string remoteArchiveLocalPath;
 
         // grab a static reference to the global settings
         public static TDSettings settingsRef = TDSettings.Instance;
 
-        public static double t_CrTonTally;
-        public static double t_meanDist;
-
-        public static string t_itemListPath;
-        public static string t_shipListPath;
         public static string t_AppConfigPath;
-        public static string recentLogPath;
-        public static string authCode;
+        public static double t_CrTonTally;
+        public static string t_itemListPath;
+        public static double t_meanDist;
+        public static string t_shipListPath;
 
         // save the archive path
         public static string updateLogPath = Path.Combine(assemblyPath, "update.log");
 
-        public bool hasRun;
-        public bool dropdownOpened;
-        public bool rebuildCache;
-        public bool t_csvExportCheckBox;
-        public bool stationsFilterChecked;
-        public bool oldDataRouteChecked;
-
-        public int marketBoxChecked;
         public int blackmarketBoxChecked;
-        public int shipyardBoxChecked;
-        public int repairBoxChecked;
-        public int rearmBoxChecked;
-        public int refuelBoxChecked;
-        public int outfitBoxChecked;
-        public int fromPane = -1;
-        public int runOutputState = -1;
-
-        public List<string> outputItems = new List<string>();
+        public string commandString;
         public List<string> currentMarkedStations;
-
-        public string r_fromBox;
-        public string t_txtAvoid;
-        public string t_outputVerbosity;
-        public string t_confirmCode;
-        public string t_lastSystem;
-        public string t_lastSysCheck;
-        public string t_childTitle;
-
-        public string remoteManifestPath = ConfigurationManager.AppSettings["remoteManifestPath"];
-
-        public int stn_marketBoxChecked;
-        public int stn_blackmarketBoxChecked;
-        public int stn_shipyardBoxChecked;
-        public int stn_repairBoxChecked;
-        public int stn_rearmBoxChecked;
-        public int stn_refuelBoxChecked;
-        public int stn_outfitBoxChecked;
-
-        public Stopwatch stopwatch = new Stopwatch();
-
-        public decimal t_belowPrice;
-        public decimal t_Routes;
-        public decimal t_EndJumps;
-        public decimal t_StartJumps;
-        public decimal r_unladenLY;
-        public decimal r_ladenLY;
+        public bool dropdownOpened;
+        public int fromPane = -1;
+        public bool hasRun;
         public decimal l0_ladenLY;
         public decimal l1_ladenLY;
+        public int marketBoxChecked;
+        public bool oldDataRouteChecked;
+        public int outfitBoxChecked;
+        public List<string> outputItems = new List<string>();
+        public string r_fromBox;
+        public decimal r_ladenLY;
+        public decimal r_unladenLY;
+        public int rearmBoxChecked;
+        public bool rebuildCache;
+        public int refuelBoxChecked;
+        public string remoteManifestPath = ConfigurationManager.AppSettings["remoteManifestPath"];
+        public int repairBoxChecked;
+        public int runOutputState = -1;
+        public int shipyardBoxChecked;
+        public bool stationsFilterChecked;
+        public int stn_blackmarketBoxChecked;
+        public int stn_marketBoxChecked;
+        public int stn_outfitBoxChecked;
+        public int stn_rearmBoxChecked;
+        public int stn_refuelBoxChecked;
+        public int stn_repairBoxChecked;
+        public int stn_shipyardBoxChecked;
+        public Stopwatch stopwatch = new Stopwatch();
+        public decimal t_belowPrice;
+        public string t_childTitle;
+        public string t_confirmCode;
+        public bool t_csvExportCheckBox;
+        public decimal t_Demand;
+        public decimal t_EndJumps;
         public decimal t_ladenLY;
+        public string t_lastSysCheck;
+        public string t_lastSystem;
+        public decimal t_lsFromStar;
+        public string t_maxPadSize;
+        public string t_outputVerbosity;
+        public decimal t_Routes;
+        public decimal t_StartJumps;
+        public decimal t_Supply;
+        public string t_txtAvoid;
         public decimal t1_ladenLY;
         public decimal t2_ladenLY;
-        public decimal t_lsFromStar;
-        public decimal t_Supply;
-        public decimal t_Demand;
-
         public Process td_proc = new Process();
 
-        public string temp_src;
-        public string temp_dest;
         public string temp_commod;
+        public string temp_dest;
         public string temp_shipsSold;
-        public string commandString;
-        public string t_maxPadSize;
+        public string temp_src;
 
         // for circular buffering in the output log
         private const int circularBufferSize = 32768;
+
+        private int batchedRowCount = -1;
 
         // default to ~8 pages
         private StringBuilder circularBuffer = new StringBuilder(circularBufferSize);
 
         private List<int> dgRowIDIndexer = new List<int>(), dgRowIndexer = new List<int>();
 
+        private int dRowIndex = 0;
         private bool hasRefreshedRecents, hasLogLoaded, loadedFromDB;
 
+        private int listLimit = 50;
         private List<KeyValuePair<string, string>> localSystemList = new List<KeyValuePair<string, string>>();
 
         private Dictionary<string, string> netLogOutput = new Dictionary<string, string>();
@@ -136,14 +129,10 @@ namespace TDHelper
         // for Pilot's Log support
         //public DataSet pilotsLogSet = new DataSet("PilotsLog");
         private DataTable pilotsSystemLogTable = new DataTable("SystemLog");
-        private DataTable retrieverCacheTable = new DataTable();
 
         private int pRowIndex = 0;
-        private int dRowIndex = 0;
-        private int batchedRowCount = -1;
-        private int listLimit = 50;
-
         private Object readNetLock = new Object();
+        private DataTable retrieverCacheTable = new DataTable();
 
         #endregion Props
 
@@ -192,13 +181,8 @@ namespace TDHelper
             PlaySoundFile("notify.wav");
         }
 
-        public static void PlayUnknown()
-        {
-            PlaySoundFile("unknown.wav");
-        }
-
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="fileName"></param>
         public static void PlaySoundFile(string fileName)
@@ -219,13 +203,18 @@ namespace TDHelper
             }
         }
 
+        public static void PlayUnknown()
+        {
+            PlaySoundFile("unknown.wav");
+        }
+
         /// <summary>
         /// Check to see if the EDCE installation is valid.
         /// </summary>
         /// <returns>True of the EDCE is valid otherwise false.</returns>
         public static bool ValidateEdce()
         {
-            return !string.IsNullOrEmpty(settingsRef.EdcePath) 
+            return !string.IsNullOrEmpty(settingsRef.EdcePath)
                 && CheckIfFileOpens(Path.Combine(settingsRef.EdcePath, "edce_client.py"));
         }
 
@@ -321,7 +310,7 @@ namespace TDHelper
                 {
                     // derive our AppConfig.xml path from NetLogPath
                     t_AppConfigPath = Path.Combine(Directory.GetParent(settingsRef.NetLogPath).ToString(), "AppConfig.xml");
-                    
+
                     // double check the verbose logging state
                     ValidateVerboseLogging();
                 }
@@ -451,6 +440,42 @@ namespace TDHelper
         }
 
         /// <summary>
+        /// Retrieve the setting from the config file as a decimal value.
+        /// </summary>
+        /// <param name="config">The configuration object,</param>
+        /// <param name="section">The required section.</param>
+        /// <param name="key">The required key.</param>
+        /// <param name="defaultValue">The default value.</param>
+        /// <returns>The decimal value of the setting or the default value.</returns>
+        public decimal GetConfigSetting(
+            SharpConfig.Configuration config,
+            string section,
+            string key,
+            decimal defaultValue = 0)
+        {
+            // Set up the result anad get the raw value.
+            decimal result = defaultValue;
+            string rawValue = config[section][key].RawValue;
+
+            // Check to see if the raw value is null or empty.
+            if (!string.IsNullOrEmpty(rawValue))
+            {
+                // We have a non-null, non-empty value so try to get the decimal value and
+                // set the result to the default value if there is an exception.
+                try
+                {
+                    result = config[section][key].DecimalValue;
+                }
+                catch
+                {
+                    result = defaultValue;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Populate the list of available ships and set the current selection
         /// and set the appropriate values.
         /// </summary>
@@ -476,7 +501,7 @@ namespace TDHelper
 
             if (hasSection)
             {
-                settings.Capacity =  GetConfigSetting(config, settings.LastUsedConfig, "Capacity");
+                settings.Capacity = GetConfigSetting(config, settings.LastUsedConfig, "Capacity");
                 settings.Insurance = GetConfigSetting(config, settings.LastUsedConfig, "Insurance");
                 settings.LadenLY = GetConfigSetting(config, settings.LastUsedConfig, "LadenLY");
                 settings.Padsizes = ContainsPadSizes(config[settings.LastUsedConfig]["Padsizes"].StringValue);
@@ -503,42 +528,6 @@ namespace TDHelper
             numUnladenLy.Value = Math.Max(settings.UnladenLY, numUnladenLy.Minimum);
         }
 
-        /// <summary>
-        /// Retrieve the setting from the config file as a decimal value.
-        /// </summary>
-        /// <param name="config">The configuration object,</param>
-        /// <param name="section">The required section.</param>
-        /// <param name="key">The required key.</param>
-        /// <param name="defaultValue">The default value.</param>
-        /// <returns>The decimal value of the setting or the default value.</returns>
-        public decimal GetConfigSetting(
-            SharpConfig.Configuration config,
-            string section, 
-            string key, 
-            decimal defaultValue = 0)
-        {
-            // Set up the result anad get the raw value.
-            decimal result = defaultValue;
-            string rawValue = config[section][key].RawValue;
-
-            // Check to see if the raw value is null or empty.
-            if (!string.IsNullOrEmpty(rawValue))
-            {
-                // We have a non-null, non-empty value so try to get the decimal value and
-                // set the result to the default value if there is an exception.
-                try
-                {
-                    result = config[section][key].DecimalValue;
-                }
-                catch
-                {
-                    result = defaultValue;
-                }
-            }
-
-            return result;
-        }
-
         public void ValidateSettings(bool firstRun = false)
         {
             if (firstRun)
@@ -559,149 +548,22 @@ namespace TDHelper
             ValidateNetLogPath(null);
 
             // sanity check our inputs
-            if (settingsRef.Credits < numCommandersCredits.Minimum)
-            {
-                settingsRef.Credits = numCommandersCredits.Minimum; // this is a requirement
-            }
-            else if (settingsRef.Credits > numCommandersCredits.Maximum)
-            {
-                settingsRef.Credits = numCommandersCredits.Maximum;
-            }
 
-            if (settingsRef.Capacity < numRouteOptionsShipCapacity.Minimum)
-            {
-                settingsRef.Capacity = numRouteOptionsShipCapacity.Minimum;
-            }
-            else if (settingsRef.Capacity > numRouteOptionsShipCapacity.Maximum)
-            {
-                settingsRef.Capacity = numRouteOptionsShipCapacity.Maximum;
-            }
-
-            if (settingsRef.BelowPrice < numRunOptionsRoutes.Minimum)
-            {
-                settingsRef.BelowPrice = numRunOptionsRoutes.Minimum;
-            }
-            else if (settingsRef.BelowPrice > numRunOptionsRoutes.Maximum)
-            {
-                settingsRef.BelowPrice = numRunOptionsRoutes.Maximum;
-            }
-
-            if (settingsRef.PruneHops < numRouteOptionsPruneHops.Minimum)
-            {
-                settingsRef.PruneHops = numRouteOptionsPruneHops.Minimum;
-            }
-            else if (settingsRef.PruneHops > numRouteOptionsPruneHops.Maximum)
-            {
-                settingsRef.PruneHops = numRouteOptionsPruneHops.Maximum;
-            }
-
-            if (settingsRef.PruneScore < numRouteOptionsPruneScore.Minimum)
-            {
-                settingsRef.PruneScore = numRouteOptionsPruneScore.Minimum;
-            }
-            else if (settingsRef.PruneScore > numRouteOptionsPruneScore.Maximum)
-            {
-                settingsRef.PruneScore = numRouteOptionsPruneScore.Maximum;
-            }
-
-            if (settingsRef.Limit < numRouteOptionsLimit.Minimum)
-            {
-                settingsRef.Limit = numRouteOptionsLimit.Minimum;
-            }
-            else if (settingsRef.Limit > numRouteOptionsLimit.Maximum)
-            {
-                settingsRef.Limit = numRouteOptionsLimit.Maximum;
-            }
-
-            if (settingsRef.MaxLSDistance < numRouteOptionsMaxLSDistance.Minimum)
-            {
-                settingsRef.MaxLSDistance = numRouteOptionsMaxLSDistance.Minimum;
-            }
-            else if (settingsRef.MaxLSDistance > numRouteOptionsMaxLSDistance.Maximum)
-            {
-                settingsRef.MaxLSDistance = numRouteOptionsMaxLSDistance.Maximum;
-            }
-
-            if (settingsRef.LSPenalty < numRouteOptionsLsPenalty.Minimum)
-            {
-                settingsRef.LSPenalty = numRouteOptionsLsPenalty.Minimum;
-            }
-            else if (settingsRef.LSPenalty > numRouteOptionsLsPenalty.Maximum)
-            {
-                settingsRef.LSPenalty = numRouteOptionsLsPenalty.Maximum;
-            }
-
-            if (settingsRef.Stock < numRouteOptionsStock.Minimum)
-            {
-                settingsRef.Stock = numRouteOptionsStock.Minimum;
-            }
-            else if (settingsRef.Stock > numRouteOptionsStock.Maximum)
-            {
-                settingsRef.Stock = numRouteOptionsStock.Maximum;
-            }
-
-            if (settingsRef.GPT < numRouteOptionsGpt.Minimum)
-            {
-                settingsRef.GPT = numRouteOptionsGpt.Minimum;
-            }
-            else if (settingsRef.GPT > numRouteOptionsGpt.Maximum)
-            {
-                settingsRef.GPT = numRouteOptionsGpt.Maximum;
-            }
-
-            if (settingsRef.MaxGPT < numRouteOptionsMaxGpt.Minimum)
-            {
-                settingsRef.MaxGPT = numRouteOptionsMaxGpt.Minimum;
-            }
-            else if (settingsRef.MaxGPT > numRouteOptionsMaxGpt.Maximum)
-            {
-                settingsRef.MaxGPT = numRouteOptionsMaxGpt.Maximum;
-            }
-
-            if (settingsRef.Insurance < numShipInsurance.Minimum)
-            {
-                settingsRef.Insurance = numShipInsurance.Minimum;
-            }
-            else if (settingsRef.Insurance > numShipInsurance.Maximum)
-            {
-                settingsRef.Insurance = numShipInsurance.Maximum;
-            }
-
-            if (settingsRef.Margin < numRouteOptionsMargin.Minimum)
-            {
-                settingsRef.Margin = numRouteOptionsMargin.Minimum;
-            }
-            else if (settingsRef.Margin > numRouteOptionsMargin.Maximum)
-            {
-                settingsRef.Margin = numRouteOptionsMargin.Maximum;
-            }
-
-            if (settingsRef.Age < numRouteOptionsAge.Minimum)
-            {
-                settingsRef.Age = numRouteOptionsAge.Minimum;
-            }
-            else if (settingsRef.Age > numRouteOptionsAge.Maximum)
-            {
-                settingsRef.Age = numRouteOptionsAge.Maximum;
-            }
-
-            if (settingsRef.LadenLY < numLadenLy.Minimum)
-            {
-                settingsRef.LadenLY = numLadenLy.Minimum; // this is a requirement
-            }
-            else if (settingsRef.LadenLY > numLadenLy.Maximum)
-            {
-                settingsRef.LadenLY = numLadenLy.Maximum;
-            }
-
-            if (settingsRef.UnladenLY < numUnladenLy.Minimum)
-            {
-                settingsRef.UnladenLY = numUnladenLy.Minimum;
-            }
-            else if (settingsRef.UnladenLY > numUnladenLy.Maximum)
-            {
-                settingsRef.UnladenLY = numUnladenLy.Maximum;
-            }
+            ValidateSetting("Credits", numCommandersCredits);
+            ValidateSetting("Capacity", numRouteOptionsShipCapacity);
+            ValidateSetting("PruneHops", numRouteOptionsPruneHops);
+            ValidateSetting("PruneScore", numRouteOptionsPruneScore);
+            ValidateSetting("Limit", numRouteOptionsLimit);
+            ValidateSetting("MaxLSDistance", numRouteOptionsMaxLSDistance);
+            ValidateSetting("LSPenalty", numRouteOptionsLsPenalty);
+            ValidateSetting("Stock", numRouteOptionsStock);
+            ValidateSetting("GPT", numRouteOptionsGpt);
+            ValidateSetting("MaxGPT", numRouteOptionsMaxGpt);
+            ValidateSetting("Insurance", numShipInsurance);
+            ValidateSetting("Margin", numRouteOptionsMargin);
+            ValidateSetting("Age", numRouteOptionsAge);
+            ValidateSetting("LadenLY", numLadenLy);
+            ValidateSetting("UnladenLY", numUnladenLy);
 
             // convert verbosity to a string
             switch (settingsRef.Verbosity)
@@ -721,55 +583,12 @@ namespace TDHelper
                 default:
                     t_outputVerbosity = string.Empty;
                     break;
-
             }
 
-            if (settingsRef.Hops < numRouteOptionsHops.Minimum && !settingsRef.Loop)
-            {
-                settingsRef.Hops = numRouteOptionsHops.Minimum;
-            }
-            else if (settingsRef.Loop && settingsRef.Hops < 2)
-            {
-                settingsRef.Hops = 2;
-                numRouteOptionsHops.Text = "2";
-            }
-            else if (settingsRef.Hops > numRouteOptionsHops.Maximum)
-            {
-                settingsRef.Hops = numRouteOptionsHops.Maximum;
-            }
-
-            if (settingsRef.Jumps < numRouteOptionsJumps.Minimum)
-            {
-                settingsRef.Jumps = numRouteOptionsJumps.Minimum;
-            }
-            else if (settingsRef.Jumps > numRouteOptionsJumps.Maximum)
-            {
-                settingsRef.Jumps = numRouteOptionsJumps.Maximum;
-            }
-
-            // these only apply if we haven't copied them already
-            if (t_StartJumps < numRunOptionsStartJumps.Minimum)
-            {
-                t_StartJumps = numRunOptionsStartJumps.Minimum;
-            }
-            else if (t_StartJumps > numRunOptionsStartJumps.Maximum)
-            {
-                t_StartJumps = numRunOptionsStartJumps.Maximum;
-            }
-
-            if (t_EndJumps < numRunOptionsEndJumps.Minimum)
-            {
-                t_EndJumps = numRunOptionsEndJumps.Minimum;
-            }
-            else if (t_EndJumps > numRunOptionsEndJumps.Maximum)
-            {
-                t_EndJumps = numRunOptionsEndJumps.Maximum;
-            }
-
-            if (settingsRef.CSVSelect < 0 && settingsRef.CSVSelect > 5)
-            {
-                settingsRef.CSVSelect = 0;
-            }
+            ValidateSetting("Hops", numRouteOptionsHops);
+            ValidateSetting("Jumps", numRouteOptionsJumps);
+            ValidateSetting("StartJumps", numRunOptionsStartJumps);
+            ValidateSetting("EndJumps", numRunOptionsEndJumps);
 
             settingsRef.Padsizes = ContainsPadSizes(settingsRef.Padsizes);
             settingsRef.Planetary = ContainsPlanetary(settingsRef.Planetary);
@@ -782,16 +601,6 @@ namespace TDHelper
             else if (settingsRef.Towards && string.IsNullOrEmpty(temp_dest))
             {
                 settingsRef.Towards = false;
-            }
-
-            // sanity check in case of invalid input paths
-            if (buttonCaller == 14)
-            {
-                ValidateImportPath();
-            }
-            else if (buttonCaller == 13)
-            {
-                ValidateUploadPath();
             }
 
             // default to Run command if unset
@@ -818,7 +627,7 @@ namespace TDHelper
             }
 
             // Disable the Cmdr Profile button if EDCE is not set.
-            this.btnCmdrProfile.Enabled = !string.IsNullOrEmpty(settingsRef.EdcePath);
+            btnCmdrProfile.Enabled = !string.IsNullOrEmpty(settingsRef.EdcePath);
         }
 
         private static string FilterOutput(string input)
@@ -1169,6 +978,100 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Validate the setting value.
+        /// </summary>
+        /// <param name="propertyName">The name of the setting property.</param>
+        /// <param name="control">The associated control.</param>
+        /// <param name="settings">The settings object.</param>
+        private void ValidateSettingValue(
+            string propertyName,
+            NumericUpDown control,
+            TDSettings settings)
+        {
+            // retrieve the value from the settings object.
+            PropertyInfo prop = settings.GetType().GetProperty(propertyName);
+
+            decimal value = (decimal)prop.GetValue(settings);
+            decimal newValue = value;
+
+            // Compare with the control limits and set a new value if outside those limits.
+            if (value < control.Minimum)
+            {
+                newValue = control.Minimum;
+            }
+            else if (value > control.Maximum)
+            {
+                newValue = control.Maximum;
+            }
+
+            // Change the value if required.
+            if (newValue != value)
+            {
+                prop.SetValue(settings, newValue);
+            }
+        }
+
+        /// <summary>
+        /// Validate the control value. Write the updated value back to the settings object.
+        /// </summary>
+        /// <param name="propertyName">The name of the setting property.</param>
+        /// <param name="control">The associated control.</param>
+        /// <param name="settings">The settings object.</param>
+        private void ValidateControlValue(
+            string propertyName,
+            NumericUpDown control,
+            TDSettings settings)
+        {
+            decimal value = control.Value;
+            decimal newValue = value;
+
+            // Compare with the control limits and set a new value if outside those limits.
+            if (value < control.Minimum)
+            {
+                newValue = control.Minimum;
+            }
+            else if (value > control.Maximum)
+            {
+                newValue = control.Maximum;
+            }
+
+            // Change the value if required.
+            if (newValue != value)
+            {
+                control.Value = newValue;
+
+                PropertyInfo prop = settings.GetType().GetProperty(propertyName);
+
+                prop.SetValue(settings, newValue);
+            }
+        }
+
+        /// <summary>
+        /// Validate the setting value.
+        /// </summary>
+        /// <param name="propertyName">The name of the setting property.</param>
+        /// <param name="control">The associated control.</param>
+        private void ValidateSetting(
+            string propertyName,
+            NumericUpDown control)
+        {
+            ValidateSettingValue(propertyName, control, settingsRef);
+        }
+
+
+        /// <summary>
+        /// Validate the control value. Write the updated value back to the settings object.
+        /// </summary>
+        /// <param name="propertyName">The name of the setting property.</param>
+        /// <param name="control">The associated control.</param>
+        private void ValidateControlValue(
+            string propertyName,
+            NumericUpDown control)
+        {
+            ValidateControlValue(propertyName, control, settingsRef);
+        }
+
         private void ValidateUploadPath()
         {
             if (string.IsNullOrEmpty(settingsRef.UploadPath) || !CheckIfFileOpens(settingsRef.UploadPath) && buttonCaller == 13)
@@ -1230,7 +1133,6 @@ namespace TDHelper
 
             SerializeMarkedStations(currentMarkedStations); // convert object to built string
             CopySettingsFromForm();
-            ValidateSettings();
 
             settingsRef.LocationParent = SaveWinLoc(this);
             settingsRef.SizeParent = SaveWinSize(this);

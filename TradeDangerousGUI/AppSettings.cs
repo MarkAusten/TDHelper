@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
@@ -111,6 +110,39 @@ namespace TDHelper
         }
 
         /// <summary>
+        /// Retrieve a boolean setting from the config file.
+        /// </summary>
+        /// <param name="section">The section object</param>
+        /// <param name="key">The value key</param>
+        /// <returns>The required value.</returns>
+        public static bool GetBooleanSetting(Section section, string key)
+        {
+            return SectionHasKey(section, key) ? section[key].BoolValue : false;
+        }
+
+        /// <summary>
+        /// Retrieve a decimal setting from the config file.
+        /// </summary>
+        /// <param name="section">The section object</param>
+        /// <param name="key">The value key</param>
+        /// <returns>The required value.</returns>
+        public static decimal GetDecimalSetting(Section section, string key)
+        {
+            return SectionHasKey(section, key) ? section[key].DecimalValue : 0M;
+        }
+
+        /// <summary>
+        /// Retrieve a string setting from the config file.
+        /// </summary>
+        /// <param name="section">The section object</param>
+        /// <param name="key">The value key</param>
+        /// <returns><The required value./returns>
+        public static string GetStringSetting(Section section, string key)
+        {
+            return SectionHasKey(section, key) ? section[key].StringValue : string.Empty;
+        }
+
+        /// <summary>
         /// Load the setting from the inin file.
         /// </summary>
         public static void LoadSettingsFromIniFile()
@@ -122,68 +154,71 @@ namespace TDHelper
 
                 Section configSection = config["App"];
 
-                settings.AbovePrice = SectionHasKey(configSection, "AbovePrice") ? configSection["AbovePrice"].DecimalValue : 0;
-                settings.Age = SectionHasKey(configSection, "Age") ? configSection["Age"].DecimalValue : 0;
-                settings.Avoid = SectionHasKey(configSection, "Avoid") ? configSection["Avoid"].StringValue : string.Empty;
-                settings.BelowPrice = SectionHasKey(configSection, "BelowPrice") ? configSection["BelowPrice"].DecimalValue : 0;
-                settings.Corrections = SectionHasKey(configSection, "Corrections") ? configSection["Corrections"].BoolValue : false;
-                settings.CSVSelect = SectionHasKey(configSection, "CSVSelect") ? configSection["CSVSelect"].DecimalValue : 0;
-                settings.Demand = SectionHasKey(configSection, "Demand") ? configSection["Demand"].DecimalValue : 0;
-                settings.ExtraRunParams = SectionHasKey(configSection, "ExtraRunParams") ? configSection["ExtraRunParams"].StringValue : string.Empty;
-                settings.GPT = SectionHasKey(configSection, "GPT") ? configSection["GPT"].DecimalValue : 0;
-                settings.Hops = SectionHasKey(configSection, "Hops") ? configSection["Hops"].DecimalValue : 0;
-                settings.Jumps = SectionHasKey(configSection, "Jumps") ? configSection["Jumps"].DecimalValue : 0;
-                settings.Limit = SectionHasKey(configSection, "Limit") ? configSection["Limit"].DecimalValue : 0;
-                settings.Loop = SectionHasKey(configSection, "Loop") ? configSection["Loop"].BoolValue : false;
-                settings.LoopInt = SectionHasKey(configSection, "LoopInt") ? configSection["LoopInt"].DecimalValue : 0;
-                settings.LSPenalty = SectionHasKey(configSection, "LSPenalty") ? configSection["LSPenalty"].DecimalValue : 0;
-                settings.Margin = SectionHasKey(configSection, "Margin") ? configSection["Margin"].DecimalValue : 0;
-                settings.MarkedStations = SectionHasKey(configSection, "MarkedStations") ? configSection["MarkedStations"].StringValue : string.Empty;
-                settings.MaxGPT = SectionHasKey(configSection, "MaxGPT") ? configSection["MaxGPT"].DecimalValue : 0;
-                settings.MaxLSDistance = SectionHasKey(configSection, "MaxLSDistance") ? configSection["MaxLSDistance"].DecimalValue : 0;
-                settings.Planetary = SectionHasKey(configSection, "Planetary") ? configSection["Planetary"].StringValue : string.Empty;
-                settings.PruneHops = SectionHasKey(configSection, "PruneHops") ? configSection["PruneHops"].DecimalValue : 0;
-                settings.PruneScore = SectionHasKey(configSection, "PruneScore") ? configSection["PruneScore"].DecimalValue : 0;
-                settings.RouteStations = SectionHasKey(configSection, "RouteStations") ? configSection["RouteStations"].BoolValue : false;
-                settings.ShowJumps = SectionHasKey(configSection, "ShowJumps") ? configSection["ShowJumps"].BoolValue : false;
-                settings.ShowProgress = SectionHasKey(configSection, "ShowProgress") ? configSection["ShowProgress"].BoolValue : false;
-                settings.Stock = SectionHasKey(configSection, "Stock") ? configSection["Stock"].DecimalValue : 0;
-                settings.Summary = SectionHasKey(configSection, "Summary") ? configSection["Summary"].BoolValue : false;
-                settings.Supply = SectionHasKey(configSection, "Supply") ? configSection["Supply"].DecimalValue : 0;
-                settings.Towards = SectionHasKey(configSection, "Towards") ? configSection["Towards"].BoolValue : false;
-                settings.Unique = SectionHasKey(configSection, "Unique") ? configSection["Unique"].BoolValue : false;
-                settings.Verbosity = SectionHasKey(configSection, "Verbosity") ? configSection["Verbosity"].DecimalValue : 0;
-                settings.Via = SectionHasKey(configSection, "Via") ? configSection["Via"].StringValue : string.Empty;
+                settings.Age = GetDecimalSetting(configSection, "Age");
+                settings.Avoid = GetStringSetting(configSection, "Avoid");
+                settings.Demand = GetDecimalSetting(configSection, "Demand");
+                settings.EndJumps = GetDecimalSetting(configSection, "EndJumps");
+                settings.ExtraRunParams = GetStringSetting(configSection, "ExtraRunParams");
+                settings.GPT = GetDecimalSetting(configSection, "GPT");
+                settings.Hops = GetDecimalSetting(configSection, "Hops");
+                settings.Jumps = GetDecimalSetting(configSection, "Jumps");
+                settings.Limit = GetDecimalSetting(configSection, "Limit");
+                settings.Loop = GetBooleanSetting(configSection, "Loop");
+                settings.LoopInt = GetDecimalSetting(configSection, "LoopInt");
+                settings.LSPenalty = GetDecimalSetting(configSection, "LSPenalty");
+                settings.Margin = GetDecimalSetting(configSection, "Margin");
+                settings.MarkedStations = GetStringSetting(configSection, "MarkedStations");
+                settings.MaxGPT = GetDecimalSetting(configSection, "MaxGPT");
+                settings.MaxLSDistance = GetDecimalSetting(configSection, "MaxLSDistance");
+                settings.Planetary = GetStringSetting(configSection, "Planetary");
+                settings.PruneHops = GetDecimalSetting(configSection, "PruneHops");
+                settings.PruneScore = GetDecimalSetting(configSection, "PruneScore");
+                settings.RouteStations = GetDecimalSetting(configSection, "RouteStations");
+                settings.ShowJumps = GetBooleanSetting(configSection, "ShowJumps");
+                settings.ShowProgress = GetBooleanSetting(configSection, "ShowProgress");
+                settings.StartJumps = GetDecimalSetting(configSection, "startJumps");
+                settings.Stock = GetDecimalSetting(configSection, "Stock");
+                settings.Summary = GetBooleanSetting(configSection, "Summary");
+                settings.Towards = GetBooleanSetting(configSection, "Towards");
+                settings.Unique = GetBooleanSetting(configSection, "Unique");
+                settings.Verbosity = GetDecimalSetting(configSection, "Verbosity");
+                settings.Via = GetStringSetting(configSection, "Via");
+
                 // Commander settings
                 configSection = config["Commander"];
 
-                settings.CmdrName = SectionHasKey(configSection, "CmdrName") ? configSection["CmdrName"].StringValue : string.Empty;
-                settings.Credits = SectionHasKey(configSection, "Credits") ? configSection["Credits"].DecimalValue : 0;
-                settings.RebuyPercentage = SectionHasKey(configSection, "RebuyPercentage") ? configSection["RebuyPercentage"].DecimalValue : 0;
+                settings.CmdrName = GetStringSetting(configSection, "CmdrName");
+                settings.Credits = GetDecimalSetting(configSection, "Credits");
+                settings.RebuyPercentage = GetDecimalSetting(configSection, "RebuyPercentage");
 
                 // TD Helper system settings.
                 configSection = config["System"];
 
-                settings.AvailableShips = SectionHasKey(configSection, "AvailableShips") ? configSection["AvailableShips"].StringValue : string.Empty;
-                settings.CopySystemToClipboard = SectionHasKey(configSection, "CopySystemToClipboard") ? configSection["CopySystemToClipboard"].BoolValue : false;
-                settings.DisableNetLogs = SectionHasKey(configSection, "DisableNetLogs") ? configSection["DisableNetLogs"].BoolValue : false;
-                settings.DoNotUpdate = SectionHasKey(configSection, "DoNotUpdate") ? configSection["DoNotUpdate"].BoolValue : false;
-                settings.EdcePath = SectionHasKey(configSection, "EdcePath") ? configSection["EdcePath"].StringValue : string.Empty;
-                settings.HasUpdated = SectionHasKey(configSection, "HasUpdated") ? configSection["HasUpdated"].BoolValue : false;
-                settings.ImportPath = SectionHasKey(configSection, "ImportPath") ? configSection["ImportPath"].StringValue : string.Empty;
-                settings.LastUsedConfig = SectionHasKey(configSection, "LastUsedConfig") ? configSection["LastUsedConfig"].StringValue : string.Empty;
-                settings.LocationChild = SectionHasKey(configSection, "LocationChild") ? configSection["LocationChild"].StringValue : string.Empty;
-                settings.LocationParent = SectionHasKey(configSection, "LocationParent") ? configSection["LocationParent"].StringValue : string.Empty;
-                settings.MiniModeOnTop = SectionHasKey(configSection, "MiniModeOnTop") ? configSection["MiniModeOnTop"].BoolValue : false;
-                settings.NetLogPath = SectionHasKey(configSection, "NetLogPath") ? configSection["NetLogPath"].StringValue : string.Empty;
-                settings.PythonPath = SectionHasKey(configSection, "PythonPath") ? configSection["PythonPath"].StringValue : string.Empty;
-                settings.Quiet = SectionHasKey(configSection, "Quiet") ? configSection["Quiet"].BoolValue : false;
-                settings.SizeChild = SectionHasKey(configSection, "SizeChild") ? configSection["SizeChild"].StringValue : string.Empty;
-                settings.SizeParent = SectionHasKey(configSection, "SizeParent") ? configSection["SizeParent"].StringValue : string.Empty;
-                settings.TDPath = SectionHasKey(configSection, "TDPath") ? configSection["TDPath"].StringValue : string.Empty;
-                settings.TestSystems = SectionHasKey(configSection, "TestSystems") ? configSection["TestSystems"].BoolValue : false;
-                settings.TreeViewFont = SectionHasKey(configSection, "TreeViewFont") ? configSection["TreeViewFont"].StringValue : string.Empty;
-                settings.UploadPath = SectionHasKey(configSection, "UploadPath") ? configSection["UploadPath"].StringValue : string.Empty;
+                settings.AvailableShips = GetStringSetting(configSection, "AvailableShips");
+                settings.CopySystemToClipboard = GetBooleanSetting(configSection, "CopySystemToClipboard");
+                settings.DisableNetLogs = GetBooleanSetting(configSection, "DisableNetLogs");
+                settings.DoNotUpdate = GetBooleanSetting(configSection, "DoNotUpdate");
+                settings.EdcePath = GetStringSetting(configSection, "EdcePath");
+                settings.HasUpdated = GetBooleanSetting(configSection, "HasUpdated");
+                settings.ImportPath = GetStringSetting(configSection, "ImportPath");
+                settings.LastUsedConfig = GetStringSetting(configSection, "LastUsedConfig");
+                settings.LocationChild = GetStringSetting(configSection, "LocationChild");
+                settings.LocationParent = GetStringSetting(configSection, "LocationParent");
+                settings.MiniModeOnTop = GetBooleanSetting(configSection, "MiniModeOnTop");
+                settings.NetLogPath = GetStringSetting(configSection, "NetLogPath");
+                settings.PythonPath = GetStringSetting(configSection, "PythonPath");
+                settings.Quiet = GetBooleanSetting(configSection, "Quiet");
+                settings.SizeChild = GetStringSetting(configSection, "SizeChild");
+                settings.SizeParent = GetStringSetting(configSection, "SizeParent");
+                settings.TDPath = GetStringSetting(configSection, "TDPath");
+                settings.TestSystems = GetBooleanSetting(configSection, "TestSystems");
+                settings.TreeViewFont = GetStringSetting(configSection, "TreeViewFont");
+                settings.UploadPath = GetStringSetting(configSection, "UploadPath");
+
+                // EDDBlink settings
+                configSection = config["EDDBlink"];
+
+                settings.Solo = GetBooleanSetting(configSection, "Solo");
 
                 if (string.IsNullOrEmpty(settings.AvailableShips))
                 {
@@ -249,13 +284,12 @@ namespace TDHelper
             Section configSection = config["App"];
 
             // Settgins used for trade route calculation.
-            configSection["AbovePrice"].DecimalValue = settings.AbovePrice;
             configSection["Age"].DecimalValue = settings.Age;
             configSection["Avoid"].StringValue = settings.Avoid ?? string.Empty;
-            configSection["BelowPrice"].DecimalValue = settings.BelowPrice;
-            configSection["Corrections"].BoolValue = settings.Corrections;
-            configSection["CSVSelect"].DecimalValue = settings.CSVSelect;
+            configSection["BlackMarket"].BoolValue = settings.BlackMarket;
+            configSection["Direct"].BoolValue = settings.Direct;
             configSection["Demand"].DecimalValue = settings.Demand;
+            configSection["EndJumps"].DecimalValue = settings.EndJumps;
             configSection["ExtraRunParams"].StringValue = settings.ExtraRunParams ?? string.Empty;
             configSection["GPT"].DecimalValue = settings.GPT;
             configSection["Hops"].DecimalValue = settings.Hops;
@@ -271,12 +305,13 @@ namespace TDHelper
             configSection["Planetary"].StringValue = settings.Planetary ?? string.Empty;
             configSection["PruneHops"].DecimalValue = settings.PruneHops;
             configSection["PruneScore"].DecimalValue = settings.PruneScore;
-            configSection["RouteStations"].BoolValue = settings.RouteStations;
+            configSection["RouteStations"].DecimalValue = settings.RouteStations;
+            configSection["Shorten"].BoolValue = settings.Shorten;
             configSection["ShowJumps"].BoolValue = settings.ShowJumps;
             configSection["ShowProgress"].BoolValue = settings.ShowProgress;
+            configSection["StartJumps"].DecimalValue = settings.StartJumps;
             configSection["Stock"].DecimalValue = settings.Stock;
             configSection["Summary"].BoolValue = settings.Summary;
-            configSection["Supply"].DecimalValue = settings.Supply;
             configSection["Towards"].BoolValue = settings.Towards;
             configSection["Unique"].BoolValue = settings.Unique;
             configSection["Verbosity"].DecimalValue = settings.Verbosity;
@@ -312,6 +347,10 @@ namespace TDHelper
             configSection["TestSystems"].BoolValue = settings.TestSystems;
             configSection["TreeViewFont"].StringValue = settings.TreeViewFont ?? string.Empty;
             configSection["UploadPath"].StringValue = settings.UploadPath ?? string.Empty;
+
+            configSection = config["EDDBlink"];
+
+            configSection["Solo"].BoolValue = settings.Solo;
 
             // Update the current ship if required.
             if (!string.IsNullOrEmpty(settings.LastUsedConfig))
@@ -515,7 +554,7 @@ namespace TDHelper
                 // Ask the user if we can set it.
                 DialogResult dialog = TopMostMessageBox.Show(
                     true,
-                    true, 
+                    true,
                     "VerboseLogging isn't set, it must be corrected so we can grab recent systems.\r\n\nMay we fix it?",
                     "TD Helper - Error",
                     MessageBoxButtons.YesNo);
@@ -576,7 +615,7 @@ namespace TDHelper
                 : RemoveExtraWhitespace(settingsRef.MarkedStations)
                     .Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
                     .ToList();
-                
+
             return result;
         }
 
@@ -601,38 +640,6 @@ namespace TDHelper
             return ToggleAndSort(text, "YN?");
         }
 
-        /// <summary>
-        /// Search the text for characters in match and return in the same order as match.
-        /// </summary>
-        /// <param name="text">The text to be searched.</param>
-        /// <param name="match">The required matching charcters.</param>
-        /// <returns></returns>
-        private string ToggleAndSort(
-            string text, 
-            string match)
-        {
-            string result = text;
-
-            if (!string.IsNullOrEmpty(result))
-            {
-                char[] sortedArray = text.ToUpper()
-                    .Distinct()
-                    .ToArray();
-
-                result = string.Empty;
-
-                foreach (char letter in match.Select(x => x))
-                {
-                    if (sortedArray.Contains(letter))
-                    {
-                        result += letter.ToString();
-                    }
-                }
-            }
-
-            return result;
-        }
-
         private bool IsMarkedStation(string input, List<string> parentList)
         {
             return StringInList(input, parentList);
@@ -655,6 +662,38 @@ namespace TDHelper
             return parentList.Count > 0
                 ? string.Join(",", parentList)
                 : string.Empty;
+        }
+
+        /// <summary>
+        /// Search the text for characters in match and return in the same order as match.
+        /// </summary>
+        /// <param name="text">The text to be searched.</param>
+        /// <param name="match">The required matching charcters.</param>
+        /// <returns></returns>
+        private string ToggleAndSort(
+            string text,
+            string match)
+        {
+            string result = text;
+
+            if (!string.IsNullOrEmpty(result))
+            {
+                char[] sortedArray = text.ToUpper()
+                    .Distinct()
+                    .ToArray();
+
+                result = string.Empty;
+
+                foreach (char letter in match.Select(x => x))
+                {
+                    if (sortedArray.Contains(letter))
+                    {
+                        result += letter.ToString();
+                    }
+                }
+            }
+
+            return result;
         }
     }
 
@@ -684,51 +723,34 @@ namespace TDHelper
         #region Props
 
         private static readonly Lazy<TDSettings> _inst = new Lazy<TDSettings>(() => new TDSettings());
-        private string _ExtraRunParams;
-        private decimal ladenLY;
-        private decimal margin;
-        private decimal unladenLY;
 
         private TDSettings()
         {
         } // prevent instancing
 
         public static TDSettings Instance { get { return _inst.Value; } } // return our reference
-        public decimal AbovePrice { get; set; }
         public decimal Age { get; set; }
         public string AvailableShips { get; set; }
         public string Avoid { get; set; }
-        public decimal BelowPrice { get; set; }
+        public bool BlackMarket { get; set; }
         public decimal Capacity { get; set; }
         public string CmdrName { get; set; }
         public bool CopySystemToClipboard { get; set; }
-        public bool Corrections { get; set; }
         public decimal Credits { get; set; }
-        public decimal CSVSelect { get; set; }
         public decimal Demand { get; set; }
+        public bool Direct { get; set; }
         public bool DisableNetLogs { get; set; }
         public bool DoNotUpdate { get; set; }
         public string EdcePath { get; set; }
-
-        public string ExtraRunParams
-        {
-            get { return this._ExtraRunParams ?? string.Empty; }
-            set { this._ExtraRunParams = value; }
-        }
-
+        public decimal EndJumps { get; set; }
+        public string ExtraRunParams { get; set; }
         public decimal GPT { get; set; }
         public bool HasUpdated { get; set; }
         public decimal Hops { get; set; }
         public string ImportPath { get; set; }
         public decimal Insurance { get; set; }
         public decimal Jumps { get; set; }
-
-        public decimal LadenLY
-        {
-            get { return decimal.Truncate(ladenLY * 100) / 100; }
-            set { ladenLY = decimal.Truncate(value * 100) / 100; }
-        }
-
+        public decimal LadenLY { get; set; }
         public string LastUsedConfig { get; set; }
         public decimal Limit { get; set; }
         public string LocationChild { get; set; }
@@ -736,13 +758,7 @@ namespace TDHelper
         public bool Loop { get; set; }
         public decimal LoopInt { get; set; }
         public decimal LSPenalty { get; set; }
-
-        public decimal Margin
-        {
-            get { return decimal.Truncate(margin * 100) / 100; }
-            set { margin = decimal.Truncate(value * 100) / 100; }
-        }
-
+        public decimal Margin { get; set; }
         public string MarkedStations { get; set; }
         public decimal MaxGPT { get; set; }
         public decimal MaxLSDistance { get; set; }
@@ -755,26 +771,22 @@ namespace TDHelper
         public string PythonPath { get; set; }
         public bool Quiet { get; set; }
         public decimal RebuyPercentage { get; set; }
-        public bool RouteStations { get; set; }
+        public decimal RouteStations { get; set; }
+        public bool Shorten { get; set; }
         public bool ShowJumps { get; set; }
         public bool ShowProgress { get; set; }
-        public bool Summary { get; set; }
         public string SizeChild { get; set; }
         public string SizeParent { get; set; }
+        public bool Solo { get; set; }
+        public decimal StartJumps { get; set; }
         public decimal Stock { get; set; }
-        public decimal Supply { get; set; }
+        public bool Summary { get; set; }
         public string TDPath { get; set; }
         public bool TestSystems { get; set; }
         public bool Towards { get; set; }
         public string TreeViewFont { get; set; }
         public bool Unique { get; set; }
-
-        public decimal UnladenLY
-        {
-            get { return decimal.Truncate(unladenLY * 100) / 100; }
-            set { unladenLY = decimal.Truncate(value * 100) / 100; }
-        }
-
+        public decimal UnladenLY { get; set; }
         public string UploadPath { get; set; }
         public decimal Verbosity { get; set; }
         public string Via { get; set; }
@@ -812,21 +824,20 @@ namespace TDHelper
         public void Reset(TDSettings instance)
         {
             // go through and reset all accessors in instance
-            instance.AbovePrice = 0;
             instance.Age = 0;
             instance.AvailableShips = string.Empty;
             instance.Avoid = string.Empty;
-            instance.BelowPrice = 0;
+            instance.BlackMarket = false;
             instance.Capacity = 0;
             instance.CmdrName = string.Empty;
             instance.CopySystemToClipboard = false;
-            instance.Corrections = false;
             instance.Credits = 0;
-            instance.CSVSelect = 0;
             instance.Demand = 0;
+            instance.Direct = false;
             instance.DisableNetLogs = false;
             instance.DoNotUpdate = false;
             instance.EdcePath = string.Empty;
+            instance.EndJumps = 0;
             instance.ExtraRunParams = string.Empty;
             instance.GPT = 0;
             instance.HasUpdated = false;
@@ -855,13 +866,15 @@ namespace TDHelper
             instance.PythonPath = string.Empty;
             instance.Quiet = false;
             instance.RebuyPercentage = 5;
+            instance.Shorten = false;
             instance.ShowJumps = false;
             instance.ShowProgress = false;
             instance.SizeChild = string.Empty;
             instance.SizeParent = string.Empty;
+            instance.Solo = false;
+            instance.StartJumps = 0;
             instance.Stock = 0;
             instance.Summary = false;
-            instance.Supply = 0;
             instance.TDPath = string.Empty;
             instance.TestSystems = false;
             instance.Towards = false;

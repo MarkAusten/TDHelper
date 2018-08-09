@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Timers;
 using System.Windows.Forms;
@@ -352,7 +353,7 @@ namespace TDHelper
 
                 methodIndex = cboMethod.SelectedIndex;
 
-                if (buttonCaller == 4)
+                if (buttonCaller == 4 || buttonCaller == 1)
                 {
                     CheckForParsableOutput(rtbOutput);
                 }
@@ -605,15 +606,25 @@ namespace TDHelper
 
         private void BtnDbUpdate_Click(object sender, EventArgs e)
         {
-            ValidateSettings();
-
-            if (!backgroundWorker4.IsBusy)
+            EddbLinkDbUpdateForm eddblinkForm = new EddbLinkDbUpdateForm()
             {
-                // UpdateDB Button
-                buttonCaller = 5;
-                DisablebtnStarts(); // disable buttons during uncancellable operations
+                StartPosition = FormStartPosition.CenterParent
+            };
 
-                backgroundWorker4.RunWorkerAsync();
+            eddblinkForm.ShowDialog(this);
+
+            if (!string.IsNullOrEmpty(DBUpdateCommandString))
+            {
+                ValidateSettings();
+
+                if (!backgroundWorker4.IsBusy)
+                {
+                    // UpdateDB Button
+                    buttonCaller = 5;
+                    DisablebtnStarts(); // disable buttons during uncancellable operations
+
+                    backgroundWorker4.RunWorkerAsync();
+                }
             }
         }
 
@@ -692,6 +703,27 @@ namespace TDHelper
             {
                 e.Handled = true;
                 //                cboShipsSold.SelectionLength = 0;
+            }
+        }
+
+        /// <summary>
+        /// check for parsable Run output.
+        /// </summary>
+        /// <param name="page">A reference to the control.</param>
+        private void CheckForParsableOutput(RichTextBox page)
+        {
+            string filteredOutput = FilterOutput(page.Text);
+            runOutputState = IsValidRunOutput(filteredOutput);
+
+            if (runOutputState > -1)
+            {
+                hasParsed = false; // reset the semaphore
+                tv_outputBox = filteredOutput; // copy our validated input
+                btnMiniMode.Enabled = true;
+            }
+            else
+            {
+                btnMiniMode.Enabled = false;
             }
         }
 
@@ -861,6 +893,60 @@ namespace TDHelper
             CopyTextToClipboard(sender);
         }
 
+        /// <summary>
+        /// Check the value of the specified control.
+        /// </summary>
+        /// <param name="control">The decomal control.</param>
+        /// <param name="propertyName">The name of the property holding the value.</param>
+        private void CopyDecimalFormValue(
+            string propertyName,
+            NumericUpDown control)
+        {
+            CopyDecimalFormValue(propertyName, control, settingsRef);
+        }
+
+        /// <summary>
+        /// Check the value of the specified control.
+        /// </summary>
+        /// <param name="control">The decomal control.</param>
+        /// <param name="propertyName">The name of the property holding the value.</param>
+        /// <param name="settings">The TDSettings object.</param>
+        private void CopyDecimalFormValue(
+            string propertyName,
+            NumericUpDown control,
+            TDSettings settings)
+        {
+            /*
+             * The following is a set of workarounds to fix a bug in Framework 2.0+
+             * involving NumericUpDown controls not updating the Value() property
+             * when changed from the keyboard instead of the spinner control. We
+             * do this by parsing the unbrowsable Text property and copying that.
+             */
+
+            PropertyInfo prop = settings.GetType().GetProperty(propertyName);
+
+            if (decimal.TryParse(control.Text, out decimal value))
+            {
+                // Ensure that the value is withing the limits.
+                if (value < control.Minimum)
+                {
+                    value = control.Minimum;
+                }
+                else if (value > control.Maximum)
+                {
+                    value = control.Maximum;
+                }
+
+                control.Text = value.ToString();
+                prop.SetValue(settings, value);
+            }
+            else
+            {
+                prop.SetValue(settings, control.Minimum);
+                control.Text = control.Minimum.ToString();
+            }
+        }
+
         private void CopyMenuItem_Click(object sender, EventArgs e)
         {
             RichTextBox clickedControl = (RichTextBox)this.mnuStrip1.SourceControl;
@@ -869,98 +955,47 @@ namespace TDHelper
             clickedControl.Copy();
         }
 
+        /// <summary>
+        /// Load controls in the form from variables in memory
+        /// </summary>
         private void CopySettingsFromConfig()
         {
-            //
-            // Load controls in the form from variables in memory
-            //
+            CopyDecimalSettingValue("Age", numRouteOptionsAge);
+            CopyDecimalSettingValue("Capacity", numRouteOptionsShipCapacity);
+            CopyDecimalSettingValue("Credits", numCommandersCredits);
+            CopyDecimalSettingValue("Demand", numRouteOptionsDemand);
+            CopyDecimalSettingValue("EndJumps", numRunOptionsEndJumps);
+            CopyDecimalSettingValue("GPT", numRouteOptionsGpt);
+            CopyDecimalSettingValue("Hops", numRouteOptionsHops);
+            CopyDecimalSettingValue("Insurance", numShipInsurance);
+            CopyDecimalSettingValue("Jumps", numRouteOptionsJumps);
+            CopyDecimalSettingValue("LadenLY", numLadenLy);
+            CopyDecimalSettingValue("Limit", numRouteOptionsLimit);
+            CopyDecimalSettingValue("LoopInt", numRunOptionsLoopInt);
+            CopyDecimalSettingValue("LSPenalty", numRouteOptionsLsPenalty);
+            CopyDecimalSettingValue("Margin", numRouteOptionsMargin);
+            CopyDecimalSettingValue("MaxGPT", numRouteOptionsMaxGpt);
+            CopyDecimalSettingValue("MaxLSDistance", numRouteOptionsMaxLSDistance);
+            CopyDecimalSettingValue("PruneHops", numRouteOptionsPruneHops);
+            CopyDecimalSettingValue("PruneScore", numRouteOptionsPruneScore);
+            CopyDecimalSettingValue("RouteStations", numRunOptionsRoutes);
+            CopyDecimalSettingValue("StartJumps", numRunOptionsStartJumps);
+            CopyDecimalSettingValue("Stock", numRouteOptionsStock);
+            CopyDecimalSettingValue("UnladenLY", numUnladenLy);
+
+            chkRunOptionsBlkMkt.Checked = settingsRef.BlackMarket;
+            chkRunOptionsDirect.Checked = settingsRef.Direct;
+            chkRunOptionsLoop.Checked = settingsRef.Loop;
+            chkRunOptionsShorten.Checked = settingsRef.Shorten;
+            chkRunOptionsJumps.Checked = settingsRef.ShowJumps;
+            chkRunOptionsTowards.Checked = settingsRef.Towards;
+            chkRunOptionsUnique.Checked = settingsRef.Unique;
 
             txtAvoid.Text = settingsRef.Avoid;
             txtVia.Text = settingsRef.Via;
 
-            numRouteOptionsShipCapacity.Value = settingsRef.Capacity > numRouteOptionsShipCapacity.Minimum && settingsRef.Capacity <= numRouteOptionsShipCapacity.Maximum
-                ? settingsRef.Capacity
-                : numRouteOptionsShipCapacity.Minimum;
-
-            numCommandersCredits.Value = settingsRef.Credits > numCommandersCredits.Minimum && settingsRef.Credits <= numCommandersCredits.Maximum
-                ? settingsRef.Credits
-                : numCommandersCredits.Minimum;
-
-            numShipInsurance.Value = settingsRef.Insurance > numShipInsurance.Minimum && settingsRef.Insurance <= numShipInsurance.Maximum
-                ? settingsRef.Insurance
-                : numShipInsurance.Minimum;
-
-            numRouteOptionsLsPenalty.Value = settingsRef.LSPenalty > numRouteOptionsLsPenalty.Minimum && settingsRef.LSPenalty <= numRouteOptionsLsPenalty.Maximum
-                ? settingsRef.LSPenalty
-                : numRouteOptionsLsPenalty.Minimum;
-
-            numRouteOptionsMaxLSDistance.Value = settingsRef.MaxLSDistance > numRouteOptionsMaxLSDistance.Minimum && settingsRef.MaxLSDistance <= numRouteOptionsMaxLSDistance.Maximum
-                ? settingsRef.MaxLSDistance
-                : numRouteOptionsMaxLSDistance.Minimum;
-
-            numRunOptionsLoopInt.Value = settingsRef.LoopInt > numRunOptionsLoopInt.Minimum && settingsRef.LoopInt <= numRunOptionsLoopInt.Maximum
-                ? settingsRef.LoopInt
-                : numRunOptionsLoopInt.Minimum;
-
-            numRouteOptionsAge.Value = settingsRef.Age > numRouteOptionsAge.Minimum && settingsRef.Age <= numRouteOptionsAge.Maximum
-                ? settingsRef.Age
-                : numRouteOptionsAge.Minimum;
-
-            numRouteOptionsPruneHops.Value = settingsRef.PruneHops > numRouteOptionsPruneHops.Minimum && settingsRef.PruneHops <= numRouteOptionsPruneHops.Maximum
-                ? settingsRef.PruneHops
-                : numRouteOptionsPruneHops.Minimum;
-
-            numRouteOptionsPruneScore.Value = settingsRef.PruneScore > numRouteOptionsPruneScore.Minimum && settingsRef.PruneScore <= numRouteOptionsPruneScore.Maximum
-                ? settingsRef.PruneScore
-                : numRouteOptionsPruneScore.Minimum;
-
-            numRouteOptionsStock.Value = settingsRef.Stock > numRouteOptionsStock.Minimum && settingsRef.Stock <= numRouteOptionsStock.Maximum
-                ? settingsRef.Stock
-                : numRouteOptionsStock.Minimum;
-
-            //numSupply.Value = settingsRef.Supply > numSupply.Minimum && settingsRef.Supply <= numSupply.Maximum
-            //    ? settingsRef.Supply
-            //    : numSupply.Minimum;
-
-            numRouteOptionsDemand.Value = settingsRef.Demand > numRouteOptionsDemand.Minimum && settingsRef.Demand <= numRouteOptionsDemand.Maximum
-                ? settingsRef.Demand
-                : numRouteOptionsDemand.Minimum;
-
-            numRouteOptionsGpt.Value = settingsRef.GPT > numRouteOptionsGpt.Minimum && settingsRef.GPT <= numRouteOptionsGpt.Maximum
-                ? settingsRef.GPT
-                : numRouteOptionsGpt.Minimum;
-
-            numRouteOptionsMaxGpt.Value = settingsRef.MaxGPT > numRouteOptionsMaxGpt.Minimum && settingsRef.MaxGPT <= numRouteOptionsMaxGpt.Maximum
-                ? settingsRef.MaxGPT
-                : numRouteOptionsMaxGpt.Minimum;
-
-            numRouteOptionsHops.Value = settingsRef.Hops > numRouteOptionsHops.Minimum && settingsRef.Hops <= numRouteOptionsHops.Maximum
-                ? settingsRef.Hops
-                : numRouteOptionsHops.Minimum;
-
-            numRouteOptionsJumps.Value = settingsRef.Jumps > numRouteOptionsJumps.Minimum && settingsRef.Jumps <= numRouteOptionsJumps.Maximum
-                ? settingsRef.Jumps
-                : numRouteOptionsJumps.Minimum;
-
-            numRouteOptionsLimit.Value = settingsRef.Limit > numRouteOptionsLimit.Minimum && settingsRef.Limit <= numRouteOptionsLimit.Maximum
-                ? settingsRef.Limit
-                : numRouteOptionsLimit.Minimum;
-
-            numRunOptionsRoutes.Value = settingsRef.BelowPrice > numRunOptionsRoutes.Minimum && settingsRef.BelowPrice <= numRunOptionsRoutes.Maximum
-                ? settingsRef.BelowPrice
-                : numRunOptionsRoutes.Minimum;
-
-            numUnladenLy.Value = settingsRef.UnladenLY > numUnladenLy.Minimum && settingsRef.UnladenLY <= numUnladenLy.Maximum
-                ? settingsRef.UnladenLY
-                : numUnladenLy.Minimum;
-
-            numLadenLy.Value = settingsRef.LadenLY > numLadenLy.Minimum && settingsRef.LadenLY <= numLadenLy.Maximum
-                ? settingsRef.LadenLY
-                : numLadenLy.Minimum;
-
-            numRouteOptionsMargin.Value = settingsRef.Margin > numRouteOptionsMargin.Minimum && settingsRef.Margin <= numRouteOptionsMargin.Maximum
-                ? settingsRef.Margin
-                : numRouteOptionsMargin.Minimum;
+            txtPadSize.Text = ContainsPadSizes(settingsRef.Padsizes);
+            txtRunOptionsPlanetary.Text = ContainsPlanetary(settingsRef.Planetary);
 
             // copy verbosity to string format
             switch (settingsRef.Verbosity)
@@ -1001,328 +1036,55 @@ namespace TDHelper
                 chkRunOptionsTowards.Checked = settingsRef.Towards;
                 chkRunOptionsLoop.Checked = false;
             }
-
-            // exceptions
-            settingsRef.ShowJumps = chkRunOptionsJumps.Checked;
-            settingsRef.Unique = chkRunOptionsUnique.Checked;
-
-            txtPadSize.Text = ContainsPadSizes(settingsRef.Padsizes);
-
-            txtRunOptionsPlanetary.Text = ContainsPlanetary(settingsRef.Planetary);
-
-            //            chkRouteStations.Checked = settingsRef.RouteStations;
-            txtRunOptionsPlanetary.Text = settingsRef.Planetary;
         }
 
+        /// <summary>
+        ///  Load variables from text boxes in the form
+        /// </summary>
         private void CopySettingsFromForm()
         {
-            //
-            // Load variables from text boxes in the form
-            //
-
             // make sure we strip the excess whitespace in src/dest
             temp_src = RemoveExtraWhitespace(cboSourceSystem.Text);
             temp_dest = RemoveExtraWhitespace(cboRunOptionsDestination.Text);
 
-            if (methodIndex == 3)
-            {
-                r_fromBox = txtAvoid.Text;
-            }
-            else
-            {
-                settingsRef.Avoid = txtAvoid.Text;
-            }
+            CopyDecimalFormValue("Age", numRouteOptionsAge);
+            CopyDecimalFormValue("Capacity", numRouteOptionsShipCapacity);
+            CopyDecimalFormValue("Credits", numCommandersCredits);
+            CopyDecimalFormValue("Demand", numRouteOptionsDemand);
+            CopyDecimalFormValue("EndJumps", numRunOptionsEndJumps);
+            CopyDecimalFormValue("GPT", numRouteOptionsGpt);
+            CopyDecimalFormValue("Hops", numRouteOptionsHops);
+            CopyDecimalFormValue("Insurance", numShipInsurance);
+            CopyDecimalFormValue("Jumps", numRouteOptionsJumps);
+            CopyDecimalFormValue("LadenLY", numLadenLy);
+            CopyDecimalFormValue("Limit", numRouteOptionsLimit);
+            CopyDecimalFormValue("LoopInt", numRunOptionsLoopInt);
+            CopyDecimalFormValue("LSPenalty", numRouteOptionsLsPenalty);
+            CopyDecimalFormValue("Margin", numRouteOptionsMargin);
+            CopyDecimalFormValue("MaxGPT", numRouteOptionsMaxGpt);
+            CopyDecimalFormValue("MaxLSDistance", numRouteOptionsMaxLSDistance);
+            CopyDecimalFormValue("PruneHops", numRouteOptionsPruneHops);
+            CopyDecimalFormValue("PruneScore", numRouteOptionsPruneScore);
+            CopyDecimalFormValue("RouteStations", numRunOptionsRoutes);
+            CopyDecimalFormValue("StartJumps", numRunOptionsStartJumps);
+            CopyDecimalFormValue("Stock", numRouteOptionsStock);
+            CopyDecimalFormValue("UnladenLY", numUnladenLy);
 
-            settingsRef.Via = txtVia.Text;
-
-            /*
-             * The following is a set of workarounds to fix a bug in Framework 2.0+
-             * involving NumericUpDown controls not updating the Value() property
-             * when changed from the keyboard instead of the spinner control. We
-             * do this by parsing the unbrowsable Text property and copying that.
-             */
-
-            if (decimal.TryParse(numRouteOptionsShipCapacity.Text, out decimal t_Capacity))
-            {
-                numRouteOptionsShipCapacity.Text = t_Capacity.ToString();
-                settingsRef.Capacity = t_Capacity;
-            }
-            else
-            {
-                settingsRef.Capacity = numRouteOptionsShipCapacity.Minimum; // this is a requirement
-                numRouteOptionsShipCapacity.Text = settingsRef.Capacity.ToString();
-            }
-
-            if (decimal.TryParse(numCommandersCredits.Text, out decimal t_Credits))
-            {
-                numCommandersCredits.Text = t_Credits.ToString();
-                settingsRef.Credits = t_Credits;
-            }
-            else
-            {
-                settingsRef.Credits = numCommandersCredits.Minimum; // this is a requirement
-                numCommandersCredits.Text = settingsRef.Credits.ToString();
-            }
-
-            if (decimal.TryParse(numShipInsurance.Text, out decimal t_Insurance))
-            {
-                numShipInsurance.Text = t_Insurance.ToString();
-                settingsRef.Insurance = t_Insurance;
-            }
-            else
-            {
-                settingsRef.Insurance = numShipInsurance.Minimum;
-                numShipInsurance.Text = settingsRef.Insurance.ToString();
-            }
-
-            if (decimal.TryParse(numRouteOptionsLsPenalty.Text, out decimal t_lsPenalty))
-            {
-                numRouteOptionsLsPenalty.Text = t_lsPenalty.ToString();
-                settingsRef.LSPenalty = t_lsPenalty;
-            }
-            else
-            {
-                settingsRef.LSPenalty = numRouteOptionsLsPenalty.Minimum;
-                numRouteOptionsLsPenalty.Text = settingsRef.LSPenalty.ToString();
-            }
-
-            if (decimal.TryParse(numRouteOptionsMaxLSDistance.Text, out decimal t_maxLSDistance))
-            {
-                numRouteOptionsMaxLSDistance.Text = t_maxLSDistance.ToString();
-                settingsRef.MaxLSDistance = t_maxLSDistance;
-            }
-            else
-            {
-                settingsRef.MaxLSDistance = numRouteOptionsMaxLSDistance.Minimum;
-                numRouteOptionsMaxLSDistance.Text = settingsRef.MaxLSDistance.ToString();
-            }
-
-            if (decimal.TryParse(numRunOptionsLoopInt.Text, out decimal t_LoopInt))
-            {
-                numRunOptionsLoopInt.Text = t_LoopInt.ToString();
-                settingsRef.LoopInt = t_LoopInt;
-            }
-            else
-            {
-                settingsRef.LoopInt = numRunOptionsLoopInt.Minimum;
-                numRunOptionsLoopInt.Text = settingsRef.LoopInt.ToString();
-            }
-
-            if (decimal.TryParse(numRouteOptionsPruneHops.Text, out decimal t_pruneHops))
-            {
-                numRouteOptionsPruneHops.Text = t_pruneHops.ToString();
-                settingsRef.PruneHops = t_pruneHops;
-            }
-            else
-            {
-                settingsRef.PruneHops = numRouteOptionsPruneHops.Minimum;
-                numRouteOptionsPruneHops.Text = settingsRef.PruneHops.ToString();
-            }
-
-            if (decimal.TryParse(numRouteOptionsPruneScore.Text, out decimal t_pruneScore))
-            {
-                numRouteOptionsPruneScore.Text = t_pruneScore.ToString();
-                settingsRef.PruneScore = t_pruneScore;
-            }
-            else
-            {
-                settingsRef.PruneScore = numRouteOptionsPruneScore.Minimum;
-                numRouteOptionsPruneScore.Text = settingsRef.PruneScore.ToString();
-            }
-
-            if (decimal.TryParse(numRouteOptionsStock.Text, out decimal t_Stock))
-            {
-                numRouteOptionsStock.Text = t_Stock.ToString();
-                settingsRef.Stock = t_Stock;
-            }
-            else
-            {
-                settingsRef.Stock = numRouteOptionsStock.Minimum;
-                numRouteOptionsStock.Text = settingsRef.Stock.ToString();
-            }
-
-            if (decimal.TryParse(numRouteOptionsDemand.Text, out decimal t_Demand))
-            {
-                numRouteOptionsDemand.Text = t_Demand.ToString();
-                settingsRef.Demand = t_Demand;
-            }
-            else
-            {
-                settingsRef.Demand = numRouteOptionsDemand.Minimum;
-                numRouteOptionsDemand.Text = settingsRef.Demand.ToString();
-            }
-
-            if (decimal.TryParse(numRouteOptionsAge.Text, out decimal t_Age))
-            {
-                numRouteOptionsAge.Text = t_Age.ToString();
-                settingsRef.Age = t_Age;
-            }
-            else
-            {
-                settingsRef.Age = numRouteOptionsAge.Minimum;
-                numRouteOptionsAge.Text = settingsRef.Age.ToString();
-            }
-
-            if (decimal.TryParse(numRouteOptionsGpt.Text, out decimal t_GPT))
-            {
-                numRouteOptionsGpt.Text = t_GPT.ToString();
-                settingsRef.GPT = t_GPT;
-            }
-            else
-            {
-                settingsRef.GPT = numRouteOptionsGpt.Minimum;
-                numRouteOptionsGpt.Text = settingsRef.GPT.ToString();
-            }
-
-            if (decimal.TryParse(numRouteOptionsMaxGpt.Text, out decimal t_MaxGPT))
-            {
-                numRouteOptionsMaxGpt.Text = t_MaxGPT.ToString();
-                settingsRef.MaxGPT = t_MaxGPT;
-            }
-            else
-            {
-                settingsRef.MaxGPT = numRouteOptionsMaxGpt.Minimum;
-                numRouteOptionsMaxGpt.Text = settingsRef.MaxGPT.ToString();
-            }
-
-            if (decimal.TryParse(numRouteOptionsLimit.Text, out decimal t_Limit))
-            {
-                numRouteOptionsLimit.Text = t_Limit.ToString();
-                settingsRef.Limit = t_Limit;
-            }
-            else
-            {
-                settingsRef.Limit = numRouteOptionsLimit.Minimum;
-                numRouteOptionsLimit.Text = settingsRef.Limit.ToString();
-            }
-
-            if (decimal.TryParse(numRouteOptionsHops.Text, out decimal t_Hops))
-            {
-                numRouteOptionsHops.Text = t_Hops.ToString();
-                settingsRef.Hops = t_Hops;
-            }
-            else
-            {
-                settingsRef.Hops = numRouteOptionsHops.Minimum;
-                numRouteOptionsHops.Text = settingsRef.Hops.ToString();
-            }
-
-            if (decimal.TryParse(numRouteOptionsJumps.Text, out decimal t_Jumps))
-            {
-                numRouteOptionsJumps.Text = t_Jumps.ToString();
-                settingsRef.Jumps = t_Jumps;
-            }
-            else
-            {
-                settingsRef.Jumps = numRouteOptionsJumps.Minimum;
-                numRouteOptionsJumps.Text = settingsRef.Jumps.ToString();
-            }
-
-            if (decimal.TryParse(numRunOptionsEndJumps.Text, out t_EndJumps))
-                numRunOptionsEndJumps.Text = t_EndJumps.ToString();
-            else
-            {
-                t_EndJumps = numRunOptionsEndJumps.Minimum;
-                numRunOptionsEndJumps.Text = t_EndJumps.ToString();
-            }
-
-            if (decimal.TryParse(numRunOptionsStartJumps.Text, out t_StartJumps))
-                numRunOptionsStartJumps.Text = t_StartJumps.ToString();
-            else
-            {
-                t_StartJumps = numRunOptionsStartJumps.Minimum;
-                numRunOptionsStartJumps.Text = t_StartJumps.ToString();
-            }
-
-            if (decimal.TryParse(numRunOptionsRoutes.Text, out t_belowPrice))
-            {
-                numRunOptionsRoutes.Text = t_belowPrice.ToString();
-                settingsRef.BelowPrice = t_belowPrice;
-            }
-            else
-            {
-                settingsRef.BelowPrice = numRunOptionsRoutes.Minimum;
-                numRunOptionsRoutes.Text = settingsRef.BelowPrice.ToString();
-            }
-
-            if (decimal.TryParse(numRouteOptionsAge.Text, out decimal t_MinAge))
-            {
-                numRouteOptionsAge.Text = t_MinAge.ToString();
-            }
-            else
-            {
-                numRouteOptionsAge.Text = numRouteOptionsAge.Minimum.ToString();
-            }
-
+            settingsRef.BlackMarket = chkRunOptionsBlkMkt.Checked;
+            settingsRef.Direct = chkRunOptionsDirect.Checked;
             settingsRef.Loop = chkRunOptionsLoop.Checked;
+            settingsRef.Shorten = chkRunOptionsShorten.Checked;
+            settingsRef.ShowJumps = chkRunOptionsJumps.Checked;
             settingsRef.Towards = chkRunOptionsTowards.Checked;
             settingsRef.Unique = chkRunOptionsUnique.Checked;
-            settingsRef.ShowJumps = chkRunOptionsJumps.Checked;
 
-            settingsRef.Planetary = txtRunOptionsPlanetary.Text;
+            settingsRef.Avoid = txtAvoid.Text;
+            settingsRef.Via = txtVia.Text;
 
-            //
-            // exceptions
-            //
             settingsRef.Padsizes = ContainsPadSizes(txtPadSize.Text);
             settingsRef.Planetary = ContainsPlanetary(txtRunOptionsPlanetary.Text);
 
             t_confirmCode = string.Empty;
-
-            // handle floats differently
-            if (decimal.TryParse(numUnladenLy.Text, out decimal t_unladenLY))
-            {
-                if (methodIndex == 3)
-                {
-                    r_unladenLY = decimal.Truncate(t_unladenLY * 100) / 100;
-                }
-                else
-                {
-                    settingsRef.UnladenLY = decimal.Truncate(t_unladenLY * 100) / 100;
-                }
-            }
-            else
-            {
-                settingsRef.UnladenLY = decimal.Truncate(numUnladenLy.Minimum * 100) / 100;
-                numUnladenLy.Text = settingsRef.UnladenLY.ToString();
-            }
-
-            // the ladenLY is a bit more complicated, let's handle it
-            if (decimal.TryParse(numLadenLy.Text, out t_ladenLY))
-            {
-                if (methodIndex == 3)
-                {
-                    r_ladenLY = decimal.Truncate(t_ladenLY * 100) / 100; // an exception for the rare command
-                }
-                else if (methodIndex == 1)
-                {
-                    t1_ladenLY = decimal.Truncate(t_ladenLY * 100) / 100; // an exception for the buy command
-                }
-                else if (methodIndex == 2)
-                {
-                    t2_ladenLY = decimal.Truncate(t_ladenLY * 100) / 100; // an exception for the sell command
-                }
-                else
-                {
-                    settingsRef.LadenLY = decimal.Truncate(t_ladenLY * 100) / 100;
-                }
-            }
-            else
-            {
-                settingsRef.LadenLY = decimal.Truncate(numLadenLy.Minimum * 100) / 100;
-                numLadenLy.Text = settingsRef.LadenLY.ToString();
-            }
-
-            if (decimal.TryParse(numRouteOptionsMargin.Text, out decimal t_Margin))
-            {
-                settingsRef.Margin = decimal.Truncate(t_Margin * 100) / 100;
-                numRouteOptionsMargin.Text = settingsRef.Margin.ToString();
-            }
-            else
-            {
-                settingsRef.Margin = decimal.Truncate(numRouteOptionsMargin.Minimum * 100) / 100;
-                numRouteOptionsMargin.Text = settingsRef.Margin.ToString();
-            }
         }
 
         private void CopySystemToDest_Click(object sender, EventArgs e)
@@ -1553,6 +1315,50 @@ namespace TDHelper
         }
 
         /// <summary>
+        /// Display the ships available at the current station in the output window.
+        /// </summary>
+        private void DisplayAvailableShipsAtcurrentstation()
+        {
+            if (methodIndex == 6 &&
+                cboSourceSystem.Text.Length > 0 &&
+                btnStart.Enabled &&
+                btnStart.Text.Contains("Start"))
+            {
+                circularBuffer.Clear();
+
+                StackCircularBuffer("Ships currently available at {0}:{1}{2}".With(
+                    cboSourceSystem.Text,
+                    Environment.NewLine,
+                    Environment.NewLine));
+
+                if (outputStationShips.Count == 0)
+                {
+                    StackCircularBuffer("None");
+                }
+                else
+                {
+                    int maxNameLength = outputStationShips
+                        .Select(x => x.Substring(0, x.IndexOf("[")).Length)
+                        .Max();
+
+                    int maxCostLength = outputStationShips
+                        .Select(x => x.Substring(x.IndexOf("[")).Length)
+                        .Max();
+
+                    foreach (string ship in outputStationShips)
+                    {
+                        string[] data = ship.Split(new string[] { "[" }, StringSplitOptions.RemoveEmptyEntries);
+
+                        StackCircularBuffer("{0}[{1}{2}".With(
+                            data[0].PadRight(maxNameLength),
+                            data[1].PadLeft(maxCostLength),
+                            Environment.NewLine));
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Called on clicking one of the distance menu items.
         /// </summary>
         /// <param name="sender">The menu item clicked.</param>
@@ -1716,6 +1522,35 @@ namespace TDHelper
             }
 
             return panel;
+        }
+
+        /// <summary>
+        /// populate the control with the specified setting.
+        /// </summary>
+        /// <param name="propertyName">The name of the settings property.</param>
+        /// <param name="control">The control to be populated.</param>
+        private void CopyDecimalSettingValue(
+            string propertyName,
+            NumericUpDown control)
+        {
+            CopyDecimalSettingValue(propertyName, control, settingsRef);
+        }
+
+        /// <summary>
+        /// populate the control with the specified setting.
+        /// </summary>
+        /// <param name="propertyName">The name of the settings property.</param>
+        /// <param name="control">The control to be populated.</param>
+        /// <param name="settings">The Settings object.</param>
+        private void CopyDecimalSettingValue(
+            string propertyName,
+            NumericUpDown control,
+            TDSettings settings)
+        {
+            ValidateSettingValue(propertyName, control, settings);
+
+            PropertyInfo prop = settings.GetType().GetProperty(propertyName);
+            control.Value = (decimal)prop.GetValue(settings);
         }
 
         /// <summary>
@@ -2267,6 +2102,30 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Load the speicifed file into the specified control.
+        /// </summary>
+        /// <param name="fileName">The name of the file to load.</param>
+        /// <param name="page">A reference to the control.</param>
+        private void LoadFileIntoPage(
+            string fileName,
+            RichTextBox page)
+        {
+            if (CheckIfFileOpens(fileName))
+            {
+                page.Focus();
+
+                if (File.Exists(fileName))
+                {
+                    page.LoadFile(savedFile1, RichTextBoxStreamType.PlainText);
+                }
+
+                CheckForParsableOutput(page);
+
+                page.Focus();
+            }
+        }
+
         private void LocalFilterCheckBoxChanged(object sender, EventArgs e)
         {
             IEnumerable<CheckBox> checkboxes = panLocalOptions.Controls.OfType<CheckBox>();
@@ -2403,50 +2262,6 @@ namespace TDHelper
             MethodSelectState();
 
             cboMethod.Enabled = true;
-        }
-
-        /// <summary>
-        /// Display the ships available at the current station in the output window.
-        /// </summary>
-        private void DisplayAvailableShipsAtcurrentstation()
-        {
-            if (methodIndex == 6 &&
-                cboSourceSystem.Text.Length > 0 &&
-                btnStart.Enabled &&
-                btnStart.Text.Contains("Start"))
-            {
-                circularBuffer.Clear();
-
-                StackCircularBuffer("Ships currently available at {0}:{1}{2}".With(
-                    cboSourceSystem.Text,
-                    Environment.NewLine,
-                    Environment.NewLine));
-
-                if (outputStationShips.Count == 0)
-                {
-                    StackCircularBuffer("None");
-                }
-                else
-                {
-                    int maxNameLength = outputStationShips
-                        .Select(x => x.Substring(0, x.IndexOf("[")).Length)
-                        .Max();
-
-                    int maxCostLength = outputStationShips
-                        .Select(x => x.Substring(x.IndexOf("[")).Length)
-                        .Max();
-
-                    foreach (string ship in outputStationShips)
-                    {
-                        string[] data = ship.Split(new string[] { "[" }, StringSplitOptions.RemoveEmptyEntries);
-
-                        StackCircularBuffer("{0}[{1}{2}".With(
-                            data[0].PadRight(maxNameLength),
-                            data[1].PadLeft(maxCostLength),
-                            Environment.NewLine));
-                    }
-                }
-            }
         }
 
         private void MethodSelectState()
@@ -3110,19 +2925,19 @@ namespace TDHelper
                 // Detach and reattach the destinations data source.
                 commodities.DataSource = null;
 
-                int index 
-                    = methodFromIndex == 0 
-                    ? methodIndex 
+                int index
+                    = methodFromIndex == 0
+                    ? methodIndex
                     : methodFromIndex;
 
                 switch (index)
                 {
-                    case 1:
+                    case 1: // Buy
                         // All commodities & ships
                         commodities.DataSource = outputItems;
                         break;
 
-                    case 2:
+                    case 2: // Sell
                         // Just commodities.
                         commodities.DataSource = CommoditiesList;
                         break;
@@ -3554,7 +3369,7 @@ namespace TDHelper
                 txtNotes.SaveFile(notesFile, RichTextBoxStreamType.PlainText);
             }
 
-            if (tabControl1.SelectedTab == tabControl1.TabPages["outputPage"] && 
+            if (tabControl1.SelectedTab == tabControl1.TabPages["outputPage"] &&
                 !string.IsNullOrEmpty(rtbOutput.Text))
             {
                 CheckForParsableOutput(rtbOutput);
@@ -3568,7 +3383,7 @@ namespace TDHelper
             {
                 fromPane = 5;
             }
-            else if (tabControl1.SelectedTab == tabControl1.TabPages["notesPage"] && 
+            else if (tabControl1.SelectedTab == tabControl1.TabPages["notesPage"] &&
                 CheckIfFileOpens(notesFile))
             {
                 txtNotes.LoadFile(notesFile, RichTextBoxStreamType.PlainText);
@@ -3593,51 +3408,6 @@ namespace TDHelper
                 LoadFileIntoPage(savedFile3, rtbSaved3);
 
                 fromPane = 3;
-            }
-        }
-
-        /// <summary>
-        /// Load the speicifed file into the specified control.
-        /// </summary>
-        /// <param name="fileName">The name of the file to load.</param>
-        /// <param name="page">A reference to the control.</param>
-        private void LoadFileIntoPage(
-            string fileName, 
-            RichTextBox page)
-        {
-            if (CheckIfFileOpens(fileName))
-            {
-                page.Focus();
-
-                if (File.Exists(fileName))
-                {
-                    page.LoadFile(savedFile1, RichTextBoxStreamType.PlainText);
-                }
-
-                CheckForParsableOutput(page);
-
-                page.Focus();
-            }
-        }
-
-        /// <summary>
-        /// check for parsable Run output.
-        /// </summary>
-        /// <param name="page">A reference to the control.</param>
-        private void CheckForParsableOutput(RichTextBox page)
-        {
-            string filteredOutput = FilterOutput(page.Text);
-            runOutputState = IsValidRunOutput(filteredOutput);
-
-            if (runOutputState > -1)
-            {
-                hasParsed = false; // reset the semaphore
-                tv_outputBox = filteredOutput; // copy our validated input
-                btnMiniMode.Enabled = true;
-            }
-            else
-            {
-                btnMiniMode.Enabled = false;
             }
         }
 

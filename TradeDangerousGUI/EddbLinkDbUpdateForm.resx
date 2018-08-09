@@ -117,65 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="tipToolTips.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>336, 50</value>
-  </metadata>
-  <metadata name="backgroundWorker1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>10, 12</value>
-  </metadata>
-  <metadata name="mnuSetValues.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>749, 51</value>
-  </metadata>
-  <metadata name="backgroundWorker2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>174, 12</value>
-  </metadata>
-  <metadata name="mnuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>181, 50</value>
+  <metadata name="toolTips.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="btnSettings.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADrwAAA68AZW8ckkAAAI1SURBVDhPrdRNSBVRFMDxl5UfRaiFpAV9LKqNUC3aRBmY
-        FUK7CipaBFYbCzJpKZpIrWoVFiW1aSGB4UoIQcVVIdimsBZFRVpERIuy74///zlX5tEbeY/ngR/6Zu7c
-        ufeccyeVQyzAMlShxAvzEdXoxRucwWLkHcvh6kKsxyT+ogdLEKIU5TP/JkctbuME3PJSHMF3OOlDbIex
-        Fl24jBVeyBYVcCU+/BP3MYQv0bXAVd/FeOzaKWSNYhzHV4TBP3ATh7AHJzGIcF+vsQ2JUYYBOPgZGrAO
-        R3EOe1GDFnyDC2hHERLDIgzDwU64C4/xC39gbvuwBheia534L3yLb9+EJnzGDfjgE7jql3iAT9Hv67BQ
-        bn0CddgA65LuHFviHiyABfKhg3DLruQF6mFqOjCN99gIX+54rz3HeaT7eCU+wJuBRWmFk44i9O1uvIX5
-        3IqLiD93B/ZuegWeFKs8Bm/apxbFXH5EG/bBHdkRFtH0+Nvd2RFX0YiFSIdLNg07MQUHeTwtii9xe67w
-        d/S7GZth/i3sKnhYZieMh9v07a7QtrEY1/AObvkpTsPC9sMuOYs5w3P+CK7GB2wb+9SibIFb9q8TOsac
-        e6wTv17m9hIcLHvSh17BKnvPXZgKV+09x/n7ALJGJa7Agfaf7WN17cPwInM6Ard8C34X3NExxL9sGeHE
-        Vj5+lnfA1TipBVwNw+Lux2Es8kI+YZ5NgZN2w89hweHR8yBYkIw+LCTMlVv1pOQwYSr1D68fnO5h5IQ1
-        AAAAAElFTkSuQmCC
-</value>
-  </data>
-  <data name="lblNavOptionsRefuelJumps.ToolTip" xml:space="preserve">
-    <value>Specify the maximum consecutive systems which do not have stations you can pass through. For example "--ref 1" would require every jump on the route have a station. "--ref 2" would require that you not make more than one stationless jump after another.</value>
-  </data>
-  <data name="numNavOptionsRefuelJumps.ToolTip" xml:space="preserve">
-    <value>Specify the maximum consecutive systems which do not have stations you can pass through. For example "--ref 1" would require every jump on the route have a station. "--ref 2" would require that you not make more than one stationless jump after another.</value>
-  </data>
-  <metadata name="backgroundWorker3.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>331, 11</value>
-  </metadata>
-  <metadata name="backgroundWorker4.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>495, 11</value>
-  </metadata>
-  <metadata name="mnuStrip2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>430, 51</value>
-  </metadata>
-  <metadata name="backgroundWorker5.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>659, 11</value>
-  </metadata>
-  <metadata name="backgroundWorker6.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 50</value>
-  </metadata>
-  <metadata name="backgroundWorker7.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>585, 51</value>
-  </metadata>
-  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>75</value>
-  </metadata>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAQAEBAAAAAAIABoBAAARgAAACAgAAAAACAAqBAAAK4EAAAwMAAAAAAgAKglAABWFQAAQEAAAAAA

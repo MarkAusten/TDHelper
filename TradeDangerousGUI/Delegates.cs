@@ -191,8 +191,6 @@ namespace TDHelper
             // before we do the thing
             // let's push all the boxes into variables
             CopySettingsFromForm();
-            // sanity check inputs before running
-            ValidateSettings();
 
             // Run button
             if (!backgroundWorker2.IsBusy)
@@ -351,7 +349,7 @@ namespace TDHelper
             if (buttonCaller == 5)
             {
                 // catch the database update button
-                commandString += "import -P eddblink -O listings,progbar";
+                commandString += "import -P eddblink -O {0},progbar".With(DBUpdateCommandString);
             }
         }
 

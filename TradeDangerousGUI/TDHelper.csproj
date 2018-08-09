@@ -137,6 +137,12 @@
     <Compile Include="Delegates.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="EddbLinkDbUpdateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EddbLinkDbUpdateForm.Designer.cs">
+      <DependentUpon>EddbLinkDbUpdateForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -187,6 +193,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Utilities.cs" />
+    <EmbeddedResource Include="EddbLinkDbUpdateForm.resx">
+      <DependentUpon>EddbLinkDbUpdateForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
