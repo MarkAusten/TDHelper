@@ -613,6 +613,8 @@ namespace TDHelper
 
             eddblinkForm.ShowDialog(this);
 
+            Application.DoEvents();
+
             if (!string.IsNullOrEmpty(DBUpdateCommandString))
             {
                 ValidateSettings();
