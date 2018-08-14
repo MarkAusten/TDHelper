@@ -23,7 +23,7 @@ if (($binaries.count -gt 0) -and (Test-Path $binpath))
     cmd /c rmdir /s /q $packpath
 
     # selectively delete directory contents
-    Get-ChildItem -Path "$binpath\*.*" -exclude Default.xml,TDHelper.db | Remove-Item -force
+    Get-ChildItem -Path "$binpath\*.*" -exclude TDHelper.db | Remove-Item -force
 
     # preparation
     cmd /c mkdir $packpath
@@ -31,8 +31,12 @@ if (($binaries.count -gt 0) -and (Test-Path $binpath))
     cmd /c mkdir $binpath\storage
 
     # xcopy latest release
-    cmd /c xcopy /y $srcpathb\*.* $binpath
-    cmd /c xcopy /y $srcpathb\*.* $packpath
+    cmd /c xcopy /s /y $srcpathb\*.* $binpath
+	Remove-Item -Path $binpath/app.publish -recurse -force
+	
+    cmd /c xcopy /s /y $srcpathb\*.* $packpath
+	Remove-Item -Path $packpath/app.publish -recurse -force
+	
     cmd /c xcopy /e /y $scriptPath\*.* $packpath\source\
     cmd /c copy /y $srcpath\Changelog.txt $binpath
 
