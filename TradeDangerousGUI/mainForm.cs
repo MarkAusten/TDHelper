@@ -80,6 +80,8 @@ namespace TDHelper
         private CultureInfo userCulture = CultureInfo.CurrentCulture;
         private IList<string> validConfigs = new List<string>();
 
+        private bool RefreshingDestinations = false;
+
         #endregion FormProps
 
         public MainForm()
@@ -112,6 +114,7 @@ namespace TDHelper
 
             SetOptionPanelList();
             ShowOrHideOptionsPanel(0);
+            SetConnections();
         }
 
         /// <summary>
@@ -376,7 +379,7 @@ namespace TDHelper
 
             while (stopwatch.IsRunning)
             {
-                System.Threading.Thread.Sleep(1000);
+               Thread.Sleep(1000);
 
                 this.Invoke(new Action(() =>
                 {
@@ -397,14 +400,36 @@ namespace TDHelper
             }));
         }
 
+        /// <summary>
+        /// This worker delegate is for the update process
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BackgroundWorker4_DoWork(object sender, DoWorkEventArgs e)
         {
-            /*
-             * This worker delegate is for the update process
-             */
+            if (DBUpdateCommandString == "ANALYZE")
+            {
+                // only start the stopwatch for callers that run in the background
+                if (!backgroundWorker3.IsBusy)
+                {
+                    backgroundWorker3.RunWorkerAsync();
+                }
+                else
+                {
+                    stopwatch.Start();
+                }
 
-            GetDataUpdates(); // update conditionally
-            DoTDProc(commandString); // pass this to the worker delegate
+                circularBuffer.Clear();
+
+                StackCircularBuffer("Analysing database...\n");
+
+                AnalyseAllDatabases();
+            }
+            else
+            {
+                GetDataUpdates(); // update conditionally
+                DoTDProc(commandString); // pass this to the worker delegate
+            }
 
             commandString = string.Empty; // reset path for thread safety
         }
@@ -425,6 +450,8 @@ namespace TDHelper
                     buttonCaller = 16; // mark us as needing a full refresh
                     backgroundWorker1.RunWorkerAsync();
                 }
+
+                OptimiseAllDatabases();
 
                 // make a sound when we're done with a long operation (>10s)
                 if (stopwatch.ElapsedMilliseconds > 10000)
@@ -1202,33 +1229,66 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Ensure that all the destination combo box controls are in sync.
+        /// </summary>
+        /// <param name="destination">The destination text.</param>
+        private void SetAllDestinations(string destination)
+        {
+            foreach (ComboBox control in this.GetAllChildren().OfType<ComboBox>()
+                .Where(x=>x.Name.EndsWith("Destination")))
+            {
+                var name = control.Name;
+
+                if (control.Text != destination)
+                {
+                    control.Text = destination;
+                }
+            }
+        }
+
+        /// <summary>
+        /// The event handler for destination changed.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void DestinationChanged(object sender, EventArgs e)
         {
-            ComboBox destination = ((ComboBox)sender);
-            CheckBox towards = destination.Parent.Controls.OfType<CheckBox>()
-                .FirstOrDefault(x => x.Name.Equals("chkRunOptionsTowards"));
-
-            // wait for the user to type a few characters
-            if (destination.Text.Length > 3)
+            if (!RefreshingDestinations)
             {
-                string filteredString = RemoveExtraWhitespace(destination.Text);
+                RefreshingDestinations = true;
 
-                ValidateDestForEndJumps();
-            }
+                ComboBox destination = ((ComboBox)sender);
 
-            // Deal with the towards check box if one exists on this panel.
-            if (towards != null)
-            {
-                towards.Enabled = destination.Text.Length > 3 && cboSourceSystem.Text.Length > 3;
-            }
+                SetAllDestinations(destination.Text);
 
-            CheckBox shorten = destination.Parent.Controls.OfType<CheckBox>()
-                .FirstOrDefault(x => x.Name.Equals("chkRunOptionsShorten"));
+                CheckBox towards = destination.Parent.Controls.OfType<CheckBox>()
+                    .FirstOrDefault(x => x.Name.Equals("chkRunOptionsTowards"));
 
-            // Deal with the shorten check box if one exists on this panel.
-            if (shorten != null)
-            {
-                shorten.Enabled = destination.Text.Length > 0;
+                // wait for the user to type a few characters
+                if (destination.Text.Length > 3)
+                {
+                    string filteredString = RemoveExtraWhitespace(destination.Text);
+
+                    ValidateDestForEndJumps();
+                }
+
+                // Deal with the towards check box if one exists on this panel.
+                if (towards != null)
+                {
+                    towards.Enabled = destination.Text.Length > 3 && cboSourceSystem.Text.Length > 3;
+                }
+
+                CheckBox shorten = destination.Parent.Controls.OfType<CheckBox>()
+                    .FirstOrDefault(x => x.Name.Equals("chkRunOptionsShorten"));
+
+                // Deal with the shorten check box if one exists on this panel.
+                if (shorten != null)
+                {
+                    shorten.Enabled = destination.Text.Length > 0;
+                }
+
+                RefreshingDestinations = false;
             }
         }
 
@@ -2093,13 +2153,13 @@ namespace TDHelper
                 // basically an insert-below-index when we use select(*)
                 string timestamp = grdPilotsLog.Rows[dRowIndex].Cells["Timestamp"].Value.ToString();
 
-                AddAtTimestampDBRow(tdhDBConn, GenerateRecentTimestamp(timestamp));
+                AddAtTimestampDBRow(GenerateRecentTimestamp(timestamp));
                 InvalidatedRowUpdate(true, -1);
             }
             else
             {
                 // special case for an empty gridview
-                AddAtTimestampDBRow(tdhDBConn, CurrentTimestamp());
+                AddAtTimestampDBRow(CurrentTimestamp());
                 InvalidatedRowUpdate(true, -1);
             }
         }
@@ -2517,7 +2577,7 @@ namespace TDHelper
                 List<DataRow> row = new List<DataRow> { localTable.Rows[e.RowIndex] };
 
                 // update the physical DB and repaint
-                UpdateDBRow(tdhDBConn, row);
+                UpdateDBRow(row);
                 InvalidatedRowUpdate(false, e.RowIndex);
             }
         }
@@ -2536,8 +2596,8 @@ namespace TDHelper
                 {
                     if (grdPilotsLog.SelectedRows.Count == 1)
                     {
-                        RemoveDBRow(tdhDBConn, rowIndex);
-                        UpdateLocalTable(tdhDBConn);
+                        RemoveDBRow(rowIndex);
+                        UpdateLocalTable();
                         memoryCache.RemoveRow(e.Row.Index, rowIndex);
                     }
                     else if (grdPilotsLog.SelectedRows.Count > 1 && dgRowIDIndexer.Count == 0)
@@ -2562,8 +2622,8 @@ namespace TDHelper
                     if (dgRowIDIndexer.Count > 0 && batchedRowCount == 0)
                     {
                         // we've got queued commits to remove (should trigger on the last removed row)
-                        RemoveDBRows(tdhDBConn, dgRowIDIndexer);
-                        UpdateLocalTable(tdhDBConn);
+                        RemoveDBRows(dgRowIDIndexer);
+                        UpdateLocalTable();
                         memoryCache.RemoveRows(dgRowIndexer, dgRowIDIndexer);
                         grdPilotsLog.Visible = true; // re-enable retrieval
                     }
@@ -2726,8 +2786,8 @@ namespace TDHelper
         {
             if (grdPilotsLog.Rows.Count > 0)
             {
-                RemoveDBRow(tdhDBConn, pRowIndex);
-                UpdateLocalTable(tdhDBConn);
+                RemoveDBRow(pRowIndex);
+                UpdateLocalTable();
                 memoryCache.RemoveRow(dRowIndex, pRowIndex);
                 grdPilotsLog.InvalidateRow(dRowIndex);
             }
@@ -3000,12 +3060,18 @@ namespace TDHelper
 
             if (destinations != null)
             {
+                // save the current value as resetting the data source sets this to blank.
+                string text = destinations.Text;
+
                 // Detach and reattach the destinations data source.
                 destinations.DataSource = null;
                 destinations.DataSource = DestinationList;
 
                 destinations.AutoCompleteCustomSource.Clear();
                 destinations.AutoCompleteCustomSource.AddRange(outputSysStnNames.ToArray());
+
+                // Reset the current value.
+                destinations.Text = text;
             }
         }
 

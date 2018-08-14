@@ -125,6 +125,7 @@ namespace TDHelper
         private List<string> output_unclean = new List<string>();
 
         private string pilotsLogDBPath = Path.Combine(assemblyPath, "TDHelper.db");
+        private string tdPath = string.Empty;
 
         // for Pilot's Log support
         //public DataSet pilotsLogSet = new DataSet("PilotsLog");

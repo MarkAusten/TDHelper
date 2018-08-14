@@ -35,8 +35,9 @@ namespace TDHelper
         private DataTable stn_table = new DataTable();
 
         private DataTable stnship_table = new DataTable();
-        private string tdDBPath = string.Empty;
-        private SQLiteConnection tdhDBConn;
+
+        private SQLiteConnection tdConn;
+        private SQLiteConnection pilotsLogConn;
 
         #endregion Props
 
@@ -140,23 +141,63 @@ namespace TDHelper
             }
         }
 
-        private bool AddAtTimestampDBRow(
-                    SQLiteConnection conn,
-            string timestamp)
+        private bool AddAtTimestampDBRow(string timestamp)
         {
             // add a blank row with the timestamp from a given row, basically an insert-below-index during select()
-            using (SQLiteCommand cmd = new SQLiteCommand("INSERT INTO SystemLog VALUES (null,@Timestamp,null,null)", conn))
-            {
-                DateTime tempTimestamp = new DateTime();
+            OpenConnection(pilotsLogConn);
 
-                if (!string.IsNullOrEmpty(timestamp)
-                    && DateTime.TryParseExact(timestamp, "yy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out tempTimestamp))
+            try
+            {
+                using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
                 {
-                    string var1 = timestamp; // we were successful in parsing the timestamp, probably safe
+                    cmd.CommandText = "INSERT INTO SystemLog VALUES (null,@Timestamp,null,null)";
+                    DateTime tempTimestamp = new DateTime();
+
+                    if (!string.IsNullOrEmpty(timestamp)
+                        && DateTime.TryParseExact(timestamp, "yy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out tempTimestamp))
+                    {
+                        string var1 = timestamp; // we were successful in parsing the timestamp, probably safe
+
+                        try
+                        {
+                            using (var transaction = pilotsLogConn.BeginTransaction())
+                            {
+                                cmd.Parameters.AddWithValue("@Timestamp", var1);
+                                cmd.ExecuteNonQuery();
+                                cmd.Parameters.Clear();
+                                transaction.Commit();
+                            }
+                        }
+                        catch { throw; }
+
+                        return true; // success!
+                    }
+                }
+            }
+            finally
+            {
+                CloseConnection(pilotsLogConn);
+            }
+
+            return false;
+        }
+
+        private bool AddDBRow()
+        {
+            OpenConnection(pilotsLogConn);
+
+            try
+            {
+                // add a blank row with the current timestamp
+                using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
+                {
+                    cmd.CommandText = "INSERT INTO SystemLog VALUES (null,@Timestamp,null,null)";
 
                     try
                     {
-                        using (var transaction = conn.BeginTransaction())
+                        string var1 = CurrentTimestamp();
+
+                        using (var transaction = pilotsLogConn.BeginTransaction())
                         {
                             cmd.Parameters.AddWithValue("@Timestamp", var1);
                             cmd.ExecuteNonQuery();
@@ -164,37 +205,19 @@ namespace TDHelper
                             transaction.Commit();
                         }
                     }
-                    catch { throw; }
+                    catch
+                    {
+                        throw;
+                    }
+
+                    LoadPilotsLogDB(); // need a full refresh
 
                     return true; // success!
                 }
             }
-
-            return false;
-        }
-
-        private bool AddDBRow(SQLiteConnection dbConn)
-        {
-            // add a blank row with the current timestamp
-            using (SQLiteCommand cmd = new SQLiteCommand("INSERT INTO SystemLog VALUES (null,@Timestamp,null,null)", dbConn))
+            finally
             {
-                try
-                {
-                    string var1 = CurrentTimestamp();
-
-                    using (var transaction = dbConn.BeginTransaction())
-                    {
-                        cmd.Parameters.AddWithValue("@Timestamp", var1);
-                        cmd.ExecuteNonQuery();
-                        cmd.Parameters.Clear();
-                        transaction.Commit();
-                    }
-                }
-                catch { throw; }
-
-                LoadPilotsLogDB(tdhDBConn); // need a full refresh
-
-                return true; // success!
+                CloseConnection(pilotsLogConn);
             }
         }
 
@@ -337,20 +360,18 @@ namespace TDHelper
         private void BuildPilotsLog()
         {
             // here we either build or load our database
-            tdhDBConn = GetConnection(pilotsLogDBPath);
-
             if (grdPilotsLog.Rows.Count == 0)
             {
-                if (HasValidRows(tdhDBConn, "SystemLog"))
+                if (HasValidRows("SystemLog"))
                 {
                     InvalidatedRowUpdate(true, -1);
                 }
                 else
                 {
-                    CreatePilotsLogDB(tdhDBConn); // make from scratch
+                    CreatePilotsLogDB(); // make from scratch
                 }
             }
-            else if (HasValidRows(tdhDBConn, "SystemLog"))
+            else if (HasValidRows("SystemLog"))
             {
                 // load our physical database
                 InvalidatedRowUpdate(true, -1);
@@ -399,15 +420,15 @@ namespace TDHelper
             }
         }
 
-        private void CreatePilotsLogDB(SQLiteConnection conn)
+        private void CreatePilotsLogDB()
         {
             try
             {
-                OpenConnection(conn);
+                OpenConnection(pilotsLogConn);
 
-                using (SQLiteCommand cmd = conn.CreateCommand())
+                using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
                 {
-                    if (!HasValidColumn(conn, "SystemLog", "System"))
+                    if (!HasValidColumn(pilotsLogConn, "SystemLog", "System"))
                     {
                         // create our table first
                         cmd.CommandText = "CREATE TABLE SystemLog (ID INTEGER PRIMARY KEY AUTOINCREMENT, Timestamp NVARCHAR, System NVARCHAR, Notes NVARCHAR)";
@@ -417,7 +438,7 @@ namespace TDHelper
                         cmd.CommandText = "CREATE UNIQUE INDEX IF NOT EXISTS SystemTimestamp ON SystemLog (System, Timestamp)";
                         cmd.ExecuteNonQuery();
                     }
-                    else if (HasValidRows(conn, "SystemLog"))
+                    else if (HasValidRows("SystemLog"))
                     {
                         /*
                                                 // wipe before inserting, ensures most recent records
@@ -432,7 +453,7 @@ namespace TDHelper
 
                     if (netLogOutput.Count > 0)
                     {
-                        using (var transaction = conn.BeginTransaction())
+                        using (var transaction = pilotsLogConn.BeginTransaction())
                         {
                             // always do our inserts in a batch for ideal performance
                             cmd.CommandText = @"INSERT INTO SystemLog (Timestamp, System) VALUES null,@Timestamp,@System,null)";
@@ -461,7 +482,7 @@ namespace TDHelper
 
                     this.Invoke(new Action(() =>
                     {
-                        retriever = new DataRetriever(conn, "SystemLog", this);
+                        retriever = new DataRetriever(pilotsLogConn, "SystemLog", this);
 
                         foreach (DataColumn c in retriever.Columns)
                         {
@@ -469,7 +490,7 @@ namespace TDHelper
                         }
 
                         // setup the gridview
-                        UpdateLocalTable(tdhDBConn);
+                        UpdateLocalTable();
                         memoryCache = new Cache(retriever, 24);
 
                         grdPilotsLog.RowCount = retriever.RowCount;
@@ -487,7 +508,7 @@ namespace TDHelper
             }
             finally
             {
-                CloseConnection(conn);
+                CloseConnection(pilotsLogConn);
             }
         }
 
@@ -566,6 +587,17 @@ namespace TDHelper
         }
 
         /// <summary>
+        /// Set the connections to the databases.
+        /// </summary>
+        private void SetConnections()
+        {
+            tdPath = Path.Combine(settingsRef.TDPath, @"data\TradeDangerous.db");
+
+            tdConn = GetConnection(tdPath);
+            pilotsLogConn = GetConnection(pilotsLogDBPath);
+        }
+
+        /// <summary>
         /// Create a conection to the specified database file.
         /// </summary>
         /// <param name="path">The path to the database file to which the connection should be made.</param>
@@ -579,13 +611,15 @@ namespace TDHelper
         {
             string timestamp = string.Empty;
 
-            using (SQLiteCommand query = new SQLiteCommand("SELECT MAX(Timestamp) FROM SystemLog", tdhDBConn))
+            try
             {
-                try
-                {
-                    OpenConnection(tdhDBConn);
+                OpenConnection(pilotsLogConn);
 
-                    using (SQLiteDataReader reader = query.ExecuteReader())
+                using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT MAX(Timestamp) FROM SystemLog";
+
+                    using (SQLiteDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
@@ -593,14 +627,14 @@ namespace TDHelper
                         }
                     }
                 }
-                catch
-                {
-                    /* eat exceptions */
-                }
-                finally
-                {
-                    CloseConnection(tdhDBConn);
-                }
+            }
+            catch
+            {
+                /* eat exceptions */
+            }
+            finally
+            {
+                CloseConnection(pilotsLogConn);
             }
 
             return timestamp;
@@ -615,13 +649,11 @@ namespace TDHelper
 
             if (ValidateDBPath())
             {
-                using (SQLiteConnection conn = GetConnection(tdDBPath))
-                {
                     try
                     {
                         Stopwatch m_timer = Stopwatch.StartNew();
 
-                        OpenConnection(conn);
+                        OpenConnection(tdConn);
 
                         if (stnship_table.Rows.Count != 0)
                         {
@@ -642,9 +674,9 @@ namespace TDHelper
                          */
 
                         // check for one of the common columns
-                        if (HasValidColumn(conn, "Station", "rearm"))
+                        if (HasValidColumn(tdConn, "Station", "rearm"))
                         {
-                            using (SQLiteCommand cmd = conn.CreateCommand())
+                            using (SQLiteCommand cmd = tdConn.CreateCommand())
                             {
                                 cmd.CommandText
                                     = " select "
@@ -724,9 +756,8 @@ namespace TDHelper
                     }
                     finally
                     {
-                        CloseConnection(conn);
+                        CloseConnection(tdConn);
                     }
-                }
             }
         }
 
@@ -772,38 +803,41 @@ namespace TDHelper
             return false;
         }
 
-        private bool HasValidRows(
-            SQLiteConnection conn,
-            string tableName)
+        private bool HasValidRows(string tableName)
         {
-            // this method returns true if there are any valid rows
-            using (SQLiteCommand query = new SQLiteCommand("SELECT COUNT(*) FROM SystemLog", conn))
+            OpenConnection(pilotsLogConn);
+
+            try
             {
-                try
+                // this method returns true if there are any valid rows
+                using (SQLiteCommand query = pilotsLogConn.CreateCommand())
                 {
-                    OpenConnection(conn);
+                    query.CommandText = "SELECT COUNT(*) FROM SystemLog";
 
-                    using (SQLiteDataReader reader = query.ExecuteReader())
+                    try
                     {
-                        while (reader.Read())
+                        using (SQLiteDataReader reader = query.ExecuteReader())
                         {
-                            int rows = reader.GetInt32(0);
-
-                            if (rows > 0)
+                            while (reader.Read())
                             {
-                                return true;
+                                int rows = reader.GetInt32(0);
+
+                                if (rows > 0)
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }
+                    catch
+                    {
+                        /* eat exceptions */
+                    }
                 }
-                catch
-                {
-                    /* eat exceptions */
-                }
-                finally
-                {
-                    CloseConnection(conn);
-                }
+            }
+            finally
+            {
+                CloseConnection(pilotsLogConn);
             }
 
             return false;
@@ -839,15 +873,15 @@ namespace TDHelper
                 // full refresh
                 if (rowIndex == -1)
                 {
-                    LoadPilotsLogDB(tdhDBConn);
+                    LoadPilotsLogDB();
 
                     return true;
                 }
 
                 // invalidate the cache pages
-                UpdateLocalTable(tdhDBConn);
+                UpdateLocalTable();
 
-                retriever = new DataRetriever(tdhDBConn, "SystemLog", this);
+                retriever = new DataRetriever(tdConn, "SystemLog", this);
                 memoryCache = new Cache(retriever, 24);
 
                 // force a refresh/repaint
@@ -860,9 +894,9 @@ namespace TDHelper
             else
             {
                 // partial refresh
-                UpdateLocalTable(tdhDBConn);
+                UpdateLocalTable();
 
-                retriever = new DataRetriever(tdhDBConn, "SystemLog", this);
+                retriever = new DataRetriever(tdConn, "SystemLog", this);
                 memoryCache = new Cache(retriever, 24);
 
                 this.Invoke(new Action(() =>
@@ -884,8 +918,8 @@ namespace TDHelper
         {
             bool isLocked = false;
 
-            // Connect to the specofed database.
-            using (SQLiteConnection conn = GetConnection(tdDBPath))
+            // Connect to the specified database.
+            using (SQLiteConnection conn = GetConnection(databaseFile))
             {
                 OpenConnection(conn);
 
@@ -926,18 +960,16 @@ namespace TDHelper
 
             if (ValidateDBPath())
             {
-                CheckAndWaitForUnlock(tdDBPath);
+                CheckAndWaitForUnlock(tdPath);
 
                 string stationName = string.Empty;
                 string systemName = string.Empty;
 
-                using (SQLiteConnection conn = GetConnection(tdDBPath))
-                {
                     try
                     {
                         Stopwatch m_timer = Stopwatch.StartNew();
 
-                        OpenConnection(conn);
+                        OpenConnection(tdConn);
 
                         // wipe to prevent duplicates
                         if (stn_table.Rows.Count != 0)
@@ -947,7 +979,7 @@ namespace TDHelper
                         }
 
                         // match on System.system_id = Station.system_id, output in "System | Station" format
-                        using (SQLiteCommand cmd = conn.CreateCommand())
+                        using (SQLiteCommand cmd = tdConn.CreateCommand())
                         {
                             cmd.CommandText
                                 = " select"
@@ -998,21 +1030,20 @@ namespace TDHelper
                     }
                     finally
                     {
-                        CloseConnection(conn);
+                        CloseConnection(tdConn);
                     }
-                }
             }
         }
 
-        private void LoadPilotsLogDB(SQLiteConnection dbConn)
+        private void LoadPilotsLogDB()
         {
-            if (HasValidColumn(dbConn, "SystemLog", "System"))
+            if (HasValidColumn(pilotsLogConn, "SystemLog", "System"))
             {
                 try
                 {
-                    UpdateLocalTable(tdhDBConn);
+                    UpdateLocalTable();
 
-                    retriever = new DataRetriever(dbConn, "SystemLog", this);
+                    retriever = new DataRetriever(pilotsLogConn, "SystemLog", this);
 
                     this.Invoke(new Action(() =>
                     {
@@ -1358,12 +1389,12 @@ namespace TDHelper
 
             if (localSystemList.Count == 0 && netLogOutput.Count > 0)
             {
-                UpdatePilotsLogDB(tdhDBConn, netLogOutput); // pass just the table, no diffs
+                UpdatePilotsLogDB(netLogOutput); // pass just the table, no diffs
             }
             else if (netLogOutput.Count > 0)
             {
                 var exceptTable = netLogOutput.Except(localSystemList).ToList();
-                UpdatePilotsLogDB(tdhDBConn, exceptTable); // pass just the diffs, no table
+                UpdatePilotsLogDB(exceptTable); // pass just the diffs, no table
             }
 
             this.HideSplashForm(splashForm, stopWatch2);
@@ -1376,8 +1407,40 @@ namespace TDHelper
         /// </summary>
         private void OptimiseAllDatabases()
         {
-            OptimiseDatabase(GetConnection(pilotsLogDBPath));
-            OptimiseDatabase(GetConnection(tdDBPath));
+            OptimiseDatabase(pilotsLogConn);
+            OptimiseDatabase(tdConn);
+        }
+
+        /// <summary>
+        /// Send the analyse command to the SQLite databases.
+        /// </summary>
+        private void AnalyseAllDatabases()
+        {
+            CloseConnection(tdConn);
+            CloseConnection(pilotsLogConn);
+
+            AnalyseDatabase(GetConnection(tdPath));
+            AnalyseDatabase(GetConnection(pilotsLogDBPath));
+        }
+
+        /// <summary>
+        /// Send the analyse command to the SQLite databases.
+        /// </summary>
+        /// <param name="conn">The connection to the database.</param>
+        private void AnalyseDatabase(SQLiteConnection conn)
+        {
+            OpenConnection(conn);
+
+            using (SQLiteCommand cmd = tdConn.CreateCommand())
+            {
+                OpenConnection(cmd.Connection);
+
+                cmd.CommandText = "ANALYZE";
+
+                cmd.ExecuteNonQuery();
+            }
+
+            CloseConnection(conn);
         }
 
         /// <summary>
@@ -1561,63 +1624,77 @@ namespace TDHelper
             m_timer.Stop();
         }
 
-        private bool RemoveDBRow(
-            SQLiteConnection conn,
-            int rowIndex)
+        private bool RemoveDBRow(int rowIndex)
         {
             if (rowIndex >= 0)
             {
-                using (SQLiteCommand cmd = new SQLiteCommand("DELETE FROM SystemLog WHERE ID = @ID", conn))
+                OpenConnection(pilotsLogConn);
+
+                try
                 {
-                    try
+                    using (SQLiteCommand cmd = new SQLiteCommand("DELETE FROM SystemLog WHERE ID = @ID", pilotsLogConn))
                     {
-                        var transaction = conn.BeginTransaction();
-                        // delete all the rows specified by the index, using a transaction for efficiency
-                        cmd.Parameters.AddWithValue("@ID", rowIndex);
-                        cmd.ExecuteNonQuery();
-                        cmd.Parameters.Clear();
-                        transaction.Commit();
+                        try
+                        {
+                            var transaction = pilotsLogConn.BeginTransaction();
+                            // delete all the rows specified by the index, using a transaction for efficiency
+                            cmd.Parameters.AddWithValue("@ID", rowIndex);
+                            cmd.ExecuteNonQuery();
+                            cmd.Parameters.Clear();
+                            transaction.Commit();
 
-                        VacuumPilotsLogDB(tdhDBConn);
+                            VacuumPilotsLogDB();
+                        }
+                        catch (Exception) { throw; }
+
+                        return true; // success!
                     }
-                    catch (Exception) { throw; }
-
-                    return true; // success!
+                }
+                finally
+                {
+                    CloseConnection(pilotsLogConn);
                 }
             }
 
             return false;
         }
 
-        private bool RemoveDBRows(
-            SQLiteConnection conn,
-            List<int> rowsIndex)
+        private bool RemoveDBRows(List<int> rowsIndex)
         {
             // remove a batch of rows (faster than removeDBRow)
             if (rowsIndex.Count > 0)
             {
-                using (SQLiteCommand cmd = new SQLiteCommand("DELETE FROM SystemLog WHERE ID = @ID", conn))
+                OpenConnection(pilotsLogConn);
+
+                try
                 {
-                    try
+                    using (SQLiteCommand cmd = new SQLiteCommand("DELETE FROM SystemLog WHERE ID = @ID", pilotsLogConn))
                     {
-                        using (SQLiteTransaction transaction = conn.BeginTransaction())
+                        try
                         {
-                            foreach (int i in rowsIndex)
+                            using (SQLiteTransaction transaction = pilotsLogConn.BeginTransaction())
                             {
-                                // delete all the rows specified by the index, using a transaction for efficiency
-                                cmd.Parameters.AddWithValue("@ID", i);
-                                cmd.ExecuteNonQuery();
-                                cmd.Parameters.Clear();
+                                foreach (int i in rowsIndex)
+                                {
+                                    // delete all the rows specified by the index, using a transaction for efficiency
+                                    cmd.Parameters.AddWithValue("@ID", i);
+                                    cmd.ExecuteNonQuery();
+                                    cmd.Parameters.Clear();
+                                }
+
+                                transaction.Commit();
                             }
 
-                            transaction.Commit();
+                            VacuumPilotsLogDB();
                         }
+                        catch (Exception) { throw; }
 
-                        VacuumPilotsLogDB(tdhDBConn);
+                        return true; // success!
                     }
-                    catch (Exception) { throw; }
-
-                    return true; // success!
+                }
+                finally
+                {
+                    CloseConnection(pilotsLogConn);
                 }
             }
 
@@ -1684,80 +1761,91 @@ namespace TDHelper
             }
         }
 
-        private bool UpdateDBRow(
-            SQLiteConnection conn,
-            List<DataRow> rows)
+        private bool UpdateDBRow(List<DataRow> rows)
         {
             // insert/update an existing set of rows
             if (rows.Count > 0)
             {
-                using (SQLiteCommand cmd = new SQLiteCommand("INSERT OR REPLACE INTO SystemLog VALUES (@ID,@Timestamp,@System,@Notes)", conn))
+                OpenConnection(pilotsLogConn);
+
+                try
                 {
-                    cmd.Parameters.AddWithValue("@ID", 0);
-                    cmd.Parameters.AddWithValue("@Timestamp", string.Empty);
-                    cmd.Parameters.AddWithValue("@System", string.Empty);
-                    cmd.Parameters.AddWithValue("@Notes", string.Empty);
-
-                    try
+                    using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
                     {
-                        using (SQLiteTransaction transaction = conn.BeginTransaction())
+                        cmd.CommandText = "INSERT OR REPLACE INTO SystemLog VALUES (@ID,@Timestamp,@System,@Notes)";
+
+                        cmd.Parameters.AddWithValue("@ID", 0);
+                        cmd.Parameters.AddWithValue("@Timestamp", string.Empty);
+                        cmd.Parameters.AddWithValue("@System", string.Empty);
+                        cmd.Parameters.AddWithValue("@Notes", string.Empty);
+
+                        try
                         {
-                            for (int i = rows.Count - 1; i >= 0; i--)
+                            using (SQLiteTransaction transaction = pilotsLogConn.BeginTransaction())
                             {
-                                DataRow row = rows[i];
-                                int var1 = int.Parse(row["ID"].ToString());
-                                string var2 = (row["Timestamp"] ?? string.Empty).ToString();
-                                string var3 = (row["System"] ?? string.Empty).ToString();
-                                string var4 = (row["Notes"] ?? string.Empty).ToString();
+                                for (int i = rows.Count - 1; i >= 0; i--)
+                                {
+                                    DataRow row = rows[i];
+                                    int var1 = int.Parse(row["ID"].ToString());
+                                    string var2 = (row["Timestamp"] ?? string.Empty).ToString();
+                                    string var3 = (row["System"] ?? string.Empty).ToString();
+                                    string var4 = (row["Notes"] ?? string.Empty).ToString();
 
-                                cmd.Parameters["@ID"].Value = var1;
-                                cmd.Parameters["@Timestamp"].Value = var2;
-                                cmd.Parameters["@System"].Value = var3;
-                                cmd.Parameters["@Notes"].Value = var4;
+                                    cmd.Parameters["@ID"].Value = var1;
+                                    cmd.Parameters["@Timestamp"].Value = var2;
+                                    cmd.Parameters["@System"].Value = var3;
+                                    cmd.Parameters["@Notes"].Value = var4;
 
-                                cmd.ExecuteNonQuery();
+                                    cmd.ExecuteNonQuery();
+                                }
+
+                                transaction.Commit();
                             }
-
-                            transaction.Commit();
                         }
+                        catch (Exception) { throw; }
+
+                        UpdateLocalTable();
+
+                        return true; // success!
                     }
-                    catch (Exception) { throw; }
-
-                    UpdateLocalTable(tdhDBConn);
-
-                    return true; // success!
+                }
+                finally
+                {
+                    CloseConnection(pilotsLogConn);
                 }
             }
 
             return false;
         }
 
-        private void UpdateLocalTable(SQLiteConnection conn)
+        private void UpdateLocalTable()
         {
             try
             {
-                OpenConnection(conn);
+                OpenConnection(pilotsLogConn);
 
-                if (HasValidColumn(conn, "SystemLog", "System"))
+                if (HasValidColumn(pilotsLogConn, "SystemLog", "System"))
                 {
                     try
                     {
-                        using (SQLiteCommand cmd = conn.CreateCommand())
+                        using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
                         using (SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd))
                         {
                             cmd.CommandText = "SELECT * FROM SystemLog ORDER BY Timestamp DESC, System DESC, Notes DESC";
-                            localTable.Locale = System.Globalization.CultureInfo.InvariantCulture;
+                            localTable.Locale = CultureInfo.InvariantCulture;
+
                             localTable.Rows.Clear();
                             adapter.Fill(localTable);
 
                             localSystemList.Clear();
+
                             foreach (DataRow r in localTable.Rows)
                             {
                                 // convert datatable to systemlist
                                 localSystemList.Add(new KeyValuePair<string, string>(r.Field<string>("Timestamp"), r.Field<string>("System")));
                             }
 
-                            localTable.PrimaryKey = new System.Data.DataColumn[] { localTable.Columns["ID"] };
+                            localTable.PrimaryKey = new DataColumn[] { localTable.Columns["ID"] };
                         }
                     }
                     catch (Exception)
@@ -1768,25 +1856,27 @@ namespace TDHelper
             }
             finally
             {
-                CloseConnection(conn);
+                CloseConnection(pilotsLogConn);
             }
         }
 
-        private bool UpdatePilotsLogDB(
-            SQLiteConnection conn,
-            List<KeyValuePair<string, string>> exceptKey)
+        private bool UpdatePilotsLogDB(List<KeyValuePair<string, string>> exceptKey)
         {
             // here we take a non-intersect key to add systems to our DB
             int exceptCount = exceptKey.Count();
 
             if (exceptCount > 0)
             {
-                using (SQLiteCommand cmd = new SQLiteCommand("INSERT INTO SystemLog VALUES (null,@Timestamp,@System,null)", conn))
+                OpenConnection(pilotsLogConn);
+
+                using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
                 {
+                    cmd.CommandText = "INSERT INTO SystemLog VALUES (null,@Timestamp,@System,null)";
+
                     cmd.Parameters.AddWithValue("@Timestamp", string.Empty);
                     cmd.Parameters.AddWithValue("@System", string.Empty);
 
-                    using (SQLiteTransaction transaction = conn.BeginTransaction())
+                    using (SQLiteTransaction transaction = pilotsLogConn.BeginTransaction())
                     {
                         foreach (KeyValuePair<string, string> s in exceptKey)
                         {
@@ -1815,16 +1905,16 @@ namespace TDHelper
             return false;
         }
 
-        private void VacuumPilotsLogDB(SQLiteConnection conn)
+        private void VacuumPilotsLogDB()
         {
             // a simple method to vacuum our database
             try
             {
-                OpenConnection(conn);
+                OpenConnection(pilotsLogConn);
 
-                using (SQLiteCommand cmd = conn.CreateCommand())
+                using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
                 {
-                    if (HasValidRows(conn, "SystemLog"))
+                    if (HasValidRows("SystemLog"))
                     {
                         // clean up after ourselves
                         cmd.CommandText = "VACUUM";
@@ -1838,17 +1928,15 @@ namespace TDHelper
             }
             finally
             {
-                CloseConnection(conn);
+                CloseConnection(pilotsLogConn);
             }
         }
 
         private bool ValidateDBPath()
         {
-            tdDBPath = Path.Combine(settingsRef.TDPath, @"data\TradeDangerous.db");
-
             try
             {
-                return CheckIfFileOpens(tdDBPath);
+                return CheckIfFileOpens(tdPath);
             }
             catch
             {
