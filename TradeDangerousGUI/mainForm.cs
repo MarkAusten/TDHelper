@@ -1074,10 +1074,6 @@ namespace TDHelper
         /// </summary>
         private void CopySettingsFromForm()
         {
-            // make sure we strip the excess whitespace in src/dest
-            temp_src = RemoveExtraWhitespace(cboSourceSystem.Text);
-            temp_dest = RemoveExtraWhitespace(cboRunOptionsDestination.Text);
-
             CopyDecimalFormValue("Age", numRouteOptionsAge);
             CopyDecimalFormValue("Capacity", numRouteOptionsShipCapacity);
             CopyDecimalFormValue("Credits", numCommandersCredits);
@@ -1114,8 +1110,6 @@ namespace TDHelper
 
             settingsRef.Padsizes = ContainsPadSizes(txtPadSize.Text);
             settingsRef.Planetary = ContainsPlanetary(txtRunOptionsPlanetary.Text);
-
-            t_confirmCode = string.Empty;
         }
 
         private void CopySystemToDest_Click(object sender, EventArgs e)
@@ -2711,12 +2705,12 @@ namespace TDHelper
                     filteredOutput = output.Data + "\n";
                 }
 
-                if (buttonCaller != 5 && buttonCaller != 12 && !exceptions.Any(output.Data.Contains) && !t_csvExportCheckBox || methodIndex != 5 || methodIndex != 6)
+                if (buttonCaller != 5 && buttonCaller != 12 && !exceptions.Any(output.Data.Contains) && methodIndex != 5 || methodIndex != 6)
                 {
                     // hide output if calculating
                     StackCircularBuffer(filteredOutput);
                 }
-                else if (t_csvExportCheckBox || methodIndex == 5 || buttonCaller == 5 || buttonCaller == 12)
+                else if (methodIndex == 5 || buttonCaller == 5 || buttonCaller == 12)
                 {
                     // don't hide any output if updating DB or exporting
                     StackCircularBuffer(filteredOutput);

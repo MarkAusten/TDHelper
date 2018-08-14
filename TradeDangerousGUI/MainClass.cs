@@ -18,121 +18,61 @@ namespace TDHelper
 {
     public partial class MainForm : Form
     {
+        public const string ITEM_CSV_FILE = @"data\Item.csv";
+        public const string SHIP_CSV_FILE = @"data\Ship.csv";
+
         #region Props
 
-        public static string assemblyFolder = System.Reflection.Assembly.GetEntryAssembly().Location;
-        public static string assemblyPath = Path.GetDirectoryName(assemblyFolder);
-
-        public static string authCode;
+        public static string assemblyPath = Path.GetDirectoryName( Assembly.GetEntryAssembly().Location);
+        public static bool callForReset = false;
         public static string configFile = Path.Combine(assemblyPath, "tdh.ini");
-
         public static string configFileDefault = Path.Combine(assemblyPath, "tdh.ini");
         public static string DBUpdateCommandString = string.Empty;
-        public static bool hasParsed = false, callForReset = false;
-
+        public static bool hasParsed = false;
         public static List<string> latestLogPaths;
         public static string localManifestPath = Path.Combine(assemblyPath, "TDHelper.manifest.tmp");
-
         public static string recentLogPath;
         public static string remoteArchiveLocalPath;
-
-        // grab a static reference to the global settings
         public static TDSettings settingsRef = TDSettings.Instance;
-
         public static string t_AppConfigPath;
         public static double t_CrTonTally;
         public static string t_itemListPath;
         public static double t_meanDist;
         public static string t_shipListPath;
-
-        // save the archive path
         public static string updateLogPath = Path.Combine(assemblyPath, "update.log");
-
-        public int blackmarketBoxChecked;
         public string commandString;
+        public List<string> CommodityAndShipList = new List<string>();
         public List<string> currentMarkedStations;
         public bool dropdownOpened;
         public int fromPane = -1;
         public bool hasRun;
-        public decimal l0_ladenLY;
-        public decimal l1_ladenLY;
-        public int marketBoxChecked;
-        public bool oldDataRouteChecked;
-        public int outfitBoxChecked;
-        public List<string> CommodityAndShipList = new List<string>();
-        public string r_fromBox;
-        public decimal r_ladenLY;
-        public decimal r_unladenLY;
-        public int rearmBoxChecked;
         public bool rebuildCache;
-        public int refuelBoxChecked;
         public string remoteManifestPath = ConfigurationManager.AppSettings["remoteManifestPath"];
-        public int repairBoxChecked;
         public int runOutputState = -1;
-        public int shipyardBoxChecked;
-        public bool stationsFilterChecked;
-        public int stn_blackmarketBoxChecked;
-        public int stn_marketBoxChecked;
-        public int stn_outfitBoxChecked;
-        public int stn_rearmBoxChecked;
-        public int stn_refuelBoxChecked;
-        public int stn_repairBoxChecked;
-        public int stn_shipyardBoxChecked;
         public Stopwatch stopwatch = new Stopwatch();
-        public decimal t_belowPrice;
         public string t_childTitle;
-        public string t_confirmCode;
-        public bool t_csvExportCheckBox;
-        public decimal t_Demand;
-        public decimal t_EndJumps;
-        public decimal t_ladenLY;
         public string t_lastSysCheck;
         public string t_lastSystem;
-        public decimal t_lsFromStar;
-        public string t_maxPadSize;
-        public decimal t_Routes;
-        public decimal t_StartJumps;
-        public decimal t_Supply;
-        public string t_txtAvoid;
-        public decimal t1_ladenLY;
-        public decimal t2_ladenLY;
         public Process td_proc = new Process();
-
-        public string temp_commod;
-        public string temp_dest;
-        public string temp_shipsSold;
-        public string temp_src;
-
-        // for circular buffering in the output log
         private const int circularBufferSize = 32768;
-
         private int batchedRowCount = -1;
-
-        // default to ~8 pages
         private StringBuilder circularBuffer = new StringBuilder(circularBufferSize);
-
-        private List<int> dgRowIDIndexer = new List<int>(), dgRowIndexer = new List<int>();
-
+        private List<int> dgRowIDIndexer = new List<int>();
+        private List<int> dgRowIndexer = new List<int>();
         private int dRowIndex = 0;
-        private bool hasRefreshedRecents, hasLogLoaded, loadedFromDB;
-
+        private bool hasLogLoaded;
+        private bool hasRefreshedRecents;
         private int listLimit = 50;
+        private bool loadedFromDB;
         private List<KeyValuePair<string, string>> localSystemList = new List<KeyValuePair<string, string>>();
-
         private Dictionary<string, string> netLogOutput = new Dictionary<string, string>();
-
         private List<string> output_unclean = new List<string>();
-
         private string pilotsLogDBPath = Path.Combine(assemblyPath, "TDHelper.db");
-        private string tdPath = string.Empty;
-
-        // for Pilot's Log support
-        //public DataSet pilotsLogSet = new DataSet("PilotsLog");
         private DataTable pilotsSystemLogTable = new DataTable("SystemLog");
-
         private int pRowIndex = 0;
         private Object readNetLock = new Object();
         private DataTable retrieverCacheTable = new DataTable();
+        private string tdPath = string.Empty;
 
         #endregion Props
 
@@ -344,8 +284,8 @@ namespace TDHelper
                         {
                             // we're running Trade Dangerous Installer, adjust the relative paths
                             settingsRef.TDPath = Directory.GetParent(settingsRef.PythonPath).ToString();
-                            t_itemListPath = Path.Combine(settingsRef.TDPath, @"data\Item.csv");
-                            t_shipListPath = Path.Combine(settingsRef.TDPath, @"data\Ship.csv");
+                            t_itemListPath = Path.Combine(settingsRef.TDPath, ITEM_CSV_FILE);
+                            t_shipListPath = Path.Combine(settingsRef.TDPath, SHIP_CSV_FILE);
 
                             SaveSettingsToIniFile();
                         }
@@ -366,8 +306,8 @@ namespace TDHelper
                         {
                             // we're running Trade Dangerous Installer, adjust the relative paths
                             settingsRef.TDPath = Directory.GetParent(settingsRef.PythonPath).ToString();
-                            t_itemListPath = Path.Combine(settingsRef.TDPath, @"data\Item.csv");
-                            t_shipListPath = Path.Combine(settingsRef.TDPath, @"data\Ship.csv");
+                            t_itemListPath = Path.Combine(settingsRef.TDPath, ITEM_CSV_FILE);
+                            t_shipListPath = Path.Combine(settingsRef.TDPath, SHIP_CSV_FILE);
 
                             SaveSettingsToIniFile();
                         }
@@ -384,8 +324,8 @@ namespace TDHelper
                 {
                     // make sure we adjust relative paths to CSVs if we need to
                     settingsRef.TDPath = Directory.GetParent(settingsRef.PythonPath).ToString();
-                    t_itemListPath = Path.Combine(settingsRef.TDPath, @"data\Item.csv");
-                    t_shipListPath = Path.Combine(settingsRef.TDPath, @"data\Ship.csv");
+                    t_itemListPath = Path.Combine(settingsRef.TDPath, ITEM_CSV_FILE);
+                    t_shipListPath = Path.Combine(settingsRef.TDPath, SHIP_CSV_FILE);
                 }
             }
         }
@@ -413,8 +353,8 @@ namespace TDHelper
                     {
                         settingsRef.TDPath = Path.GetDirectoryName(x.FileName);
                         // we have to create the item/ship paths again after the validation
-                        t_itemListPath = Path.Combine(settingsRef.TDPath, @"data\Item.csv");
-                        t_shipListPath = Path.Combine(settingsRef.TDPath, @"data\Ship.csv");
+                        t_itemListPath = Path.Combine(settingsRef.TDPath, ITEM_CSV_FILE);
+                        t_shipListPath = Path.Combine(settingsRef.TDPath, SHIP_CSV_FILE);
 
                         SaveSettingsToIniFile();
                     }
@@ -425,8 +365,8 @@ namespace TDHelper
                         {
                             // if we have an alternate path, we can reset the variable here
                             settingsRef.TDPath = localPath;
-                            t_itemListPath = Path.Combine(settingsRef.TDPath, @"data\Item.csv");
-                            t_shipListPath = Path.Combine(settingsRef.TDPath, @"data\Ship.csv");
+                            t_itemListPath = Path.Combine(settingsRef.TDPath, ITEM_CSV_FILE);
+                            t_shipListPath = Path.Combine(settingsRef.TDPath, SHIP_CSV_FILE);
 
                             SaveSettingsToIniFile();
                         }
@@ -585,7 +525,8 @@ namespace TDHelper
             {
                 settingsRef.Loop = false;
             }
-            else if (settingsRef.Towards && string.IsNullOrEmpty(temp_dest))
+            else if (settingsRef.Towards && 
+                string.IsNullOrEmpty(RemoveExtraWhitespace(cboRunOptionsDestination.Text)))
             {
                 settingsRef.Towards = false;
             }
@@ -599,12 +540,12 @@ namespace TDHelper
             // make sure we pull CSV paths after we validate our inputs
             if (!string.IsNullOrEmpty(settingsRef.TDPath))
             {
-                t_itemListPath = settingsRef.TDPath + @"\data\Item.csv";
+                t_itemListPath = Path.Combine(settingsRef.TDPath, ITEM_CSV_FILE);
             }
 
             if (!string.IsNullOrEmpty(settingsRef.TDPath))
             {
-                t_shipListPath = settingsRef.TDPath + @"\data\Ship.csv";
+                t_shipListPath = Path.Combine(settingsRef.TDPath, SHIP_CSV_FILE);
             }
 
             // Set the default rebuy percentage to 5%.
@@ -941,63 +882,6 @@ namespace TDHelper
             }
         }
 
-        private void ValidateImportPath()
-        {
-            if (string.IsNullOrEmpty(settingsRef.ImportPath) || !CheckIfFileOpens(settingsRef.ImportPath) && buttonCaller == 14)
-            {
-                // only execute if called from Import button
-                OpenFileDialog x = new OpenFileDialog()
-                {
-                    Title = "TD Helper - Select a .prices file"
-                };
-
-                if (Directory.Exists(settingsRef.ImportPath))
-                    x.InitialDirectory = settingsRef.ImportPath;
-
-                x.Filter = "Prices files|*.prices;*.updated;*.last|All files|*.*";
-
-                if (x.ShowDialog() == DialogResult.OK)
-                {
-                    settingsRef.ImportPath = x.FileName;
-                    SaveSettingsToIniFile();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Validate the setting value.
-        /// </summary>
-        /// <param name="propertyName">The name of the setting property.</param>
-        /// <param name="control">The associated control.</param>
-        /// <param name="settings">The settings object.</param>
-        private void ValidateSettingValue(
-            string propertyName,
-            NumericUpDown control,
-            TDSettings settings)
-        {
-            // retrieve the value from the settings object.
-            PropertyInfo prop = settings.GetType().GetProperty(propertyName);
-
-            decimal value = (decimal)prop.GetValue(settings);
-            decimal newValue = value;
-
-            // Compare with the control limits and set a new value if outside those limits.
-            if (value < control.Minimum)
-            {
-                newValue = control.Minimum;
-            }
-            else if (value > control.Maximum)
-            {
-                newValue = control.Maximum;
-            }
-
-            // Change the value if required.
-            if (newValue != value)
-            {
-                prop.SetValue(settings, newValue);
-            }
-        }
-
         /// <summary>
         /// Validate the control value. Write the updated value back to the settings object.
         /// </summary>
@@ -1034,6 +918,41 @@ namespace TDHelper
         }
 
         /// <summary>
+        /// Validate the control value. Write the updated value back to the settings object.
+        /// </summary>
+        /// <param name="propertyName">The name of the setting property.</param>
+        /// <param name="control">The associated control.</param>
+        private void ValidateControlValue(
+            string propertyName,
+            NumericUpDown control)
+        {
+            ValidateControlValue(propertyName, control, settingsRef);
+        }
+
+        private void ValidateImportPath()
+        {
+            if (string.IsNullOrEmpty(settingsRef.ImportPath) || !CheckIfFileOpens(settingsRef.ImportPath) && buttonCaller == 14)
+            {
+                // only execute if called from Import button
+                OpenFileDialog x = new OpenFileDialog()
+                {
+                    Title = "TD Helper - Select a .prices file"
+                };
+
+                if (Directory.Exists(settingsRef.ImportPath))
+                    x.InitialDirectory = settingsRef.ImportPath;
+
+                x.Filter = "Prices files|*.prices;*.updated;*.last|All files|*.*";
+
+                if (x.ShowDialog() == DialogResult.OK)
+                {
+                    settingsRef.ImportPath = x.FileName;
+                    SaveSettingsToIniFile();
+                }
+            }
+        }
+
+        /// <summary>
         /// Validate the setting value.
         /// </summary>
         /// <param name="propertyName">The name of the setting property.</param>
@@ -1045,17 +964,38 @@ namespace TDHelper
             ValidateSettingValue(propertyName, control, settingsRef);
         }
 
-
         /// <summary>
-        /// Validate the control value. Write the updated value back to the settings object.
+        /// Validate the setting value.
         /// </summary>
         /// <param name="propertyName">The name of the setting property.</param>
         /// <param name="control">The associated control.</param>
-        private void ValidateControlValue(
+        /// <param name="settings">The settings object.</param>
+        private void ValidateSettingValue(
             string propertyName,
-            NumericUpDown control)
+            NumericUpDown control,
+            TDSettings settings)
         {
-            ValidateControlValue(propertyName, control, settingsRef);
+            // retrieve the value from the settings object.
+            PropertyInfo prop = settings.GetType().GetProperty(propertyName);
+
+            decimal value = (decimal)prop.GetValue(settings);
+            decimal newValue = value;
+
+            // Compare with the control limits and set a new value if outside those limits.
+            if (value < control.Minimum)
+            {
+                newValue = control.Minimum;
+            }
+            else if (value > control.Maximum)
+            {
+                newValue = control.Maximum;
+            }
+
+            // Change the value if required.
+            if (newValue != value)
+            {
+                prop.SetValue(settings, newValue);
+            }
         }
 
         private void ValidateUploadPath()
