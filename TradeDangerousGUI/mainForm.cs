@@ -238,9 +238,31 @@ namespace TDHelper
         /// <returns>The parameter string.</returns>
         private string AddVerbosity()
         {
-            return settingsRef.Verbosity == 0
+            string verb = string.Empty;
+
+            switch (settingsRef.Verbosity)
+            {
+
+                case 1:
+                    verb = "-v";
+                    break;
+
+                case 2:
+                    verb = "-vv";
+                    break;
+
+                case 3:
+                    verb = "-vvv";
+                    break;
+
+                default:
+                    verb = string.Empty;
+                    break;
+            }
+
+            return string.IsNullOrEmpty(verb)
                 ? string.Empty
-                : " {0}".With(t_outputVerbosity);
+                : " {0}".With(verb);
         }
 
         private void AltConfigBox_SelectionChangeCommitted(object sender, EventArgs e)
@@ -1025,26 +1047,6 @@ namespace TDHelper
 
             txtPadSize.Text = ContainsPadSizes(settingsRef.Padsizes);
             txtRunOptionsPlanetary.Text = ContainsPlanetary(settingsRef.Planetary);
-
-            // copy verbosity to string format
-            switch (settingsRef.Verbosity)
-            {
-                case 0:
-                    t_outputVerbosity = string.Empty;
-                    break;
-
-                case 2:
-                    t_outputVerbosity = "-vv";
-                    break;
-
-                case 3:
-                    t_outputVerbosity = "-vvv";
-                    break;
-
-                default:
-                    t_outputVerbosity = "-v";
-                    break;
-            }
 
             // exception for Loop
             if (settingsRef.Loop && settingsRef.Towards)

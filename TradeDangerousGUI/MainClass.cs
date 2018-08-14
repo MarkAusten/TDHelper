@@ -90,7 +90,6 @@ namespace TDHelper
         public string t_lastSystem;
         public decimal t_lsFromStar;
         public string t_maxPadSize;
-        public string t_outputVerbosity;
         public decimal t_Routes;
         public decimal t_StartJumps;
         public decimal t_Supply;
@@ -558,46 +557,25 @@ namespace TDHelper
 
             // sanity check our inputs
 
-            ValidateSetting("Credits", numCommandersCredits);
+            ValidateSetting("Age", numRouteOptionsAge);
             ValidateSetting("Capacity", numRouteOptionsShipCapacity);
+            ValidateSetting("Credits", numCommandersCredits);
+            ValidateSetting("EndJumps", numRunOptionsEndJumps);
+            ValidateSetting("GPT", numRouteOptionsGpt);
+            ValidateSetting("Hops", numRouteOptionsHops);
+            ValidateSetting("Insurance", numShipInsurance);
+            ValidateSetting("Jumps", numRouteOptionsJumps);
+            ValidateSetting("LadenLY", numLadenLy);
+            ValidateSetting("Limit", numRouteOptionsLimit);
+            ValidateSetting("LSPenalty", numRouteOptionsLsPenalty);
+            ValidateSetting("Margin", numRouteOptionsMargin);
+            ValidateSetting("MaxGPT", numRouteOptionsMaxGpt);
+            ValidateSetting("MaxLSDistance", numRouteOptionsMaxLSDistance);
             ValidateSetting("PruneHops", numRouteOptionsPruneHops);
             ValidateSetting("PruneScore", numRouteOptionsPruneScore);
-            ValidateSetting("Limit", numRouteOptionsLimit);
-            ValidateSetting("MaxLSDistance", numRouteOptionsMaxLSDistance);
-            ValidateSetting("LSPenalty", numRouteOptionsLsPenalty);
-            ValidateSetting("Stock", numRouteOptionsStock);
-            ValidateSetting("GPT", numRouteOptionsGpt);
-            ValidateSetting("MaxGPT", numRouteOptionsMaxGpt);
-            ValidateSetting("Insurance", numShipInsurance);
-            ValidateSetting("Margin", numRouteOptionsMargin);
-            ValidateSetting("Age", numRouteOptionsAge);
-            ValidateSetting("LadenLY", numLadenLy);
-            ValidateSetting("UnladenLY", numUnladenLy);
-
-            // convert verbosity to a string
-            switch (settingsRef.Verbosity)
-            {
-                case 3:
-                    t_outputVerbosity = "-vvv";
-                    break;
-
-                case 2:
-                    t_outputVerbosity = "-vv";
-                    break;
-
-                case 1:
-                    t_outputVerbosity = "-v";
-                    break;
-
-                default:
-                    t_outputVerbosity = string.Empty;
-                    break;
-            }
-
-            ValidateSetting("Hops", numRouteOptionsHops);
-            ValidateSetting("Jumps", numRouteOptionsJumps);
             ValidateSetting("StartJumps", numRunOptionsStartJumps);
-            ValidateSetting("EndJumps", numRunOptionsEndJumps);
+            ValidateSetting("Stock", numRouteOptionsStock);
+            ValidateSetting("UnladenLY", numUnladenLy);
 
             settingsRef.Padsizes = ContainsPadSizes(settingsRef.Padsizes);
             settingsRef.Planetary = ContainsPlanetary(settingsRef.Planetary);
