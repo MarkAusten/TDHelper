@@ -219,7 +219,9 @@ namespace TDHelper
                     result = result
                         .Replace(",all,", ",")
                         .Replace(",clean,", ",")
-                        .Replace(",listings,", ",");
+                        .Replace(",listings,", ",")
+                        .Replace(",shipvend", ",")
+                        .Replace(",upvend", ",");
                 }
 
                 if (result.Contains(",station,"))
@@ -477,11 +479,13 @@ namespace TDHelper
             {
                 SetControlUncheckedAndDisabled(chkListings);
                 SetControlCheckedAndDisabled(chkSkipvend);
+                SetControlUncheckedAndDisabled(chkUpvend);
             }
             else
             {
                 SetControlUncheckedAndEnabled(chkListings);
                 SetControlUncheckedAndEnabled(chkSkipvend);
+                SetControlUncheckedAndEnabled(chkUpvend);
             }
         }
 
