@@ -59,7 +59,7 @@ namespace TDHelper
         public int marketBoxChecked;
         public bool oldDataRouteChecked;
         public int outfitBoxChecked;
-        public List<string> outputItems = new List<string>();
+        public List<string> CommodityAndShipList = new List<string>();
         public string r_fromBox;
         public decimal r_ladenLY;
         public decimal r_unladenLY;
@@ -528,6 +528,17 @@ namespace TDHelper
             numUnladenLy.Value = Math.Max(settings.UnladenLY, numUnladenLy.Minimum);
         }
 
+        /// <summary>
+        /// Validate the variosu path settings.
+        /// </summary>
+        public void ValidatePaths()
+        {
+            // check our paths.
+            ValidatePython(null);
+            ValidateTDPath(null);
+            ValidateEdcePath(null);
+        }
+
         public void ValidateSettings(bool firstRun = false)
         {
             if (firstRun)
@@ -535,10 +546,7 @@ namespace TDHelper
                 SplashScreen.SetStatus("Validating the settings...");
             }
 
-            // check our paths.
-            ValidatePython(null);
-            ValidateTDPath(null);
-            ValidateEdcePath(null);
+            ValidatePaths();
 
             if (firstRun)
             {
@@ -823,9 +831,8 @@ namespace TDHelper
                     if (!string.IsNullOrEmpty(t_system) && !string.IsNullOrEmpty(t_station))
                     {
                         GrabStationData(t_system, t_station);
+                        RefreshCurrentOptionsPanel();
                     }
-
-                    RefreshCurrentOptionsPanel();
                 }
             }
         }

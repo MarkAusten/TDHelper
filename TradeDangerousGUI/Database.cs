@@ -40,7 +40,9 @@ namespace TDHelper
 
         #endregion Props
 
-        public static List<string> CollectLogPaths(string path, string pattern)
+        public static List<string> CollectLogPaths(
+            string path,
+            string pattern)
         {
             // only collect log paths that contain system names
             try
@@ -57,12 +59,10 @@ namespace TDHelper
                     {
                         string filePath = Path.Combine(path, f.ToString());
 
-                        using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                        using (BufferedStream bs = new BufferedStream(fs))
-                        using (StreamReader stream = new StreamReader(bs, Encoding.UTF8, true, 65536))
+                        using (TextReader reader = new StreamReader(filePath, Encoding.UTF8))
                         {
                             // check if there are any files that match the mask, return null if nothing matches
-                            string tempLines = stream.ReadToEnd(); // pull into memory
+                            string tempLines = reader.ReadToEnd(); // pull into memory
                             Match timestampMatch = Regex.Match(tempLines, @"(\d{2,4}\-\d\d\-\d\d)[\s\-](\d\d:\d\d)\sGMT");
                             Match systemMatch = Regex.Match(tempLines, @"\{(\d\d:\d\d:\d\d).+System:""(.+)""");
 
@@ -94,6 +94,24 @@ namespace TDHelper
             return null; // should never reach this
         }
 
+        /// <summary>
+        /// Carry out any pre-close operations and then close the connection.
+        /// </summary>
+        /// <param name="conn">The connection to be closed.</param>
+        public void CloseConnection(SQLiteConnection conn)
+        {
+            if (conn != null &&
+                conn.State == ConnectionState.Open)
+            {
+                using (SQLiteCommand query = new SQLiteCommand("PRAGMA optimise", conn))
+                {
+                    query.ExecuteNonQuery();
+                }
+
+                conn.Close();
+            }
+        }
+
         public bool IsConnectionBusy(SQLiteConnection conn)
         {
             bool isBusy = false;
@@ -110,10 +128,24 @@ namespace TDHelper
             return isBusy;
         }
 
-        private bool AddAtTimestampDBRow(SQLiteConnection dbConn, string timestamp)
+        /// <summary>
+        /// Open the specified connection.
+        /// </summary>
+        /// <param name="conn">The connection to be opened.</param>
+        public void OpenConnection(SQLiteConnection conn)
+        {
+            if (conn != null && conn.State == ConnectionState.Closed)
+            {
+                conn.Open();
+            }
+        }
+
+        private bool AddAtTimestampDBRow(
+                    SQLiteConnection conn,
+            string timestamp)
         {
             // add a blank row with the timestamp from a given row, basically an insert-below-index during select()
-            using (SQLiteCommand cmd = new SQLiteCommand("INSERT INTO SystemLog VALUES (null,@Timestamp,null,null)", dbConn))
+            using (SQLiteCommand cmd = new SQLiteCommand("INSERT INTO SystemLog VALUES (null,@Timestamp,null,null)", conn))
             {
                 DateTime tempTimestamp = new DateTime();
 
@@ -124,7 +156,7 @@ namespace TDHelper
 
                     try
                     {
-                        using (var transaction = dbConn.BeginTransaction())
+                        using (var transaction = conn.BeginTransaction())
                         {
                             cmd.Parameters.AddWithValue("@Timestamp", var1);
                             cmd.ExecuteNonQuery();
@@ -302,29 +334,6 @@ namespace TDHelper
             }
         }
 
-        private void SetSourceAndDestinationLists(bool first = false)
-        {
-            // bind the recent systems/stations first
-            SourceList.Clear();
-
-            // Add a blank entry at the top is this is the first run.
-            if (first)
-            {
-                SourceList.Add(string.Empty);
-            }
-
-            // we should add an indicator to every entry in our favorites
-            if (currentMarkedStations.Count > 0)
-            {
-                SourceList.AddRange(currentMarkedStations.Select(x => "!" + x).ToArray());
-            }
-
-            SourceList.AddRange(output_unclean.ToArray());
-
-            // Clone the source list to the destination list.
-            DestinationList.AddRange(SourceList.GetRange(0, SourceList.Count));
-        }
-
         private void BuildPilotsLog()
         {
             // here we either build or load our database
@@ -390,18 +399,15 @@ namespace TDHelper
             }
         }
 
-        private void CreatePilotsLogDB(SQLiteConnection dbConn)
+        private void CreatePilotsLogDB(SQLiteConnection conn)
         {
             try
             {
-                if (dbConn != null && dbConn.State == ConnectionState.Closed)
-                {
-                    dbConn.Open();
-                }
+                OpenConnection(conn);
 
-                using (SQLiteCommand cmd = dbConn.CreateCommand())
+                using (SQLiteCommand cmd = conn.CreateCommand())
                 {
-                    if (!HasValidColumn(dbConn, "SystemLog", "System"))
+                    if (!HasValidColumn(conn, "SystemLog", "System"))
                     {
                         // create our table first
                         cmd.CommandText = "CREATE TABLE SystemLog (ID INTEGER PRIMARY KEY AUTOINCREMENT, Timestamp NVARCHAR, System NVARCHAR, Notes NVARCHAR)";
@@ -411,7 +417,7 @@ namespace TDHelper
                         cmd.CommandText = "CREATE UNIQUE INDEX IF NOT EXISTS SystemTimestamp ON SystemLog (System, Timestamp)";
                         cmd.ExecuteNonQuery();
                     }
-                    else if (HasValidRows(dbConn, "SystemLog"))
+                    else if (HasValidRows(conn, "SystemLog"))
                     {
                         /*
                                                 // wipe before inserting, ensures most recent records
@@ -426,7 +432,7 @@ namespace TDHelper
 
                     if (netLogOutput.Count > 0)
                     {
-                        using (var transaction = dbConn.BeginTransaction())
+                        using (var transaction = conn.BeginTransaction())
                         {
                             // always do our inserts in a batch for ideal performance
                             cmd.CommandText = @"INSERT INTO SystemLog (Timestamp, System) VALUES null,@Timestamp,@System,null)";
@@ -455,7 +461,8 @@ namespace TDHelper
 
                     this.Invoke(new Action(() =>
                     {
-                        retriever = new DataRetriever(dbConn, "SystemLog");
+                        retriever = new DataRetriever(conn, "SystemLog", this);
+
                         foreach (DataColumn c in retriever.Columns)
                         {
                             grdPilotsLog.Columns.Add(c.ColumnName, c.ColumnName);
@@ -474,7 +481,14 @@ namespace TDHelper
                     }));
                 }
             }
-            catch (Exception e) { throw new Exception(e.Message); }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                CloseConnection(conn);
+            }
         }
 
         private void FilterDatabase()
@@ -569,10 +583,7 @@ namespace TDHelper
             {
                 try
                 {
-                    if (tdhDBConn != null && tdhDBConn.State == ConnectionState.Closed)
-                    {
-                        tdhDBConn.Open();
-                    }
+                    OpenConnection(tdhDBConn);
 
                     using (SQLiteDataReader reader = query.ExecuteReader())
                     {
@@ -582,7 +593,14 @@ namespace TDHelper
                         }
                     }
                 }
-                catch { /* eat exceptions */ }
+                catch
+                {
+                    /* eat exceptions */
+                }
+                finally
+                {
+                    CloseConnection(tdhDBConn);
+                }
             }
 
             return timestamp;
@@ -597,13 +615,13 @@ namespace TDHelper
 
             if (ValidateDBPath())
             {
-                try
+                using (SQLiteConnection conn = GetConnection(tdDBPath))
                 {
-                    using (SQLiteConnection db = GetConnection(tdDBPath))
+                    try
                     {
                         Stopwatch m_timer = Stopwatch.StartNew();
 
-                        db.Open();
+                        OpenConnection(conn);
 
                         if (stnship_table.Rows.Count != 0)
                         {
@@ -624,9 +642,9 @@ namespace TDHelper
                          */
 
                         // check for one of the common columns
-                        if (HasValidColumn(db, "Station", "rearm"))
+                        if (HasValidColumn(conn, "Station", "rearm"))
                         {
-                            using (SQLiteCommand cmd = db.CreateCommand())
+                            using (SQLiteCommand cmd = conn.CreateCommand())
                             {
                                 cmd.CommandText
                                     = " select "
@@ -700,26 +718,30 @@ namespace TDHelper
                             m_timer.Stop();
                         }
                     }
-                }
-                catch (Exception e)
-                {
-                    throw new Exception(e.Message);
+                    catch (Exception e)
+                    {
+                        throw new Exception(e.Message);
+                    }
+                    finally
+                    {
+                        CloseConnection(conn);
+                    }
                 }
             }
         }
 
-        private bool HasValidColumn(SQLiteConnection dbConn, string tableName, string columnName)
+        private bool HasValidColumn(
+            SQLiteConnection conn,
+            string tableName,
+            string columnName)
         {
             // this method returns true if a column exists
-            using (SQLiteCommand query = new SQLiteCommand("PRAGMA table_info(" + tableName + ")", dbConn))
+            using (SQLiteCommand query = new SQLiteCommand("PRAGMA table_info(" + tableName + ")", conn))
             using (DataTable results = new DataTable())
             {
                 try
                 {
-                    if (dbConn != null && dbConn.State == ConnectionState.Closed)
-                    {
-                        dbConn.Open();
-                    }
+                    OpenConnection(conn);
 
                     using (SQLiteDataReader reader = query.ExecuteReader())
                     {
@@ -737,23 +759,29 @@ namespace TDHelper
                         }
                     }
                 }
-                catch { /* eat exceptions */ }
+                catch
+                {
+                    /* eat exceptions */
+                }
+                finally
+                {
+                    CloseConnection(conn);
+                }
             }
 
             return false;
         }
 
-        private bool HasValidRows(SQLiteConnection dbConn, string tableName)
+        private bool HasValidRows(
+            SQLiteConnection conn,
+            string tableName)
         {
             // this method returns true if there are any valid rows
-            using (SQLiteCommand query = new SQLiteCommand("SELECT COUNT(*) FROM SystemLog", dbConn))
+            using (SQLiteCommand query = new SQLiteCommand("SELECT COUNT(*) FROM SystemLog", conn))
             {
                 try
                 {
-                    if (dbConn != null && dbConn.State == ConnectionState.Closed)
-                    {
-                        dbConn.Open();
-                    }
+                    OpenConnection(conn);
 
                     using (SQLiteDataReader reader = query.ExecuteReader())
                     {
@@ -768,7 +796,14 @@ namespace TDHelper
                         }
                     }
                 }
-                catch { /* eat exceptions */ }
+                catch
+                {
+                    /* eat exceptions */
+                }
+                finally
+                {
+                    CloseConnection(conn);
+                }
             }
 
             return false;
@@ -795,7 +830,9 @@ namespace TDHelper
             }
         }
 
-        private bool InvalidatedRowUpdate(bool refreshMode, int rowIndex)
+        private bool InvalidatedRowUpdate(
+            bool refreshMode,
+            int rowIndex)
         {
             if (refreshMode)
             {
@@ -810,7 +847,7 @@ namespace TDHelper
                 // invalidate the cache pages
                 UpdateLocalTable(tdhDBConn);
 
-                retriever = new DataRetriever(tdhDBConn, "SystemLog");
+                retriever = new DataRetriever(tdhDBConn, "SystemLog", this);
                 memoryCache = new Cache(retriever, 24);
 
                 // force a refresh/repaint
@@ -825,7 +862,7 @@ namespace TDHelper
                 // partial refresh
                 UpdateLocalTable(tdhDBConn);
 
-                retriever = new DataRetriever(tdhDBConn, "SystemLog");
+                retriever = new DataRetriever(tdhDBConn, "SystemLog", this);
                 memoryCache = new Cache(retriever, 24);
 
                 this.Invoke(new Action(() =>
@@ -850,7 +887,7 @@ namespace TDHelper
             // Connect to the specofed database.
             using (SQLiteConnection conn = GetConnection(tdDBPath))
             {
-                conn.Open();
+                OpenConnection(conn);
 
                 // Issue a 'BEGIN IMMEDIATE' command
                 using (SQLiteCommand cmd = conn.CreateCommand())
@@ -873,7 +910,7 @@ namespace TDHelper
                     }
                 }
 
-                conn.Close();
+                CloseConnection(conn);
             }
 
             return isLocked;
@@ -894,13 +931,13 @@ namespace TDHelper
                 string stationName = string.Empty;
                 string systemName = string.Empty;
 
-                try
+                using (SQLiteConnection conn = GetConnection(tdDBPath))
                 {
-                    using (SQLiteConnection conn = GetConnection(tdDBPath))
+                    try
                     {
                         Stopwatch m_timer = Stopwatch.StartNew();
 
-                        conn.Open();
+                        OpenConnection(conn);
 
                         // wipe to prevent duplicates
                         if (stn_table.Rows.Count != 0)
@@ -951,14 +988,18 @@ namespace TDHelper
 
                         FilterDatabase(); // filter and fill our output
                     }
-                }
-                catch (SQLiteException)
-                {
-                    //
-                }
-                catch (Exception e)
-                {
-                    throw new Exception(e.Message);
+                    catch (SQLiteException)
+                    {
+                        //
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception(e.Message);
+                    }
+                    finally
+                    {
+                        CloseConnection(conn);
+                    }
                 }
             }
         }
@@ -971,7 +1012,7 @@ namespace TDHelper
                 {
                     UpdateLocalTable(tdhDBConn);
 
-                    retriever = new DataRetriever(dbConn, "SystemLog");
+                    retriever = new DataRetriever(dbConn, "SystemLog", this);
 
                     this.Invoke(new Action(() =>
                     {
@@ -1000,7 +1041,10 @@ namespace TDHelper
                         }
                     }));
                 }
-                catch (SQLiteException) { throw; }
+                catch (SQLiteException)
+                {
+                    throw;
+                }
             }
         }
 
@@ -1069,7 +1113,9 @@ namespace TDHelper
             return output;
         }
 
-        private List<string> LoadSystemsFromLogs(bool refreshMode, List<string> filePaths)
+        private List<string> LoadSystemsFromLogs(
+            bool refreshMode,
+            List<string> filePaths)
         {
             // get the latest timestamp from the DB.
             string timestamp = this.GetLastTimestamp();
@@ -1142,12 +1188,10 @@ namespace TDHelper
                     // Show the splash form if the process has run for more than 5 seconds.
                     this.ShowSplashForm(splashForm, stopWatch2, "Reading Net Logs");
 
-                    using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                    using (BufferedStream bs = new BufferedStream(fs))
-                    using (StreamReader stream = new StreamReader(bs, Encoding.UTF8, true, 65536))
+                    using (TextReader reader = new StreamReader(path, Encoding.UTF8))
                     {
                         output_unclean = new List<string>();
-                        fileBuffer = stream.ReadToEnd(); // pull into memory
+                        fileBuffer = reader.ReadToEnd(); // pull into memory
                         Match matchCollector0 = Regex.Match(fileBuffer, pattern0, RegexOptions.Compiled);
                         MatchCollection matchCollector1 = Regex.Matches(fileBuffer, pattern1, RegexOptions.Compiled | RegexOptions.Multiline);
 
@@ -1327,6 +1371,25 @@ namespace TDHelper
             return output; // return our finished list
         }
 
+        /// <summary>
+        /// Optimise all the databases.
+        /// </summary>
+        private void OptimiseAllDatabases()
+        {
+            OptimiseDatabase(GetConnection(pilotsLogDBPath));
+            OptimiseDatabase(GetConnection(tdDBPath));
+        }
+
+        /// <summary>
+        /// Optimise the specified database.
+        /// </summary>
+        /// <param name="conn">The connection to the database to be optimised.</param>
+        private void OptimiseDatabase(SQLiteConnection conn)
+        {
+            OpenConnection(conn);
+            CloseConnection(conn);
+        }
+
         private void ParseItemCSV()
         {
             List<string> commodities = new List<string>();
@@ -1384,19 +1447,19 @@ namespace TDHelper
             ShipList = ShipList.OrderBy(x => x)
                 .ToList();
 
-            outputItems.Clear();
+            CommodityAndShipList.Clear();
 
             if (CommoditiesList.Count > 0)
             {
-                outputItems.AddRange(CommoditiesList);
+                CommodityAndShipList.AddRange(CommoditiesList);
             }
 
             if (ShipList.Count > 0)
             {
-                outputItems.AddRange(ShipList);
+                CommodityAndShipList.AddRange(ShipList);
             }
 
-            if (outputItems.Count == 0)
+            if (CommodityAndShipList.Count == 0)
             {
                 Debug.WriteLine("outputItems is empty, must be a path or access failure");
             }
@@ -1498,15 +1561,17 @@ namespace TDHelper
             m_timer.Stop();
         }
 
-        private bool RemoveDBRow(SQLiteConnection dbConn, int rowIndex)
+        private bool RemoveDBRow(
+            SQLiteConnection conn,
+            int rowIndex)
         {
             if (rowIndex >= 0)
             {
-                using (SQLiteCommand cmd = new SQLiteCommand("DELETE FROM SystemLog WHERE ID = @ID", dbConn))
+                using (SQLiteCommand cmd = new SQLiteCommand("DELETE FROM SystemLog WHERE ID = @ID", conn))
                 {
                     try
                     {
-                        var transaction = dbConn.BeginTransaction();
+                        var transaction = conn.BeginTransaction();
                         // delete all the rows specified by the index, using a transaction for efficiency
                         cmd.Parameters.AddWithValue("@ID", rowIndex);
                         cmd.ExecuteNonQuery();
@@ -1524,16 +1589,18 @@ namespace TDHelper
             return false;
         }
 
-        private bool RemoveDBRows(SQLiteConnection dbConn, List<int> rowsIndex)
+        private bool RemoveDBRows(
+            SQLiteConnection conn,
+            List<int> rowsIndex)
         {
             // remove a batch of rows (faster than removeDBRow)
             if (rowsIndex.Count > 0)
             {
-                using (SQLiteCommand cmd = new SQLiteCommand("DELETE FROM SystemLog WHERE ID = @ID", dbConn))
+                using (SQLiteCommand cmd = new SQLiteCommand("DELETE FROM SystemLog WHERE ID = @ID", conn))
                 {
                     try
                     {
-                        using (SQLiteTransaction transaction = dbConn.BeginTransaction())
+                        using (SQLiteTransaction transaction = conn.BeginTransaction())
                         {
                             foreach (int i in rowsIndex)
                             {
@@ -1555,6 +1622,29 @@ namespace TDHelper
             }
 
             return false;
+        }
+
+        private void SetSourceAndDestinationLists(bool first = false)
+        {
+            // bind the recent systems/stations first
+            SourceList.Clear();
+
+            // Add a blank entry at the top is this is the first run.
+            if (first)
+            {
+                SourceList.Add(string.Empty);
+            }
+
+            // we should add an indicator to every entry in our favorites
+            if (currentMarkedStations.Count > 0)
+            {
+                SourceList.AddRange(currentMarkedStations.Select(x => "!" + x).ToArray());
+            }
+
+            SourceList.AddRange(output_unclean.ToArray());
+
+            // Clone the source list to the destination list.
+            DestinationList.AddRange(SourceList.GetRange(0, SourceList.Count));
         }
 
         /// <summary>
@@ -1594,12 +1684,14 @@ namespace TDHelper
             }
         }
 
-        private bool UpdateDBRow(SQLiteConnection dbConn, List<DataRow> rows)
+        private bool UpdateDBRow(
+            SQLiteConnection conn,
+            List<DataRow> rows)
         {
             // insert/update an existing set of rows
             if (rows.Count > 0)
             {
-                using (SQLiteCommand cmd = new SQLiteCommand("INSERT OR REPLACE INTO SystemLog VALUES (@ID,@Timestamp,@System,@Notes)", dbConn))
+                using (SQLiteCommand cmd = new SQLiteCommand("INSERT OR REPLACE INTO SystemLog VALUES (@ID,@Timestamp,@System,@Notes)", conn))
                 {
                     cmd.Parameters.AddWithValue("@ID", 0);
                     cmd.Parameters.AddWithValue("@Timestamp", string.Empty);
@@ -1608,7 +1700,7 @@ namespace TDHelper
 
                     try
                     {
-                        using (SQLiteTransaction transaction = dbConn.BeginTransaction())
+                        using (SQLiteTransaction transaction = conn.BeginTransaction())
                         {
                             for (int i = rows.Count - 1; i >= 0; i--)
                             {
@@ -1640,50 +1732,61 @@ namespace TDHelper
             return false;
         }
 
-        private void UpdateLocalTable(SQLiteConnection dbConn)
+        private void UpdateLocalTable(SQLiteConnection conn)
         {
-            if (dbConn != null && dbConn.State == ConnectionState.Closed)
-                dbConn.Open();
-
-            if (HasValidColumn(dbConn, "SystemLog", "System"))
+            try
             {
-                try
+                OpenConnection(conn);
+
+                if (HasValidColumn(conn, "SystemLog", "System"))
                 {
-                    using (SQLiteCommand cmd = dbConn.CreateCommand())
-                    using (SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd))
+                    try
                     {
-                        cmd.CommandText = "SELECT * FROM SystemLog ORDER BY Timestamp DESC, System DESC, Notes DESC";
-                        localTable.Locale = System.Globalization.CultureInfo.InvariantCulture;
-                        localTable.Rows.Clear();
-                        adapter.Fill(localTable);
-
-                        localSystemList.Clear();
-                        foreach (DataRow r in localTable.Rows)
+                        using (SQLiteCommand cmd = conn.CreateCommand())
+                        using (SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd))
                         {
-                            // convert datatable to systemlist
-                            localSystemList.Add(new KeyValuePair<string, string>(r.Field<string>("Timestamp"), r.Field<string>("System")));
-                        }
+                            cmd.CommandText = "SELECT * FROM SystemLog ORDER BY Timestamp DESC, System DESC, Notes DESC";
+                            localTable.Locale = System.Globalization.CultureInfo.InvariantCulture;
+                            localTable.Rows.Clear();
+                            adapter.Fill(localTable);
 
-                        localTable.PrimaryKey = new System.Data.DataColumn[] { localTable.Columns["ID"] };
+                            localSystemList.Clear();
+                            foreach (DataRow r in localTable.Rows)
+                            {
+                                // convert datatable to systemlist
+                                localSystemList.Add(new KeyValuePair<string, string>(r.Field<string>("Timestamp"), r.Field<string>("System")));
+                            }
+
+                            localTable.PrimaryKey = new System.Data.DataColumn[] { localTable.Columns["ID"] };
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        throw;
                     }
                 }
-                catch (Exception) { throw; }
+            }
+            finally
+            {
+                CloseConnection(conn);
             }
         }
 
-        private bool UpdatePilotsLogDB(SQLiteConnection dbConn, List<KeyValuePair<string, string>> exceptKey)
+        private bool UpdatePilotsLogDB(
+            SQLiteConnection conn,
+            List<KeyValuePair<string, string>> exceptKey)
         {
             // here we take a non-intersect key to add systems to our DB
             int exceptCount = exceptKey.Count();
 
             if (exceptCount > 0)
             {
-                using (SQLiteCommand cmd = new SQLiteCommand("INSERT INTO SystemLog VALUES (null,@Timestamp,@System,null)", dbConn))
+                using (SQLiteCommand cmd = new SQLiteCommand("INSERT INTO SystemLog VALUES (null,@Timestamp,@System,null)", conn))
                 {
                     cmd.Parameters.AddWithValue("@Timestamp", string.Empty);
                     cmd.Parameters.AddWithValue("@System", string.Empty);
 
-                    using (SQLiteTransaction transaction = dbConn.BeginTransaction())
+                    using (SQLiteTransaction transaction = conn.BeginTransaction())
                     {
                         foreach (KeyValuePair<string, string> s in exceptKey)
                         {
@@ -1712,19 +1815,16 @@ namespace TDHelper
             return false;
         }
 
-        private void VacuumPilotsLogDB(SQLiteConnection dbConn)
+        private void VacuumPilotsLogDB(SQLiteConnection conn)
         {
             // a simple method to vacuum our database
             try
             {
-                if (dbConn != null && dbConn.State == ConnectionState.Closed)
-                {
-                    dbConn.Open();
-                }
+                OpenConnection(conn);
 
-                using (SQLiteCommand cmd = dbConn.CreateCommand())
+                using (SQLiteCommand cmd = conn.CreateCommand())
                 {
-                    if (HasValidRows(dbConn, "SystemLog"))
+                    if (HasValidRows(conn, "SystemLog"))
                     {
                         // clean up after ourselves
                         cmd.CommandText = "VACUUM";
@@ -1732,7 +1832,14 @@ namespace TDHelper
                     }
                 }
             }
-            catch (Exception e) { throw new Exception(e.Message); }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                CloseConnection(conn);
+            }
         }
 
         private bool ValidateDBPath()

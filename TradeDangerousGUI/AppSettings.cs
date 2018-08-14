@@ -21,7 +21,12 @@ namespace TDHelper
          * This class is taken from: http://goo.gl/EnPqrF
          */
 
-        static public DialogResult Show(bool onTop, bool playAlert, string message, string title, MessageBoxButtons buttons)
+        static public DialogResult Show(
+            bool onTop, 
+            bool playAlert, 
+            string message, 
+            string title, 
+            MessageBoxButtons buttons)
         {
             Rectangle rect = SystemInformation.VirtualScreen;
 
@@ -115,7 +120,9 @@ namespace TDHelper
         /// <param name="section">The section object</param>
         /// <param name="key">The value key</param>
         /// <returns>The required value.</returns>
-        public static bool GetBooleanSetting(Section section, string key)
+        public static bool GetBooleanSetting(
+            Section section, 
+            string key)
         {
             return SectionHasKey(section, key) ? section[key].BoolValue : false;
         }
@@ -126,7 +133,9 @@ namespace TDHelper
         /// <param name="section">The section object</param>
         /// <param name="key">The value key</param>
         /// <returns>The required value.</returns>
-        public static decimal GetDecimalSetting(Section section, string key)
+        public static decimal GetDecimalSetting(
+            Section section, 
+            string key)
         {
             return SectionHasKey(section, key) ? section[key].DecimalValue : 0M;
         }
@@ -137,7 +146,9 @@ namespace TDHelper
         /// <param name="section">The section object</param>
         /// <param name="key">The value key</param>
         /// <returns><The required value./returns>
-        public static string GetStringSetting(Section section, string key)
+        public static string GetStringSetting(
+            Section section, 
+            string key)
         {
             return SectionHasKey(section, key) ? section[key].StringValue : string.Empty;
         }
@@ -173,7 +184,7 @@ namespace TDHelper
                 settings.Planetary = GetStringSetting(configSection, "Planetary");
                 settings.PruneHops = GetDecimalSetting(configSection, "PruneHops");
                 settings.PruneScore = GetDecimalSetting(configSection, "PruneScore");
-                settings.RouteStations = GetDecimalSetting(configSection, "RouteStations");
+                settings.NumberOfRoutes = GetDecimalSetting(configSection, "NumberOfRoutes");
                 settings.ShowJumps = GetBooleanSetting(configSection, "ShowJumps");
                 settings.ShowProgress = GetBooleanSetting(configSection, "ShowProgress");
                 settings.StartJumps = GetDecimalSetting(configSection, "startJumps");
@@ -302,10 +313,10 @@ namespace TDHelper
             configSection["MarkedStations"].StringValue = settings.MarkedStations ?? string.Empty;
             configSection["MaxGPT"].DecimalValue = settings.MaxGPT;
             configSection["MaxLSDistance"].DecimalValue = settings.MaxLSDistance;
+            configSection["NumberOfRoutes"].DecimalValue = settings.NumberOfRoutes;
             configSection["Planetary"].StringValue = settings.Planetary ?? string.Empty;
             configSection["PruneHops"].DecimalValue = settings.PruneHops;
             configSection["PruneScore"].DecimalValue = settings.PruneScore;
-            configSection["RouteStations"].DecimalValue = settings.RouteStations;
             configSection["Shorten"].BoolValue = settings.Shorten;
             configSection["ShowJumps"].BoolValue = settings.ShowJumps;
             configSection["ShowProgress"].BoolValue = settings.ShowProgress;
@@ -426,7 +437,9 @@ namespace TDHelper
             return string.Format("{0},{1}", modWidth, modHeight);
         }
 
-        public static bool SectionHasKey(Section section, string key)
+        public static bool SectionHasKey(
+            Section section, 
+            string key)
         {
             bool result = section.FirstOrDefault(x => x.Name == key) != null;
 
@@ -619,10 +632,13 @@ namespace TDHelper
             return result;
         }
 
-        private void AddMarkedStation(string input, List<string> parentList)
+        private void AddMarkedStation(
+            string input, 
+            List<string> parentList)
         {
-            if (!IsMarkedStation(input, parentList) && StringInList(input, outputSysStnNames)
-                && !StringInList(input, parentList))
+            if (!IsMarkedStation(input, parentList) && 
+                StringInList(input, outputSysStnNames) &&
+                !StringInList(input, parentList))
             {
                 // insert at the top of the list
                 parentList.Insert(0, input);
@@ -640,12 +656,16 @@ namespace TDHelper
             return ToggleAndSort(text, "YN?");
         }
 
-        private bool IsMarkedStation(string input, List<string> parentList)
+        private bool IsMarkedStation(
+            string input, 
+            List<string> parentList)
         {
             return StringInList(input, parentList);
         }
 
-        private void RemoveMarkedStation(string input, List<string> parentList)
+        private void RemoveMarkedStation(
+            string input, 
+            List<string> parentList)
         {
             int index = IndexInList(input, parentList);
 
@@ -771,7 +791,7 @@ namespace TDHelper
         public string PythonPath { get; set; }
         public bool Quiet { get; set; }
         public decimal RebuyPercentage { get; set; }
-        public decimal RouteStations { get; set; }
+        public decimal NumberOfRoutes { get; set; }
         public bool Shorten { get; set; }
         public bool ShowJumps { get; set; }
         public bool ShowProgress { get; set; }

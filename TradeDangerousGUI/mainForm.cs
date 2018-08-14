@@ -617,7 +617,7 @@ namespace TDHelper
 
             if (!string.IsNullOrEmpty(DBUpdateCommandString))
             {
-                ValidateSettings();
+                ValidatePaths();
 
                 if (!backgroundWorker4.IsBusy)
                 {
@@ -980,7 +980,7 @@ namespace TDHelper
             CopyDecimalSettingValue("MaxLSDistance", numRouteOptionsMaxLSDistance);
             CopyDecimalSettingValue("PruneHops", numRouteOptionsPruneHops);
             CopyDecimalSettingValue("PruneScore", numRouteOptionsPruneScore);
-            CopyDecimalSettingValue("RouteStations", numRunOptionsRoutes);
+            CopyDecimalSettingValue("NumberOfRoutes", numRunOptionsRoutes);
             CopyDecimalSettingValue("StartJumps", numRunOptionsStartJumps);
             CopyDecimalSettingValue("Stock", numRouteOptionsStock);
             CopyDecimalSettingValue("UnladenLY", numUnladenLy);
@@ -1065,9 +1065,9 @@ namespace TDHelper
             CopyDecimalFormValue("Margin", numRouteOptionsMargin);
             CopyDecimalFormValue("MaxGPT", numRouteOptionsMaxGpt);
             CopyDecimalFormValue("MaxLSDistance", numRouteOptionsMaxLSDistance);
+            CopyDecimalFormValue("NumberOfRoutes", numRunOptionsRoutes);
             CopyDecimalFormValue("PruneHops", numRouteOptionsPruneHops);
             CopyDecimalFormValue("PruneScore", numRouteOptionsPruneScore);
-            CopyDecimalFormValue("RouteStations", numRunOptionsRoutes);
             CopyDecimalFormValue("StartJumps", numRunOptionsStartJumps);
             CopyDecimalFormValue("Stock", numRouteOptionsStock);
             CopyDecimalFormValue("UnladenLY", numUnladenLy);
@@ -2148,10 +2148,13 @@ namespace TDHelper
         {
             // serialize window data to the default config file
             CopySettingsFromForm();
+
             settingsRef.LocationParent = SaveWinLoc(this);
             settingsRef.SizeParent = SaveWinSize(this);
 
             SaveSettingsToIniFile();
+
+            OptimiseAllDatabases();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -2918,31 +2921,35 @@ namespace TDHelper
         /// <param name="panel">The panel to be checked.</param>
         private void SetCommodities(Panel panel)
         {
-            // See if this options panel has a commodity combo box.
-            ComboBox commodities = panel.Controls.OfType<ComboBox>()
-                .FirstOrDefault(x => x.Name.Contains("Commodities"));
-
-            if (commodities != null)
+            // Only refresh the panelo if it is visible.
+            if (panel.Visible)
             {
-                // Detach and reattach the destinations data source.
-                commodities.DataSource = null;
+                // See if this options panel has a commodity combo box.
+                ComboBox commodities = panel.Controls.OfType<ComboBox>()
+                    .FirstOrDefault(x => x.Name.Contains("Commodities"));
 
-                int index
-                    = methodFromIndex == 0
-                    ? methodIndex
-                    : methodFromIndex;
-
-                switch (index)
+                if (commodities != null)
                 {
-                    case 1: // Buy
-                        // All commodities & ships
-                        commodities.DataSource = outputItems;
-                        break;
+                    // Detach and reattach the destinations data source.
+                    commodities.DataSource = null;
 
-                    case 2: // Sell
-                        // Just commodities.
-                        commodities.DataSource = CommoditiesList;
-                        break;
+                    int index
+                        = methodFromIndex == 0
+                        ? methodIndex
+                        : methodFromIndex;
+
+                    switch (index)
+                    {
+                        case 1: // Buy
+                                // All commodities & ships
+                            commodities.DataSource = CommodityAndShipList;
+                            break;
+
+                        case 2: // Sell
+                                // Just commodities.
+                            commodities.DataSource = CommoditiesList;
+                            break;
+                    }
                 }
             }
         }

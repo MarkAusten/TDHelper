@@ -21,19 +21,25 @@ namespace TDHelper
         private DataPage[] cachePages;
         private DataRetriever dataSupply;
 
-        public Cache(DataRetriever dataSupplier, int rowsPerPage)
+        public Cache(
+            DataRetriever dataSupplier, 
+            int rowsPerPage)
         {
             dataSupply = dataSupplier;
             Cache.RowsPerPage = rowsPerPage;
             LoadFirstTwoPages();
         }
 
-        public void RemoveRow(int rowIndex, int rowID)
+        public void RemoveRow(
+            int rowIndex, 
+            int rowID)
         {
             int foundIndex = -1;
+
             if (IsRowCachedInPage(0, rowIndex))
             {
                 foundIndex = GetIndexOfCachedRow(rowIndex, rowID);
+
                 if (foundIndex >= 0)
                 {
                     cachePages[0].table.Rows[foundIndex].Delete();
@@ -44,6 +50,7 @@ namespace TDHelper
             else if (IsRowCachedInPage(1, rowIndex))
             {
                 foundIndex = GetIndexOfCachedRow(rowIndex, rowID);
+
                 if (foundIndex >= 0)
                 {
                     cachePages[1].table.Rows[foundIndex].Delete();
@@ -53,7 +60,9 @@ namespace TDHelper
             }
         }
 
-        public void RemoveRows(List<int> rowIndexer, List<int> rowIDIndexer)
+        public void RemoveRows(
+            List<int> rowIndexer, 
+            List<int> rowIDIndexer)
         {
             // batch our removes to prevent race conditions in Retrieve()
             if (rowIndexer.Count > 0 && rowIDIndexer.Count > 0)
@@ -65,7 +74,9 @@ namespace TDHelper
             }
         }
 
-        public string RetrieveElement(int rowIndex, int columnIndex)
+        public string RetrieveElement(
+            int rowIndex, 
+            int columnIndex)
         {
             string element = null;
 
@@ -80,16 +91,22 @@ namespace TDHelper
             }
         }
 
-        private int GetIndexOfCachedRow(int rowIndex, int rowID)
+        private int GetIndexOfCachedRow(
+            int rowIndex, 
+            int rowID)
         {
             int curID = -1;
+
             if (IsRowCachedInPage(0, rowIndex))
             {
                 for (int i = 0; i < cachePages[0].table.Rows.Count; i++)
                 {
                     curID = Convert.ToInt32(cachePages[0].table.Rows[i][0]);
+
                     if (curID == rowID)
+                    {
                         return i;
+                    }
                 }
             }
             else if (IsRowCachedInPage(1, rowIndex))
@@ -97,8 +114,11 @@ namespace TDHelper
                 for (int i = 0; i < cachePages[1].table.Rows.Count; i++)
                 {
                     curID = Convert.ToInt32(cachePages[1].table.Rows[i][0]);
+
                     if (curID == rowID)
+                    {
                         return i;
+                    }
                 }
             }
 
@@ -114,27 +134,33 @@ namespace TDHelper
             {
                 int offsetFromPage0 = rowIndex - cachePages[0].HighestIndex;
                 int offsetFromPage1 = rowIndex - cachePages[1].HighestIndex;
+
                 if (offsetFromPage0 < offsetFromPage1)
                 {
                     return 1;
                 }
+
                 return 0;
             }
             else
             {
                 int offsetFromPage0 = cachePages[0].LowestIndex - rowIndex;
                 int offsetFromPage1 = cachePages[1].LowestIndex - rowIndex;
+
                 if (offsetFromPage0 < offsetFromPage1)
                 {
                     return 1;
                 }
+
                 return 0;
             }
         }
 
         // Sets the value of the element parameter if the value is in the cache.
-        private bool IfPageCached_ThenSetElement(int rowIndex,
-            int columnIndex, ref string element)
+        private bool IfPageCached_ThenSetElement(
+            int rowIndex,
+            int columnIndex, 
+            ref string element)
         {
             if (IsRowCachedInPage(0, rowIndex) && columnIndex < 4)
             {
@@ -152,7 +178,9 @@ namespace TDHelper
 
         // Returns a value indicating whether the given row index is contained
         // in the given DataPage.
-        private bool IsRowCachedInPage(int pageNumber, int rowIndex)
+        private bool IsRowCachedInPage(
+            int pageNumber, 
+            int rowIndex)
         {
             return rowIndex <= cachePages[pageNumber].HighestIndex && rowIndex >= cachePages[pageNumber].LowestIndex;
         }
@@ -160,12 +188,14 @@ namespace TDHelper
         private void LoadFirstTwoPages()
         {
             cachePages = new DataPage[]{
+
             new DataPage(dataSupply.SupplyPageOfData(DataPage.MapToLowerBoundary(0), RowsPerPage), 0),
             new DataPage(dataSupply.SupplyPageOfData(DataPage.MapToLowerBoundary(RowsPerPage), RowsPerPage), RowsPerPage)};
         }
 
         private string RetrieveData_CacheIt_ThenReturnElement(
-                    int rowIndex, int columnIndex)
+            int rowIndex, 
+            int columnIndex)
         {
             // Retrieve a page worth of data containing the requested value.
             table = dataSupply.SupplyPageOfData(DataPage.MapToLowerBoundary(rowIndex), RowsPerPage);
@@ -184,9 +214,12 @@ namespace TDHelper
         {
             public DataTable table;
 
-            public DataPage(DataTable table, int rowIndex)
+            public DataPage(
+                DataTable table, 
+                int rowIndex)
             {
                 this.table = table;
+
                 if (table.Rows.Count > 0)
                 {
                     LowestIndex = MapToLowerBoundary(rowIndex);
@@ -231,10 +264,12 @@ namespace TDHelper
         private int rowCountValue = -1;
         private readonly string tableName;
 
-        public DataRetriever(SQLiteConnection dbConn, string tableName)
+        public DataRetriever(
+            SQLiteConnection dbConn, 
+            string tableName,
+            MainForm mainForm)
         {
-            if (dbConn != null && dbConn.State == ConnectionState.Closed)
-                dbConn.Open();
+            mainForm.OpenConnection(dbConn);
 
             countCmd = dbConn.CreateCommand();
             selectCmd = dbConn.CreateCommand();
@@ -298,17 +333,20 @@ namespace TDHelper
                 System.Text.StringBuilder commaSeparatedColumnNames =
                     new System.Text.StringBuilder();
                 bool firstColumn = true;
+
                 foreach (DataColumn column in Columns)
                 {
                     if (!firstColumn)
                     {
                         commaSeparatedColumnNames.Append(", ");
                     }
+
                     commaSeparatedColumnNames.Append(column.ColumnName);
                     firstColumn = false;
                 }
 
                 commaSeparatedListOfColumnNamesValue = commaSeparatedColumnNames.ToString();
+
                 return commaSeparatedListOfColumnNamesValue;
             }
         }
@@ -320,7 +358,9 @@ namespace TDHelper
             rowCountValue = this.RowCount;
         }
 
-        public DataTable SupplyPageOfData(int lowerPageBoundary, int rowsPerPage)
+        public DataTable SupplyPageOfData(
+            int lowerPageBoundary, 
+            int rowsPerPage)
         {
             // Store the name of the ID column. This column must contain unique
             // values so the SQL below will work properly.
@@ -338,8 +378,10 @@ namespace TDHelper
             // Retrieve the specified number of rows from the database, starting
             // with the row specified by the lowerPageBoundary parameter.
             selectCmd.CommandText = "SELECT * FROM " + tableName + " ORDER BY Timestamp DESC, System DESC, Notes DESC LIMIT @lowerPageBoundary,@rowsPerPage";
+
             selectCmd.Parameters.AddWithValue("@lowerPageBoundary", lowerPageBoundary);
             selectCmd.Parameters.AddWithValue("@rowsPerPage", rowsPerPage);
+
             adapter.SelectCommand = selectCmd;
 
             DataTable table = new DataTable()
@@ -356,10 +398,13 @@ namespace TDHelper
             {
                 // make sure we populate with columns from the source
                 DataColumnCollection supplyColumns = this.Columns;
+
                 foreach (DataColumn c in supplyColumns)
                 {
                     if (supplyColumns.Count > 0 && table.Columns.Count < supplyColumns.Count)
+                    {
                         table.Columns.Add(c.ColumnName, c.DataType);
+                    }
                 }
             }
 

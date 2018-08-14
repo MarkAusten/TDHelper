@@ -112,7 +112,10 @@ namespace TDHelper
                 MessageBox.Show(
                     "An error occured when running TDHelper. Please close this mesage box and try again. If this continues to happen please contact the administrator. Thanks.", 
                     "TD Helper - Error", 
-                    MessageBoxButtons.OK);
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Stop,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.DefaultDesktopOnly);
             }
         }
     }

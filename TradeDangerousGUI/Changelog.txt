@@ -1,6 +1,9 @@
 v2.0.5.0
 --------
 * Changes the layout such that controls for a particular query are now all in one place.
+* Error message now on top of everything.
+* Updated SQLite libraries to include x64.
+* Added "PRAGMA optimise" on closing the database connections.
 
 v2.0.4.3
 --------
@@ -56,7 +59,7 @@ v2.0.3.5
 v2.0.3.4
 --------
 * Updater additionally checks the file versions before downloading new version.
-* Fixed issue #3. 
+* Fixed issue #3.
 * Fixed issue #5. TD Helpernow has settings for progress, No Planet and Planetary.
 
 v2.0.3.3
