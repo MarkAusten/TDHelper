@@ -4,6 +4,8 @@ v2.0.5.0
 * Error message now on top of everything.
 * Updated SQLite libraries to include x64.
 * Added "PRAGMA optimise" on closing the database connections.
+* Added analyse option to database update.
+* Fixed bug where destinations were being blanked.
 
 v2.0.4.3
 --------
