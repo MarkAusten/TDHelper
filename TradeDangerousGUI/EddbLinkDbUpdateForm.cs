@@ -209,49 +209,66 @@ namespace TDHelper
                 result += ",{0}".With(option);
             }
 
-            // Remove the leading comma if required and remove the unnecessary oprions.
+            // Remove the leading comma if required and remove the unnecessary options.
             if (!string.IsNullOrEmpty(result))
             {
                 result += ",";
-
-                if (result.Contains(",solo,"))
-                {
-                    result = result
-                        .Replace(",all,", ",")
-                        .Replace(",clean,", ",")
-                        .Replace(",listings,", ",")
-                        .Replace(",shipvend", ",")
-                        .Replace(",upvend", ",");
-                }
 
                 if (result.Contains(",station,"))
                 {
                     result = result.Replace(",system,", ",");
                 }
 
-                if (result.Contains(",shipvend,"))
-                {
-                    result = result
-                        .Replace(",system,", ",")
-                        .Replace(",station,", ",")
-                        .Replace(",ship,", ",");
-                }
-
                 if (result.Contains(",upvend,"))
                 {
                     result = result
-                        .Replace(",system,", ",")
                         .Replace(",station,", ",")
                         .Replace(",upgrade,", ",");
+                }
+
+                if (result.Contains(",shipvend,"))
+                {
+                    result = result
+                        .Replace(",station,", ",")
+                        .Replace(",ship,", ",");
                 }
 
                 if (result.Contains(",listings,"))
                 {
                     result = result
                         .Replace(",item,", ",")
-                        .Replace(",system,", ",")
                         .Replace(",station,", ",");
                 }
+
+                if (result.Contains(",all,"))
+                {
+                    result = result
+                        .Replace(",listings,", ",")
+                        .Replace(",shipvend,", ",")
+                        .Replace(",upvend,", ",");
+                }
+
+                if (result.Contains(",clean,"))
+                {
+                    result = result
+                        .Replace(",all,", ",")
+                        .Replace(",force", ",");
+                }
+
+                if (result.Contains(",skipvend,"))
+                {
+                    result = result
+                        .Replace(",shipvend", ",")
+                        .Replace(",upvend", ",");
+                }
+
+                if (result.Contains(",solo,"))
+                {
+                    result = result
+                        .Replace(",listings,", ",")
+                        .Replace(",skipvend", ",");
+                }
+
             }
 
             // Remove the leading and trailing comma if required.
@@ -456,15 +473,11 @@ namespace TDHelper
         {
             if (chkSkipvend.Checked)
             {
-                SetControlUncheckedAndDisabled(chkAll);
-                SetControlUncheckedAndDisabled(chkClean);
                 SetControlUncheckedAndDisabled(chkShipvend);
                 SetControlUncheckedAndDisabled(chkUpvend);
             }
             else
             {
-                SetControlUncheckedAndEnabled(chkAll);
-                SetControlUncheckedAndEnabled(chkClean);
                 SetControlUncheckedAndEnabled(chkShipvend);
                 SetControlUncheckedAndEnabled(chkUpvend);
             }
@@ -522,7 +535,7 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Uncheck and eable all checkboxes.
+        /// Uncheck and enable all checkboxes.
         /// </summary>
         private void UncheckAndEnableAll(CheckBox except = null)
         {
