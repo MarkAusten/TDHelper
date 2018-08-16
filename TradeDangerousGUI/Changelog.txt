@@ -1,3 +1,8 @@
+v2.0.5.1
+--------
+
+* Merged pull request from eyeonus.
+
 v2.0.5.0
 --------
 * Changes the layout such that controls for a particular query are now all in one place.
