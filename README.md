@@ -46,9 +46,7 @@ improvements and features are always welcome.
 
 What do I need to compile this project from source?
 ===================================================
-I use Visual Studio 2013 for C#, however Visual Studio Express 2010/2013 works fine as well. The System.Data.SQLite.dll, Newtonsoft.Json.dll and SharpConfig.dll libraries
-included in this repository is the only additional library required. To compile successfully you must add the System.Data.SQLite.dll
-library as an additional reference in Solution Explorer if it doesn't already exist there.
+I use Visual Studio 2017 Community Version for C#, however Visual Studio 2017 works fine as well. The System.Data.SQLite.dll, Newtonsoft.Json.dll and SharpConfig.dll libraries included in this repository is the only additional library required. To compile successfully you must add the System.Data.SQLite.dll library as an additional reference in Solution Explorer if it doesn't already exist there.
 
 
 Respectful mentions
