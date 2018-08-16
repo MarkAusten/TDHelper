@@ -113,6 +113,7 @@
             this.chkItem.Text = "Item";
             this.toolTips.SetToolTip(this.chkItem, "Regenerate Categories and Items using latest commodities.json dump.");
             this.chkItem.UseVisualStyleBackColor = true;
+            this.chkItem.CheckedChanged += new System.EventHandler(this.EventHandler_Item_CheckedChanged);
             // 
             // chkListings
             // 
