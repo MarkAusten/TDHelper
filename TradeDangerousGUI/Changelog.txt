@@ -1,3 +1,8 @@
+v2.0.5.3
+--------
+* Adding missing ship translations. 
+* Changed ship translation code to return the internal ship type if no translation entry is found.
+
 v2.0.5.2
 --------
 * Merged another pull request from eyeonus.

@@ -416,6 +416,51 @@ namespace TDHelper
             return padSizes;
         }
 
+        private string GetShipName(JToken ship)
+        {
+            string shipId = string.Empty;
+            string shipName = string.Empty;
+
+            // Get the ship ID if assigned otherwise use the internal ID.
+            try
+            {
+                shipId = (string)ship["shipID"];
+            }
+            catch
+            {
+                shipId = string.Empty;
+            }
+
+            if (string.IsNullOrEmpty(shipId))
+            {
+                shipId = (string)ship["id"];
+            }
+
+            // Get the ship name if it has one.
+            try
+            {
+                shipName = (string)ship["shipName"];
+            }
+            catch
+            {
+                shipName = string.Empty;
+            }
+
+            if (!string.IsNullOrEmpty(shipName))
+            {
+                shipName = " ({0})".With(shipName);
+            }
+
+            // Finally, get the ship type.
+            string shipType = (string)ship["name"];
+
+            // Put the component parts together to form the ship name and type.
+            return "{0} {1}{2}".With(
+                TranslateShipType(shipType),
+                shipId,
+                shipName);
+        }
+
         private void GetUpdatedPricesFile()
         {
             buttonCaller = 11;  // mark us as coming from the commodities editor (ctrl+click)
@@ -1104,21 +1149,6 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Get the padsizes upon which the ship may land.
-        /// </summary>
-        /// <param name="shipType">The internal ship type.</param>
-        /// <returns>The padsizes upon which the ship may land.</returns>
-        private string TranslateShipType(string shipType)
-        {
-            if (ShipTranslation.Count == 0)
-            {
-                SetupShipTranslations();
-            }
-
-            return ShipTranslation[shipType];
-        }
-
-        /// <summary>
         /// Sets the ship translations.
         /// </summary>
         private void SetupShipTranslations()
@@ -1135,76 +1165,53 @@ namespace TDHelper
             ShipTranslation.Add("Cutter", "Imperial Cutter");
             ShipTranslation.Add("DiamondBack", "DiamondBack Scout");
             ShipTranslation.Add("DiamondBackXL", "DiamondBack Explorer");
+            ShipTranslation.Add("Dolphin", "Dolphin");
+            ShipTranslation.Add("Eagle", "Eagle");
             ShipTranslation.Add("Empire_Courier", "Imperial Courier");
             ShipTranslation.Add("Empire_Eagle", "Imperial Eagle");
             ShipTranslation.Add("Empire_Trader", "Imperial Clipper");
             ShipTranslation.Add("Federation_Corvette", "Federal Corvette");
             ShipTranslation.Add("Federation_Dropship", "Federal Dropship");
             ShipTranslation.Add("Federation_Dropship_MkII", "Federal Assault Ship");
-            ShipTranslation.Add("FerDeLance", "Fer-de-Lance");
             ShipTranslation.Add("Federation_Gunship", "Federal Gunship");
+            ShipTranslation.Add("FerDeLance", "Fer-de-Lance");
+            ShipTranslation.Add("Hauler", "Hauler");
             ShipTranslation.Add("Independant_Trader", "Keelback");
             ShipTranslation.Add("Krait_MkII", "Krait MkII");
+            ShipTranslation.Add("Orca", "Orca");
+            ShipTranslation.Add("Python", "Python");
+            ShipTranslation.Add("SideWinder", "Sidewinder");
             ShipTranslation.Add("Type6", "Type 6");
             ShipTranslation.Add("Type7", "Type 7");
             ShipTranslation.Add("Type9", "Type 9");
             ShipTranslation.Add("Type9_Military", "Type 10");
             ShipTranslation.Add("TypeX", "Alliance Chieftain");
             ShipTranslation.Add("TypeX_3", "Alliance Challenger");
-            ShipTranslation.Add("Viper_MkIV", "Viper MkIV");
             ShipTranslation.Add("Viper", "Viper MkIII");
-            ShipTranslation.Add("Python", "Python");
-            ShipTranslation.Add("Dolphin", "Dolphin");
-            ShipTranslation.Add("SideWinder", "Sidewinder");
+            ShipTranslation.Add("Viper_MkIV", "Viper MkIV");
             ShipTranslation.Add("Vulture", "Vulture");
-            ShipTranslation.Add("Eagle", "Eagle");
-            ShipTranslation.Add("Orca", "Orca");
-             ShipTranslation.Add("Hauler", "Hauler");
-       }
+        }
 
-        private string GetShipName(JToken ship)
+        /// <summary>
+        /// Get the padsizes upon which the ship may land.
+        /// </summary>
+        /// <param name="shipType">The internal ship type.</param>
+        /// <returns>The padsizes upon which the ship may land.</returns>
+        private string TranslateShipType(string shipType)
         {
-            string shipId = string.Empty;
-            string shipName = string.Empty;
+            string translation = shipType.Trim();
 
-            // Get the ship ID if assigned otherwise use the internal ID.
-            try
+            if (ShipTranslation.Count == 0)
             {
-                shipId = (string)ship["shipID"];
-            }
-            catch
-            {
-                shipId = string.Empty;
+                SetupShipTranslations();
             }
 
-            if (string.IsNullOrEmpty(shipId))
+            if (ShipTranslation.ContainsKey(shipType))
             {
-                shipId = (string)ship["id"];
+                translation = ShipTranslation[shipType];
             }
 
-            // Get the ship name if it has one.
-            try
-            {
-                shipName = (string)ship["shipName"];
-            }
-            catch
-            {
-                shipName = string.Empty;
-            }
-
-            if (!string.IsNullOrEmpty(shipName))
-            {
-                shipName = " ({0})".With(shipName);
-            }
-
-            // Finally, get the ship type.
-            string shipType = (string)ship["name"];
-
-            // Put the component parts together to form the ship name and type.
-            return "{0} {1}{2}".With(
-                TranslateShipType(shipType), 
-                shipId,
-                shipName);
+            return translation;
         }
 
         /// <summary>
