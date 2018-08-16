@@ -229,6 +229,7 @@ namespace TDHelper
                 // EDDBlink settings
                 configSection = config["EDDBlink"];
 
+                settings.SkipVend = GetBooleanSetting(configSection, "SkipVend");
                 settings.Solo = GetBooleanSetting(configSection, "Solo");
 
                 if (string.IsNullOrEmpty(settings.AvailableShips))
@@ -361,6 +362,7 @@ namespace TDHelper
 
             configSection = config["EDDBlink"];
 
+            configSection["SkipVend"].BoolValue = settings.SkipVend;
             configSection["Solo"].BoolValue = settings.Solo;
 
             // Update the current ship if required.
@@ -797,6 +799,7 @@ namespace TDHelper
         public bool ShowProgress { get; set; }
         public string SizeChild { get; set; }
         public string SizeParent { get; set; }
+        public bool SkipVend { get; set; }
         public bool Solo { get; set; }
         public decimal StartJumps { get; set; }
         public decimal Stock { get; set; }
@@ -891,6 +894,7 @@ namespace TDHelper
             instance.ShowProgress = false;
             instance.SizeChild = string.Empty;
             instance.SizeParent = string.Empty;
+            instance.SkipVend = false;
             instance.Solo = false;
             instance.StartJumps = 0;
             instance.Stock = 0;

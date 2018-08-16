@@ -74,46 +74,6 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// The event handler for analyse clicked.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void EventHandler_Analyse_Click(object sender, EventArgs e)
-        {
-            AnalyseDatabase();
-        }
-
-        /// <summary>
-        /// The event handler for form closing.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void EventHandler_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            SaveSettings();
-        }
-
-        /// <summary>
-        /// The event handler for reset clicked.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void EventHandler_Reset_Click(object sender, EventArgs e)
-        {
-            ResetToDefault();
-        }
-
-        /// <summary>
-        /// The event handler for UPdate DB clicked.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void EventHandler_UpdateDb_Click(object sender, EventArgs e)
-        {
-            ProcessDdUpdateRequest();
-        }
-
-        /// <summary>
         /// The event handler for all checked changed.
         /// </summary>
         /// <param name="sender">The sender object.</param>
@@ -121,6 +81,16 @@ namespace TDHelper
         private void EventHandler_All_CheckedChanged(object sender, EventArgs e)
         {
             SetAll();
+        }
+
+        /// <summary>
+        /// The event handler for analyse clicked.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_Analyse_Click(object sender, EventArgs e)
+        {
+            AnalyseDatabase();
         }
 
         /// <summary>
@@ -134,6 +104,16 @@ namespace TDHelper
         }
 
         /// <summary>
+        /// The event handler for form closing.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveSettings();
+        }
+
+        /// <summary>
         /// The event handler for item checked changed.
         /// </summary>
         /// <param name="sender">The sender object.</param>
@@ -141,16 +121,6 @@ namespace TDHelper
         private void EventHandler_Item_CheckedChanged(object sender, EventArgs e)
         {
             SetItem();
-        }
-
-        /// <summary>
-        /// The event handler for station checked changed.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void EventHandler_Station_CheckedChanged(object sender, EventArgs e)
-        {
-            SetStation();
         }
 
         /// <summary>
@@ -164,6 +134,16 @@ namespace TDHelper
         }
 
         /// <summary>
+        /// The event handler for reset clicked.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_Reset_Click(object sender, EventArgs e)
+        {
+            ResetToDefault();
+        }
+
+        /// <summary>
         /// The event handler for shipvend checked changed.
         /// </summary>
         /// <param name="sender">The sender object.</param>
@@ -171,16 +151,6 @@ namespace TDHelper
         private void EventHandler_Shipvend_CheckedChanged(object sender, EventArgs e)
         {
             SetShipvend();
-        }
-
-        /// <summary>
-        /// The event handler for upvend checked changed.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void EventHandler_Upvend_CheckedChanged(object sender, EventArgs e)
-        {
-            SetUpvend();
         }
 
         /// <summary>
@@ -203,6 +173,36 @@ namespace TDHelper
         {
             SetSolo();
             SetAll();
+        }
+
+        /// <summary>
+        /// The event handler for station checked changed.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_Station_CheckedChanged(object sender, EventArgs e)
+        {
+            SetStation();
+        }
+
+        /// <summary>
+        /// The event handler for UPdate DB clicked.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_UpdateDb_Click(object sender, EventArgs e)
+        {
+            ProcessDdUpdateRequest();
+        }
+
+        /// <summary>
+        /// The event handler for upvend checked changed.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_Upvend_CheckedChanged(object sender, EventArgs e)
+        {
+            SetUpvend();
         }
 
         /// <summary>
@@ -280,7 +280,6 @@ namespace TDHelper
                         .Replace(",listings,", ",")
                         .Replace(",skipvend", ",");
                 }
-
             }
 
             // Remove the leading and trailing comma if required.
@@ -358,6 +357,84 @@ namespace TDHelper
         }
 
         /// <summary>
+        /// Save any persistant settings to the settings object.
+        /// </summary>
+        private void SaveSettings()
+        {
+            if (chkSkipvend.Checked != MainForm.settingsRef.SkipVend)
+            {
+                MainForm.settingsRef.SkipVend = chkSkipvend.Checked;
+            }
+
+            if (chkSolo.Checked != MainForm.settingsRef.Solo)
+            {
+                MainForm.settingsRef.Solo = chkSolo.Checked;
+            }
+        }
+
+        /// <summary>
+        /// Set the controls for all.
+        /// </summary>
+        private void SetAll()
+        {
+            if (chkAll.Checked)
+            {
+                SetControlCheckedAndDisabled(chkItem);
+                SetControlCheckedAndDisabled(chkShip);
+                SetControlCheckedAndDisabled(chkStation);
+                SetControlCheckedAndDisabled(chkSystem);
+                SetControlCheckedAndDisabled(chkUpgrade);
+
+                if (!chkSkipvend.Checked)
+                {
+                    SetControlCheckedAndDisabled(chkShipvend);
+                    SetControlCheckedAndDisabled(chkUpvend);
+                }
+
+                if (!chkSolo.Checked)
+                {
+                    SetControlCheckedAndDisabled(chkListings);
+                }
+            }
+            else
+            {
+                SetControlUncheckedAndEnabled(chkItem);
+                SetControlUncheckedAndEnabled(chkShip);
+                SetControlUncheckedAndEnabled(chkStation);
+                SetControlUncheckedAndEnabled(chkSystem);
+                SetControlUncheckedAndEnabled(chkUpgrade);
+
+                if (!chkSkipvend.Checked)
+                {
+                    SetControlUncheckedAndEnabled(chkShipvend);
+                    SetControlUncheckedAndEnabled(chkUpvend);
+                }
+
+                if (!chkSolo.Checked)
+                {
+                    SetControlUncheckedAndEnabled(chkListings);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Set the controls for clean.
+        /// </summary>
+        private void SetClean()
+        {
+            if (chkClean.Checked)
+            {
+                SetControlCheckedAndDisabled(chkAll);
+                SetControlCheckedAndDisabled(chkForce);
+            }
+            else
+            {
+                SetControlUncheckedAndEnabled(chkAll);
+                SetControlUncheckedAndEnabled(chkForce);
+            }
+        }
+
+        /// <summary>
         /// Set the specified control disabled and checked.
         /// </summary>
         /// <param name="control"></param>
@@ -388,75 +465,6 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Save any persistant settings to the settings object.
-        /// </summary>
-        private void SaveSettings()
-        {
-            if (chkSolo.Checked != MainForm.settingsRef.Solo)
-            {
-                MainForm.settingsRef.Solo = chkSolo.Checked;
-            }
-        }
-
-        /// <summary>
-        /// Set the controls for all.
-        /// </summary>
-        private void SetAll()
-        {
-            if (chkAll.Checked)
-            {
-                SetControlCheckedAndDisabled(chkItem);
-                SetControlCheckedAndDisabled(chkShip);
-                SetControlCheckedAndDisabled(chkStation);
-                SetControlCheckedAndDisabled(chkSystem);
-                SetControlCheckedAndDisabled(chkUpgrade);
-                if (!chkSkipvend.Checked)
-                {
-                    SetControlCheckedAndDisabled(chkShipvend);
-                    SetControlCheckedAndDisabled(chkUpvend);
-                }
-                if (!chkSolo.Checked)
-                {
-                    SetControlCheckedAndDisabled(chkListings);
-                }
-            }
-            else
-            {
-                SetControlUncheckedAndEnabled(chkItem);
-                SetControlUncheckedAndEnabled(chkShip);
-                SetControlUncheckedAndEnabled(chkStation);
-                SetControlUncheckedAndEnabled(chkSystem);
-                SetControlUncheckedAndEnabled(chkUpgrade);
-                if (!chkSkipvend.Checked)
-                {
-                    SetControlUncheckedAndEnabled(chkShipvend);
-                    SetControlUncheckedAndEnabled(chkUpvend);
-                }
-                if (!chkSolo.Checked)
-                {
-                    SetControlUncheckedAndEnabled(chkListings);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Set the controls for clean.
-        /// </summary>
-        private void SetClean()
-        {
-            if (chkClean.Checked)
-            {
-                SetControlCheckedAndDisabled(chkAll);
-                SetControlCheckedAndDisabled(chkForce);
-            }
-            else
-            {
-                SetControlUncheckedAndEnabled(chkAll);
-                SetControlUncheckedAndEnabled(chkForce);
-            }
-        }
-
-        /// <summary>
         /// Set the controls for listings.
         /// </summary>
         private void SetItem()
@@ -468,21 +476,6 @@ namespace TDHelper
             else
             {
                 SetControlUncheckedAndEnabled(chkStation);
-            }
-        }
-
-        /// <summary>
-        /// Set the controls for station.
-        /// </summary>
-        private void SetStation()
-        {
-            if (chkStation.Checked)
-            {
-                SetControlCheckedAndDisabled(chkSystem);
-            }
-            else
-            {
-                SetControlUncheckedAndEnabled(chkSystem);
             }
         }
 
@@ -519,23 +512,6 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Set the controls for upvend.
-        /// </summary>
-        private void SetUpvend()
-        {
-            if (chkUpvend.Checked)
-            {
-                SetControlCheckedAndDisabled(chkUpgrade);
-                SetControlCheckedAndDisabled(chkStation);
-            }
-            else
-            {
-                SetControlUncheckedAndEnabled(chkUpgrade);
-                SetControlUncheckedAndEnabled(chkStation);
-            }
-        }
-
-        /// <summary>
         /// Set the controls for skipvend.
         /// </summary>
         private void SetSkipvend()
@@ -566,6 +542,38 @@ namespace TDHelper
             {
                 SetControlUncheckedAndEnabled(chkListings);
                 SetControlUncheckedAndEnabled(chkSkipvend);
+            }
+        }
+
+        /// <summary>
+        /// Set the controls for station.
+        /// </summary>
+        private void SetStation()
+        {
+            if (chkStation.Checked)
+            {
+                SetControlCheckedAndDisabled(chkSystem);
+            }
+            else
+            {
+                SetControlUncheckedAndEnabled(chkSystem);
+            }
+        }
+
+        /// <summary>
+        /// Set the controls for upvend.
+        /// </summary>
+        private void SetUpvend()
+        {
+            if (chkUpvend.Checked)
+            {
+                SetControlCheckedAndDisabled(chkUpgrade);
+                SetControlCheckedAndDisabled(chkStation);
+            }
+            else
+            {
+                SetControlUncheckedAndEnabled(chkUpgrade);
+                SetControlUncheckedAndEnabled(chkStation);
             }
         }
 
