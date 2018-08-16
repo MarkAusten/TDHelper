@@ -569,11 +569,14 @@ namespace TDHelper
             testSystemsTimer.Start(); // fire again after ~10s
         }
 
+
+        /// <summary>
+        /// This worker delegate is for the Cmdr Profile process
+        /// </summary>
+        /// <param name="sender">The calling object.</param>
+        /// <param name="e">The event parameters.</param>
         private void BackgroundWorker7_DoWork(object sender, DoWorkEventArgs e)
         {
-            /*
-             * This worker delegate is for the Cmdr Profile process
-             */
             if (buttonCaller == 22)
             {
                 // Check to see if the EDCE folder and files are valid

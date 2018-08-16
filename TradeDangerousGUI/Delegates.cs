@@ -1125,6 +1125,8 @@ namespace TDHelper
         {
             ShipTranslation.Clear();
 
+            ShipTranslation.Add("Adder", "Adder");
+            ShipTranslation.Add("Anaconda", "Anaconda");
             ShipTranslation.Add("Asp", "Asp Explorer");
             ShipTranslation.Add("Asp_Scout", "Asp Scout");
             ShipTranslation.Add("BelugaLiner", "Beluga");
@@ -1139,6 +1141,7 @@ namespace TDHelper
             ShipTranslation.Add("Federation_Corvette", "Federal Corvette");
             ShipTranslation.Add("Federation_Dropship", "Federal Dropship");
             ShipTranslation.Add("Federation_Dropship_MkII", "Federal Assault Ship");
+            ShipTranslation.Add("FerDeLance", "Fer-de-Lance");
             ShipTranslation.Add("Federation_Gunship", "Federal Gunship");
             ShipTranslation.Add("Independant_Trader", "Keelback");
             ShipTranslation.Add("Krait_MkII", "Krait MkII");
@@ -1149,7 +1152,15 @@ namespace TDHelper
             ShipTranslation.Add("TypeX", "Alliance Chieftain");
             ShipTranslation.Add("TypeX_3", "Alliance Challenger");
             ShipTranslation.Add("Viper_MkIV", "Viper MkIV");
-        }
+            ShipTranslation.Add("Viper", "Viper MkIII");
+            ShipTranslation.Add("Python", "Python");
+            ShipTranslation.Add("Dolphin", "Dolphin");
+            ShipTranslation.Add("SideWinder", "Sidewinder");
+            ShipTranslation.Add("Vulture", "Vulture");
+            ShipTranslation.Add("Eagle", "Eagle");
+            ShipTranslation.Add("Orca", "Orca");
+             ShipTranslation.Add("Hauler", "Hauler");
+       }
 
         private string GetShipName(JToken ship)
         {
