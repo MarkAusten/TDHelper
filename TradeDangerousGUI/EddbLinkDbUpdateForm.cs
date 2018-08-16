@@ -345,6 +345,9 @@ namespace TDHelper
         {
             UncheckAndEnableAll();
 
+            // Skipvend is a persistent setting so deal with it.
+            chkSkipvend.Checked = MainForm.settingsRef.SkipVend;
+
             // Solo is a persistant setting so check for that setting.
             if (MainForm.settingsRef.Solo)
             {
