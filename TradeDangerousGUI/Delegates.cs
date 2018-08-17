@@ -420,6 +420,7 @@ namespace TDHelper
         {
             string shipId = string.Empty;
             string shipName = string.Empty;
+            string shipType = string.Empty;
 
             // Get the ship ID if assigned otherwise use the internal ID.
             try
@@ -452,7 +453,14 @@ namespace TDHelper
             }
 
             // Finally, get the ship type.
-            string shipType = (string)ship["name"];
+            try
+            {
+                shipType = (string)ship["name"];
+            }
+            catch
+            {
+                shipType = "Unknown Ship Type";
+            }
 
             // Put the component parts together to form the ship name and type.
             return "{0} {1}{2}".With(
@@ -1193,7 +1201,7 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Get the padsizes upon which the ship may land.
+        /// Get the game name of the ship from the internal name.
         /// </summary>
         /// <param name="shipType">The internal ship type.</param>
         /// <returns>The padsizes upon which the ship may land.</returns>
@@ -1266,9 +1274,26 @@ namespace TDHelper
 
             string availableShips = string.Empty;
 
+            JToken token = cmdrProfile["profile"]["ships"];
+            string listStructure = string.Empty;
+
+            if (token is JArray)
+            {
+                listStructure = "array";
+            }
+            else if (token is JObject)
+            {
+                listStructure = "object";
+            }
+
             foreach (JToken ship in cmdrProfile["profile"]["ships"])
             {
-                string sectionName = GetShipName(ship.First);
+                JToken shipObject
+                    = listStructure == "array"
+                    ? ship
+                    : ship.First;
+
+                string sectionName = GetShipName(shipObject);
 
                 availableShips += ",{0}".With(sectionName);
 
@@ -1277,8 +1302,8 @@ namespace TDHelper
                     ? capacity
                     : 0;
 
-                hullValue = (decimal)ship.First["value"]["hull"];
-                modulesValue = (decimal)ship.First["value"]["modules"];
+                hullValue = (decimal)shipObject["value"]["hull"];
+                modulesValue = (decimal)shipObject["value"]["modules"];
 
                 Setting capacitySetting = config[sectionName]["Capacity"];
 
@@ -1309,12 +1334,12 @@ namespace TDHelper
                 config[sectionName]["hullValue"].DecimalValue = hullValue;
                 config[sectionName]["modulesValue"].DecimalValue = modulesValue;
                 config[sectionName]["Insurance"].DecimalValue = (hullValue + modulesValue) * rebuyPercentage / 100;
-                config[sectionName]["Padsizes"].StringValue = this.GetPadSizes((string)ship.First["name"]);
+                config[sectionName]["Padsizes"].StringValue = this.GetPadSizes((string)shipObject["name"]);
             }
 
-            string currentShips = MainForm.settingsRef.AvailableShips;
-            MainForm.settingsRef.AvailableShips = availableShips.Substring(1);
-            config["System"]["AvailableShips"].StringValue = MainForm.settingsRef.AvailableShips;
+            string currentShips = settingsRef.AvailableShips;
+            settingsRef.AvailableShips = availableShips.Substring(1);
+            config["System"]["AvailableShips"].StringValue = settingsRef.AvailableShips;
 
             // Determine if any ships have been sold and remove if found.
             IList<string> missingShips = DeterminMissingShips(currentShips, availableShips);
