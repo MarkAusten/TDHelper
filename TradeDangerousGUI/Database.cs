@@ -36,8 +36,8 @@ namespace TDHelper
 
         private DataTable stnship_table = new DataTable();
 
-        private SQLiteConnection tdConn;
-        private SQLiteConnection pilotsLogConn;
+        private SQLiteConnection tdConn = null;
+        private SQLiteConnection pilotsLogConn = null;
 
         #endregion Props
 
@@ -135,6 +135,12 @@ namespace TDHelper
         /// <param name="conn">The connection to be opened.</param>
         public void OpenConnection(SQLiteConnection conn)
         {
+            // If either of the connections is null then set the connections.
+            if (tdConn == null || pilotsLogConn == null)
+            {
+                SetConnections();
+            }
+
             if (conn != null && conn.State == ConnectionState.Closed)
             {
                 conn.Open();
