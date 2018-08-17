@@ -393,7 +393,7 @@
             this.btnStart.Location = new System.Drawing.Point(787, 1);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(69, 23);
-            this.btnStart.TabIndex = 1;
+            this.btnStart.TabIndex = 8;
             this.btnStart.TabStop = false;
             this.btnStart.Text = "Start";
             this.btnStart.UseVisualStyleBackColor = true;
@@ -592,7 +592,7 @@
             this.chkRunOptionsTowards.Location = new System.Drawing.Point(220, 55);
             this.chkRunOptionsTowards.Name = "chkRunOptionsTowards";
             this.chkRunOptionsTowards.Size = new System.Drawing.Size(67, 17);
-            this.chkRunOptionsTowards.TabIndex = 7;
+            this.chkRunOptionsTowards.TabIndex = 11;
             this.chkRunOptionsTowards.TabStop = false;
             this.chkRunOptionsTowards.Text = "Towards";
             this.tipToolTips.SetToolTip(this.chkRunOptionsTowards, "Favors distance covered over profit generated during routing (requires a Destinat" +
@@ -608,7 +608,7 @@
             this.chkRunOptionsLoop.Name = "chkRunOptionsLoop";
             this.chkRunOptionsLoop.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.chkRunOptionsLoop.Size = new System.Drawing.Size(50, 17);
-            this.chkRunOptionsLoop.TabIndex = 6;
+            this.chkRunOptionsLoop.TabIndex = 2;
             this.chkRunOptionsLoop.TabStop = false;
             this.chkRunOptionsLoop.Text = "Loop";
             this.tipToolTips.SetToolTip(this.chkRunOptionsLoop, "Attempts to get a round-trip route");
@@ -762,7 +762,7 @@
             this.chkRunOptionsDirect.Location = new System.Drawing.Point(3, 81);
             this.chkRunOptionsDirect.Name = "chkRunOptionsDirect";
             this.chkRunOptionsDirect.Size = new System.Drawing.Size(54, 17);
-            this.chkRunOptionsDirect.TabIndex = 3;
+            this.chkRunOptionsDirect.TabIndex = 4;
             this.chkRunOptionsDirect.TabStop = false;
             this.chkRunOptionsDirect.Text = "Direct";
             this.tipToolTips.SetToolTip(this.chkRunOptionsDirect, "Attempts to calculate a 1 hop route, ignoring distance (volatile)");
@@ -780,7 +780,7 @@
             0});
             this.numRunOptionsRoutes.Name = "numRunOptionsRoutes";
             this.numRunOptionsRoutes.Size = new System.Drawing.Size(46, 20);
-            this.numRunOptionsRoutes.TabIndex = 5;
+            this.numRunOptionsRoutes.TabIndex = 9;
             this.numRunOptionsRoutes.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numRunOptionsRoutes.ThousandsSeparator = true;
             this.tipToolTips.SetToolTip(this.numRunOptionsRoutes, "Generates this many routes for a Run");
@@ -793,7 +793,7 @@
             this.numRunOptionsEndJumps.Location = new System.Drawing.Point(131, 86);
             this.numRunOptionsEndJumps.Name = "numRunOptionsEndJumps";
             this.numRunOptionsEndJumps.Size = new System.Drawing.Size(46, 20);
-            this.numRunOptionsEndJumps.TabIndex = 1;
+            this.numRunOptionsEndJumps.TabIndex = 8;
             this.numRunOptionsEndJumps.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tipToolTips.SetToolTip(this.numRunOptionsEndJumps, "Try to finish this many jumps away from the destination, this requires a destinat" +
         "ion (volatile)");
@@ -806,7 +806,7 @@
             this.numRunOptionsStartJumps.Location = new System.Drawing.Point(131, 60);
             this.numRunOptionsStartJumps.Name = "numRunOptionsStartJumps";
             this.numRunOptionsStartJumps.Size = new System.Drawing.Size(46, 20);
-            this.numRunOptionsStartJumps.TabIndex = 2;
+            this.numRunOptionsStartJumps.TabIndex = 7;
             this.numRunOptionsStartJumps.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tipToolTips.SetToolTip(this.numRunOptionsStartJumps, "Try to route starting from this many jumps away from the source system (volatile)" +
         "");
@@ -833,10 +833,10 @@
             // numRouteOptionsPruneHops
             // 
             this.numRouteOptionsPruneHops.ContextMenuStrip = this.mnuSetValues;
-            this.numRouteOptionsPruneHops.Location = new System.Drawing.Point(78, 26);
+            this.numRouteOptionsPruneHops.Location = new System.Drawing.Point(78, 95);
             this.numRouteOptionsPruneHops.Name = "numRouteOptionsPruneHops";
             this.numRouteOptionsPruneHops.Size = new System.Drawing.Size(60, 20);
-            this.numRouteOptionsPruneHops.TabIndex = 1;
+            this.numRouteOptionsPruneHops.TabIndex = 4;
             this.numRouteOptionsPruneHops.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tipToolTips.SetToolTip(this.numRouteOptionsPruneHops, "Number of hops before pruning starts, to enable set >=2");
             this.numRouteOptionsPruneHops.Enter += new System.EventHandler(this.NumericUpDown_Enter);
@@ -845,7 +845,7 @@
             // numRouteOptionsPruneScore
             // 
             this.numRouteOptionsPruneScore.ContextMenuStrip = this.mnuSetValues;
-            this.numRouteOptionsPruneScore.Location = new System.Drawing.Point(78, 3);
+            this.numRouteOptionsPruneScore.Location = new System.Drawing.Point(78, 72);
             this.numRouteOptionsPruneScore.Maximum = new decimal(new int[] {
             99,
             0,
@@ -853,7 +853,7 @@
             0});
             this.numRouteOptionsPruneScore.Name = "numRouteOptionsPruneScore";
             this.numRouteOptionsPruneScore.Size = new System.Drawing.Size(60, 20);
-            this.numRouteOptionsPruneScore.TabIndex = 0;
+            this.numRouteOptionsPruneScore.TabIndex = 3;
             this.numRouteOptionsPruneScore.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tipToolTips.SetToolTip(this.numRouteOptionsPruneScore, "Percentage of route score change, below which pruning occurs");
             this.numRouteOptionsPruneScore.Enter += new System.EventHandler(this.NumericUpDown_Enter);
@@ -863,7 +863,7 @@
             // 
             this.numRouteOptionsLsPenalty.ContextMenuStrip = this.mnuSetValues;
             this.numRouteOptionsLsPenalty.DecimalPlaces = 1;
-            this.numRouteOptionsLsPenalty.Location = new System.Drawing.Point(78, 72);
+            this.numRouteOptionsLsPenalty.Location = new System.Drawing.Point(78, 49);
             this.numRouteOptionsLsPenalty.Maximum = new decimal(new int[] {
             20000,
             0,
@@ -871,7 +871,7 @@
             0});
             this.numRouteOptionsLsPenalty.Name = "numRouteOptionsLsPenalty";
             this.numRouteOptionsLsPenalty.Size = new System.Drawing.Size(60, 20);
-            this.numRouteOptionsLsPenalty.TabIndex = 3;
+            this.numRouteOptionsLsPenalty.TabIndex = 2;
             this.numRouteOptionsLsPenalty.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tipToolTips.SetToolTip(this.numRouteOptionsLsPenalty, "Scoring penalty per LS traveled to station");
             this.numRouteOptionsLsPenalty.Enter += new System.EventHandler(this.NumericUpDown_Enter);
@@ -880,7 +880,7 @@
             // numRouteOptionsMaxLSDistance
             // 
             this.numRouteOptionsMaxLSDistance.ContextMenuStrip = this.mnuSetValues;
-            this.numRouteOptionsMaxLSDistance.Location = new System.Drawing.Point(78, 49);
+            this.numRouteOptionsMaxLSDistance.Location = new System.Drawing.Point(78, 26);
             this.numRouteOptionsMaxLSDistance.Maximum = new decimal(new int[] {
             20000,
             0,
@@ -888,7 +888,7 @@
             0});
             this.numRouteOptionsMaxLSDistance.Name = "numRouteOptionsMaxLSDistance";
             this.numRouteOptionsMaxLSDistance.Size = new System.Drawing.Size(60, 20);
-            this.numRouteOptionsMaxLSDistance.TabIndex = 2;
+            this.numRouteOptionsMaxLSDistance.TabIndex = 1;
             this.numRouteOptionsMaxLSDistance.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tipToolTips.SetToolTip(this.numRouteOptionsMaxLSDistance, "Maximum distance station can be from system drop");
             this.numRouteOptionsMaxLSDistance.Enter += new System.EventHandler(this.NumericUpDown_Enter);
@@ -919,7 +919,7 @@
             this.chkRunOptionsUnique.Location = new System.Drawing.Point(227, 78);
             this.chkRunOptionsUnique.Name = "chkRunOptionsUnique";
             this.chkRunOptionsUnique.Size = new System.Drawing.Size(60, 17);
-            this.chkRunOptionsUnique.TabIndex = 5;
+            this.chkRunOptionsUnique.TabIndex = 12;
             this.chkRunOptionsUnique.TabStop = false;
             this.chkRunOptionsUnique.Text = "Unique";
             this.tipToolTips.SetToolTip(this.chkRunOptionsUnique, "Require that stations on a route only be visited once");
@@ -1102,7 +1102,7 @@
             this.cboMethod.Location = new System.Drawing.Point(699, 2);
             this.cboMethod.Name = "cboMethod";
             this.cboMethod.Size = new System.Drawing.Size(82, 21);
-            this.cboMethod.TabIndex = 1;
+            this.cboMethod.TabIndex = 7;
             this.cboMethod.TabStop = false;
             this.tipToolTips.SetToolTip(this.cboMethod, "Select the command to run");
             this.cboMethod.SelectedIndexChanged += new System.EventHandler(this.MethodComboBox_SelectedIndexChanged);
@@ -1181,7 +1181,7 @@
             this.chkRunOptionsBlkMkt.Location = new System.Drawing.Point(3, 58);
             this.chkRunOptionsBlkMkt.Name = "chkRunOptionsBlkMkt";
             this.chkRunOptionsBlkMkt.Size = new System.Drawing.Size(51, 17);
-            this.chkRunOptionsBlkMkt.TabIndex = 2;
+            this.chkRunOptionsBlkMkt.TabIndex = 3;
             this.chkRunOptionsBlkMkt.TabStop = false;
             this.chkRunOptionsBlkMkt.Text = "BMkt";
             this.tipToolTips.SetToolTip(this.chkRunOptionsBlkMkt, "Require stations with a black market");
@@ -1203,7 +1203,7 @@
             this.btnDbUpdate.Location = new System.Drawing.Point(419, 0);
             this.btnDbUpdate.Name = "btnDbUpdate";
             this.btnDbUpdate.Size = new System.Drawing.Size(68, 23);
-            this.btnDbUpdate.TabIndex = 24;
+            this.btnDbUpdate.TabIndex = 4;
             this.btnDbUpdate.TabStop = false;
             this.btnDbUpdate.Text = "Update DB";
             this.tipToolTips.SetToolTip(this.btnDbUpdate, "Update the database based on time from previous update");
@@ -1215,7 +1215,7 @@
             this.btnGetSystem.Location = new System.Drawing.Point(334, 0);
             this.btnGetSystem.Name = "btnGetSystem";
             this.btnGetSystem.Size = new System.Drawing.Size(23, 23);
-            this.btnGetSystem.TabIndex = 7;
+            this.btnGetSystem.TabIndex = 1;
             this.btnGetSystem.TabStop = false;
             this.btnGetSystem.Text = "C";
             this.tipToolTips.SetToolTip(this.btnGetSystem, "Get the most recent systems from the network logs (Ctrl+Click for a full refresh)" +
@@ -1257,7 +1257,7 @@
             // lblRouteOptionsAge
             // 
             this.lblRouteOptionsAge.AutoSize = true;
-            this.lblRouteOptionsAge.Location = new System.Drawing.Point(43, 99);
+            this.lblRouteOptionsAge.Location = new System.Drawing.Point(43, 7);
             this.lblRouteOptionsAge.Name = "lblRouteOptionsAge";
             this.lblRouteOptionsAge.Size = new System.Drawing.Size(29, 13);
             this.lblRouteOptionsAge.TabIndex = 51;
@@ -1268,7 +1268,7 @@
             // 
             this.numRouteOptionsAge.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.numRouteOptionsAge.ContextMenuStrip = this.mnuSetValues;
-            this.numRouteOptionsAge.Location = new System.Drawing.Point(78, 95);
+            this.numRouteOptionsAge.Location = new System.Drawing.Point(78, 3);
             this.numRouteOptionsAge.Maximum = new decimal(new int[] {
             30,
             0,
@@ -1276,7 +1276,7 @@
             0});
             this.numRouteOptionsAge.Name = "numRouteOptionsAge";
             this.numRouteOptionsAge.Size = new System.Drawing.Size(60, 20);
-            this.numRouteOptionsAge.TabIndex = 4;
+            this.numRouteOptionsAge.TabIndex = 0;
             this.numRouteOptionsAge.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tipToolTips.SetToolTip(this.numRouteOptionsAge, "Filter any hops based on the age of their recent data, up to 30 days");
             this.numRouteOptionsAge.Enter += new System.EventHandler(this.NumericUpDown_Enter);
@@ -1381,7 +1381,7 @@
             this.btnMiniMode.Location = new System.Drawing.Point(363, 0);
             this.btnMiniMode.Name = "btnMiniMode";
             this.btnMiniMode.Size = new System.Drawing.Size(23, 23);
-            this.btnMiniMode.TabIndex = 1;
+            this.btnMiniMode.TabIndex = 2;
             this.btnMiniMode.TabStop = false;
             this.btnMiniMode.Text = "&T";
             this.tipToolTips.SetToolTip(this.btnMiniMode, "Switch to a minimal TreeView mode for Run output (ESC to exit)");
@@ -1422,7 +1422,7 @@
             0});
             this.numRouteOptionsStock.Name = "numRouteOptionsStock";
             this.numRouteOptionsStock.Size = new System.Drawing.Size(71, 20);
-            this.numRouteOptionsStock.TabIndex = 8;
+            this.numRouteOptionsStock.TabIndex = 0;
             this.numRouteOptionsStock.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numRouteOptionsStock.ThousandsSeparator = true;
             this.tipToolTips.SetToolTip(this.numRouteOptionsStock, "Filter hops below this level of stock");
@@ -1455,7 +1455,7 @@
             this.numRunOptionsLoopInt.Location = new System.Drawing.Point(131, 34);
             this.numRunOptionsLoopInt.Name = "numRunOptionsLoopInt";
             this.numRunOptionsLoopInt.Size = new System.Drawing.Size(46, 20);
-            this.numRunOptionsLoopInt.TabIndex = 10;
+            this.numRunOptionsLoopInt.TabIndex = 6;
             this.numRunOptionsLoopInt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tipToolTips.SetToolTip(this.numRunOptionsLoopInt, "Minimum hops between visiting the same station");
             this.numRunOptionsLoopInt.Enter += new System.EventHandler(this.NumericUpDown_Enter);
@@ -1469,7 +1469,7 @@
             this.chkRunOptionsShorten.Location = new System.Drawing.Point(224, 32);
             this.chkRunOptionsShorten.Name = "chkRunOptionsShorten";
             this.chkRunOptionsShorten.Size = new System.Drawing.Size(63, 17);
-            this.chkRunOptionsShorten.TabIndex = 61;
+            this.chkRunOptionsShorten.TabIndex = 10;
             this.chkRunOptionsShorten.TabStop = false;
             this.chkRunOptionsShorten.Text = "Shorten";
             this.tipToolTips.SetToolTip(this.chkRunOptionsShorten, "Finds the highest gainful route with the least hops (requires a Destination)");
@@ -1510,7 +1510,7 @@
             this.chkRunOptionsJumps.Location = new System.Drawing.Point(3, 104);
             this.chkRunOptionsJumps.Name = "chkRunOptionsJumps";
             this.chkRunOptionsJumps.Size = new System.Drawing.Size(56, 17);
-            this.chkRunOptionsJumps.TabIndex = 62;
+            this.chkRunOptionsJumps.TabIndex = 5;
             this.chkRunOptionsJumps.TabStop = false;
             this.chkRunOptionsJumps.Text = "Jumps";
             this.tipToolTips.SetToolTip(this.chkRunOptionsJumps, "Show jumps between hops during a multi-hop route");
@@ -1521,7 +1521,7 @@
             this.btnCmdrProfile.Location = new System.Drawing.Point(493, 0);
             this.btnCmdrProfile.Name = "btnCmdrProfile";
             this.btnCmdrProfile.Size = new System.Drawing.Size(75, 23);
-            this.btnCmdrProfile.TabIndex = 68;
+            this.btnCmdrProfile.TabIndex = 5;
             this.btnCmdrProfile.TabStop = false;
             this.btnCmdrProfile.Text = "Cmdr Profile";
             this.tipToolTips.SetToolTip(this.btnCmdrProfile, "Download the commander\'s profile from Frontier and populate the available values." +
@@ -1534,7 +1534,7 @@
             this.btnSaveSettings.Location = new System.Drawing.Point(574, 0);
             this.btnSaveSettings.Name = "btnSaveSettings";
             this.btnSaveSettings.Size = new System.Drawing.Size(54, 23);
-            this.btnSaveSettings.TabIndex = 69;
+            this.btnSaveSettings.TabIndex = 6;
             this.btnSaveSettings.TabStop = false;
             this.btnSaveSettings.Text = "Save Settings";
             this.tipToolTips.SetToolTip(this.btnSaveSettings, "Save the settings immediately.");
@@ -1559,7 +1559,7 @@
             this.txtRunOptionsPlanetary.MaxLength = 3;
             this.txtRunOptionsPlanetary.Name = "txtRunOptionsPlanetary";
             this.txtRunOptionsPlanetary.Size = new System.Drawing.Size(32, 20);
-            this.txtRunOptionsPlanetary.TabIndex = 68;
+            this.txtRunOptionsPlanetary.TabIndex = 13;
             this.txtRunOptionsPlanetary.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tipToolTips.SetToolTip(this.txtRunOptionsPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
         "?");
@@ -1571,7 +1571,7 @@
             this.btnSettings.Location = new System.Drawing.Point(390, 0);
             this.btnSettings.Name = "btnSettings";
             this.btnSettings.Size = new System.Drawing.Size(23, 23);
-            this.btnSettings.TabIndex = 70;
+            this.btnSettings.TabIndex = 3;
             this.btnSettings.TabStop = false;
             this.tipToolTips.SetToolTip(this.btnSettings, "Configuration settings");
             this.btnSettings.UseVisualStyleBackColor = true;
@@ -3038,7 +3038,7 @@
             this.btnStationInfo.Location = new System.Drawing.Point(0, 0);
             this.btnStationInfo.Name = "btnStationInfo";
             this.btnStationInfo.Size = new System.Drawing.Size(23, 23);
-            this.btnStationInfo.TabIndex = 71;
+            this.btnStationInfo.TabIndex = 9;
             this.btnStationInfo.TabStop = false;
             this.btnStationInfo.Text = "i";
             this.tipToolTips.SetToolTip(this.btnStationInfo, "Show some details of the selected station.");
@@ -3459,7 +3459,7 @@
             // lblRouteOptionsMaxLS
             // 
             this.lblRouteOptionsMaxLS.AutoSize = true;
-            this.lblRouteOptionsMaxLS.Location = new System.Drawing.Point(26, 53);
+            this.lblRouteOptionsMaxLS.Location = new System.Drawing.Point(26, 30);
             this.lblRouteOptionsMaxLS.Name = "lblRouteOptionsMaxLS";
             this.lblRouteOptionsMaxLS.Size = new System.Drawing.Size(46, 13);
             this.lblRouteOptionsMaxLS.TabIndex = 10;
@@ -3468,7 +3468,7 @@
             // lblRouteOptionsPruneHops
             // 
             this.lblRouteOptionsPruneHops.AutoSize = true;
-            this.lblRouteOptionsPruneHops.Location = new System.Drawing.Point(6, 30);
+            this.lblRouteOptionsPruneHops.Location = new System.Drawing.Point(6, 97);
             this.lblRouteOptionsPruneHops.Name = "lblRouteOptionsPruneHops";
             this.lblRouteOptionsPruneHops.Size = new System.Drawing.Size(66, 13);
             this.lblRouteOptionsPruneHops.TabIndex = 15;
@@ -3477,7 +3477,7 @@
             // lblRouteOptionsPruneScore
             // 
             this.lblRouteOptionsPruneScore.AutoSize = true;
-            this.lblRouteOptionsPruneScore.Location = new System.Drawing.Point(3, 7);
+            this.lblRouteOptionsPruneScore.Location = new System.Drawing.Point(3, 74);
             this.lblRouteOptionsPruneScore.Name = "lblRouteOptionsPruneScore";
             this.lblRouteOptionsPruneScore.Size = new System.Drawing.Size(69, 13);
             this.lblRouteOptionsPruneScore.TabIndex = 49;
@@ -3486,7 +3486,7 @@
             // lblRouteOptionsLsPenalty
             // 
             this.lblRouteOptionsLsPenalty.AutoSize = true;
-            this.lblRouteOptionsLsPenalty.Location = new System.Drawing.Point(11, 76);
+            this.lblRouteOptionsLsPenalty.Location = new System.Drawing.Point(11, 51);
             this.lblRouteOptionsLsPenalty.Name = "lblRouteOptionsLsPenalty";
             this.lblRouteOptionsLsPenalty.Size = new System.Drawing.Size(61, 13);
             this.lblRouteOptionsLsPenalty.TabIndex = 8;
@@ -3611,16 +3611,16 @@
             // panOther
             // 
             this.panOther.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panOther.Controls.Add(this.lblRouteOptionsLsPenalty);
             this.panOther.Controls.Add(this.numRouteOptionsAge);
             this.panOther.Controls.Add(this.lblRouteOptionsAge);
-            this.panOther.Controls.Add(this.numRouteOptionsMaxLSDistance);
-            this.panOther.Controls.Add(this.lblRouteOptionsMaxLS);
-            this.panOther.Controls.Add(this.numRouteOptionsPruneScore);
             this.panOther.Controls.Add(this.numRouteOptionsLsPenalty);
             this.panOther.Controls.Add(this.lblRouteOptionsPruneScore);
-            this.panOther.Controls.Add(this.lblRouteOptionsLsPenalty);
-            this.panOther.Controls.Add(this.numRouteOptionsPruneHops);
+            this.panOther.Controls.Add(this.numRouteOptionsMaxLSDistance);
+            this.panOther.Controls.Add(this.numRouteOptionsPruneScore);
             this.panOther.Controls.Add(this.lblRouteOptionsPruneHops);
+            this.panOther.Controls.Add(this.numRouteOptionsPruneHops);
+            this.panOther.Controls.Add(this.lblRouteOptionsMaxLS);
             this.panOther.Location = new System.Drawing.Point(383, 63);
             this.panOther.Name = "panOther";
             this.panOther.Size = new System.Drawing.Size(145, 132);
