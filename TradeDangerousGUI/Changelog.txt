@@ -2,6 +2,7 @@ v2.0.5.3
 --------
 * Adding missing ship translations. 
 * Changed ship translation code to return the internal ship type if no translation entry is found.
+* Fixed issue #14.
 
 v2.0.5.2
 --------
