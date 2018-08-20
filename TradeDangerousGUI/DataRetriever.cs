@@ -260,17 +260,15 @@ namespace TDHelper
         private DataColumnCollection columnsValue;
         private string columnToSortBy;
         private string commaSeparatedListOfColumnNamesValue = null;
-        private SQLiteCommand countCmd, selectCmd;
+        private SQLiteCommand countCmd;
+        private SQLiteCommand selectCmd;
         private int rowCountValue = -1;
         private readonly string tableName;
 
         public DataRetriever(
             SQLiteConnection dbConn, 
-            string tableName,
-            MainForm mainForm)
+            string tableName)
         {
-            mainForm.OpenConnection(dbConn);
-
             countCmd = dbConn.CreateCommand();
             selectCmd = dbConn.CreateCommand();
             this.tableName = tableName;
@@ -285,6 +283,8 @@ namespace TDHelper
                 {
                     return columnsValue;
                 }
+
+                OpenConnection(selectCmd.Connection);
 
                 // Retrieve the column information from the database.
                 selectCmd.CommandText = "SELECT * FROM " + tableName;
@@ -306,10 +306,24 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Open the specified connection.
+        /// </summary>
+        /// <param name="conn">The connection to be opened.</param>
+        public void OpenConnection(SQLiteConnection conn)
+        {
+            if (conn != null && conn.State == ConnectionState.Closed)
+            {
+                conn.Open();
+            }
+        }
+
         public int RowCount
         {
             get
             {
+                OpenConnection(countCmd.Connection);
+
                 // Retrieve the row count from the database.
                 countCmd.CommandText = "SELECT COUNT(*) FROM " + tableName;
                 rowCountValue = Convert.ToInt32(countCmd.ExecuteScalar());
@@ -374,6 +388,8 @@ namespace TDHelper
                 throw new InvalidOperationException(string.Format(
                     "Column {0} must contain unique values.", columnToSortBy));
             }
+
+            OpenConnection(selectCmd.Connection);
 
             // Retrieve the specified number of rows from the database, starting
             // with the row specified by the lowerPageBoundary parameter.

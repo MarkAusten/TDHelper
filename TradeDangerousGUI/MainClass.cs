@@ -67,7 +67,7 @@ namespace TDHelper
         private List<KeyValuePair<string, string>> localSystemList = new List<KeyValuePair<string, string>>();
         private Dictionary<string, string> netLogOutput = new Dictionary<string, string>();
         private List<string> output_unclean = new List<string>();
-        private string pilotsLogDBPath = Path.Combine(assemblyPath, "TDHelper.db");
+        private string pilotsLogDBPath = string.Empty;
         private DataTable pilotsSystemLogTable = new DataTable("SystemLog");
         private int pRowIndex = 0;
         private Object readNetLock = new Object();
@@ -1030,11 +1030,7 @@ namespace TDHelper
 
             if (!string.IsNullOrEmpty(filteredOutput))
             {
-                using (FileStream fs = new FileStream(file, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
-                using (StreamWriter stream = new StreamWriter(fs))
-                {
-                    stream.Write(filteredOutput);
-                }
+                File.WriteAllText(file, text, Encoding.UTF8);
             }
         }
 

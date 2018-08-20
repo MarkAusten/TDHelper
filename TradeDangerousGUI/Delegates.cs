@@ -1204,7 +1204,7 @@ namespace TDHelper
         /// Get the game name of the ship from the internal name.
         /// </summary>
         /// <param name="shipType">The internal ship type.</param>
-        /// <returns>The padsizes upon which the ship may land.</returns>
+        /// <returns>The ships' game name.</returns>
         private string TranslateShipType(string shipType)
         {
             string translation = shipType.Trim();

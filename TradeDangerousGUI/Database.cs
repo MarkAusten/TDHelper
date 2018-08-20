@@ -488,7 +488,7 @@ namespace TDHelper
 
                     this.Invoke(new Action(() =>
                     {
-                        retriever = new DataRetriever(pilotsLogConn, "SystemLog", this);
+                        retriever = new DataRetriever(pilotsLogConn, "SystemLog");
 
                         foreach (DataColumn c in retriever.Columns)
                         {
@@ -598,6 +598,7 @@ namespace TDHelper
         private void SetConnections()
         {
             tdPath = Path.Combine(settingsRef.TDPath, @"data\TradeDangerous.db");
+            pilotsLogDBPath = Path.Combine(assemblyPath, "TDHelper.db");
 
             tdConn = GetConnection(tdPath);
             pilotsLogConn = GetConnection(pilotsLogDBPath);
@@ -887,7 +888,7 @@ namespace TDHelper
                 // invalidate the cache pages
                 UpdateLocalTable();
 
-                retriever = new DataRetriever(tdConn, "SystemLog", this);
+                retriever = new DataRetriever(tdConn, "SystemLog");
                 memoryCache = new Cache(retriever, 24);
 
                 // force a refresh/repaint
@@ -902,7 +903,7 @@ namespace TDHelper
                 // partial refresh
                 UpdateLocalTable();
 
-                retriever = new DataRetriever(tdConn, "SystemLog", this);
+                retriever = new DataRetriever(tdConn, "SystemLog");
                 memoryCache = new Cache(retriever, 24);
 
                 this.Invoke(new Action(() =>
@@ -1049,7 +1050,7 @@ namespace TDHelper
                 {
                     UpdateLocalTable();
 
-                    retriever = new DataRetriever(pilotsLogConn, "SystemLog", this);
+                    retriever = new DataRetriever(pilotsLogConn, "SystemLog");
 
                     this.Invoke(new Action(() =>
                     {

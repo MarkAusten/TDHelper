@@ -151,7 +151,7 @@ namespace TDHelper
         /// <returns>The limit parameter.</returns>
         private string AddLimitOption(decimal limit)
         {
-            return AddNumericOption(limit, "limit");
+            return AddNumericOption((limit == 0 ? 42 : limit), "limit");
         }
 
         /// <summary>
@@ -2251,6 +2251,8 @@ namespace TDHelper
                 };
             }
 
+            SetConnections();
+
             // bind our alternate config files
             SetShipList(true);
 
@@ -2423,7 +2425,7 @@ namespace TDHelper
             string selected = padSizes.Text;
 
             // filter for valid chars
-            if ("ML?".Contains(key))
+            if ("SML?".Contains(key))
             {
                 if (selected.Contains(key))
                 {
@@ -3443,7 +3445,7 @@ namespace TDHelper
                 txtNotes.SaveFile(notesFile, RichTextBoxStreamType.PlainText);
             }
 
-            if (tabControl1.SelectedTab == tabControl1.TabPages["outputPage"] &&
+            if (tabControl1.SelectedIndex == 0 &&
                 !string.IsNullOrEmpty(rtbOutput.Text))
             {
                 CheckForParsableOutput(rtbOutput);
@@ -3451,38 +3453,28 @@ namespace TDHelper
                 rtbOutput.Focus(); // always focus our text box
 
                 pagOutput.Font = new Font(pagOutput.Font, FontStyle.Regular); // reset the font
-                fromPane = 0;
             }
-            else if (tabControl1.SelectedTab == tabControl1.TabPages["logPage"])
-            {
-                fromPane = 5;
-            }
-            else if (tabControl1.SelectedTab == tabControl1.TabPages["notesPage"] &&
+            else if (tabControl1.SelectedIndex == 4 &&
                 CheckIfFileOpens(notesFile))
             {
                 txtNotes.LoadFile(notesFile, RichTextBoxStreamType.PlainText);
 
                 txtNotes.Focus();
-                fromPane = 4;
             }
-            else if (tabControl1.SelectedTab == tabControl1.TabPages["savedPage1"])
+            else if (tabControl1.SelectedIndex == 1)
             {
                 LoadFileIntoPage(savedFile1, rtbSaved1);
-
-                fromPane = 1;
             }
-            else if (tabControl1.SelectedTab == tabControl1.TabPages["savedPage2"])
+            else if (tabControl1.SelectedIndex == 2)
             {
                 LoadFileIntoPage(savedFile2, rtbSaved2);
-
-                fromPane = 2;
             }
-            else if (tabControl1.SelectedTab == tabControl1.TabPages["savedPage3"])
+            else if (tabControl1.SelectedIndex == 3)
             {
                 LoadFileIntoPage(savedFile3, rtbSaved3);
-
-                fromPane = 3;
             }
+
+            fromPane = tabControl1.SelectedIndex;
         }
 
         private void Td_outputBox_TextChanged(object sender, EventArgs e)

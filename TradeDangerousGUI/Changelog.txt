@@ -1,3 +1,10 @@
+v2.0.5.4
+--------
+* Fixed issue #21.
+* Fixed issue #20.
+* Fixed issue #19.
+* Changed order of some controls as suggested by Tromador.
+
 v2.0.5.3
 --------
 * Adding missing ship translations. 

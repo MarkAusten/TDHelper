@@ -650,7 +650,7 @@ namespace TDHelper
 
         private string ContainsPadSizes(string text)
         {
-            return ToggleAndSort(text, "ML?");
+            return ToggleAndSort(text, "SML?");
         }
 
         private string ContainsPlanetary(string text)

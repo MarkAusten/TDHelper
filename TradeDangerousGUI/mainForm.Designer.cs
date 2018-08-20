@@ -968,11 +968,6 @@
             // 
             this.numRouteOptionsJumps.ContextMenuStrip = this.mnuSetValues;
             this.numRouteOptionsJumps.Location = new System.Drawing.Point(45, 26);
-            this.numRouteOptionsJumps.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.numRouteOptionsJumps.Name = "numRouteOptionsJumps";
             this.numRouteOptionsJumps.Size = new System.Drawing.Size(39, 20);
             this.numRouteOptionsJumps.TabIndex = 1;
@@ -1236,7 +1231,7 @@
             // lblPadSize
             // 
             this.lblPadSize.AutoSize = true;
-            this.lblPadSize.Location = new System.Drawing.Point(284, 8);
+            this.lblPadSize.Location = new System.Drawing.Point(281, 8);
             this.lblPadSize.Name = "lblPadSize";
             this.lblPadSize.Size = new System.Drawing.Size(34, 13);
             this.lblPadSize.TabIndex = 34;
@@ -1245,10 +1240,10 @@
             // 
             // txtPadSize
             // 
-            this.txtPadSize.Location = new System.Drawing.Point(320, 5);
+            this.txtPadSize.Location = new System.Drawing.Point(317, 5);
             this.txtPadSize.MaxLength = 3;
             this.txtPadSize.Name = "txtPadSize";
-            this.txtPadSize.Size = new System.Drawing.Size(32, 20);
+            this.txtPadSize.Size = new System.Drawing.Size(35, 20);
             this.txtPadSize.TabIndex = 3;
             this.txtPadSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tipToolTips.SetToolTip(this.txtPadSize, "Minimum pad sizes to consider a hop, can be M, L, and/or ?");
