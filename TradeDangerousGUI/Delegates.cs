@@ -1237,12 +1237,17 @@ namespace TDHelper
             settingsRef.CmdrName = (string)cmdrProfile["profile"]["commander"]["name"];
             numCommandersCredits.Value = (decimal)cmdrProfile["profile"]["commander"]["credits"];
 
-            // Determine the insurance of the current ship.
-            decimal hullValue = (decimal)cmdrProfile["profile"]["ship"]["value"]["hull"];
-            decimal modulesValue = (decimal)cmdrProfile["profile"]["ship"]["value"]["modules"];
+            decimal hullValue = 0m;
+            decimal modulesValue = 0m;
             decimal rebuyPercentage = settingsRef.RebuyPercentage;
 
-            this.numShipInsurance.Value = (hullValue + modulesValue) * rebuyPercentage / 100;
+            // Determine the insurance of the current ship.
+            //decimal hullValue = (decimal)cmdrProfile["profile"]["ship"]["value"]["hull"];
+            //decimal modulesValue = (decimal)cmdrProfile["profile"]["ship"]["value"]["modules"];
+            //decimal rebuyPercentage = settingsRef.RebuyPercentage;
+
+            //// The 0.0000004 is a fudge factor to make the insurance values match the ones calculated by Frontier.
+            //this.numShipInsurance.Value = Math.Floor(((hullValue + modulesValue) * (rebuyPercentage - 0.0000004m) / 100));
 
             // Determine the cargo capacity of the current ship.
             decimal capacity = 0;
@@ -1340,7 +1345,7 @@ namespace TDHelper
 
                 config[sectionName]["hullValue"].DecimalValue = hullValue;
                 config[sectionName]["modulesValue"].DecimalValue = modulesValue;
-                config[sectionName]["Insurance"].DecimalValue = (hullValue + modulesValue) * rebuyPercentage / 100;
+                config[sectionName]["Insurance"].DecimalValue = Math.Floor(((hullValue + modulesValue) * (rebuyPercentage - 0.0000004m) / 100));
                 config[sectionName]["Padsizes"].StringValue = this.GetPadSizes((string)shipObject["name"]);
             }
 

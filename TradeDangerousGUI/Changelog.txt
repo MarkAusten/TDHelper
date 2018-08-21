@@ -1,11 +1,11 @@
 v2.0.5.6
 --------
-
 * Fixed issue #25.
+* Fixed issue #26.
+* Fixed issue #27.
 
 v2.0.5.5
 --------
-
 * Fixed issues #22 & #23.
 
 v2.0.5.4
