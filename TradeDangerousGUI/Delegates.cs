@@ -46,7 +46,9 @@ namespace TDHelper
                 }
             }
             else
+            {
                 throw new Exception("Cannot open the prices file for some reason");
+            }
         }
 
         private void DecompressUpdate(string zipFileURL, string path)
@@ -1252,7 +1254,12 @@ namespace TDHelper
 
                 if (module.Length > stringLength && module.Substring(0, stringLength) == "Int_CargoRack_Size")
                 {
-                    if (Int32.TryParse(module.Substring(stringLength, 1), out int size))
+                    // Extract the number part of the size.
+                    string[] data = module.Split(new string[] { "_" }, StringSplitOptions.None);
+
+                    string sizeString = data[2].Replace("Size", string.Empty);
+
+                    if (Int32.TryParse(sizeString, out int size))
                     {
                         capacity += (decimal)Math.Pow(2, size);
                     }

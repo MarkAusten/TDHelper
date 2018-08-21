@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -165,17 +164,13 @@ namespace TDHelper
                     {
                         string var1 = timestamp; // we were successful in parsing the timestamp, probably safe
 
-                        try
+                        using (var transaction = cmd.Connection.BeginTransaction())
                         {
-                            using (var transaction = cmd.Connection.BeginTransaction())
-                            {
-                                cmd.Parameters.AddWithValue("@Timestamp", var1);
-                                cmd.ExecuteNonQuery();
-                                cmd.Parameters.Clear();
-                                transaction.Commit();
-                            }
+                            cmd.Parameters.AddWithValue("@Timestamp", var1);
+                            cmd.ExecuteNonQuery();
+                            cmd.Parameters.Clear();
+                            transaction.Commit();
                         }
-                        catch { throw; }
 
                         return true; // success!
                     }
@@ -205,21 +200,14 @@ namespace TDHelper
 
                     cmd.CommandText = "INSERT INTO SystemLog VALUES (null,@Timestamp,null,null)";
 
-                    try
-                    {
-                        string var1 = CurrentTimestamp();
+                    string var1 = CurrentTimestamp();
 
-                        using (var transaction = cmd.Connection.BeginTransaction())
-                        {
-                            cmd.Parameters.AddWithValue("@Timestamp", var1);
-                            cmd.ExecuteNonQuery();
-                            cmd.Parameters.Clear();
-                            transaction.Commit();
-                        }
-                    }
-                    catch
+                    using (var transaction = cmd.Connection.BeginTransaction())
                     {
-                        throw;
+                        cmd.Parameters.AddWithValue("@Timestamp", var1);
+                        cmd.ExecuteNonQuery();
+                        cmd.Parameters.Clear();
+                        transaction.Commit();
                     }
 
                     LoadPilotsLogDB(); // need a full refresh
@@ -395,6 +383,10 @@ namespace TDHelper
                         m_timer.Stop();
                     }
                 }
+                //catch
+                //{
+                //    throw;
+                //}
                 finally
                 {
                     if (hasRun)
@@ -415,7 +407,8 @@ namespace TDHelper
             // here we either build or load our database
             if (grdPilotsLog.Rows.Count == 0)
             {
-                if (HasValidRows("SystemLog"))
+                if (HasTable(pilotsLogConn, "SystemLog") &&
+                    HasValidRows("SystemLog"))
                 {
                     InvalidatedRowUpdate(true, -1);
                 }
@@ -518,17 +511,10 @@ namespace TDHelper
 
                             foreach (var s in netLogOutput)
                             {
-                                try
-                                {
-                                    cmd.Parameters["@Timestamp"].Value = s.Key;
-                                    cmd.Parameters["@System"].Value = s.Value;
+                                cmd.Parameters["@Timestamp"].Value = s.Key;
+                                cmd.Parameters["@System"].Value = s.Value;
 
-                                    cmd.ExecuteNonQuery();
-                                }
-                                catch
-                                {
-                                    // Do nothing.
-                                }
+                                cmd.ExecuteNonQuery();
                             }
 
                             transaction.Commit();
@@ -556,10 +542,10 @@ namespace TDHelper
                         grdPilotsLog.Columns["Notes"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                     }));
                 }
-                catch (Exception e)
-                {
-                    throw new Exception(e.Message);
-                }
+                //catch
+                //{
+                //    throw;
+                //}
                 finally
                 {
                     if (!isOpen)
@@ -651,40 +637,43 @@ namespace TDHelper
         /// <returns>An SQLite Connection.</returns>
         private SQLiteConnection GetConnection(string path)
         {
-            return new SQLiteConnection("Data Source=" + path + ";Version=3;FKSupport=False;");
+            return new SQLiteConnection("Data Source=" + path + ";Version=3;FKSupport=true;");
         }
 
         private string GetLastTimestamp()
         {
             string timestamp = string.Empty;
 
-            using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
+            if (HasValidRows("SystemLog"))
             {
-                bool isOpen = false;
-
-                try
+                using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
                 {
-                    isOpen = OpenConnection(cmd.Connection);
+                    bool isOpen = false;
 
-                    cmd.CommandText = "SELECT MAX(Timestamp) FROM SystemLog";
-
-                    using (SQLiteDataReader reader = cmd.ExecuteReader())
+                    try
                     {
-                        while (reader.Read())
+                        isOpen = OpenConnection(cmd.Connection);
+
+                        cmd.CommandText = "SELECT MAX(Timestamp) FROM SystemLog";
+
+                        using (SQLiteDataReader reader = cmd.ExecuteReader())
                         {
-                            timestamp = reader.GetString(0);
+                            while (reader.Read())
+                            {
+                                timestamp = reader.GetString(0);
+                            }
                         }
                     }
-                }
-                catch
-                {
-                    /* eat exceptions */
-                }
-                finally
-                {
-                    if (!isOpen)
+                    //catch
+                    //{
+                    //    throw;
+                    //}
+                    finally
                     {
-                        CloseConnection(cmd.Connection);
+                        if (!isOpen)
+                        {
+                            CloseConnection(cmd.Connection);
+                        }
                     }
                 }
             }
@@ -701,124 +690,170 @@ namespace TDHelper
 
             if (ValidateDBPath())
             {
-                try
+                //try
+                //{
+                Stopwatch m_timer = Stopwatch.StartNew();
+
+                if (stnship_table.Rows.Count != 0)
                 {
-                    Stopwatch m_timer = Stopwatch.StartNew();
+                    stnship_table = new DataTable();
+                }
 
-                    if (stnship_table.Rows.Count != 0)
+                if (ship_table.Rows.Count != 0)
+                {
+                    ship_table = new DataTable();
+                }
+
+                /*
+                 * Extract station details into a single row array--the structure is as follows:
+                 *
+                 * sys_name | stn_name | stn_ls | stn_padsize | stn_rearm | stn_refuel | stn_repair | stn_outfit | stn_ship | stn_items | stn_bmkt
+                 *
+                 * The contents of each station field can be: 'Y', 'N', '?', 'S', 'M', 'L', or an int64/long
+                 */
+
+                // check for one of the common columns
+                if (HasValidColumn(tdConn, "Station", "rearm"))
+                {
+                    using (SQLiteCommand cmd = tdConn.CreateCommand())
                     {
-                        stnship_table = new DataTable();
-                    }
+                        bool isOpen = false;
 
-                    if (ship_table.Rows.Count != 0)
-                    {
-                        ship_table = new DataTable();
-                    }
-
-                    /*
-                     * Extract station details into a single row array--the structure is as follows:
-                     *
-                     * sys_name | stn_name | stn_ls | stn_padsize | stn_rearm | stn_refuel | stn_repair | stn_outfit | stn_ship | stn_items | stn_bmkt
-                     *
-                     * The contents of each station field can be: 'Y', 'N', '?', 'S', 'M', 'L', or an int64/long
-                     */
-
-                    // check for one of the common columns
-                    if (HasValidColumn(tdConn, "Station", "rearm"))
-                    {
-                        using (SQLiteCommand cmd = tdConn.CreateCommand())
+                        try
                         {
-                            bool isOpen = false;
+                            isOpen = OpenConnection(cmd.Connection);
 
-                            try
+                            cmd.CommandText
+                                = " select "
+                                + "    sys.name as sys_name,"
+                                + "    stn.name as stn_name,"
+                                + "    stn.ls_from_star as stn_ls,"
+                                + "    stn.max_pad_size as stn_padsize,"
+                                + "    stn.rearm as stn_rearm,"
+                                + "    stn.refuel as stn_refuel,"
+                                + "    stn.repair as stn_repair,"
+                                + "    stn.outfitting as stn_outfit,"
+                                + "    stn.shipyard as stn_ship,"
+                                + "    stn.market as stn_items,"
+                                + "    stn.blackmarket as stn_bmkt"
+                                + " from"
+                                + "    system sys"
+                                + " join"
+                                + "    station stn on stn.system_id = sys.system_id"
+                                + " where"
+                                + "    sys.name = @system and"
+                                + "    stn.name = @station";
+
+                            cmd.Parameters.AddWithValue("@system", inputSystem);
+                            cmd.Parameters.AddWithValue("@station", inputStation);
+
+                            using (SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd))
                             {
-                                isOpen = OpenConnection(cmd.Connection);
-
-                                cmd.CommandText
-                                    = " select "
-                                    + "    sys.name as sys_name,"
-                                    + "    stn.name as stn_name,"
-                                    + "    stn.ls_from_star as stn_ls,"
-                                    + "    stn.max_pad_size as stn_padsize,"
-                                    + "    stn.rearm as stn_rearm,"
-                                    + "    stn.refuel as stn_refuel,"
-                                    + "    stn.repair as stn_repair,"
-                                    + "    stn.outfitting as stn_outfit,"
-                                    + "    stn.shipyard as stn_ship,"
-                                    + "    stn.market as stn_items,"
-                                    + "    stn.blackmarket as stn_bmkt"
-                                    + " from"
-                                    + "    system sys"
-                                    + " join"
-                                    + "    station stn on stn.system_id = sys.system_id"
-                                    + " where"
-                                    + "    sys.name = @system and"
-                                    + "    stn.name = @station";
-
-                                cmd.Parameters.AddWithValue("@system", inputSystem);
-                                cmd.Parameters.AddWithValue("@station", inputStation);
-
-                                using (SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd))
-                                {
-                                    adapter.Fill(stnship_table);
-                                }
-
-                                // populate our shipvendor table as well
-                                cmd.CommandText
-                                    = " select"
-                                    + " 	sys.system_id as sys_sysid,"
-                                    + " 	stn.system_id as stn_sysid,"
-                                    + " 	stn.station_id as stn_stnid,"
-                                    + " 	shipv.station_id as shipv_stnid,"
-                                    + " 	shipv.ship_id as shipv_shipid,"
-                                    + " 	ship.ship_id as ship_shipid,"
-                                    + " 	sys.name as sys_name,"
-                                    + " 	stn.name as stn_name,"
-                                    + " 	ship.name as ship_name,"
-                                    + " 	ship.cost as ship_cost"
-                                    + " from "
-                                    + " 	system sys"
-                                    + " join"
-                                    + " 	station stn on stn.system_id = sys.system_id"
-                                    + " join"
-                                    + " 	shipvendor shipv on stn.station_id = shipv.station_id"
-                                    + " join"
-                                    + " 	ship on shipv.ship_id = ship.ship_id"
-                                    + " where"
-                                    + "     sys.name = @system and"
-                                    + "     stn.name = @station"
-                                    + " order by"
-                                    + "     ship.cost desc";
-
-                                using (SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd))
-                                {
-                                    adapter.Fill(ship_table);
-                                }
+                                adapter.Fill(stnship_table);
                             }
-                            finally
+
+                            // populate our shipvendor table as well
+                            cmd.CommandText
+                                = " select"
+                                + " 	sys.system_id as sys_sysid,"
+                                + " 	stn.system_id as stn_sysid,"
+                                + " 	stn.station_id as stn_stnid,"
+                                + " 	shipv.station_id as shipv_stnid,"
+                                + " 	shipv.ship_id as shipv_shipid,"
+                                + " 	ship.ship_id as ship_shipid,"
+                                + " 	sys.name as sys_name,"
+                                + " 	stn.name as stn_name,"
+                                + " 	ship.name as ship_name,"
+                                + " 	ship.cost as ship_cost"
+                                + " from "
+                                + " 	system sys"
+                                + " join"
+                                + " 	station stn on stn.system_id = sys.system_id"
+                                + " join"
+                                + " 	shipvendor shipv on stn.station_id = shipv.station_id"
+                                + " join"
+                                + " 	ship on shipv.ship_id = ship.ship_id"
+                                + " where"
+                                + "     sys.name = @system and"
+                                + "     stn.name = @station"
+                                + " order by"
+                                + "     ship.cost desc";
+
+                            using (SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd))
                             {
-                                if (!isOpen)
-                                {
-                                    CloseConnection(cmd.Connection);
-                                }
+                                adapter.Fill(ship_table);
                             }
                         }
+                        finally
+                        {
+                            if (!isOpen)
+                            {
+                                CloseConnection(cmd.Connection);
+                            }
+                        }
+                    }
 
-                        outputStationDetails = new List<string>();
-                        outputStationShips = new List<string>();
+                    outputStationDetails = new List<string>();
+                    outputStationShips = new List<string>();
 
-                        FilterStationData();
+                    FilterStationData();
 
-                        Debug.WriteLine("grabStationData query took: " + m_timer.ElapsedMilliseconds + "ms");
+                    Debug.WriteLine("grabStationData query took: " + m_timer.ElapsedMilliseconds + "ms");
 
-                        m_timer.Stop();
+                    m_timer.Stop();
+                }
+                //}
+                //catch
+                //{
+                //    throw;
+                //}
+            }
+        }
+
+        /// <summary>
+        /// Check to see if the database has the expected table.
+        /// </summary>
+        /// <param name="conn">The connection to the database.</param>
+        /// <param name="tableName">The name of the expected table.</param>
+        /// <returns>True if the table exists.</returns>
+        private bool HasTable(
+            SQLiteConnection conn,
+            string tableName)
+        {
+            bool hasTable = false;
+
+            using (SQLiteCommand cmd = conn.CreateCommand())
+            {
+                bool isOpen = false;
+
+                try
+                {
+                    isOpen = OpenConnection(cmd.Connection);
+
+                    cmd.CommandText
+                        = " select count(*) as total"
+                        + " from sqlite_master"
+                        + " where type = 'table' and "
+                        + " name = '{0}'".With(tableName);
+
+                    long output = (long)cmd.ExecuteScalar();
+
+                    hasTable = output == 1;
+                }
+                //catch
+                //{
+                //    throw;
+                //}
+                finally
+                {
+                    if (!isOpen)
+                    {
+                        CloseConnection(cmd.Connection);
                     }
                 }
-                catch (Exception e)
-                {
-                    throw new Exception(e.Message);
-                }
             }
+
+            return hasTable;
         }
 
         private bool HasValidColumn(
@@ -852,10 +887,10 @@ namespace TDHelper
                         }
                     }
                 }
-                catch
-                {
-                    /* eat exceptions */
-                }
+                //catch
+                //{
+                //    throw;
+                //}
                 finally
                 {
                     if (!isOpen)
@@ -870,6 +905,8 @@ namespace TDHelper
 
         private bool HasValidRows(string tableName)
         {
+            bool hasRows = false;
+
             // this method returns true if there are any valid rows
             using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
             {
@@ -879,25 +916,9 @@ namespace TDHelper
 
                     cmd.CommandText = "SELECT COUNT(*) FROM SystemLog";
 
-                    try
-                    {
-                        using (SQLiteDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                int rows = reader.GetInt32(0);
+                    long count = (long)cmd.ExecuteScalar();
 
-                                if (rows > 0)
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                    catch
-                    {
-                        /* eat exceptions */
-                    }
+                    hasRows = count > 0;
                 }
                 finally
                 {
@@ -905,7 +926,7 @@ namespace TDHelper
                 }
             }
 
-            return false;
+            return hasRows;
         }
 
         private bool InvalidatedRowUpdate(
@@ -1016,81 +1037,81 @@ namespace TDHelper
                 string stationName = string.Empty;
                 string systemName = string.Empty;
 
-                try
+                //try
+                //{
+                Stopwatch m_timer = Stopwatch.StartNew();
+
+                // wipe to prevent duplicates
+                if (stn_table.Rows.Count != 0)
                 {
-                    Stopwatch m_timer = Stopwatch.StartNew();
+                    stn_table = new DataTable(); // this is O(1) performant
+                    nonstn_table = new DataTable(); // this is O(1) performant
+                }
 
-                    // wipe to prevent duplicates
-                    if (stn_table.Rows.Count != 0)
+                // match on System.system_id = Station.system_id, output in "System | Station" format
+                using (SQLiteCommand cmd = tdConn.CreateCommand())
+                {
+                    bool isOpen = false;
+
+                    try
                     {
-                        stn_table = new DataTable(); // this is O(1) performant
-                        nonstn_table = new DataTable(); // this is O(1) performant
-                    }
+                        isOpen = OpenConnection(cmd.Connection);
 
-                    // match on System.system_id = Station.system_id, output in "System | Station" format
-                    using (SQLiteCommand cmd = tdConn.CreateCommand())
-                    {
-                        bool isOpen = false;
+                        cmd.CommandText
+                            = " select"
+                            + "     sys.name as sys_name,"
+                            + "     stn.name as stn_name"
+                            + " from"
+                            + "     System sys"
+                            + " join"
+                            + "     Station stn on sys.system_id = stn.system_id";
 
-                        try
+                        using (SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd))
                         {
-                            isOpen = OpenConnection(cmd.Connection);
-
-                            cmd.CommandText
-                                = " select"
-                                + "     sys.name as sys_name,"
-                                + "     stn.name as stn_name"
-                                + " from"
-                                + "     System sys"
-                                + " join"
-                                + "     Station stn on sys.system_id = stn.system_id";
-
-                            using (SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd))
-                            {
-                                adapter.Fill(stn_table);
-                            }
-
-                            cmd.CommandText
-                                = " select "
-                                + "     a.name as sys_name"
-                                + " from"
-                                + "     system as a"
-                                + " where"
-                                + "     a.system_id not in"
-                                + "     ("
-                                + "         select b.system_id from station as b"
-                                + "     )";
-
-                            using (SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd))
-                            {
-                                adapter.Fill(nonstn_table);
-                            }
+                            adapter.Fill(stn_table);
                         }
-                        finally
+
+                        cmd.CommandText
+                            = " select "
+                            + "     a.name as sys_name"
+                            + " from"
+                            + "     system as a"
+                            + " where"
+                            + "     a.system_id not in"
+                            + "     ("
+                            + "         select b.system_id from station as b"
+                            + "     )";
+
+                        using (SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd))
                         {
-                            if (!isOpen)
-                            {
-                                CloseConnection(cmd.Connection);
-                            }
+                            adapter.Fill(nonstn_table);
                         }
                     }
-
-                    Debug.WriteLine("loadDatabase query took: " + m_timer.ElapsedMilliseconds + "ms");
-
-                    m_timer.Stop();
-
-                    outputSysStnNames = new List<string>(); // wipe before we fill
-
-                    FilterDatabase(); // filter and fill our output
+                    finally
+                    {
+                        if (!isOpen)
+                        {
+                            CloseConnection(cmd.Connection);
+                        }
+                    }
                 }
-                catch (SQLiteException)
-                {
-                    //
-                }
-                catch (Exception e)
-                {
-                    throw new Exception(e.Message);
-                }
+
+                Debug.WriteLine("loadDatabase query took: " + m_timer.ElapsedMilliseconds + "ms");
+
+                m_timer.Stop();
+
+                outputSysStnNames = new List<string>(); // wipe before we fill
+
+                FilterDatabase(); // filter and fill our output
+                //}
+                //catch (SQLiteException)
+                //{
+                //    throw;
+                //}
+                //catch
+                //{
+                //    throw;
+                //}
             }
         }
 
@@ -1098,43 +1119,43 @@ namespace TDHelper
         {
             if (HasValidColumn(pilotsLogConn, "SystemLog", "System"))
             {
-                try
+                //try
+                //{
+                UpdateLocalTable();
+
+                retriever = new DataRetriever(pilotsLogConn, "SystemLog");
+
+                this.Invoke(new Action(() =>
                 {
-                    UpdateLocalTable();
-
-                    retriever = new DataRetriever(pilotsLogConn, "SystemLog");
-
-                    this.Invoke(new Action(() =>
+                    if (grdPilotsLog.Columns.Count != localTable.Columns.Count)
                     {
-                        if (grdPilotsLog.Columns.Count != localTable.Columns.Count)
+                        foreach (DataColumn c in retriever.Columns)
                         {
-                            foreach (DataColumn c in retriever.Columns)
-                            {
-                                grdPilotsLog.Columns.Add(c.ColumnName, c.ColumnName);
-                            }
+                            grdPilotsLog.Columns.Add(c.ColumnName, c.ColumnName);
                         }
+                    }
 
-                        grdPilotsLog.Rows.Clear();
+                    grdPilotsLog.Rows.Clear();
 
-                        memoryCache = new Cache(retriever, 24);
+                    memoryCache = new Cache(retriever, 24);
 
-                        grdPilotsLog.Refresh();
+                    grdPilotsLog.Refresh();
 
-                        grdPilotsLog.RowCount = retriever.RowCount;
+                    grdPilotsLog.RowCount = retriever.RowCount;
 
-                        if (grdPilotsLog.RowCount > 0)
-                        {
-                            grdPilotsLog.Columns["ID"].Visible = false;
-                            grdPilotsLog.Columns["Timestamp"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-                            grdPilotsLog.Columns["System"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-                            grdPilotsLog.Columns["Notes"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-                        }
-                    }));
-                }
-                catch (SQLiteException)
-                {
-                    throw;
-                }
+                    if (grdPilotsLog.RowCount > 0)
+                    {
+                        grdPilotsLog.Columns["ID"].Visible = false;
+                        grdPilotsLog.Columns["Timestamp"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+                        grdPilotsLog.Columns["System"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+                        grdPilotsLog.Columns["Notes"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    }
+                }));
+                //}
+                //catch (SQLiteException)
+                //{
+                //    throw;
+                //}
             }
         }
 
@@ -1572,7 +1593,7 @@ namespace TDHelper
                             // if refreshMethod is true, we read ALL netLogs
                             if (buttonCaller == 16 || !hasRun && localSystemList.Count == 0)
                             {
-                                SplashScreen.SetStatus("Bulding database...");
+                                SplashScreen.SetStatus("Building database...");
                             }
 
                             checkBuffer = LoadSystemsFromDB(latestLogPaths);
@@ -1586,6 +1607,7 @@ namespace TDHelper
                             {
                                 // do the initial populate if we can't get systems from the DB
                                 checkBuffer = LoadSystemsFromLogs(true, latestLogPaths);
+
                                 if (checkBuffer.Count > 0)
                                 {
                                     output_unclean.AddRange(checkBuffer);
@@ -1596,6 +1618,7 @@ namespace TDHelper
                         {
                             // only refresh from the newest
                             checkBuffer = LoadSystemsFromLogs(false, latestLogPaths);
+
                             if (checkBuffer.Count > 0)
                             {
                                 output_unclean = checkBuffer.Concat(output_unclean).ToList();
@@ -1665,10 +1688,10 @@ namespace TDHelper
 
                         VacuumPilotsLogDB();
                     }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
+                    //catch (Exception)
+                    //{
+                    //    throw;
+                    //}
                     finally
                     {
                         if (!isOpen)
@@ -1712,10 +1735,10 @@ namespace TDHelper
 
                         VacuumPilotsLogDB();
                     }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
+                    //catch
+                    //{
+                    //    throw;
+                    //}
                     finally
                     {
                         if (!isOpen)
@@ -1786,30 +1809,33 @@ namespace TDHelper
                         cmd.Parameters.AddWithValue("@System", string.Empty);
                         cmd.Parameters.AddWithValue("@Notes", string.Empty);
 
-                        try
+                        //try
+                        //{
+                        using (SQLiteTransaction transaction = pilotsLogConn.BeginTransaction())
                         {
-                            using (SQLiteTransaction transaction = pilotsLogConn.BeginTransaction())
+                            for (int i = rows.Count - 1; i >= 0; i--)
                             {
-                                for (int i = rows.Count - 1; i >= 0; i--)
-                                {
-                                    DataRow row = rows[i];
-                                    int var1 = int.Parse(row["ID"].ToString());
-                                    string var2 = (row["Timestamp"] ?? string.Empty).ToString();
-                                    string var3 = (row["System"] ?? string.Empty).ToString();
-                                    string var4 = (row["Notes"] ?? string.Empty).ToString();
+                                DataRow row = rows[i];
+                                int var1 = int.Parse(row["ID"].ToString());
+                                string var2 = (row["Timestamp"] ?? string.Empty).ToString();
+                                string var3 = (row["System"] ?? string.Empty).ToString();
+                                string var4 = (row["Notes"] ?? string.Empty).ToString();
 
-                                    cmd.Parameters["@ID"].Value = var1;
-                                    cmd.Parameters["@Timestamp"].Value = var2;
-                                    cmd.Parameters["@System"].Value = var3;
-                                    cmd.Parameters["@Notes"].Value = var4;
+                                cmd.Parameters["@ID"].Value = var1;
+                                cmd.Parameters["@Timestamp"].Value = var2;
+                                cmd.Parameters["@System"].Value = var3;
+                                cmd.Parameters["@Notes"].Value = var4;
 
-                                    cmd.ExecuteNonQuery();
-                                }
-
-                                transaction.Commit();
+                                cmd.ExecuteNonQuery();
                             }
+
+                            transaction.Commit();
                         }
-                        catch (Exception) { throw; }
+                        //}
+                        //catch
+                        //{
+                        //    throw;
+                        //}
 
                         UpdateLocalTable();
 
@@ -1859,10 +1885,10 @@ namespace TDHelper
 
                         localTable.PrimaryKey = new DataColumn[] { localTable.Columns["ID"] };
                     }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
+                    //catch
+                    //{
+                    //    throw;
+                    //}
                     finally
                     {
                         if (!isOpen)
@@ -1898,17 +1924,18 @@ namespace TDHelper
                         {
                             foreach (KeyValuePair<string, string> s in exceptKey)
                             {
-                                try
-                                {
-                                    cmd.Parameters["@Timestamp"].Value = s.Key;
-                                    cmd.Parameters["@System"].Value = s.Value;
+                                //try
+                                //{
+                                cmd.Parameters["@Timestamp"].Value = s.Key;
+                                cmd.Parameters["@System"].Value = s.Value;
 
-                                    cmd.ExecuteNonQuery();
-                                }
-                                catch (Exception)
-                                {
-                                    // Do nothing.
-                                }
+                                cmd.ExecuteNonQuery();
+                                //}
+                                //catch
+                                //{
+                                //    throw;
+                                //    // Do nothing.
+                                //}
                             }
 
                             transaction.Commit();
@@ -1934,36 +1961,36 @@ namespace TDHelper
         private void VacuumPilotsLogDB()
         {
             // a simple method to vacuum our database
-            try
+            //try
+            //{
+            using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
             {
-                using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
+                bool isOpen = false;
+
+                try
                 {
-                    bool isOpen = false;
+                    isOpen = OpenConnection(cmd.Connection);
 
-                    try
+                    if (HasValidRows("SystemLog"))
                     {
-                        isOpen = OpenConnection(cmd.Connection);
-
-                        if (HasValidRows("SystemLog"))
-                        {
-                            // clean up after ourselves
-                            cmd.CommandText = "VACUUM";
-                            cmd.ExecuteNonQuery();
-                        }
+                        // clean up after ourselves
+                        cmd.CommandText = "VACUUM";
+                        cmd.ExecuteNonQuery();
                     }
-                    finally
+                }
+                finally
+                {
+                    if (!isOpen)
                     {
-                        if (!isOpen)
-                        {
-                            CloseConnection(cmd.Connection);
-                        }
+                        CloseConnection(cmd.Connection);
                     }
                 }
             }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
+            //}
+            //catch
+            //{
+            //    throw;
+            //}
         }
 
         private bool ValidateDBPath()

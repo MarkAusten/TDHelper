@@ -88,11 +88,11 @@ namespace TDHelper
         {
             InitializeComponent();
 
-            this.SetStyle(ControlStyles.AllPaintingInWmPaint
+            SetStyle(ControlStyles.AllPaintingInWmPaint
                     | ControlStyles.UserPaint
                     | ControlStyles.DoubleBuffer, true);
 
-            this.numCommandersCredits.Maximum = Decimal.MaxValue;
+            numCommandersCredits.Maximum = Decimal.MaxValue;
 
             SplashScreen.SetStatus("Building settings...");
             BuildSettings();
@@ -101,7 +101,7 @@ namespace TDHelper
             CopySettingsFromConfig();
 
             // And validate the settings to get rid of any nonsense.
-            ValidateSettings(true);
+            ValidateSettings();
 
             SplashScreen.SetStatus("Set connections...");
             SetConnections();
@@ -114,7 +114,7 @@ namespace TDHelper
             testSystemsTimer.Interval = 10000;
             testSystemsTimer.Elapsed += this.TestSystemsTimer_Delegate;
 
-            this.btnCmdrProfile.Enabled = ValidateEdce();
+            btnCmdrProfile.Enabled = ValidateEdce();
 
             SplashScreen.SetStatus("Set ititial state...");
             SetOptionPanelList();

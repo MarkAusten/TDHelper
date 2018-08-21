@@ -3118,6 +3118,9 @@
             // 
             // tabControl1
             // 
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.pagOutput);
             this.tabControl1.Controls.Add(this.tabSavedPage1);
             this.tabControl1.Controls.Add(this.tabSavedPage2);

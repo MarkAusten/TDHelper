@@ -113,7 +113,7 @@ namespace TDHelper
         /// <param name="assemblyPath"></param>
         /// <returns></returns>
         public static bool CompareVersionNumbers(
-            string manifest, 
+            string manifest,
             string assemblyPath)
         {
             bool manifestVersionIsGreater = false;
@@ -284,9 +284,9 @@ namespace TDHelper
                         string assemblyExeName = Path.GetFileName(fileList[0]);
 
                         root.Add(new XElement(
-                            "Assembly", 
-                            new XAttribute("Name", assemblyExeName), 
-                            new XElement("Version", assemblyVersion), 
+                            "Assembly",
+                            new XAttribute("Name", assemblyExeName),
+                            new XElement("Version", assemblyVersion),
                             new XElement("MD5", assemblyMD5)));
 
                         if (!string.IsNullOrEmpty(URL))
@@ -343,7 +343,7 @@ namespace TDHelper
             // return the file version of a given assembly
             if (File.Exists(filePath))
             {
-                version =  AssemblyName.GetAssemblyName(filePath).Version.ToString();
+                version = AssemblyName.GetAssemblyName(filePath).Version.ToString();
             }
 
             return version;
@@ -405,6 +405,8 @@ namespace TDHelper
 
         public static string ManifestAssemblyVersion(string manifest)
         {
+            string result = string.Empty;
+
             try
             {
                 if (File.Exists(manifest))
@@ -415,11 +417,10 @@ namespace TDHelper
                     if (root != null)
                     {
                         string rootAttr = root.Attribute("Name").Value;
-                        return (!string.IsNullOrEmpty(rootAttr)) ? rootAttr : string.Empty;
-                    }
-                    else
-                    {
-                        return string.Empty;
+                        result 
+                            = !string.IsNullOrEmpty(rootAttr)
+                            ? rootAttr 
+                            : string.Empty;
                     }
                 }
                 else
@@ -430,9 +431,9 @@ namespace TDHelper
             catch (Exception e)
             {
                 WriteToLog(MainForm.updateLogPath, "Exception: " + e.Message);
-
-                return string.Empty;
             }
+
+            return result;
         }
 
         public static List<string> ManifestFileList(string manifest)

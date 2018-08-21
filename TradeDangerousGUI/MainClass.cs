@@ -23,7 +23,7 @@ namespace TDHelper
 
         #region Props
 
-        public static string assemblyPath = Path.GetDirectoryName( Assembly.GetEntryAssembly().Location);
+        public static string assemblyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
         public static bool callForReset = false;
         public static string configFile = Path.Combine(assemblyPath, "tdh.ini");
         public static string configFileDefault = Path.Combine(assemblyPath, "tdh.ini");
@@ -204,7 +204,12 @@ namespace TDHelper
             // override to avoid net log logic
             if (!settingsRef.DisableNetLogs)
             {
-                if (string.IsNullOrEmpty(settingsRef.NetLogPath) || !CheckIfFileOpens(Path.Combine(Directory.GetParent(settingsRef.NetLogPath).ToString(), "AppConfig.xml")))
+                string appConfigPath = Path.Combine(
+                    Directory.GetParent(settingsRef.NetLogPath).ToString(),
+                    "AppConfig.xml");
+
+                if (string.IsNullOrEmpty(settingsRef.NetLogPath) ||
+                    !CheckIfFileOpens(appConfigPath))
                 {
                     // let's just ask the user where to look
                     OpenFileDialog x = new OpenFileDialog()
@@ -219,6 +224,12 @@ namespace TDHelper
                         settingsRef.NetLogPath = Path.Combine(Directory.GetParent(t_AppConfigPath).ToString(), "Logs"); // set the appropriate Logs folder
 
                         SaveSettingsToIniFile();
+
+                        if (SplashScreen.IsVisible)
+                        {
+                            SplashScreen.SetStatus("Validating verbose logging");
+                        }
+
                         ValidateVerboseLogging(); // always validate if verboselogging is enabled
                     }
                     else
@@ -229,6 +240,12 @@ namespace TDHelper
                             settingsRef.NetLogPath = altPath;
 
                             SaveSettingsToIniFile();
+
+                            if (SplashScreen.IsVisible)
+                            {
+                                SplashScreen.SetStatus("Validating verbose logging");
+                            }
+
                             ValidateVerboseLogging(); // always validate if verboselogging is enabled
                         }
                         else
@@ -236,7 +253,7 @@ namespace TDHelper
                             DialogResult dialog2 = TopMostMessageBox.Show(
                                 true,
                                 true,
-                                "Cannot set NetLogPath to a valid directory.\r\nWe will disable scanning for recent systems, if you want to re-enable it, set a working path.",
+                                "Cannot set NetLogPath to a valid directory.{0}We will disable scanning for recent systems, if you want to re-enable it, set a working path.".With(Environment.NewLine),
                                 "TD Helper - Error",
                                 MessageBoxButtons.OK);
 
@@ -249,7 +266,12 @@ namespace TDHelper
                 else
                 {
                     // derive our AppConfig.xml path from NetLogPath
-                    t_AppConfigPath = Path.Combine(Directory.GetParent(settingsRef.NetLogPath).ToString(), "AppConfig.xml");
+                    t_AppConfigPath = appConfigPath;
+
+                    if (SplashScreen.IsVisible)
+                    {
+                        SplashScreen.SetStatus("Validating verbose logging");
+                    }
 
                     // double check the verbose logging state
                     ValidateVerboseLogging();
@@ -479,23 +501,28 @@ namespace TDHelper
             ValidateEdcePath(null);
         }
 
-        public void ValidateSettings(bool firstRun = false)
+        public void ValidateSettings()
         {
-            if (firstRun)
+            if (SplashScreen.IsVisible)
             {
-                SplashScreen.SetStatus("Validating the net logs...");
+                SplashScreen.SetStatus("Validating the path settings...");
             }
 
             ValidatePaths();
 
-            if (firstRun)
+            if (SplashScreen.IsVisible)
             {
-                SplashScreen.SetStatus("Validating the settings...");
+                SplashScreen.SetStatus("Validating net logs...");
             }
 
             ValidateNetLogPath(null);
 
             // sanity check our inputs
+
+            if (SplashScreen.IsVisible)
+            {
+                SplashScreen.SetStatus("Validating settings...");
+            }
 
             ValidateSetting("Age", numRouteOptionsAge);
             ValidateSetting("Capacity", numRouteOptionsShipCapacity);
@@ -525,7 +552,7 @@ namespace TDHelper
             {
                 settingsRef.Loop = false;
             }
-            else if (settingsRef.Towards && 
+            else if (settingsRef.Towards &&
                 string.IsNullOrEmpty(RemoveExtraWhitespace(cboRunOptionsDestination.Text)))
             {
                 settingsRef.Towards = false;
