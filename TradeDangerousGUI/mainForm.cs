@@ -103,7 +103,11 @@ namespace TDHelper
             // And validate the settings to get rid of any nonsense.
             ValidateSettings(true);
 
+            SplashScreen.SetStatus("Set connections...");
+            SetConnections();
+
             // Let's change the title
+            SplashScreen.SetStatus("Set form title...");
             SetFormTitle(this);
 
             testSystemsTimer.AutoReset = false;
@@ -112,9 +116,9 @@ namespace TDHelper
 
             this.btnCmdrProfile.Enabled = ValidateEdce();
 
+            SplashScreen.SetStatus("Set ititial state...");
             SetOptionPanelList();
             ShowOrHideOptionsPanel(0);
-            SetConnections();
         }
 
         /// <summary>
@@ -391,12 +395,13 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// This worker delegate is just a thread on which the background timer runs.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BackgroundWorker3_DoWork(object sender, DoWorkEventArgs e)
         {
-            /*
-             * This worker delegate is just a thread for the background timer to run on
-             */
-
             stopwatch.Start(); // start the timer
 
             while (stopwatch.IsRunning)
@@ -2218,6 +2223,8 @@ namespace TDHelper
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            SplashScreen.SetStatus("Set form position...");
+
             Screen screen = Screen.FromControl(this);
             Rectangle workingArea = screen.WorkingArea;
             int[] winLoc = LoadWinLoc(settingsRef.LocationParent);
@@ -2251,12 +2258,10 @@ namespace TDHelper
                 };
             }
 
-            SetConnections();
-
             // bind our alternate config files
-            SetShipList(true);
+            SplashScreen.SetStatus("Set ship list...");
 
-            SaveSettingsToIniFile();
+            SetShipList(true);
 
             if (settingsRef.HasUpdated)
             {
@@ -2284,8 +2289,12 @@ namespace TDHelper
             // load our last saved config
             if (!string.IsNullOrEmpty(settingsRef.LastUsedConfig))
             {
+                SplashScreen.SetStatus("Load ship settings...");
+
                 LoadSettings();
             }
+
+            SplashScreen.SetStatus("Completed.");
         }
 
         private void MainForm_LocationChanged(object sender, EventArgs e)
@@ -2313,7 +2322,7 @@ namespace TDHelper
 
         private void MainForm_Shown(object sender, EventArgs e)
         {
-            // Call the refresh methof for the run options panel.
+            // Call the refresh method for the run options panel.
             OptionsPanelRefresh(panRunOptions);
 
             // start the database uploader

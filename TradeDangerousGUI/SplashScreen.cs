@@ -45,6 +45,8 @@ namespace TDHelper
 		private bool m_bFirstLaunch = false;
 		private bool m_bDTSet = false;
 
+        public static bool IsVisible { get; set; }
+
 		#endregion Member Variables
 
 		/// <summary>
@@ -70,6 +72,8 @@ namespace TDHelper
                 return;
             }
 
+            IsVisible = true;
+
             ms_oThread = new Thread(new ThreadStart(SplashScreen.ShowForm))
             {
                 IsBackground = true,
@@ -80,7 +84,7 @@ namespace TDHelper
 
             while (ms_frmSplash == null || ms_frmSplash.IsHandleCreated == false)
 			{
-				System.Threading.Thread.Sleep(TIMER_INTERVAL);
+				Thread.Sleep(TIMER_INTERVAL);
 			}
 		}
 
@@ -92,6 +96,8 @@ namespace TDHelper
 				// Make it start going away.
 				ms_frmSplash.m_dblOpacityIncrement = -ms_frmSplash.m_dblOpacityDecrement;
 			}
+
+            IsVisible = false;
 
 			ms_oThread = null;	// we don't need these any more.
 			ms_frmSplash = null;

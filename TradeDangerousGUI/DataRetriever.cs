@@ -22,7 +22,7 @@ namespace TDHelper
         private DataRetriever dataSupply;
 
         public Cache(
-            DataRetriever dataSupplier, 
+            DataRetriever dataSupplier,
             int rowsPerPage)
         {
             dataSupply = dataSupplier;
@@ -31,7 +31,7 @@ namespace TDHelper
         }
 
         public void RemoveRow(
-            int rowIndex, 
+            int rowIndex,
             int rowID)
         {
             int foundIndex = -1;
@@ -61,7 +61,7 @@ namespace TDHelper
         }
 
         public void RemoveRows(
-            List<int> rowIndexer, 
+            List<int> rowIndexer,
             List<int> rowIDIndexer)
         {
             // batch our removes to prevent race conditions in Retrieve()
@@ -75,7 +75,7 @@ namespace TDHelper
         }
 
         public string RetrieveElement(
-            int rowIndex, 
+            int rowIndex,
             int columnIndex)
         {
             string element = null;
@@ -92,7 +92,7 @@ namespace TDHelper
         }
 
         private int GetIndexOfCachedRow(
-            int rowIndex, 
+            int rowIndex,
             int rowID)
         {
             int curID = -1;
@@ -159,7 +159,7 @@ namespace TDHelper
         // Sets the value of the element parameter if the value is in the cache.
         private bool IfPageCached_ThenSetElement(
             int rowIndex,
-            int columnIndex, 
+            int columnIndex,
             ref string element)
         {
             if (IsRowCachedInPage(0, rowIndex) && columnIndex < 4)
@@ -179,7 +179,7 @@ namespace TDHelper
         // Returns a value indicating whether the given row index is contained
         // in the given DataPage.
         private bool IsRowCachedInPage(
-            int pageNumber, 
+            int pageNumber,
             int rowIndex)
         {
             return rowIndex <= cachePages[pageNumber].HighestIndex && rowIndex >= cachePages[pageNumber].LowestIndex;
@@ -188,13 +188,12 @@ namespace TDHelper
         private void LoadFirstTwoPages()
         {
             cachePages = new DataPage[]{
-
             new DataPage(dataSupply.SupplyPageOfData(DataPage.MapToLowerBoundary(0), RowsPerPage), 0),
             new DataPage(dataSupply.SupplyPageOfData(DataPage.MapToLowerBoundary(RowsPerPage), RowsPerPage), RowsPerPage)};
         }
 
         private string RetrieveData_CacheIt_ThenReturnElement(
-            int rowIndex, 
+            int rowIndex,
             int columnIndex)
         {
             // Retrieve a page worth of data containing the requested value.
@@ -215,7 +214,7 @@ namespace TDHelper
             public DataTable table;
 
             public DataPage(
-                DataTable table, 
+                DataTable table,
                 int rowIndex)
             {
                 this.table = table;
@@ -256,17 +255,17 @@ namespace TDHelper
 
     public class DataRetriever : IDataPageRetriever
     {
+        private readonly string tableName;
         private SQLiteDataAdapter adapter = new SQLiteDataAdapter();
         private DataColumnCollection columnsValue;
         private string columnToSortBy;
         private string commaSeparatedListOfColumnNamesValue = null;
         private SQLiteCommand countCmd;
-        private SQLiteCommand selectCmd;
         private int rowCountValue = -1;
-        private readonly string tableName;
+        private SQLiteCommand selectCmd;
 
         public DataRetriever(
-            SQLiteConnection dbConn, 
+            SQLiteConnection dbConn,
             string tableName)
         {
             countCmd = dbConn.CreateCommand();
@@ -284,37 +283,37 @@ namespace TDHelper
                     return columnsValue;
                 }
 
-                OpenConnection(selectCmd.Connection);
+                bool isOpen = false;
 
-                // Retrieve the column information from the database.
-                selectCmd.CommandText = "SELECT * FROM " + tableName;
-
-                SQLiteDataAdapter adapter = new SQLiteDataAdapter()
+                try
                 {
-                    SelectCommand = selectCmd
-                };
+                    isOpen = OpenConnection(selectCmd.Connection);
 
-                DataTable table = new DataTable()
+                    // Retrieve the column information from the database.
+                    selectCmd.CommandText = "SELECT * FROM " + tableName;
+
+                    SQLiteDataAdapter adapter = new SQLiteDataAdapter()
+                    {
+                        SelectCommand = selectCmd
+                    };
+
+                    DataTable table = new DataTable()
+                    {
+                        Locale = System.Globalization.CultureInfo.InvariantCulture
+                    };
+
+                    adapter.FillSchema(table, SchemaType.Source);
+                    columnsValue = table.Columns;
+                }
+                finally
                 {
-                    Locale = System.Globalization.CultureInfo.InvariantCulture
-                };
-
-                adapter.FillSchema(table, SchemaType.Source);
-                columnsValue = table.Columns;
+                    if (!isOpen)
+                    {
+                        CloseConnection(selectCmd.Connection);
+                    }
+                }
 
                 return columnsValue;
-            }
-        }
-
-        /// <summary>
-        /// Open the specified connection.
-        /// </summary>
-        /// <param name="conn">The connection to be opened.</param>
-        public void OpenConnection(SQLiteConnection conn)
-        {
-            if (conn != null && conn.State == ConnectionState.Closed)
-            {
-                conn.Open();
             }
         }
 
@@ -322,12 +321,18 @@ namespace TDHelper
         {
             get
             {
-                OpenConnection(countCmd.Connection);
+                try
+                {
+                    OpenConnection(countCmd.Connection);
 
-                // Retrieve the row count from the database.
-                countCmd.CommandText = "SELECT COUNT(*) FROM " + tableName;
-                rowCountValue = Convert.ToInt32(countCmd.ExecuteScalar());
-
+                    // Retrieve the row count from the database.
+                    countCmd.CommandText = "SELECT COUNT(*) FROM " + tableName;
+                    rowCountValue = Convert.ToInt32(countCmd.ExecuteScalar());
+                }
+                finally
+                {
+                    CloseConnection(countCmd.Connection);
+                }
                 return rowCountValue;
             }
         }
@@ -365,6 +370,41 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Carry out any pre-close operations and then close the connection.
+        /// </summary>
+        /// <param name="conn">The connection to be closed.</param>
+        public void CloseConnection(SQLiteConnection conn)
+        {
+            if (conn != null &&
+                conn.State == ConnectionState.Open)
+            {
+                using (SQLiteCommand cmd = new SQLiteCommand("PRAGMA optimise", conn))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+
+                conn.Close();
+            }
+        }
+
+        /// <summary>
+        /// Open the specified connection if required
+        /// </summary>
+        /// <param name="conn">The connection to be opened.</param>
+        /// <returns>True if the initial state of the connection was open.</returns>
+        public bool OpenConnection(SQLiteConnection conn)
+        {
+            bool isOpen = conn != null && conn.State == ConnectionState.Open;
+
+            if (!isOpen)
+            {
+                conn.Open();
+            }
+
+            return isOpen;
+        }
+
         public void ResetRowCount()
         {
             // force an update of the row count
@@ -373,7 +413,7 @@ namespace TDHelper
         }
 
         public DataTable SupplyPageOfData(
-            int lowerPageBoundary, 
+            int lowerPageBoundary,
             int rowsPerPage)
         {
             // Store the name of the ID column. This column must contain unique
@@ -389,38 +429,50 @@ namespace TDHelper
                     "Column {0} must contain unique values.", columnToSortBy));
             }
 
-            OpenConnection(selectCmd.Connection);
-
-            // Retrieve the specified number of rows from the database, starting
-            // with the row specified by the lowerPageBoundary parameter.
-            selectCmd.CommandText = "SELECT * FROM " + tableName + " ORDER BY Timestamp DESC, System DESC, Notes DESC LIMIT @lowerPageBoundary,@rowsPerPage";
-
-            selectCmd.Parameters.AddWithValue("@lowerPageBoundary", lowerPageBoundary);
-            selectCmd.Parameters.AddWithValue("@rowsPerPage", rowsPerPage);
-
-            adapter.SelectCommand = selectCmd;
-
             DataTable table = new DataTable()
             {
                 Locale = System.Globalization.CultureInfo.InvariantCulture
             };
 
-            if (this.RowCount > 0)
-            {
-                // fill our selected page
-                adapter.Fill(table);
-            }
-            else
-            {
-                // make sure we populate with columns from the source
-                DataColumnCollection supplyColumns = this.Columns;
+            bool isOpen = false;
 
-                foreach (DataColumn c in supplyColumns)
+            try
+            {
+                isOpen = OpenConnection(selectCmd.Connection);
+
+                // Retrieve the specified number of rows from the database, starting
+                // with the row specified by the lowerPageBoundary parameter.
+                selectCmd.CommandText = "SELECT * FROM " + tableName + " ORDER BY Timestamp DESC, System DESC, Notes DESC LIMIT @lowerPageBoundary,@rowsPerPage";
+
+                selectCmd.Parameters.AddWithValue("@lowerPageBoundary", lowerPageBoundary);
+                selectCmd.Parameters.AddWithValue("@rowsPerPage", rowsPerPage);
+
+                adapter.SelectCommand = selectCmd;
+
+                if (this.RowCount > 0)
                 {
-                    if (supplyColumns.Count > 0 && table.Columns.Count < supplyColumns.Count)
+                    // fill our selected page
+                    adapter.Fill(table);
+                }
+                else
+                {
+                    // make sure we populate with columns from the source
+                    DataColumnCollection supplyColumns = this.Columns;
+
+                    foreach (DataColumn c in supplyColumns)
                     {
-                        table.Columns.Add(c.ColumnName, c.DataType);
+                        if (supplyColumns.Count > 0 && table.Columns.Count < supplyColumns.Count)
+                        {
+                            table.Columns.Add(c.ColumnName, c.DataType);
+                        }
                     }
+                }
+            }
+            finally
+            {
+                if (!isOpen)
+                {
+                    CloseConnection(selectCmd.Connection);
                 }
             }
 

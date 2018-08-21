@@ -483,14 +483,14 @@ namespace TDHelper
         {
             if (firstRun)
             {
-                SplashScreen.SetStatus("Validating the settings...");
+                SplashScreen.SetStatus("Validating the net logs...");
             }
 
             ValidatePaths();
 
             if (firstRun)
             {
-                SplashScreen.SetStatus("Validating the net logs...");
+                SplashScreen.SetStatus("Validating the settings...");
             }
 
             ValidateNetLogPath(null);
@@ -718,7 +718,12 @@ namespace TDHelper
             // don't populate if switching configs
             if (buttonCaller != 21)
             {
+                SplashScreen.SetStatus("Set available systems lists...");
+
                 BuildOutput(true);
+
+                SplashScreen.SetStatus("Set pilot's log...");
+
                 BuildPilotsLog();
             }
 
