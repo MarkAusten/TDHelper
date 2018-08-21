@@ -789,6 +789,16 @@ namespace TDHelper
             }
         }
 
+        private void ClearCircularBuffer()
+        {
+            circularBuffer.Clear();
+
+            this.rtbOutput.Invoke(new Action(() =>
+            {
+                this.rtbOutput.Text = circularBuffer.ToString();
+            }));
+        }
+
         private void ReadCircularBuffer()
         {
             // here we consume our buffer
@@ -803,7 +813,7 @@ namespace TDHelper
             else
             {
                 // if the buffer overflows, wipe and return empty
-                circularBuffer = new StringBuilder(circularBufferSize);
+                ClearCircularBuffer(); // circularBuffer = new StringBuilder(circularBufferSize);
             }
         }
 
