@@ -68,6 +68,7 @@ namespace TDHelper
         private int methodIndex;
         private string notesFile = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "saved_notes.txt");
         private int procCode = -1;
+        private bool RefreshingDestinations = false;
         private string savedFile1 = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "saved_1.txt");
         private string savedFile2 = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "saved_2.txt");
         private string savedFile3 = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "saved_3.txt");
@@ -79,8 +80,6 @@ namespace TDHelper
         private string tv_outputBox = string.Empty;
         private CultureInfo userCulture = CultureInfo.CurrentCulture;
         private IList<string> validConfigs = new List<string>();
-
-        private bool RefreshingDestinations = false;
 
         #endregion FormProps
 
@@ -246,7 +245,6 @@ namespace TDHelper
 
             switch (settingsRef.Verbosity)
             {
-
                 case 1:
                     verb = "-v";
                     break;
@@ -406,7 +404,7 @@ namespace TDHelper
 
             while (stopwatch.IsRunning)
             {
-               Thread.Sleep(1000);
+                Thread.Sleep(1000);
 
                 this.Invoke(new Action(() =>
                 {
@@ -573,7 +571,6 @@ namespace TDHelper
         {
             testSystemsTimer.Start(); // fire again after ~10s
         }
-
 
         /// <summary>
         /// This worker delegate is for the Cmdr Profile process
@@ -877,6 +874,20 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Clear the status display.
+        /// </summary>
+        /// <param name="wait">True to pause before clearing.</param>
+        private void ClearStatus(bool wait = false)
+        {
+            if (wait)
+            {
+                Thread.Sleep(1000);
+            }
+
+            ClearCircularBuffer();
+        }
+
         private void ComboBox_DropDown(object sender, EventArgs e)
         {
             dropdownOpened = true;
@@ -1004,6 +1015,35 @@ namespace TDHelper
                 prop.SetValue(settings, control.Minimum);
                 control.Text = control.Minimum.ToString();
             }
+        }
+
+        /// <summary>
+        /// populate the control with the specified setting.
+        /// </summary>
+        /// <param name="propertyName">The name of the settings property.</param>
+        /// <param name="control">The control to be populated.</param>
+        private void CopyDecimalSettingValue(
+            string propertyName,
+            NumericUpDown control)
+        {
+            CopyDecimalSettingValue(propertyName, control, settingsRef);
+        }
+
+        /// <summary>
+        /// populate the control with the specified setting.
+        /// </summary>
+        /// <param name="propertyName">The name of the settings property.</param>
+        /// <param name="control">The control to be populated.</param>
+        /// <param name="settings">The Settings object.</param>
+        private void CopyDecimalSettingValue(
+            string propertyName,
+            NumericUpDown control,
+            TDSettings settings)
+        {
+            ValidateSettingValue(propertyName, control, settings);
+
+            PropertyInfo prop = settings.GetType().GetProperty(propertyName);
+            control.Value = (decimal)prop.GetValue(settings);
         }
 
         private void CopyMenuItem_Click(object sender, EventArgs e)
@@ -1230,24 +1270,6 @@ namespace TDHelper
             if (clickedControl.Name == txtNotes.Name)
             {
                 txtNotes.SelectedText = string.Empty;
-            }
-        }
-
-        /// <summary>
-        /// Ensure that all the destination combo box controls are in sync.
-        /// </summary>
-        /// <param name="destination">The destination text.</param>
-        private void SetAllDestinations(string destination)
-        {
-            foreach (ComboBox control in this.GetAllChildren().OfType<ComboBox>()
-                .Where(x=>x.Name.EndsWith("Destination")))
-            {
-                var name = control.Name;
-
-                if (control.Text != destination)
-                {
-                    control.Text = destination;
-                }
             }
         }
 
@@ -1588,35 +1610,6 @@ namespace TDHelper
             }
 
             return panel;
-        }
-
-        /// <summary>
-        /// populate the control with the specified setting.
-        /// </summary>
-        /// <param name="propertyName">The name of the settings property.</param>
-        /// <param name="control">The control to be populated.</param>
-        private void CopyDecimalSettingValue(
-            string propertyName,
-            NumericUpDown control)
-        {
-            CopyDecimalSettingValue(propertyName, control, settingsRef);
-        }
-
-        /// <summary>
-        /// populate the control with the specified setting.
-        /// </summary>
-        /// <param name="propertyName">The name of the settings property.</param>
-        /// <param name="control">The control to be populated.</param>
-        /// <param name="settings">The Settings object.</param>
-        private void CopyDecimalSettingValue(
-            string propertyName,
-            NumericUpDown control,
-            TDSettings settings)
-        {
-            ValidateSettingValue(propertyName, control, settings);
-
-            PropertyInfo prop = settings.GetType().GetProperty(propertyName);
-            control.Value = (decimal)prop.GetValue(settings);
         }
 
         /// <summary>
@@ -2105,8 +2098,11 @@ namespace TDHelper
                 buttonCaller = 16; // mark us as needing a full refresh
             }
 
-            ValidateSettings();
             DisablebtnStarts();
+
+            ShowStatus("Checking for updated net logs...");
+            ValidateNetLogPath(null);
+            ShowStatusCompleted();
 
             if (!backgroundWorker1.IsBusy)
             {
@@ -2183,7 +2179,7 @@ namespace TDHelper
 
                 if (File.Exists(fileName))
                 {
-                    page.LoadFile(savedFile1, RichTextBoxStreamType.PlainText);
+                    page.LoadFile(fileName, RichTextBoxStreamType.PlainText);
                 }
 
                 CheckForParsableOutput(page);
@@ -2547,8 +2543,8 @@ namespace TDHelper
         }
 
         private void PilotsLogDataGrid_CellContextMenuStripNeeded(
-                    object sender,
-                    DataGridViewCellContextMenuStripNeededEventArgs e)
+                                    object sender,
+                                    DataGridViewCellContextMenuStripNeededEventArgs e)
         {
             // prevent OOR exception
             if (e.RowIndex == -1 || e.ColumnIndex == -1)
@@ -2567,8 +2563,8 @@ namespace TDHelper
         }
 
         private void PilotsLogDataGrid_CellValueNeeded(
-                    object sender,
-                    DataGridViewCellValueEventArgs e)
+                                    object sender,
+                                    DataGridViewCellValueEventArgs e)
         {
             if (e.RowIndex < retriever.RowCount && e.ColumnIndex < retriever.RowCount)
             {
@@ -2577,8 +2573,8 @@ namespace TDHelper
         }
 
         private void PilotsLogDataGrid_CellValuePushed(
-                    object sender,
-                    DataGridViewCellValueEventArgs e)
+                                    object sender,
+                                    DataGridViewCellValueEventArgs e)
         {
             if (e.RowIndex < retriever.RowCount && e.ColumnIndex < retriever.RowCount)
             {
@@ -2593,8 +2589,8 @@ namespace TDHelper
         }
 
         private void PilotsLogDataGrid_UserDeletingRow(
-                    object sender,
-                    DataGridViewRowCancelEventArgs e)
+                                    object sender,
+                                    DataGridViewRowCancelEventArgs e)
         {
             if (e.Row.Index < retriever.RowCount && e.Row.Index >= 0
                 && grdPilotsLog.SelectedRows.Count > 0)
@@ -2674,8 +2670,8 @@ namespace TDHelper
         }
 
         private void ProcErrorDataHandler(
-                    object sender,
-                    DataReceivedEventArgs output)
+                                    object sender,
+                                    DataReceivedEventArgs output)
         {
             if (output.Data != null)
             {
@@ -2697,8 +2693,8 @@ namespace TDHelper
         }
 
         private void ProcOutputDataHandler(
-                    object sender,
-                    DataReceivedEventArgs output)
+                                    object sender,
+                                    DataReceivedEventArgs output)
         {
             string[] exceptions = new string[] { "NOTE:", "####" };
             string filteredOutput = string.Empty;
@@ -2915,6 +2911,24 @@ namespace TDHelper
 
             clickedControl.Focus();
             clickedControl.SelectAll();
+        }
+
+        /// <summary>
+        /// Ensure that all the destination combo box controls are in sync.
+        /// </summary>
+        /// <param name="destination">The destination text.</param>
+        private void SetAllDestinations(string destination)
+        {
+            foreach (ComboBox control in this.GetAllChildren().OfType<ComboBox>()
+                .Where(x => x.Name.EndsWith("Destination")))
+            {
+                var name = control.Name;
+
+                if (control.Text != destination)
+                {
+                    control.Text = destination;
+                }
+            }
         }
 
         /// <summary>
@@ -3338,6 +3352,26 @@ namespace TDHelper
                     EnableOptions(panRouteOptions, show);
                 }
             }
+        }
+
+        /// <summary>
+        /// Display the specified status message on the output page.
+        /// </summary>
+        /// <param name="status">The message to be displayed.</param>
+        private void ShowStatus(string status)
+        {
+            StackCircularBuffer("{0}{1}".With(status, Environment.NewLine));
+            Application.DoEvents();
+        }
+
+        /// <summary>
+        /// Clear the status display.
+        /// </summary>
+        /// <param name="wait">True to pause before clearing.</param>
+        private void ShowStatusCompleted(bool wait = false)
+        {
+            ShowStatus("Completed");
+            ClearStatus(wait);
         }
 
         private void SrcSystemComboBox_KeyDown(object sender, KeyEventArgs e)
