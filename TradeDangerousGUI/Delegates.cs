@@ -249,6 +249,8 @@ namespace TDHelper
                     td_proc.ErrorDataReceived += new DataReceivedEventHandler(ProcErrorDataHandler);
 
                     // pre-invoke
+                    ClearCircularBuffer();
+
                     if (circularBuffer.Length == 0)
                     {
                         StackCircularBuffer("Command line: " + path + "\n");

@@ -73,6 +73,7 @@ namespace TDHelper
         private Object readNetLock = new Object();
         private DataTable retrieverCacheTable = new DataTable();
         private string tdPath = string.Empty;
+        private int insertPosition = 0;
 
         #endregion Props
 
@@ -596,9 +597,13 @@ namespace TDHelper
         {
             // make sure we remove junk from the run output
             string[] exceptions = new string[] { "Command line:", "NOTE:", "SORRY:", "####", "Entering" };
+
             string[] filteredLines = input
                 .Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
-                .SkipWhile(x => exceptions.Any(x.Contains)).ToArray();
+                .Where (x => !string.IsNullOrWhiteSpace(x))
+                .Where(x => !exceptions.Any(y => x.Contains(y)))
+                .ToArray();
+
             string result = string.Join(Environment.NewLine, filteredLines);
 
             return result;
@@ -661,6 +666,17 @@ namespace TDHelper
         {
             // just a simple method to clean invalid data from the shipvendor input
             return Regex.Replace(input, @"\s\[.*\]|(?<=\w)\,\s*(?!\w|\s+\w)|(?<=\s)\s+", string.Empty);
+        }
+
+        private void ClearCircularBuffer()
+        {
+            insertPosition = 0;
+            circularBuffer.Clear();
+
+            this.rtbOutput.Invoke(new Action(() =>
+            {
+                this.rtbOutput.Text = circularBuffer.ToString();
+            }));
         }
 
         private string CurrentTimestamp()
@@ -796,16 +812,6 @@ namespace TDHelper
             }
         }
 
-        private void ClearCircularBuffer()
-        {
-            circularBuffer.Clear();
-
-            this.rtbOutput.Invoke(new Action(() =>
-            {
-                this.rtbOutput.Text = circularBuffer.ToString();
-            }));
-        }
-
         private void ReadCircularBuffer()
         {
             // here we consume our buffer
@@ -848,28 +854,42 @@ namespace TDHelper
                 // if the input is bigger than our buffer size, toss what doesn't fit
                 circularBuffer = new StringBuilder(circularBufferSize);
                 circularBuffer.Append(input, input.Length - circularBuffer.Capacity, circularBuffer.Capacity);
+
+                insertPosition = circularBuffer.Length;
             }
             else if (input.Length + circularBuffer.Length > circularBuffer.Capacity)
             {
                 // in case we can append, but that would put us OOB
                 circularBuffer.Remove(0, circularBuffer.Length + input.Length - circularBufferSize);
                 circularBuffer.Append(input);
+
+                insertPosition = circularBuffer.Length;
             }
             else
             {
-                if (input.Contains("\r"))
-                {
-                    // Overwrite the last line.
-                    while (circularBuffer.Length > 1 && circularBuffer[circularBuffer.Length - 1] != '\n')
-                    {
-                        --circularBuffer.Length;
-                    }
+                circularBuffer.Length = insertPosition;
+                char lastChar = input[input.Length - 1];
 
+                if (lastChar == '\n')
+                {
                     circularBuffer.Append(input);
+
+                    insertPosition = circularBuffer.Length;
+                }
+                else if (lastChar == '\r')
+                {
+                    circularBuffer.Append(input.TrimEnd(new char[] { '\n', '\r' }));
+
+                    while (circularBuffer.Length > 1 && insertPosition > 0 && circularBuffer[insertPosition - 1] != '\n')
+                    {
+                        --insertPosition;
+                    }
                 }
                 else
                 {
                     circularBuffer.Append(input);
+
+                    insertPosition = circularBuffer.Length;
                 }
             }
 
@@ -1079,7 +1099,7 @@ namespace TDHelper
 
             if (!string.IsNullOrEmpty(filteredOutput))
             {
-                File.WriteAllText(file, text, Encoding.UTF8);
+                File.WriteAllText(file, filteredOutput, Encoding.UTF8);
             }
         }
 
@@ -1113,7 +1133,6 @@ namespace TDHelper
                 txtNotes.SaveFile(notesFile, RichTextBoxStreamType.PlainText);
             }
 
-            //// Serialize(configFile);
             SaveSettingsToIniFile();
         }
     }
