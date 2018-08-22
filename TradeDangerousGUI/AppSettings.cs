@@ -74,6 +74,8 @@ namespace TDHelper
 
     public partial class MainForm : Form
     {
+        private static bool verboseLoggingChecked;
+
         public static string AssemblyGuid
         {
             get
@@ -535,71 +537,76 @@ namespace TDHelper
 
         public static void ValidateVerboseLogging()
         {
-            // Open the AppConfig file and check to see if the setting is found.
-            string path = t_AppConfigPath;
-
-            XDocument file = XDocument.Load(path, LoadOptions.PreserveWhitespace);
-            XElement parentElement = file.Element("AppConfig");
-            XElement element = parentElement.Element("Network");
-            bool elementFound = !(element.Attribute("VerboseLogging") == null); ;
-
-            if (!elementFound)
+            if (!verboseLoggingChecked)
             {
-                // Not found in AppConfig.xml so check to see if there is an AppConfigLocal.xml file and check that.
-                path = Path.Combine(Path.GetDirectoryName(path), "AppConfigLocal.xml");
+                // Open the AppConfig file and check to see if the setting is found.
+                string path = t_AppConfigPath;
 
-                if (File.Exists(path))
+                XDocument file = XDocument.Load(path, LoadOptions.PreserveWhitespace);
+                XElement parentElement = file.Element("AppConfig");
+                XElement element = parentElement.Element("Network");
+                bool elementFound = !(element.Attribute("VerboseLogging") == null); ;
+
+                if (!elementFound)
                 {
-                    file = XDocument.Load(path, LoadOptions.PreserveWhitespace);
-                    parentElement = file.Element("AppConfig");
-                    element = parentElement.Element("Network");
-                    elementFound = !(element.Attribute("VerboseLogging") == null);
+                    // Not found in AppConfig.xml so check to see if there is an AppConfigLocal.xml file and check that.
+                    path = Path.Combine(Path.GetDirectoryName(path), "AppConfigLocal.xml");
+
+                    if (File.Exists(path))
+                    {
+                        file = XDocument.Load(path, LoadOptions.PreserveWhitespace);
+                        parentElement = file.Element("AppConfig");
+                        element = parentElement.Element("Network");
+                        elementFound = !(element.Attribute("VerboseLogging") == null);
+                    }
                 }
-            }
 
-            if (elementFound)
-            {
-                // The VerboseLogging element has been found in the file pointed to by path so check for the correct value.
-                elementFound = int.Parse(element.Attribute("VerboseLogging").Value) == 1;
-            }
-
-            if (!elementFound)
-            {
-                // If elementFound is false at this point, then VerboseLogging was either not found or it was found but not set.
-                // Ask the user if we can set it.
-                DialogResult dialog = TopMostMessageBox.Show(
-                    true,
-                    true,
-                    "VerboseLogging isn't set, it must be corrected so we can grab recent systems.\r\n\nMay we fix it?",
-                    "TD Helper - Error",
-                    MessageBoxButtons.YesNo);
-
-                if (dialog == DialogResult.Yes)
+                if (elementFound)
                 {
-                    SetVerboseLogging(path); // so fix it
+                    // The VerboseLogging element has been found in the file pointed to by path so check for the correct value.
+                    elementFound = int.Parse(element.Attribute("VerboseLogging").Value) == 1;
                 }
-                else
+
+                if (!elementFound)
                 {
-                    DialogResult dialog2 = TopMostMessageBox.Show(
+                    // If elementFound is false at this point, then VerboseLogging was either not found or it was found but not set.
+                    // Ask the user if we can set it.
+                    DialogResult dialog = TopMostMessageBox.Show(
                         true,
                         true,
-                        "We will set the DisableNetLogs override in our config file to prevent prompts.\r\n",
-                        "TD Helper - Notice",
-                        MessageBoxButtons.OK);
+                        "VerboseLogging isn't set, it must be corrected so we can grab recent systems.\r\n\nMay we fix it?",
+                        "TD Helper - Error",
+                        MessageBoxButtons.YesNo);
 
-                    settingsRef.DisableNetLogs = true;
+                    if (dialog == DialogResult.Yes)
+                    {
+                        SetVerboseLogging(path); // so fix it
+                    }
+                    else
+                    {
+                        DialogResult dialog2 = TopMostMessageBox.Show(
+                            true,
+                            true,
+                            "We will set the DisableNetLogs override in our config file to prevent prompts.\r\n",
+                            "TD Helper - Notice",
+                            MessageBoxButtons.OK);
+
+                        settingsRef.DisableNetLogs = true;
+                    }
                 }
-            }
 
-            if (!settingsRef.DisableNetLogs)
-            {
-                // refresh our path to the first netlog
-                latestLogPaths = CollectLogPaths(settingsRef.NetLogPath, "netLog*.log");
+                if (!settingsRef.DisableNetLogs)
+                {
+                    // refresh our path to the first netlog
+                    latestLogPaths = CollectLogPaths(settingsRef.NetLogPath, "netLog*.log");
 
-                recentLogPath
-                    = latestLogPaths != null && latestLogPaths.Count > 0
-                    ? latestLogPaths[0]
-                    : string.Empty;
+                    recentLogPath
+                        = latestLogPaths != null && latestLogPaths.Count > 0
+                        ? latestLogPaths[0]
+                        : string.Empty;
+                }
+
+                verboseLoggingChecked = true;
             }
         }
 

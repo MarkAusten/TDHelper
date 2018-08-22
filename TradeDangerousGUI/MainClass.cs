@@ -204,11 +204,17 @@ namespace TDHelper
             // override to avoid net log logic
             if (!settingsRef.DisableNetLogs)
             {
-                string appConfigPath = Path.Combine(
-                    Directory.GetParent(settingsRef.NetLogPath).ToString(),
-                    "AppConfig.xml");
+                string appConfigPath = string.Empty;
+
+                if (!string.IsNullOrEmpty(settingsRef.NetLogPath))
+                {
+                    appConfigPath = Path.Combine(
+                        Directory.GetParent(settingsRef.NetLogPath).ToString(),
+                        "AppConfig.xml");
+                }
 
                 if (string.IsNullOrEmpty(settingsRef.NetLogPath) ||
+                    string.IsNullOrEmpty(appConfigPath) ||
                     !CheckIfFileOpens(appConfigPath))
                 {
                     // let's just ask the user where to look
@@ -491,7 +497,7 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Validate the variosu path settings.
+        /// Validate the various path settings.
         /// </summary>
         public void ValidatePaths()
         {
@@ -499,6 +505,7 @@ namespace TDHelper
             ValidatePython(null);
             ValidateTDPath(null);
             ValidateEdcePath(null);
+            ValidateNetLogPath(null);
         }
 
         public void ValidateSettings()

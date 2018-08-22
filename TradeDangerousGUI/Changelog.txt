@@ -1,3 +1,8 @@
+v2.0.5.7
+--------
+* Fixed issue #28
+* Only check for verbose setting once per session.
+
 v2.0.5.6
 --------
 * Fixed issue #25.
