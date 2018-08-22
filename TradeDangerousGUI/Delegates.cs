@@ -382,7 +382,7 @@ namespace TDHelper
                 case "Viper":
                 case "Viper_MkIV":
                 case "Vulture":
-                    padSizes = "SML";
+                    padSizes = "SML?";
                     break;
 
                 case "Anaconda":
