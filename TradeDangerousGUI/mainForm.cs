@@ -710,6 +710,8 @@ namespace TDHelper
 
             SettingsForm.ShowDialog(this);
 
+            Application.DoEvents();
+
             // Chec to see if the user has unchecked the disable net logs setting
             if (settingsRef.DisableNetLogs != oldValue && oldValue)
             {
@@ -2252,6 +2254,13 @@ namespace TDHelper
                     X = Math.Max(workingArea.X, workingArea.X + (workingArea.Width - this.Width) / 2),
                     Y = Math.Max(workingArea.Y, workingArea.Y + (workingArea.Height - this.Height) / 2)
                 };
+            }
+
+            if (!settingsRef.DisableNetLogs)
+            {
+                SetSplashScreenStatus("Reading Net Logs...");
+
+                RefreshNetLogFileList();
             }
 
             // bind our alternate config files

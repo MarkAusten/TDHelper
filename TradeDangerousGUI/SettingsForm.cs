@@ -14,6 +14,8 @@ namespace TDHelper
 
         private void CancelButton_Click(object sender, EventArgs e)
         {
+            ((Button)sender).Enabled = false;
+
             this.Close();
         }
 
@@ -31,7 +33,7 @@ namespace TDHelper
             settings.PythonPath = this.pythonPathBox.Text;
             settings.TDPath = this.tdPathBox.Text;
             settings.EdcePath = this.edcePathBox.Text;
-            settings.NetLogPath = this.netLogsPathBox.Text;
+            settings.NetLogPath = this.txtNetLogsPath.Text;
 
             settings.ExtraRunParams = this.extraRunParameters.Text;
 
@@ -71,11 +73,21 @@ namespace TDHelper
 
         private void OkButton_Click(object sender, EventArgs e)
         {
+            ((Button)sender).Enabled = false;
+
             FormValidator();
+        }
+
+        private void OverrideDisableNetLogs_CheckedChanged(object sender, EventArgs e)
+        {
+            SetNetlogPathState(((CheckBox)sender).Checked);
+            MainForm.settingsRef.DisableNetLogs = ((CheckBox)sender).Checked;
         }
 
         private void ResetButton_Click(object sender, EventArgs e)
         {
+            ((Button)sender).Enabled = false;
+
             DialogResult d = TopMostMessageBox.Show(
                 false,
                 true,
@@ -88,6 +100,19 @@ namespace TDHelper
                 MainForm.callForReset = true;
                 this.Dispose();
             }
+
+            ((Button)sender).Enabled = true;
+        }
+
+        /// <summary>
+        ///  set the state of the net log path controls.
+        /// </summary>
+        /// <param name="state">The checked state of the checkbox.</param>
+        private void SetNetlogPathState(bool state)
+        {
+            lblNetLogsPath.Enabled = !state;
+            txtNetLogsPath.Enabled = !state;
+            btnNetLogsPath.Enabled = !state;
         }
 
         private void SettingsForm_Load(object sender, EventArgs e)
@@ -125,7 +150,7 @@ namespace TDHelper
 
             if (!string.IsNullOrEmpty(MainForm.settingsRef.NetLogPath))
             {
-                netLogsPathBox.Text = MainForm.settingsRef.NetLogPath;
+                txtNetLogsPath.Text = MainForm.settingsRef.NetLogPath;
             }
 
             if (!string.IsNullOrEmpty(MainForm.settingsRef.EdcePath))
@@ -203,9 +228,14 @@ namespace TDHelper
         private void ValidateNetLogsPath_Click(object sender, EventArgs e)
         {
             string origPath = MainForm.settingsRef.NetLogPath;
-            MainForm.settingsRef.NetLogPath = string.Empty;
-            MainForm.ValidateNetLogPath(origPath);
-            netLogsPathBox.Text = MainForm.settingsRef.NetLogPath;
+            DialogResult result = MainForm.ValidateNetLogPath(origPath, true);
+
+            if (result == DialogResult.Cancel)
+            {
+                MainForm.settingsRef.NetLogPath = origPath;
+            }
+
+            txtNetLogsPath.Text = MainForm.settingsRef.NetLogPath;
         }
 
         private void ValidatePythonPath_Click(object sender, EventArgs e)

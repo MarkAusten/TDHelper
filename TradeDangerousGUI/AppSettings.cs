@@ -496,17 +496,7 @@ namespace TDHelper
                         new XElement("Network", new XAttribute("VerboseLogging", "1"))));
             }
 
-            // refresh our path to the latest netlog
-            latestLogPaths = CollectLogPaths(settingsRef.NetLogPath, "netLog*.log");
-
-            if (latestLogPaths != null && latestLogPaths.Count > 0)
-            {
-                recentLogPath = latestLogPaths[0];
-            }
-            else
-            {
-                recentLogPath = string.Empty;
-            }
+            RefreshNetLogFileList();
 
             // always make a backup for safety
             if (File.Exists(path))
@@ -519,6 +509,20 @@ namespace TDHelper
             {
                 file.WriteTo(xmlWriter);
             }
+        }
+
+        /// <summary>
+        /// Refresh the list of net log files.
+        /// </summary>
+        private static void RefreshNetLogFileList()
+        {
+            // refresh our path to the latest netlog
+            latestLogPaths = CollectLogPaths(settingsRef.NetLogPath, "netLog*.log");
+
+            recentLogPath
+                = latestLogPaths != null && latestLogPaths.Count > 0
+                ? latestLogPaths[0]
+                : string.Empty;
         }
 
         public static bool ValidateConfigFile(string filePath)
@@ -540,12 +544,12 @@ namespace TDHelper
             if (!verboseLoggingChecked)
             {
                 // Open the AppConfig file and check to see if the setting is found.
-                string path = t_AppConfigPath;
+                string path = Path.Combine(Path.GetDirectoryName(settingsRef.NetLogPath), "AppConfig.xml"); 
 
                 XDocument file = XDocument.Load(path, LoadOptions.PreserveWhitespace);
                 XElement parentElement = file.Element("AppConfig");
                 XElement element = parentElement.Element("Network");
-                bool elementFound = !(element.Attribute("VerboseLogging") == null); ;
+                bool elementFound = !(element.Attribute("VerboseLogging") == null);
 
                 if (!elementFound)
                 {

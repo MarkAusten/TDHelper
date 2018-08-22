@@ -38,19 +38,24 @@
             this.overrideDoNotUpdate = new System.Windows.Forms.CheckBox();
             this.overrideCopySystemToClipboard = new System.Windows.Forms.CheckBox();
             this.overrideGroupBox = new System.Windows.Forms.GroupBox();
+            this.chkSummary = new System.Windows.Forms.CheckBox();
+            this.chkProgress = new System.Windows.Forms.CheckBox();
+            this.testSystemsCheckBox = new System.Windows.Forms.CheckBox();
+            this.verboseLabel = new System.Windows.Forms.Label();
+            this.verbosityComboBox = new System.Windows.Forms.ComboBox();
             this.validateEdcePath = new System.Windows.Forms.Button();
             this.edcePathBox = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.tvFontSelectorButton = new System.Windows.Forms.Button();
             this.currentTVFontBox = new System.Windows.Forms.TextBox();
             this.currentTVFontLabel = new System.Windows.Forms.Label();
-            this.validateNetLogsPath = new System.Windows.Forms.Button();
+            this.btnNetLogsPath = new System.Windows.Forms.Button();
             this.validateTDPath = new System.Windows.Forms.Button();
             this.validatePythonPath = new System.Windows.Forms.Button();
-            this.netLogsPathBox = new System.Windows.Forms.TextBox();
+            this.txtNetLogsPath = new System.Windows.Forms.TextBox();
             this.tdPathBox = new System.Windows.Forms.TextBox();
             this.pythonPathBox = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
+            this.lblNetLogsPath = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.resetButton = new System.Windows.Forms.Button();
@@ -59,11 +64,6 @@
             this.miscGroupBox = new System.Windows.Forms.GroupBox();
             this.chkQuiet = new System.Windows.Forms.CheckBox();
             this.lblRebuyPercentage = new System.Windows.Forms.Label();
-            this.testSystemsCheckBox = new System.Windows.Forms.CheckBox();
-            this.verboseLabel = new System.Windows.Forms.Label();
-            this.verbosityComboBox = new System.Windows.Forms.ComboBox();
-            this.chkProgress = new System.Windows.Forms.CheckBox();
-            this.chkSummary = new System.Windows.Forms.CheckBox();
             this.overrideGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rebuyPercentage)).BeginInit();
             this.miscGroupBox.SuspendLayout();
@@ -118,6 +118,7 @@
             this.overrideDisableNetLogs.TabIndex = 2;
             this.overrideDisableNetLogs.Text = "Disable Net Logs";
             this.overrideDisableNetLogs.UseVisualStyleBackColor = true;
+            this.overrideDisableNetLogs.CheckedChanged += new System.EventHandler(this.OverrideDisableNetLogs_CheckedChanged);
             // 
             // overrideDoNotUpdate
             // 
@@ -152,13 +153,13 @@
             this.overrideGroupBox.Controls.Add(this.tvFontSelectorButton);
             this.overrideGroupBox.Controls.Add(this.currentTVFontBox);
             this.overrideGroupBox.Controls.Add(this.currentTVFontLabel);
-            this.overrideGroupBox.Controls.Add(this.validateNetLogsPath);
+            this.overrideGroupBox.Controls.Add(this.btnNetLogsPath);
             this.overrideGroupBox.Controls.Add(this.validateTDPath);
             this.overrideGroupBox.Controls.Add(this.validatePythonPath);
-            this.overrideGroupBox.Controls.Add(this.netLogsPathBox);
+            this.overrideGroupBox.Controls.Add(this.txtNetLogsPath);
             this.overrideGroupBox.Controls.Add(this.tdPathBox);
             this.overrideGroupBox.Controls.Add(this.pythonPathBox);
-            this.overrideGroupBox.Controls.Add(this.label4);
+            this.overrideGroupBox.Controls.Add(this.lblNetLogsPath);
             this.overrideGroupBox.Controls.Add(this.label3);
             this.overrideGroupBox.Controls.Add(this.label2);
             this.overrideGroupBox.Controls.Add(this.overrideCopySystemToClipboard);
@@ -172,6 +173,67 @@
             this.overrideGroupBox.TabIndex = 7;
             this.overrideGroupBox.TabStop = false;
             this.overrideGroupBox.Text = "Overrides";
+            // 
+            // chkSummary
+            // 
+            this.chkSummary.AutoSize = true;
+            this.chkSummary.Location = new System.Drawing.Point(259, 290);
+            this.chkSummary.Name = "chkSummary";
+            this.chkSummary.Size = new System.Drawing.Size(69, 17);
+            this.chkSummary.TabIndex = 69;
+            this.chkSummary.TabStop = false;
+            this.chkSummary.Text = "Summary";
+            this.toolTip1.SetToolTip(this.chkSummary, "Show run output in summary form.");
+            this.chkSummary.UseVisualStyleBackColor = true;
+            // 
+            // chkProgress
+            // 
+            this.chkProgress.AutoSize = true;
+            this.chkProgress.Location = new System.Drawing.Point(156, 290);
+            this.chkProgress.Name = "chkProgress";
+            this.chkProgress.Size = new System.Drawing.Size(97, 17);
+            this.chkProgress.TabIndex = 68;
+            this.chkProgress.TabStop = false;
+            this.chkProgress.Text = "Show Progress";
+            this.toolTip1.SetToolTip(this.chkProgress, "Show the progress of the calculations.");
+            this.chkProgress.UseVisualStyleBackColor = true;
+            // 
+            // testSystemsCheckBox
+            // 
+            this.testSystemsCheckBox.AutoSize = true;
+            this.testSystemsCheckBox.Location = new System.Drawing.Point(6, 83);
+            this.testSystemsCheckBox.Name = "testSystemsCheckBox";
+            this.testSystemsCheckBox.Size = new System.Drawing.Size(210, 17);
+            this.testSystemsCheckBox.TabIndex = 61;
+            this.testSystemsCheckBox.TabStop = false;
+            this.testSystemsCheckBox.Text = "Notify when entering unknown systems";
+            this.testSystemsCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // verboseLabel
+            // 
+            this.verboseLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.verboseLabel.AutoSize = true;
+            this.verboseLabel.Location = new System.Drawing.Point(38, 291);
+            this.verboseLabel.Name = "verboseLabel";
+            this.verboseLabel.Size = new System.Drawing.Size(53, 13);
+            this.verboseLabel.TabIndex = 60;
+            this.verboseLabel.Text = "Verbosity:";
+            this.toolTip1.SetToolTip(this.verboseLabel, "Verbosity of output results");
+            // 
+            // verbosityComboBox
+            // 
+            this.verbosityComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.verbosityComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.verbosityComboBox.Items.AddRange(new object[] {
+            "",
+            "-v",
+            "-vv",
+            "-vvv"});
+            this.verbosityComboBox.Location = new System.Drawing.Point(97, 288);
+            this.verbosityComboBox.Name = "verbosityComboBox";
+            this.verbosityComboBox.Size = new System.Drawing.Size(46, 21);
+            this.verbosityComboBox.TabIndex = 59;
+            this.verbosityComboBox.TabStop = false;
             // 
             // validateEdcePath
             // 
@@ -226,15 +288,15 @@
             this.currentTVFontLabel.TabIndex = 13;
             this.currentTVFontLabel.Text = "TreeView Font:";
             // 
-            // validateNetLogsPath
+            // btnNetLogsPath
             // 
-            this.validateNetLogsPath.Location = new System.Drawing.Point(331, 193);
-            this.validateNetLogsPath.Name = "validateNetLogsPath";
-            this.validateNetLogsPath.Size = new System.Drawing.Size(24, 20);
-            this.validateNetLogsPath.TabIndex = 12;
-            this.validateNetLogsPath.Text = "...";
-            this.validateNetLogsPath.UseVisualStyleBackColor = true;
-            this.validateNetLogsPath.Click += new System.EventHandler(this.ValidateNetLogsPath_Click);
+            this.btnNetLogsPath.Location = new System.Drawing.Point(331, 193);
+            this.btnNetLogsPath.Name = "btnNetLogsPath";
+            this.btnNetLogsPath.Size = new System.Drawing.Size(24, 20);
+            this.btnNetLogsPath.TabIndex = 12;
+            this.btnNetLogsPath.Text = "...";
+            this.btnNetLogsPath.UseVisualStyleBackColor = true;
+            this.btnNetLogsPath.Click += new System.EventHandler(this.ValidateNetLogsPath_Click);
             // 
             // validateTDPath
             // 
@@ -256,12 +318,12 @@
             this.validatePythonPath.UseVisualStyleBackColor = true;
             this.validatePythonPath.Click += new System.EventHandler(this.ValidatePythonPath_Click);
             // 
-            // netLogsPathBox
+            // txtNetLogsPath
             // 
-            this.netLogsPathBox.Location = new System.Drawing.Point(98, 193);
-            this.netLogsPathBox.Name = "netLogsPathBox";
-            this.netLogsPathBox.Size = new System.Drawing.Size(227, 20);
-            this.netLogsPathBox.TabIndex = 11;
+            this.txtNetLogsPath.Location = new System.Drawing.Point(98, 193);
+            this.txtNetLogsPath.Name = "txtNetLogsPath";
+            this.txtNetLogsPath.Size = new System.Drawing.Size(227, 20);
+            this.txtNetLogsPath.TabIndex = 11;
             // 
             // tdPathBox
             // 
@@ -277,14 +339,14 @@
             this.pythonPathBox.Size = new System.Drawing.Size(227, 20);
             this.pythonPathBox.TabIndex = 7;
             // 
-            // label4
+            // lblNetLogsPath
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(14, 197);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(78, 13);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Net Logs Path:";
+            this.lblNetLogsPath.AutoSize = true;
+            this.lblNetLogsPath.Location = new System.Drawing.Point(14, 197);
+            this.lblNetLogsPath.Name = "lblNetLogsPath";
+            this.lblNetLogsPath.Size = new System.Drawing.Size(78, 13);
+            this.lblNetLogsPath.TabIndex = 6;
+            this.lblNetLogsPath.Text = "Net Logs Path:";
             // 
             // label3
             // 
@@ -361,67 +423,6 @@
             this.lblRebuyPercentage.TabIndex = 2;
             this.lblRebuyPercentage.Text = "Rebuy Percentage:";
             // 
-            // testSystemsCheckBox
-            // 
-            this.testSystemsCheckBox.AutoSize = true;
-            this.testSystemsCheckBox.Location = new System.Drawing.Point(6, 83);
-            this.testSystemsCheckBox.Name = "testSystemsCheckBox";
-            this.testSystemsCheckBox.Size = new System.Drawing.Size(210, 17);
-            this.testSystemsCheckBox.TabIndex = 61;
-            this.testSystemsCheckBox.TabStop = false;
-            this.testSystemsCheckBox.Text = "Notify when entering unknown systems";
-            this.testSystemsCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // verboseLabel
-            // 
-            this.verboseLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.verboseLabel.AutoSize = true;
-            this.verboseLabel.Location = new System.Drawing.Point(38, 291);
-            this.verboseLabel.Name = "verboseLabel";
-            this.verboseLabel.Size = new System.Drawing.Size(53, 13);
-            this.verboseLabel.TabIndex = 60;
-            this.verboseLabel.Text = "Verbosity:";
-            this.toolTip1.SetToolTip(this.verboseLabel, "Verbosity of output results");
-            // 
-            // verbosityComboBox
-            // 
-            this.verbosityComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.verbosityComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.verbosityComboBox.Items.AddRange(new object[] {
-            "",
-            "-v",
-            "-vv",
-            "-vvv"});
-            this.verbosityComboBox.Location = new System.Drawing.Point(97, 288);
-            this.verbosityComboBox.Name = "verbosityComboBox";
-            this.verbosityComboBox.Size = new System.Drawing.Size(46, 21);
-            this.verbosityComboBox.TabIndex = 59;
-            this.verbosityComboBox.TabStop = false;
-            // 
-            // chkProgress
-            // 
-            this.chkProgress.AutoSize = true;
-            this.chkProgress.Location = new System.Drawing.Point(156, 290);
-            this.chkProgress.Name = "chkProgress";
-            this.chkProgress.Size = new System.Drawing.Size(97, 17);
-            this.chkProgress.TabIndex = 68;
-            this.chkProgress.TabStop = false;
-            this.chkProgress.Text = "Show Progress";
-            this.toolTip1.SetToolTip(this.chkProgress, "Show the progress of the calculations.");
-            this.chkProgress.UseVisualStyleBackColor = true;
-            // 
-            // chkSummary
-            // 
-            this.chkSummary.AutoSize = true;
-            this.chkSummary.Location = new System.Drawing.Point(259, 290);
-            this.chkSummary.Name = "chkSummary";
-            this.chkSummary.Size = new System.Drawing.Size(69, 17);
-            this.chkSummary.TabIndex = 69;
-            this.chkSummary.TabStop = false;
-            this.chkSummary.Text = "Summary";
-            this.toolTip1.SetToolTip(this.chkSummary, "Show run output in summary form.");
-            this.chkSummary.UseVisualStyleBackColor = true;
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -460,13 +461,13 @@
         private System.Windows.Forms.CheckBox overrideDoNotUpdate;
         private System.Windows.Forms.CheckBox overrideCopySystemToClipboard;
         private System.Windows.Forms.GroupBox overrideGroupBox;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblNetLogsPath;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button validateNetLogsPath;
+        private System.Windows.Forms.Button btnNetLogsPath;
         private System.Windows.Forms.Button validateTDPath;
         private System.Windows.Forms.Button validatePythonPath;
-        private System.Windows.Forms.TextBox netLogsPathBox;
+        private System.Windows.Forms.TextBox txtNetLogsPath;
         private System.Windows.Forms.TextBox tdPathBox;
         private System.Windows.Forms.TextBox pythonPathBox;
         private System.Windows.Forms.Button resetButton;

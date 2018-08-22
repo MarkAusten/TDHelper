@@ -200,8 +200,24 @@ namespace TDHelper
             }
         }
 
-        public static void ValidateNetLogPath(string altPath)
+        /// <summary>
+        /// Displays the status message if the splash screen is visible.
+        /// </summary>
+        /// <param name="message">The message to be displayed.</param>
+        public static void SetSplashScreenStatus(string message)
         {
+            if (SplashScreen.IsVisible)
+            {
+                SplashScreen.SetStatus(message);
+            }
+        }
+
+        public static DialogResult ValidateNetLogPath(
+            string altPath, 
+            bool force = false)
+        {
+            DialogResult result = DialogResult.None;
+
             // override to avoid net log logic
             if (!settingsRef.DisableNetLogs)
             {
@@ -214,7 +230,8 @@ namespace TDHelper
                         "AppConfig.xml");
                 }
 
-                if (string.IsNullOrEmpty(settingsRef.NetLogPath) ||
+                if (force ||
+                    string.IsNullOrEmpty(settingsRef.NetLogPath) ||
                     string.IsNullOrEmpty(appConfigPath) ||
                     !CheckIfFileOpens(appConfigPath))
                 {
@@ -225,65 +242,67 @@ namespace TDHelper
                         Filter = "AppConfig.xml|*.xml"
                     };
 
-                    if (x.ShowDialog() == DialogResult.OK)
+                    result = x.ShowDialog();
+
+                    if (result != DialogResult.Cancel)
                     {
-                        t_AppConfigPath = x.FileName;
-                        settingsRef.NetLogPath = Path.Combine(Directory.GetParent(t_AppConfigPath).ToString(), "Logs"); // set the appropriate Logs folder
-
-                        SaveSettingsToIniFile();
-
-                        if (SplashScreen.IsVisible)
+                        if (result == DialogResult.OK)
                         {
-                            SplashScreen.SetStatus("Validating verbose logging");
-                        }
-
-                        ValidateVerboseLogging(); // always validate if verboselogging is enabled
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(altPath) && Directory.Exists(settingsRef.NetLogPath) && settingsRef.NetLogPath.EndsWith("Logs"))
-                        {
-                            t_AppConfigPath = Path.Combine(Directory.GetParent(altPath).ToString(), "AppConfigLocal.xml");
-                            settingsRef.NetLogPath = altPath;
+                            t_AppConfigPath = x.FileName;
+                            settingsRef.NetLogPath = Path.Combine(Directory.GetParent(t_AppConfigPath).ToString(), "Logs"); // set the appropriate Logs folder
 
                             SaveSettingsToIniFile();
 
-                            if (SplashScreen.IsVisible)
-                            {
-                                SplashScreen.SetStatus("Validating verbose logging");
-                            }
+                            SetSplashScreenStatus("Validating verbose logging");
 
-                            ValidateVerboseLogging(); // always validate if verboselogging is enabled
+                            // always validate when verboselogging is enabled
+                            verboseLoggingChecked = false;
+                            ValidateVerboseLogging();
                         }
                         else
                         {
-                            DialogResult dialog2 = TopMostMessageBox.Show(
-                                true,
-                                true,
-                                "Cannot set NetLogPath to a valid directory.{0}We will disable scanning for recent systems, if you want to re-enable it, set a working path.".With(Environment.NewLine),
-                                "TD Helper - Error",
-                                MessageBoxButtons.OK);
+                            if (!string.IsNullOrEmpty(altPath) && Directory.Exists(settingsRef.NetLogPath) && settingsRef.NetLogPath.EndsWith("Logs"))
+                            {
+                                t_AppConfigPath = Path.Combine(Directory.GetParent(altPath).ToString(), "AppConfigLocal.xml");
+                                settingsRef.NetLogPath = altPath;
 
-                            settingsRef.DisableNetLogs = true;
+                                SaveSettingsToIniFile();
 
-                            SaveSettingsToIniFile();
+                                SetSplashScreenStatus("Validating verbose logging");
+
+                                // always validate when verboselogging is enabled
+                                verboseLoggingChecked = false;
+                                ValidateVerboseLogging();
+                            }
+                            else
+                            {
+                                DialogResult dialog2 = TopMostMessageBox.Show(
+                                    true,
+                                    true,
+                                    "Cannot set NetLogPath to a valid directory.{0}We will disable scanning for recent systems, if you want to re-enable it, set a working path.".With(Environment.NewLine),
+                                    "TD Helper - Error",
+                                    MessageBoxButtons.OK);
+
+                                settingsRef.DisableNetLogs = true;
+
+                                SaveSettingsToIniFile();
+                            }
                         }
                     }
-                }
-                else
-                {
-                    // derive our AppConfig.xml path from NetLogPath
-                    t_AppConfigPath = appConfigPath;
-
-                    if (SplashScreen.IsVisible)
+                    else
                     {
-                        SplashScreen.SetStatus("Validating verbose logging");
-                    }
+                        // derive our AppConfig.xml path from NetLogPath
+                        t_AppConfigPath = appConfigPath;
 
-                    // double check the verbose logging state
-                    ValidateVerboseLogging();
+                        SetSplashScreenStatus("Validating verbose logging");
+
+                        // double check the verbose logging state
+                        ValidateVerboseLogging();
+                    }
                 }
             }
+
+            return result;
         }
 
         public static void ValidatePython(string altPath)
@@ -511,26 +530,17 @@ namespace TDHelper
 
         public void ValidateSettings()
         {
-            if (SplashScreen.IsVisible)
-            {
-                SplashScreen.SetStatus("Validating the path settings...");
-            }
+            SetSplashScreenStatus("Validating the path settings...");
 
             ValidatePaths();
 
-            if (SplashScreen.IsVisible)
-            {
-                SplashScreen.SetStatus("Validating net logs...");
-            }
+            SetSplashScreenStatus("Validating net logs...");
 
             ValidateNetLogPath(null);
 
             // sanity check our inputs
 
-            if (SplashScreen.IsVisible)
-            {
-                SplashScreen.SetStatus("Validating settings...");
-            }
+            SetSplashScreenStatus("Validating settings...");
 
             ValidateSetting("Age", numRouteOptionsAge);
             ValidateSetting("Capacity", numRouteOptionsShipCapacity);

@@ -1225,8 +1225,8 @@ namespace TDHelper
         }
 
         private List<string> LoadSystemsFromLogs(
-                    bool refreshMode,
-                    List<string> filePaths)
+            bool refreshMode,
+            List<string> filePaths)
         {
             // get the latest timestamp from the DB.
             string timestamp = this.GetLastTimestamp();
