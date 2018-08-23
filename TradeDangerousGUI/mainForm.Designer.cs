@@ -3288,7 +3288,7 @@
             this.grdPilotsLog.ContextMenuStrip = this.mnuStrip2;
             this.grdPilotsLog.Location = new System.Drawing.Point(3, 3);
             this.grdPilotsLog.Name = "grdPilotsLog";
-            this.grdPilotsLog.Size = new System.Drawing.Size(834, 383);
+            this.grdPilotsLog.Size = new System.Drawing.Size(842, 178);
             this.grdPilotsLog.TabIndex = 0;
             this.grdPilotsLog.VirtualMode = true;
             this.grdPilotsLog.CellContextMenuStripNeeded += new System.Windows.Forms.DataGridViewCellContextMenuStripNeededEventHandler(this.PilotsLogDataGrid_CellContextMenuStripNeeded);

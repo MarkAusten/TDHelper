@@ -11,7 +11,6 @@ using System.Reflection;
 using System.Threading;
 using System.Timers;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
 
 /* Indexes are as follows:
  *
@@ -2268,7 +2267,7 @@ namespace TDHelper
 
             if (!settingsRef.DisableNetLogs)
             {
-                SetSplashScreenStatus("Reading Net Logs...");
+                SetSplashScreenStatus("Collecting Net Log file names...");
 
                 RefreshNetLogFileList();
             }

@@ -63,7 +63,7 @@ namespace TDHelper
                         {
                             // check if there are any files that match the mask, return null if nothing matches
                             string tempLines = reader.ReadToEnd(); // pull into memory
-                            Match timestampMatch = Regex.Match(tempLines, @"(\d{2,4}\-\d\d\-\d\d)[\s\-](\d\d:\d\d)\sGMT");
+                            Match timestampMatch = Regex.Match(tempLines, @"(\d{2,4}\-\d\d\-\d\d)[\s\-](\d\d:\d\d)");
                             Match systemMatch = Regex.Match(tempLines, @"\{(\d\d:\d\d:\d\d).+System:""(.+)""");
 
                             if (systemMatch.Success && timestampMatch.Success)
@@ -1266,7 +1266,7 @@ namespace TDHelper
             // this method initially populates the recent systems and pilot's log in the absence of a DB
             // grab the timestamp of this particular netlog
             string fileBuffer = string.Empty;
-            string pattern0 = @"(\d{2,4}\-\d\d\-\d\d)[\s\-](\d\d:\d\d)\sGMT"; // $1=Y, $2=M, $3=D; $4=GMT
+            string pattern0 = @"(\d{2,4}\-\d\d\-\d\d)[\s\-](\d\d:\d\d)"; // $1=Y, $2=M, $3=D;
 
             // grab the timestamp of this entry, and then the system name
             string pattern1 = @"\{(\d\d:\d\d:\d\d).+System:""(.+)"""; // $1=localtime, $2=system
@@ -1292,7 +1292,7 @@ namespace TDHelper
                     ++fileCount;
                 }
 
-                SplashScreen.SetStatus("Reading Net Logs...");
+                SetSplashScreenStatus("Reading Net Logs...");
 
                 foreach (string path in latestLogPaths.Skip(latestLogPaths.Count - fileCount).ToList())
                 {
