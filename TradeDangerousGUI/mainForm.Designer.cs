@@ -531,7 +531,7 @@
             this.lblStopWatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblStopWatch.AutoSize = true;
             this.lblStopWatch.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblStopWatch.Location = new System.Drawing.Point(14, 655);
+            this.lblStopWatch.Location = new System.Drawing.Point(14, 455);
             this.lblStopWatch.Name = "lblStopWatch";
             this.lblStopWatch.Size = new System.Drawing.Size(0, 15);
             this.lblStopWatch.TabIndex = 9;
@@ -1398,7 +1398,7 @@
             // 
             this.icoUpdateNotify.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.icoUpdateNotify.Image = global::TDHelper.Properties.Resources.LightningBolt;
-            this.icoUpdateNotify.Location = new System.Drawing.Point(167, 655);
+            this.icoUpdateNotify.Location = new System.Drawing.Point(167, 455);
             this.icoUpdateNotify.Name = "icoUpdateNotify";
             this.icoUpdateNotify.Size = new System.Drawing.Size(21, 21);
             this.icoUpdateNotify.TabIndex = 59;
@@ -3109,7 +3109,7 @@
             this.lblUpdateNotify.AutoSize = true;
             this.lblUpdateNotify.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblUpdateNotify.ForeColor = System.Drawing.Color.Red;
-            this.lblUpdateNotify.Location = new System.Drawing.Point(201, 656);
+            this.lblUpdateNotify.Location = new System.Drawing.Point(201, 456);
             this.lblUpdateNotify.Name = "lblUpdateNotify";
             this.lblUpdateNotify.Size = new System.Drawing.Size(421, 15);
             this.lblUpdateNotify.TabIndex = 60;
@@ -3130,7 +3130,7 @@
             this.tabControl1.Location = new System.Drawing.Point(11, 236);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(855, 410);
+            this.tabControl1.Size = new System.Drawing.Size(855, 210);
             this.tabControl1.TabIndex = 23;
             this.tabControl1.TabStop = false;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.TabControl1_SelectedIndexChanged);
@@ -3141,7 +3141,7 @@
             this.pagOutput.Location = new System.Drawing.Point(4, 22);
             this.pagOutput.Name = "pagOutput";
             this.pagOutput.Padding = new System.Windows.Forms.Padding(3);
-            this.pagOutput.Size = new System.Drawing.Size(847, 384);
+            this.pagOutput.Size = new System.Drawing.Size(847, 184);
             this.pagOutput.TabIndex = 0;
             this.pagOutput.Text = "Output";
             this.pagOutput.UseVisualStyleBackColor = true;
@@ -3156,7 +3156,7 @@
             this.rtbOutput.Location = new System.Drawing.Point(3, 6);
             this.rtbOutput.Name = "rtbOutput";
             this.rtbOutput.ReadOnly = true;
-            this.rtbOutput.Size = new System.Drawing.Size(841, 375);
+            this.rtbOutput.Size = new System.Drawing.Size(841, 175);
             this.rtbOutput.TabIndex = 0;
             this.rtbOutput.TabStop = false;
             this.rtbOutput.Text = "";
@@ -3168,7 +3168,7 @@
             this.tabSavedPage1.Location = new System.Drawing.Point(4, 22);
             this.tabSavedPage1.Name = "tabSavedPage1";
             this.tabSavedPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSavedPage1.Size = new System.Drawing.Size(847, 384);
+            this.tabSavedPage1.Size = new System.Drawing.Size(847, 184);
             this.tabSavedPage1.TabIndex = 1;
             this.tabSavedPage1.Text = "Saved #1";
             this.tabSavedPage1.UseVisualStyleBackColor = true;
@@ -3193,7 +3193,7 @@
             this.tabSavedPage2.Controls.Add(this.rtbSaved2);
             this.tabSavedPage2.Location = new System.Drawing.Point(4, 22);
             this.tabSavedPage2.Name = "tabSavedPage2";
-            this.tabSavedPage2.Size = new System.Drawing.Size(847, 384);
+            this.tabSavedPage2.Size = new System.Drawing.Size(847, 184);
             this.tabSavedPage2.TabIndex = 2;
             this.tabSavedPage2.Text = "Saved #2";
             this.tabSavedPage2.UseVisualStyleBackColor = true;
@@ -3218,7 +3218,7 @@
             this.tabSavedPage3.Controls.Add(this.rtbSaved3);
             this.tabSavedPage3.Location = new System.Drawing.Point(4, 22);
             this.tabSavedPage3.Name = "tabSavedPage3";
-            this.tabSavedPage3.Size = new System.Drawing.Size(847, 384);
+            this.tabSavedPage3.Size = new System.Drawing.Size(847, 184);
             this.tabSavedPage3.TabIndex = 3;
             this.tabSavedPage3.Text = "Saved #3";
             this.tabSavedPage3.UseVisualStyleBackColor = true;
@@ -3244,7 +3244,7 @@
             this.tabNotesPage.Location = new System.Drawing.Point(4, 22);
             this.tabNotesPage.Name = "tabNotesPage";
             this.tabNotesPage.Padding = new System.Windows.Forms.Padding(3);
-            this.tabNotesPage.Size = new System.Drawing.Size(847, 384);
+            this.tabNotesPage.Size = new System.Drawing.Size(847, 184);
             this.tabNotesPage.TabIndex = 4;
             this.tabNotesPage.Text = "Notes";
             this.tabNotesPage.UseVisualStyleBackColor = true;
@@ -3270,7 +3270,7 @@
             this.tabLogPage.Location = new System.Drawing.Point(4, 22);
             this.tabLogPage.Name = "tabLogPage";
             this.tabLogPage.Padding = new System.Windows.Forms.Padding(3);
-            this.tabLogPage.Size = new System.Drawing.Size(847, 384);
+            this.tabLogPage.Size = new System.Drawing.Size(847, 184);
             this.tabLogPage.TabIndex = 5;
             this.tabLogPage.Text = "Pilot\'s Log";
             this.tabLogPage.UseVisualStyleBackColor = true;
@@ -3517,7 +3517,7 @@
             // 
             this.lblTrackerLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTrackerLink.AutoSize = true;
-            this.lblTrackerLink.Location = new System.Drawing.Point(692, 654);
+            this.lblTrackerLink.Location = new System.Drawing.Point(692, 454);
             this.lblTrackerLink.Name = "lblTrackerLink";
             this.lblTrackerLink.Size = new System.Drawing.Size(99, 13);
             this.lblTrackerLink.TabIndex = 66;
@@ -3530,7 +3530,7 @@
             // 
             this.lblFaqLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblFaqLink.AutoSize = true;
-            this.lblFaqLink.Location = new System.Drawing.Point(805, 654);
+            this.lblFaqLink.Location = new System.Drawing.Point(805, 454);
             this.lblFaqLink.Name = "lblFaqLink";
             this.lblFaqLink.Size = new System.Drawing.Size(55, 13);
             this.lblFaqLink.TabIndex = 67;
@@ -3855,7 +3855,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(872, 676);
+            this.ClientSize = new System.Drawing.Size(872, 476);
             this.Controls.Add(this.panOptions);
             this.Controls.Add(this.panMethods);
             this.Controls.Add(this.panRouteOptions);
@@ -3868,7 +3868,7 @@
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(882, 714);
+            this.MinimumSize = new System.Drawing.Size(882, 514);
             this.Name = "MainForm";
             this.Text = "Trade Dangerous Helper";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);

@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Media;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -822,28 +823,83 @@ namespace TDHelper
             }
         }
 
+        [DllImport("user32.dll")]
+        static extern int SendMessage(
+            IntPtr hWnd,
+            uint wMsg,
+            UIntPtr wParam,
+            IntPtr lParam);
+
         private void ReadCircularBuffer()
         {
             // here we consume our buffer
-            if (circularBuffer.Length > 0 && circularBuffer.Length <= circularBuffer.Capacity)
+           Invoke(new Action(() =>
             {
-                // if our buffer is full, display it
-                this.rtbOutput.Invoke(new Action(() =>
+                // Stop the control updating.
+                BeginControlUpdate(rtbOutput);
+
+                // COnsume the buffer.
+                if (circularBuffer.Length > 0 && circularBuffer.Length <= circularBuffer.Capacity)
                 {
-                    this.rtbOutput.Text = circularBuffer.ToString();
-                }));
-            }
-            else
-            {
-                // if the buffer overflows, wipe and return empty
-                ClearCircularBuffer(); // circularBuffer = new StringBuilder(circularBufferSize);
-            }
+                    // if our buffer is full, display it
+                    rtbOutput.Text = circularBuffer.ToString();
+                    rtbOutput.SelectionStart = rtbOutput.TextLength;
+                    rtbOutput.ScrollToCaret();
+                }
+                else
+                {
+                    // if the buffer overflows, wipe and return empty
+                    ClearCircularBuffer(); // circularBuffer = new StringBuilder(circularBufferSize);
+                }
+
+                // Make the contents of the control scroll down one line.
+                SendMessage(rtbOutput.Handle, (uint)0x00B6, (UIntPtr)0, (IntPtr)(1));
+
+                // Enable the control updating.
+                EndControlUpdate(rtbOutput);
+            }));
         }
 
         /// <summary>
-        /// Set the title of the main form.
+        /// An application sends the WM_SETREDRAW message to a window to allow changes in that 
+        /// window to be redrawn or to prevent changes in that window from being redrawn.
         /// </summary>
-        /// <param name="mainform"></param>
+        private const int WM_SETREDRAW = 11;
+
+        /// <summary>
+        /// Suspends painting for the target control. Do NOT forget to call EndControlUpdate!!!
+        /// </summary>
+        /// <param name="control">visual control</param>
+        public static void BeginControlUpdate(Control control)
+        {
+            Message msgSuspendUpdate = Message.Create(control.Handle, WM_SETREDRAW, IntPtr.Zero,
+                  IntPtr.Zero);
+
+            NativeWindow window = NativeWindow.FromHandle(control.Handle);
+            window.DefWndProc(ref msgSuspendUpdate);
+        }
+
+        /// <summary>
+        /// Resumes painting for the target control. Intended to be called following a call to BeginControlUpdate()
+        /// </summary>
+        /// <param name="control">visual control</param>
+        public static void EndControlUpdate(Control control)
+        {
+            // Create a C "true" boolean as an IntPtr
+            IntPtr wparam = new IntPtr(1);
+            Message msgResumeUpdate = Message.Create(control.Handle, WM_SETREDRAW, wparam,
+                  IntPtr.Zero);
+
+            NativeWindow window = NativeWindow.FromHandle(control.Handle);
+            window.DefWndProc(ref msgResumeUpdate);
+            control.Invalidate();
+            control.Refresh();
+        }
+        
+        /// <summary>
+                 /// Set the title of the main form.
+                 /// </summary>
+                 /// <param name="mainform"></param>
         private void SetFormTitle(Form mainform)
         {
             // Let's change the title to the current version

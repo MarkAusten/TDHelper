@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Threading;
 using System.Timers;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 /* Indexes are as follows:
  *
@@ -81,6 +82,15 @@ namespace TDHelper
         private CultureInfo userCulture = CultureInfo.CurrentCulture;
         private IList<string> validConfigs = new List<string>();
 
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000;  // Turn on WS_EX_COMPOSITED
+                return cp;
+            }
+        }
         #endregion FormProps
 
         public MainForm()
@@ -3589,5 +3599,6 @@ namespace TDHelper
                 lblRunOptionsEndJumps.Enabled = false;
             }
         }
+
     }
 }
