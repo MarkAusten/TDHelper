@@ -14,76 +14,51 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Process the reqest for a database update.
+        /// Process the maintenance reqest.
         /// </summary>
-        private void AnalyseDatabase()
+        /// <param name="command">The command to be issued.</param>
+        /// <param name="message">The message to be displayed.</param>
+        private void ProcessMaintenanceRequest(
+            string command,
+            string message = "")
         {
-            // Display warning message and ask for input.
-            DialogResult dialog = TopMostMessageBox.Show(
-                true,
-                true,
-                "This may take a very long time (~20 minutes). Are you sure you want to do this?",
-                "TD Helper - Warning",
-                MessageBoxButtons.YesNoCancel);
-
-            switch (dialog)
+            if (string.IsNullOrEmpty(message))
             {
-                case DialogResult.Cancel:
-                    // Do nothing and leave the form open.
-                    break;
-
-                case DialogResult.No:
-                    // Reset the output parameters and close the form.
-                    MainForm.DBUpdateCommandString = string.Empty;
-
-                    Close();
-
-                    break;
-
-                case DialogResult.Yes:
-                    // Set the output parameters and close the form.
-                    MainForm.DBUpdateCommandString = "ANALYZE";
-
-                    Close();
-
-                    break;
+                MainForm.DBUpdateCommandString = command;
+                Close();
             }
-        }
-
-        /// <summary>
-        /// Process the reqest for a database vacuum.
-        /// </summary>
-        private void VacuumDatabase()
-        {
-            // Display warning message and ask for input.
-            DialogResult dialog = TopMostMessageBox.Show(
-                true,
-                true,
-                "This may take an excessively long time, possibly many hours. Are you sure you want to do this?",
-                "TD Helper - Warning",
-                MessageBoxButtons.YesNoCancel);
-
-            switch (dialog)
+            else
             {
-                case DialogResult.Cancel:
-                    // Do nothing and leave the form open.
-                    break;
+                // Display warning message and ask for input.
+                DialogResult dialog = TopMostMessageBox.Show(
+                    true,
+                    true,
+                    message,
+                    "TD Helper - Warning",
+                    MessageBoxButtons.YesNoCancel);
 
-                case DialogResult.No:
-                    // Reset the output parameters and close the form.
-                    MainForm.DBUpdateCommandString = string.Empty;
+                switch (dialog)
+                {
+                    case DialogResult.Cancel:
+                        // Do nothing and leave the form open.
+                        break;
 
-                    Close();
+                    case DialogResult.No:
+                        // Reset the output parameters and close the form.
+                        MainForm.DBUpdateCommandString = string.Empty;
 
-                    break;
+                        Close();
 
-                case DialogResult.Yes:
-                    // Set the output parameters and close the form.
-                    MainForm.DBUpdateCommandString = "VACUUM";
+                        break;
 
-                    Close();
+                    case DialogResult.Yes:
+                        // Set the output parameters and close the form.
+                        MainForm.DBUpdateCommandString = command;
 
-                    break;
+                        Close();
+
+                        break;
+                }
             }
         }
 
@@ -94,7 +69,9 @@ namespace TDHelper
         /// <param name="e">The event arguments.</param>
         private void EventHandler_Analyse_Click(object sender, EventArgs e)
         {
-            AnalyseDatabase();
+            ProcessMaintenanceRequest(
+                "ANALYZE",
+                "This may take a very long time (~20 minutes). Are you sure you want to do this?");
         }
 
         /// <summary>
@@ -114,7 +91,9 @@ namespace TDHelper
         /// <param name="e">The event arguments.</param>
         private void EventHandler_Vacuum_Click(object sender, EventArgs e)
         {
-            VacuumDatabase();
+            ProcessMaintenanceRequest(
+                "VACUUM",
+                "This may take an excessively long time, possibly many hours. Are you sure you want to do this?");
         }
     }
 }

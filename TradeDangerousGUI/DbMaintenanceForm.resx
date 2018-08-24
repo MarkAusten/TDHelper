@@ -120,7 +120,7 @@
   <metadata name="toolTips.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <data name="txtAnalyse.Text" xml:space="preserve">
+  <data name="lblAnalyse.Text" xml:space="preserve">
     <value>Issuing the ANALYSE command to the SQLite database causes the database to be analysed and the resulting statistics saved. Doing this may speed up the query plan generation and therefore any queries. this should only be used if the queries are becoming unacceptably slow.</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
