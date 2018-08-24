@@ -982,15 +982,20 @@ namespace TDHelper
             panRouteOptions.Enabled = false;
         }
 
+        /// <summary>
+        /// Disable the buttons that should not be available during a query.
+        /// </summary>
         private void DisablebtnStarts()
         {
             // disable buttons during uncancellable operation
-            btnDbUpdate.Enabled = false;
-            btnCmdrProfile.Enabled = false;
-            btnGetSystem.Enabled = false;
-            btnMiniMode.Enabled = false;
-            btnStationInfo.Enabled = false;
-            btnDbMaintenance.Enabled = false;
+            string[] exceptions = new string[] { "btnSaveSettings", "btnSettings" };
+
+            // Disable all the buttons not found in the exceptions array.
+            foreach (Button button in panMethods.Controls.OfType<Button>()
+                .Where(x => !exceptions.Any(y => x.Name == y)))
+            {
+                button.Enabled = false;
+            }
 
             // an exception for Run commands
             if (buttonCaller != 1)
@@ -1056,13 +1061,22 @@ namespace TDHelper
             panRouteOptions.Enabled = true;
         }
 
+        /// <summary>
+        /// Enable the buttons.
+        /// </summary>
         private void EnableBtnStarts()
         {
             // reenable other controls when done
-            btnDbUpdate.Enabled = true;
+            string[] exceptions = new string[] { "btnCmdrProfile", "btnStationInfo" };
+
+            // Enable all the buttons not found in the exceptions array.
+            foreach (Button button in panMethods.Controls.OfType<Button>()
+                .Where(x => !exceptions.Any(y => x.Name == y)))
+            {
+                button.Enabled = true;
+            }
+
             btnCmdrProfile.Enabled = ValidateEdce();
-            btnGetSystem.Enabled = true;
-            btnDbMaintenance.Enabled = true;
 
             // fix Run button when returning from non-Run commands
             if (buttonCaller == 1 || !btnStart.Enabled)
