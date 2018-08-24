@@ -464,11 +464,11 @@ namespace TDHelper
 
                 circularBuffer.Clear();
 
-                StackCircularBuffer("Analysing database...\n");
+                StackCircularBuffer("Analysing database...{0}".With(Environment.NewLine));
 
                 VacuumAllDatabases();
             }
-            if (DBUpdateCommandString == "VACUUM")
+            else if (DBUpdateCommandString == "VACUUM")
             {
                 // only start the stopwatch for callers that run in the background
                 if (!backgroundWorker3.IsBusy)
@@ -482,7 +482,7 @@ namespace TDHelper
 
                 circularBuffer.Clear();
 
-                StackCircularBuffer("Analysing database...\n");
+                StackCircularBuffer("Vacuuming database...{0}".With(Environment.NewLine));
 
                 AnalyseAllDatabases();
             }
