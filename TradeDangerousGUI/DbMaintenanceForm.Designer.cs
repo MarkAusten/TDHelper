@@ -40,7 +40,7 @@
             // 
             // btnVacuum
             // 
-            this.btnVacuum.Location = new System.Drawing.Point(12, 109);
+            this.btnVacuum.Location = new System.Drawing.Point(12, 83);
             this.btnVacuum.Name = "btnVacuum";
             this.btnVacuum.Size = new System.Drawing.Size(75, 23);
             this.btnVacuum.TabIndex = 15;
@@ -61,7 +61,7 @@
             // btnClose
             // 
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClose.Location = new System.Drawing.Point(349, 202);
+            this.btnClose.Location = new System.Drawing.Point(467, 282);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 17;
@@ -74,12 +74,11 @@
             this.lblVacuum.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVacuum.Location = new System.Drawing.Point(93, 109);
+            this.lblVacuum.Location = new System.Drawing.Point(93, 83);
             this.lblVacuum.Name = "lblVacuum";
-            this.lblVacuum.Size = new System.Drawing.Size(331, 51);
+            this.lblVacuum.Size = new System.Drawing.Size(449, 170);
             this.lblVacuum.TabIndex = 20;
-            this.lblVacuum.Text = "Issuing the VACUUM command to the SQLite database causes the database to be defrg" +
-    "mented. This operation should be carried out regularly.";
+            this.lblVacuum.Text = resources.GetString("lblVacuum.Text");
             // 
             // lblAnalyse
             // 
@@ -88,7 +87,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblAnalyse.Location = new System.Drawing.Point(98, 12);
             this.lblAnalyse.Name = "lblAnalyse";
-            this.lblAnalyse.Size = new System.Drawing.Size(326, 71);
+            this.lblAnalyse.Size = new System.Drawing.Size(444, 48);
             this.lblAnalyse.TabIndex = 21;
             this.lblAnalyse.Text = resources.GetString("lblAnalyse.Text");
             // 
@@ -96,7 +95,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(436, 237);
+            this.ClientSize = new System.Drawing.Size(554, 317);
             this.Controls.Add(this.lblAnalyse);
             this.Controls.Add(this.lblVacuum);
             this.Controls.Add(this.btnClose);

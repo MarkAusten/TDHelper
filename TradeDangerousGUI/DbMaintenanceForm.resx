@@ -120,8 +120,15 @@
   <metadata name="toolTips.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="lblVacuum.Text" xml:space="preserve">
+    <value>The VACUUM command rebuilds the database file, repacking it into a minimal amount of disk space. There are several reasons an application might do this:
+
+Unless SQLite is running in "auto_vacuum=FULL" mode, when a large amount of data is deleted from the database file it leaves behind empty space, or "free" database pages. This means the database file might be larger than strictly necessary. Running VACUUM to rebuild the database reclaims this space and reduces the size of the database file.
+
+Frequent inserts, updates, and deletes can cause the database file to become fragmented - where data for a single table or index is scattered around the database file. Running VACUUM ensures that each table and index is largely stored contiguously within the database file. In some cases, VACUUM may also reduce the number of partially filled pages in the database, reducing the size of the database file further.</value>
+  </data>
   <data name="lblAnalyse.Text" xml:space="preserve">
-    <value>Issuing the ANALYSE command to the SQLite database causes the database to be analysed and the resulting statistics saved. Doing this may speed up the query plan generation and therefore any queries. this should only be used if the queries are becoming unacceptably slow.</value>
+    <value>The ANALYZE command gathers statistics about tables and indices and stores the collected information in internal tables of the database where the query optimizer can access the information and use it to help make better query planning choices.</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
