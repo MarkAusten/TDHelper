@@ -245,8 +245,8 @@ namespace TDHelper
                         td_proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
                     }
 
-                    td_proc.OutputDataReceived += new DataReceivedEventHandler(ProcOutputDataHandler);
-                    td_proc.ErrorDataReceived += new DataReceivedEventHandler(ProcErrorDataHandler);
+                    td_proc.OutputDataReceived += new DataReceivedEventHandler(EventHandler_ProcOutputDataHandler);
+                    td_proc.ErrorDataReceived += new DataReceivedEventHandler(EventHandler_ProcErrorDataHandler);
 
                     // pre-invoke
                     ClearCircularBuffer();

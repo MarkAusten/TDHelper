@@ -308,6 +308,7 @@
             this.panOldDataOptions = new System.Windows.Forms.Panel();
             this.panLocalOptions = new System.Windows.Forms.Panel();
             this.panOptions = new System.Windows.Forms.Panel();
+            this.btnDbMaintenance = new System.Windows.Forms.Button();
             this.mnuSetValues.SuspendLayout();
             this.mnuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRunOptionsRoutes)).BeginInit();
@@ -397,7 +398,7 @@
             this.btnStart.TabStop = false;
             this.btnStart.Text = "Start";
             this.btnStart.UseVisualStyleBackColor = true;
-            this.btnStart.Click += new System.EventHandler(this.BtnStart_Click);
+            this.btnStart.Click += new System.EventHandler(this.EventHandler_Start_Click);
             // 
             // lblRunOptionsDestination
             // 
@@ -429,11 +430,11 @@
             this.tipToolTips.SetToolTip(this.cboRunOptionsDestination, "Destination point in the form of system or system/station\r\nCtrl+Enter adds a Syst" +
         "em/Station to the favorites\r\nShift+Enter removes a System/Station from the favor" +
         "ites");
-            this.cboRunOptionsDestination.DropDown += new System.EventHandler(this.ComboBox_DropDown);
-            this.cboRunOptionsDestination.SelectedIndexChanged += new System.EventHandler(this.DestinationChanged);
-            this.cboRunOptionsDestination.DropDownClosed += new System.EventHandler(this.ComboBox_DropDownClosed);
-            this.cboRunOptionsDestination.TextChanged += new System.EventHandler(this.DestinationChanged);
-            this.cboRunOptionsDestination.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DestSystemComboBox_KeyDown);
+            this.cboRunOptionsDestination.DropDown += new System.EventHandler(this.EventHandler_DropDown);
+            this.cboRunOptionsDestination.SelectedIndexChanged += new System.EventHandler(this.EventHandler_DestinationChanged);
+            this.cboRunOptionsDestination.DropDownClosed += new System.EventHandler(this.EventHandler_DropDownClosed);
+            this.cboRunOptionsDestination.TextChanged += new System.EventHandler(this.EventHandler_DestinationChanged);
+            this.cboRunOptionsDestination.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EventHandler_DestSystemComboBox_KeyDown);
             // 
             // mnuSetValues
             // 
@@ -453,21 +454,21 @@
             this.mnuSetValues.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.mnuSetValues.ShowImageMargin = false;
             this.mnuSetValues.Size = new System.Drawing.Size(110, 198);
-            this.mnuSetValues.Opening += new System.ComponentModel.CancelEventHandler(this.SetValuesMenu_Opening);
+            this.mnuSetValues.Opening += new System.ComponentModel.CancelEventHandler(this.EventHandler_SetValuesMenu_Opening);
             // 
             // mnuLadenLY
             // 
             this.mnuLadenLY.Name = "mnuLadenLY";
             this.mnuLadenLY.Size = new System.Drawing.Size(109, 22);
             this.mnuLadenLY.Text = "Laden LY";
-            this.mnuLadenLY.Click += new System.EventHandler(this.DistanceMenuItem_Click);
+            this.mnuLadenLY.Click += new System.EventHandler(this.EventHandler_DistanceMenuItem_Click);
             // 
             // mnuUnladenLY
             // 
             this.mnuUnladenLY.Name = "mnuUnladenLY";
             this.mnuUnladenLY.Size = new System.Drawing.Size(109, 22);
             this.mnuUnladenLY.Text = "Unladen LY";
-            this.mnuUnladenLY.Click += new System.EventHandler(this.DistanceMenuItem_Click);
+            this.mnuUnladenLY.Click += new System.EventHandler(this.EventHandler_DistanceMenuItem_Click);
             // 
             // mnuSep2
             // 
@@ -479,7 +480,7 @@
             this.mnuCapacity.Name = "mnuCapacity";
             this.mnuCapacity.Size = new System.Drawing.Size(109, 22);
             this.mnuCapacity.Text = "Capacity";
-            this.mnuCapacity.Click += new System.EventHandler(this.DistanceMenuItem_Click);
+            this.mnuCapacity.Click += new System.EventHandler(this.EventHandler_DistanceMenuItem_Click);
             // 
             // mnuSep3
             // 
@@ -491,28 +492,28 @@
             this.mnuCut1.Name = "mnuCut1";
             this.mnuCut1.Size = new System.Drawing.Size(109, 22);
             this.mnuCut1.Text = "Cut";
-            this.mnuCut1.Click += new System.EventHandler(this.Cut1_Click);
+            this.mnuCut1.Click += new System.EventHandler(this.EventHandler_Cut1_Click);
             // 
             // mnuCopy1
             // 
             this.mnuCopy1.Name = "mnuCopy1";
             this.mnuCopy1.Size = new System.Drawing.Size(109, 22);
             this.mnuCopy1.Text = "Copy";
-            this.mnuCopy1.Click += new System.EventHandler(this.Copy1_Click);
+            this.mnuCopy1.Click += new System.EventHandler(this.EventHandler_Copy1_Click);
             // 
             // mnuPaste1
             // 
             this.mnuPaste1.Name = "mnuPaste1";
             this.mnuPaste1.Size = new System.Drawing.Size(109, 22);
             this.mnuPaste1.Text = "Paste";
-            this.mnuPaste1.Click += new System.EventHandler(this.Paste1_Click);
+            this.mnuPaste1.Click += new System.EventHandler(this.EventHandler_Paste1_Click);
             // 
             // mnuSelectAll1
             // 
             this.mnuSelectAll1.Name = "mnuSelectAll1";
             this.mnuSelectAll1.Size = new System.Drawing.Size(109, 22);
             this.mnuSelectAll1.Text = "Select All";
-            this.mnuSelectAll1.Click += new System.EventHandler(this.SelectAll1_Click);
+            this.mnuSelectAll1.Click += new System.EventHandler(this.EventHandler_SelectAll1_Click);
             // 
             // mnuSep4
             // 
@@ -524,7 +525,7 @@
             this.mnuReset.Name = "mnuReset";
             this.mnuReset.Size = new System.Drawing.Size(109, 22);
             this.mnuReset.Text = "Reset";
-            this.mnuReset.Click += new System.EventHandler(this.DistanceMenuItem_Click);
+            this.mnuReset.Click += new System.EventHandler(this.EventHandler_DistanceMenuItem_Click);
             // 
             // lblStopWatch
             // 
@@ -598,7 +599,7 @@
             this.tipToolTips.SetToolTip(this.chkRunOptionsTowards, "Favors distance covered over profit generated during routing (requires a Destinat" +
         "ion)");
             this.chkRunOptionsTowards.UseVisualStyleBackColor = true;
-            this.chkRunOptionsTowards.Click += new System.EventHandler(this.ChkTowards_Click);
+            this.chkRunOptionsTowards.Click += new System.EventHandler(this.EventHandler_Towards_Click);
             // 
             // chkRunOptionsLoop
             // 
@@ -613,7 +614,7 @@
             this.chkRunOptionsLoop.Text = "Loop";
             this.tipToolTips.SetToolTip(this.chkRunOptionsLoop, "Attempts to get a round-trip route");
             this.chkRunOptionsLoop.UseVisualStyleBackColor = true;
-            this.chkRunOptionsLoop.Click += new System.EventHandler(this.ChkLoop_Click);
+            this.chkRunOptionsLoop.Click += new System.EventHandler(this.EventHandler_Loop_Click);
             // 
             // mnuStrip1
             // 
@@ -638,7 +639,7 @@
             this.mnuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.mnuStrip1.ShowImageMargin = false;
             this.mnuStrip1.Size = new System.Drawing.Size(123, 308);
-            this.mnuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenuStrip1_Opening);
+            this.mnuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.EventHandler_ContextMenuStrip1_Opening);
             // 
             // mnuCut
             // 
@@ -646,14 +647,14 @@
             this.mnuCut.Name = "mnuCut";
             this.mnuCut.Size = new System.Drawing.Size(122, 22);
             this.mnuCut.Text = "Cut";
-            this.mnuCut.Click += new System.EventHandler(this.CutMenuItem_Click);
+            this.mnuCut.Click += new System.EventHandler(this.EventHandler_CutMenuItem_Click);
             // 
             // mnuCopy
             // 
             this.mnuCopy.Name = "mnuCopy";
             this.mnuCopy.Size = new System.Drawing.Size(122, 22);
             this.mnuCopy.Text = "Copy";
-            this.mnuCopy.Click += new System.EventHandler(this.CopyMenuItem_Click);
+            this.mnuCopy.Click += new System.EventHandler(this.EventHandler_CopyMenuItem_Click);
             // 
             // mnuPaste
             // 
@@ -661,7 +662,7 @@
             this.mnuPaste.Name = "mnuPaste";
             this.mnuPaste.Size = new System.Drawing.Size(122, 22);
             this.mnuPaste.Text = "Paste";
-            this.mnuPaste.Click += new System.EventHandler(this.PasteMenuItem_Click);
+            this.mnuPaste.Click += new System.EventHandler(this.EventHandler_PasteMenuItem_Click);
             // 
             // mnuDelete
             // 
@@ -669,7 +670,7 @@
             this.mnuDelete.Name = "mnuDelete";
             this.mnuDelete.Size = new System.Drawing.Size(122, 22);
             this.mnuDelete.Text = "Delete";
-            this.mnuDelete.Click += new System.EventHandler(this.DeleteMenuItem_Click);
+            this.mnuDelete.Click += new System.EventHandler(this.EventHandler_DeleteMenuItem_Click);
             // 
             // sepSeparator3
             // 
@@ -682,7 +683,7 @@
             this.mnuSavePage1.Name = "mnuSavePage1";
             this.mnuSavePage1.Size = new System.Drawing.Size(122, 22);
             this.mnuSavePage1.Text = "Save to #1";
-            this.mnuSavePage1.Click += new System.EventHandler(this.SavePage1MenuItem_Click);
+            this.mnuSavePage1.Click += new System.EventHandler(this.EventHandler_SavePage1MenuItem_Click);
             // 
             // nmuClearSaved1
             // 
@@ -690,7 +691,7 @@
             this.nmuClearSaved1.Size = new System.Drawing.Size(122, 22);
             this.nmuClearSaved1.Text = "Clear #1";
             this.nmuClearSaved1.Visible = false;
-            this.nmuClearSaved1.Click += new System.EventHandler(this.ClearSaved1MenuItem_Click);
+            this.nmuClearSaved1.Click += new System.EventHandler(this.EventHandler_ClearSaved1MenuItem_Click);
             // 
             // mnuSavePage2
             // 
@@ -698,7 +699,7 @@
             this.mnuSavePage2.Name = "mnuSavePage2";
             this.mnuSavePage2.Size = new System.Drawing.Size(122, 22);
             this.mnuSavePage2.Text = "Save to #2";
-            this.mnuSavePage2.Click += new System.EventHandler(this.SavePage2MenuItem_Click);
+            this.mnuSavePage2.Click += new System.EventHandler(this.EventHandler_SavePage2MenuItem_Click);
             // 
             // mnuClearSaved2
             // 
@@ -706,7 +707,7 @@
             this.mnuClearSaved2.Size = new System.Drawing.Size(122, 22);
             this.mnuClearSaved2.Text = "Clear #2";
             this.mnuClearSaved2.Visible = false;
-            this.mnuClearSaved2.Click += new System.EventHandler(this.ClearSaved2MenuItem_Click);
+            this.mnuClearSaved2.Click += new System.EventHandler(this.EventHandler_ClearSaved2MenuItem_Click);
             // 
             // mnuSavePage3
             // 
@@ -714,7 +715,7 @@
             this.mnuSavePage3.Name = "mnuSavePage3";
             this.mnuSavePage3.Size = new System.Drawing.Size(122, 22);
             this.mnuSavePage3.Text = "Save to #3";
-            this.mnuSavePage3.Click += new System.EventHandler(this.SavePage3MenuItem_Click);
+            this.mnuSavePage3.Click += new System.EventHandler(this.EventHandler_SavePage3MenuItem_Click);
             // 
             // mnuClearSaved3
             // 
@@ -722,7 +723,7 @@
             this.mnuClearSaved3.Size = new System.Drawing.Size(122, 22);
             this.mnuClearSaved3.Text = "Clear #3";
             this.mnuClearSaved3.Visible = false;
-            this.mnuClearSaved3.Click += new System.EventHandler(this.ClearSaved3MenuItem_Click);
+            this.mnuClearSaved3.Click += new System.EventHandler(this.EventHandler_ClearSaved3MenuItem_Click);
             // 
             // sepSeparator2
             // 
@@ -734,7 +735,7 @@
             this.mnuPushNotes.Name = "mnuPushNotes";
             this.mnuPushNotes.Size = new System.Drawing.Size(122, 22);
             this.mnuPushNotes.Text = "Add To Notes";
-            this.mnuPushNotes.Click += new System.EventHandler(this.PushNotesMenuItem_Click);
+            this.mnuPushNotes.Click += new System.EventHandler(this.EventHandler_PushNotesMenuItem_Click);
             // 
             // mnuNotesClear
             // 
@@ -742,7 +743,7 @@
             this.mnuNotesClear.Size = new System.Drawing.Size(122, 22);
             this.mnuNotesClear.Text = "Clear Notes";
             this.mnuNotesClear.Visible = false;
-            this.mnuNotesClear.Click += new System.EventHandler(this.NotesClearMenuItem_Click);
+            this.mnuNotesClear.Click += new System.EventHandler(this.EventHandler_NotesClearMenuItem_Click);
             // 
             // sepSeparator1
             // 
@@ -754,7 +755,7 @@
             this.mnuSelectAll.Name = "mnuSelectAll";
             this.mnuSelectAll.Size = new System.Drawing.Size(122, 22);
             this.mnuSelectAll.Text = "Select All";
-            this.mnuSelectAll.Click += new System.EventHandler(this.SelectMenuItem_Click);
+            this.mnuSelectAll.Click += new System.EventHandler(this.EventHandler_SelectMenuItem_Click);
             // 
             // chkRunOptionsDirect
             // 
@@ -767,7 +768,7 @@
             this.chkRunOptionsDirect.Text = "Direct";
             this.tipToolTips.SetToolTip(this.chkRunOptionsDirect, "Attempts to calculate a 1 hop route, ignoring distance (volatile)");
             this.chkRunOptionsDirect.UseVisualStyleBackColor = true;
-            this.chkRunOptionsDirect.Click += new System.EventHandler(this.DirectCheckBox_Click);
+            this.chkRunOptionsDirect.Click += new System.EventHandler(this.EventHandler_DirectCheckBox_Click);
             // 
             // numRunOptionsRoutes
             // 
@@ -784,8 +785,8 @@
             this.numRunOptionsRoutes.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numRunOptionsRoutes.ThousandsSeparator = true;
             this.tipToolTips.SetToolTip(this.numRunOptionsRoutes, "Generates this many routes for a Run");
-            this.numRunOptionsRoutes.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.numRunOptionsRoutes.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numRunOptionsRoutes.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
+            this.numRunOptionsRoutes.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
             // numRunOptionsEndJumps
             // 
@@ -797,8 +798,8 @@
             this.numRunOptionsEndJumps.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tipToolTips.SetToolTip(this.numRunOptionsEndJumps, "Try to finish this many jumps away from the destination, this requires a destinat" +
         "ion (volatile)");
-            this.numRunOptionsEndJumps.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.numRunOptionsEndJumps.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numRunOptionsEndJumps.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
+            this.numRunOptionsEndJumps.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
             // numRunOptionsStartJumps
             // 
@@ -810,8 +811,8 @@
             this.numRunOptionsStartJumps.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tipToolTips.SetToolTip(this.numRunOptionsStartJumps, "Try to route starting from this many jumps away from the source system (volatile)" +
         "");
-            this.numRunOptionsStartJumps.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.numRunOptionsStartJumps.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numRunOptionsStartJumps.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
+            this.numRunOptionsStartJumps.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
             // numRouteOptionsLimit
             // 
@@ -827,8 +828,8 @@
             this.numRouteOptionsLimit.TabIndex = 2;
             this.numRouteOptionsLimit.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tipToolTips.SetToolTip(this.numRouteOptionsLimit, "Limit each commodity purchased to this amount on a hop");
-            this.numRouteOptionsLimit.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.numRouteOptionsLimit.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numRouteOptionsLimit.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
+            this.numRouteOptionsLimit.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
             // numRouteOptionsPruneHops
             // 
@@ -839,8 +840,8 @@
             this.numRouteOptionsPruneHops.TabIndex = 4;
             this.numRouteOptionsPruneHops.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tipToolTips.SetToolTip(this.numRouteOptionsPruneHops, "Number of hops before pruning starts, to enable set >=2");
-            this.numRouteOptionsPruneHops.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.numRouteOptionsPruneHops.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numRouteOptionsPruneHops.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
+            this.numRouteOptionsPruneHops.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
             // numRouteOptionsPruneScore
             // 
@@ -856,8 +857,8 @@
             this.numRouteOptionsPruneScore.TabIndex = 3;
             this.numRouteOptionsPruneScore.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tipToolTips.SetToolTip(this.numRouteOptionsPruneScore, "Percentage of route score change, below which pruning occurs");
-            this.numRouteOptionsPruneScore.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.numRouteOptionsPruneScore.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numRouteOptionsPruneScore.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
+            this.numRouteOptionsPruneScore.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
             // numRouteOptionsLsPenalty
             // 
@@ -874,8 +875,8 @@
             this.numRouteOptionsLsPenalty.TabIndex = 2;
             this.numRouteOptionsLsPenalty.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tipToolTips.SetToolTip(this.numRouteOptionsLsPenalty, "Scoring penalty per LS traveled to station");
-            this.numRouteOptionsLsPenalty.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.numRouteOptionsLsPenalty.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numRouteOptionsLsPenalty.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
+            this.numRouteOptionsLsPenalty.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
             // numRouteOptionsMaxLSDistance
             // 
@@ -891,8 +892,8 @@
             this.numRouteOptionsMaxLSDistance.TabIndex = 1;
             this.numRouteOptionsMaxLSDistance.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tipToolTips.SetToolTip(this.numRouteOptionsMaxLSDistance, "Maximum distance station can be from system drop");
-            this.numRouteOptionsMaxLSDistance.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.numRouteOptionsMaxLSDistance.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numRouteOptionsMaxLSDistance.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
+            this.numRouteOptionsMaxLSDistance.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
             // numRouteOptionsGpt
             // 
@@ -909,8 +910,8 @@
             this.numRouteOptionsGpt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numRouteOptionsGpt.ThousandsSeparator = true;
             this.tipToolTips.SetToolTip(this.numRouteOptionsGpt, "Minimum profit in credits per ton on any hop");
-            this.numRouteOptionsGpt.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.numRouteOptionsGpt.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numRouteOptionsGpt.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
+            this.numRouteOptionsGpt.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
             // chkRunOptionsUnique
             // 
@@ -924,7 +925,7 @@
             this.chkRunOptionsUnique.Text = "Unique";
             this.tipToolTips.SetToolTip(this.chkRunOptionsUnique, "Require that stations on a route only be visited once");
             this.chkRunOptionsUnique.UseVisualStyleBackColor = true;
-            this.chkRunOptionsUnique.Click += new System.EventHandler(this.UniqueCheckBox_Click);
+            this.chkRunOptionsUnique.Click += new System.EventHandler(this.EventHandler_UniqueCheckBox_Click);
             // 
             // numShipInsurance
             // 
@@ -936,12 +937,12 @@
             0});
             this.numShipInsurance.Name = "numShipInsurance";
             this.numShipInsurance.Size = new System.Drawing.Size(100, 20);
-            this.numShipInsurance.TabIndex = 5;
+            this.numShipInsurance.TabIndex = 2;
             this.numShipInsurance.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numShipInsurance.ThousandsSeparator = true;
             this.tipToolTips.SetToolTip(this.numShipInsurance, "Keep at least this much in credits during routing");
-            this.numShipInsurance.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.numShipInsurance.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numShipInsurance.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
+            this.numShipInsurance.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
             // numRouteOptionsShipCapacity
             // 
@@ -953,7 +954,7 @@
             0});
             this.numRouteOptionsShipCapacity.Name = "numRouteOptionsShipCapacity";
             this.numRouteOptionsShipCapacity.Size = new System.Drawing.Size(60, 20);
-            this.numRouteOptionsShipCapacity.TabIndex = 6;
+            this.numRouteOptionsShipCapacity.TabIndex = 5;
             this.numRouteOptionsShipCapacity.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tipToolTips.SetToolTip(this.numRouteOptionsShipCapacity, "Total cargo space in your ship");
             this.numRouteOptionsShipCapacity.Value = new decimal(new int[] {
@@ -961,8 +962,8 @@
             0,
             0,
             0});
-            this.numRouteOptionsShipCapacity.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.numRouteOptionsShipCapacity.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numRouteOptionsShipCapacity.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
+            this.numRouteOptionsShipCapacity.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
             // numRouteOptionsJumps
             // 
@@ -978,8 +979,8 @@
             0,
             0,
             0});
-            this.numRouteOptionsJumps.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.numRouteOptionsJumps.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numRouteOptionsJumps.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
+            this.numRouteOptionsJumps.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
             // numRouteOptionsHops
             // 
@@ -1000,8 +1001,8 @@
             0,
             0,
             0});
-            this.numRouteOptionsHops.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.numRouteOptionsHops.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numRouteOptionsHops.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
+            this.numRouteOptionsHops.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
             // numCommandersCredits
             // 
@@ -1013,7 +1014,7 @@
             0});
             this.numCommandersCredits.Name = "numCommandersCredits";
             this.numCommandersCredits.Size = new System.Drawing.Size(125, 20);
-            this.numCommandersCredits.TabIndex = 3;
+            this.numCommandersCredits.TabIndex = 6;
             this.numCommandersCredits.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numCommandersCredits.ThousandsSeparator = true;
             this.tipToolTips.SetToolTip(this.numCommandersCredits, "Current credits");
@@ -1022,8 +1023,8 @@
             0,
             0,
             0});
-            this.numCommandersCredits.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.numCommandersCredits.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numCommandersCredits.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
+            this.numCommandersCredits.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
             // numUnladenLy
             // 
@@ -1039,8 +1040,8 @@
             this.numUnladenLy.TabIndex = 4;
             this.numUnladenLy.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tipToolTips.SetToolTip(this.numUnladenLy, "Distance that can be travelled while unladen (including fuel)");
-            this.numUnladenLy.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.numUnladenLy.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numUnladenLy.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
+            this.numUnladenLy.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
             // numLadenLy
             // 
@@ -1058,7 +1059,7 @@
             0});
             this.numLadenLy.Name = "numLadenLy";
             this.numLadenLy.Size = new System.Drawing.Size(53, 20);
-            this.numLadenLy.TabIndex = 2;
+            this.numLadenLy.TabIndex = 3;
             this.numLadenLy.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tipToolTips.SetToolTip(this.numLadenLy, "Distance that can be travelled while fully laden (including fuel)");
             this.numLadenLy.Value = new decimal(new int[] {
@@ -1066,8 +1067,8 @@
             0,
             0,
             0});
-            this.numLadenLy.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.numLadenLy.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numLadenLy.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
+            this.numLadenLy.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
             // lblRunOptionsRoutes
             // 
@@ -1100,7 +1101,7 @@
             this.cboMethod.TabIndex = 7;
             this.cboMethod.TabStop = false;
             this.tipToolTips.SetToolTip(this.cboMethod, "Select the command to run");
-            this.cboMethod.SelectedIndexChanged += new System.EventHandler(this.MethodComboBox_SelectedIndexChanged);
+            this.cboMethod.SelectedIndexChanged += new System.EventHandler(this.EventHandler_MethodComboBox_SelectedIndexChanged);
             // 
             // txtVia
             // 
@@ -1156,7 +1157,7 @@
             this.txtAvoid.TabIndex = 18;
             this.txtAvoid.TabStop = false;
             this.tipToolTips.SetToolTip(this.txtAvoid, "Avoids can include system/station and items delimited by comma");
-            this.txtAvoid.TextChanged += new System.EventHandler(this.TxtAvoid_TextChanged);
+            this.txtAvoid.TextChanged += new System.EventHandler(this.EventHandler_Avoid_TextChanged);
             // 
             // lblAvoid
             // 
@@ -1181,7 +1182,7 @@
             this.chkRunOptionsBlkMkt.Text = "BMkt";
             this.tipToolTips.SetToolTip(this.chkRunOptionsBlkMkt, "Require stations with a black market");
             this.chkRunOptionsBlkMkt.UseVisualStyleBackColor = true;
-            this.chkRunOptionsBlkMkt.Click += new System.EventHandler(this.BmktCheckBox_Click);
+            this.chkRunOptionsBlkMkt.Click += new System.EventHandler(this.EventHandler_BmktCheckBox_Click);
             // 
             // lblRouteOptionsHops
             // 
@@ -1195,7 +1196,7 @@
             // 
             // btnDbUpdate
             // 
-            this.btnDbUpdate.Location = new System.Drawing.Point(419, 0);
+            this.btnDbUpdate.Location = new System.Drawing.Point(410, 0);
             this.btnDbUpdate.Name = "btnDbUpdate";
             this.btnDbUpdate.Size = new System.Drawing.Size(68, 23);
             this.btnDbUpdate.TabIndex = 4;
@@ -1203,11 +1204,11 @@
             this.btnDbUpdate.Text = "Update DB";
             this.tipToolTips.SetToolTip(this.btnDbUpdate, "Update the database based on time from previous update");
             this.btnDbUpdate.UseVisualStyleBackColor = true;
-            this.btnDbUpdate.Click += new System.EventHandler(this.BtnDbUpdate_Click);
+            this.btnDbUpdate.Click += new System.EventHandler(this.EventHandler_DbUpdate_Click);
             // 
             // btnGetSystem
             // 
-            this.btnGetSystem.Location = new System.Drawing.Point(334, 0);
+            this.btnGetSystem.Location = new System.Drawing.Point(328, 0);
             this.btnGetSystem.Name = "btnGetSystem";
             this.btnGetSystem.Size = new System.Drawing.Size(23, 23);
             this.btnGetSystem.TabIndex = 1;
@@ -1216,7 +1217,7 @@
             this.tipToolTips.SetToolTip(this.btnGetSystem, "Get the most recent systems from the network logs (Ctrl+Click for a full refresh)" +
         "");
             this.btnGetSystem.UseVisualStyleBackColor = true;
-            this.btnGetSystem.Click += new System.EventHandler(this.GetSystemButton_Click);
+            this.btnGetSystem.Click += new System.EventHandler(this.EventHandler_GetSystemButton_Click);
             // 
             // lblSourceSystem
             // 
@@ -1244,10 +1245,10 @@
             this.txtPadSize.MaxLength = 3;
             this.txtPadSize.Name = "txtPadSize";
             this.txtPadSize.Size = new System.Drawing.Size(35, 20);
-            this.txtPadSize.TabIndex = 3;
+            this.txtPadSize.TabIndex = 1;
             this.txtPadSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tipToolTips.SetToolTip(this.txtPadSize, "Minimum pad sizes to consider a hop, can be M, L, and/or ?");
-            this.txtPadSize.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.PadSize_KeyPress);
+            this.txtPadSize.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_PadSize_KeyPress);
             // 
             // lblRouteOptionsAge
             // 
@@ -1274,8 +1275,8 @@
             this.numRouteOptionsAge.TabIndex = 0;
             this.numRouteOptionsAge.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tipToolTips.SetToolTip(this.numRouteOptionsAge, "Filter any hops based on the age of their recent data, up to 30 days");
-            this.numRouteOptionsAge.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.numRouteOptionsAge.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numRouteOptionsAge.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
+            this.numRouteOptionsAge.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
             // lblRouteOptionsGpt
             // 
@@ -1299,10 +1300,10 @@
             this.tipToolTips.SetToolTip(this.cboSourceSystem, "Starting point in the form of system or system/station\r\nCtrl+Enter adds a System/" +
         "Station to the favorites\r\nShift+Enter removes a System/Station from the favorite" +
         "s");
-            this.cboSourceSystem.DropDown += new System.EventHandler(this.ComboBox_DropDown);
-            this.cboSourceSystem.DropDownClosed += new System.EventHandler(this.ComboBox_DropDownClosed);
-            this.cboSourceSystem.TextChanged += new System.EventHandler(this.SrcSystemComboBox_TextChanged);
-            this.cboSourceSystem.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SrcSystemComboBox_KeyDown);
+            this.cboSourceSystem.DropDown += new System.EventHandler(this.EventHandler_DropDown);
+            this.cboSourceSystem.DropDownClosed += new System.EventHandler(this.EventHandler_DropDownClosed);
+            this.cboSourceSystem.TextChanged += new System.EventHandler(this.EventHandler_SrcSystemComboBox_TextChanged);
+            this.cboSourceSystem.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EventHandler_SrcSystemComboBox_KeyDown);
             // 
             // lblRouteOptionsMargin
             // 
@@ -1329,8 +1330,8 @@
             this.numRouteOptionsMargin.TabIndex = 2;
             this.numRouteOptionsMargin.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tipToolTips.SetToolTip(this.numRouteOptionsMargin, "Profit margin variance (<1.00)");
-            this.numRouteOptionsMargin.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.numRouteOptionsMargin.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numRouteOptionsMargin.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
+            this.numRouteOptionsMargin.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
             // lblRouteOptionsCargoLimit
             // 
@@ -1367,13 +1368,13 @@
             this.numRouteOptionsMaxGpt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numRouteOptionsMaxGpt.ThousandsSeparator = true;
             this.tipToolTips.SetToolTip(this.numRouteOptionsMaxGpt, "Maximum profit in credits per ton on any hop");
-            this.numRouteOptionsMaxGpt.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.numRouteOptionsMaxGpt.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numRouteOptionsMaxGpt.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
+            this.numRouteOptionsMaxGpt.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
             // btnMiniMode
             // 
             this.btnMiniMode.Enabled = false;
-            this.btnMiniMode.Location = new System.Drawing.Point(363, 0);
+            this.btnMiniMode.Location = new System.Drawing.Point(354, 0);
             this.btnMiniMode.Name = "btnMiniMode";
             this.btnMiniMode.Size = new System.Drawing.Size(23, 23);
             this.btnMiniMode.TabIndex = 2;
@@ -1381,7 +1382,7 @@
             this.btnMiniMode.Text = "&T";
             this.tipToolTips.SetToolTip(this.btnMiniMode, "Switch to a minimal TreeView mode for Run output (ESC to exit)");
             this.btnMiniMode.UseVisualStyleBackColor = true;
-            this.btnMiniMode.Click += new System.EventHandler(this.MiniModeButton_Click);
+            this.btnMiniMode.Click += new System.EventHandler(this.EventHandler_MiniModeButton_Click);
             // 
             // cboCommandersShips
             // 
@@ -1389,10 +1390,10 @@
             this.cboCommandersShips.Location = new System.Drawing.Point(6, 4);
             this.cboCommandersShips.Name = "cboCommandersShips";
             this.cboCommandersShips.Size = new System.Drawing.Size(272, 21);
-            this.cboCommandersShips.TabIndex = 56;
+            this.cboCommandersShips.TabIndex = 0;
             this.cboCommandersShips.TabStop = false;
             this.tipToolTips.SetToolTip(this.cboCommandersShips, "Select a ship");
-            this.cboCommandersShips.SelectionChangeCommitted += new System.EventHandler(this.AltConfigBox_SelectionChangeCommitted);
+            this.cboCommandersShips.SelectionChangeCommitted += new System.EventHandler(this.EventHandler_AltConfigBox_SelectionChangeCommitted);
             // 
             // icoUpdateNotify
             // 
@@ -1421,8 +1422,8 @@
             this.numRouteOptionsStock.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numRouteOptionsStock.ThousandsSeparator = true;
             this.tipToolTips.SetToolTip(this.numRouteOptionsStock, "Filter hops below this level of stock");
-            this.numRouteOptionsStock.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.numRouteOptionsStock.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numRouteOptionsStock.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
+            this.numRouteOptionsStock.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
             // lblStock
             // 
@@ -1453,8 +1454,8 @@
             this.numRunOptionsLoopInt.TabIndex = 6;
             this.numRunOptionsLoopInt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tipToolTips.SetToolTip(this.numRunOptionsLoopInt, "Minimum hops between visiting the same station");
-            this.numRunOptionsLoopInt.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.numRunOptionsLoopInt.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numRunOptionsLoopInt.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
+            this.numRunOptionsLoopInt.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
             // chkRunOptionsShorten
             // 
@@ -1469,7 +1470,7 @@
             this.chkRunOptionsShorten.Text = "Shorten";
             this.tipToolTips.SetToolTip(this.chkRunOptionsShorten, "Finds the highest gainful route with the least hops (requires a Destination)");
             this.chkRunOptionsShorten.UseVisualStyleBackColor = true;
-            this.chkRunOptionsShorten.Click += new System.EventHandler(this.ShortenCheckBox_Click);
+            this.chkRunOptionsShorten.Click += new System.EventHandler(this.EventHandler_ShortenCheckBox_Click);
             // 
             // numRouteOptionsDemand
             // 
@@ -1486,8 +1487,8 @@
             this.numRouteOptionsDemand.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numRouteOptionsDemand.ThousandsSeparator = true;
             this.tipToolTips.SetToolTip(this.numRouteOptionsDemand, "Filter hops below this level of demand");
-            this.numRouteOptionsDemand.Enter += new System.EventHandler(this.NumericUpDown_Enter);
-            this.numRouteOptionsDemand.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NumericUpDown_MouseUp);
+            this.numRouteOptionsDemand.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
+            this.numRouteOptionsDemand.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
             // lblRouteOptionsDemand
             // 
@@ -1513,7 +1514,7 @@
             // 
             // btnCmdrProfile
             // 
-            this.btnCmdrProfile.Location = new System.Drawing.Point(493, 0);
+            this.btnCmdrProfile.Location = new System.Drawing.Point(558, 0);
             this.btnCmdrProfile.Name = "btnCmdrProfile";
             this.btnCmdrProfile.Size = new System.Drawing.Size(75, 23);
             this.btnCmdrProfile.TabIndex = 5;
@@ -1522,11 +1523,11 @@
             this.tipToolTips.SetToolTip(this.btnCmdrProfile, "Download the commander\'s profile from Frontier and populate the available values." +
         "");
             this.btnCmdrProfile.UseVisualStyleBackColor = true;
-            this.btnCmdrProfile.Click += new System.EventHandler(this.BtnCmdrProfile_Click);
+            this.btnCmdrProfile.Click += new System.EventHandler(this.EventHandler_CmdrProfile_Click);
             // 
             // btnSaveSettings
             // 
-            this.btnSaveSettings.Location = new System.Drawing.Point(574, 0);
+            this.btnSaveSettings.Location = new System.Drawing.Point(639, 0);
             this.btnSaveSettings.Name = "btnSaveSettings";
             this.btnSaveSettings.Size = new System.Drawing.Size(54, 23);
             this.btnSaveSettings.TabIndex = 6;
@@ -1534,7 +1535,7 @@
             this.btnSaveSettings.Text = "Save Settings";
             this.tipToolTips.SetToolTip(this.btnSaveSettings, "Save the settings immediately.");
             this.btnSaveSettings.UseVisualStyleBackColor = true;
-            this.btnSaveSettings.Click += new System.EventHandler(this.BtnSaveSettings_Click);
+            this.btnSaveSettings.Click += new System.EventHandler(this.EventHandler_SaveSettings_Click);
             // 
             // lblRunOptionsPlanetary
             // 
@@ -1558,19 +1559,19 @@
             this.txtRunOptionsPlanetary.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tipToolTips.SetToolTip(this.txtRunOptionsPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
         "?");
-            this.txtRunOptionsPlanetary.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Planetary_KeyPress);
+            this.txtRunOptionsPlanetary.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_Planetary_KeyPress);
             // 
             // btnSettings
             // 
             this.btnSettings.Image = ((System.Drawing.Image)(resources.GetObject("btnSettings.Image")));
-            this.btnSettings.Location = new System.Drawing.Point(390, 0);
+            this.btnSettings.Location = new System.Drawing.Point(381, 0);
             this.btnSettings.Name = "btnSettings";
             this.btnSettings.Size = new System.Drawing.Size(23, 23);
             this.btnSettings.TabIndex = 3;
             this.btnSettings.TabStop = false;
             this.tipToolTips.SetToolTip(this.btnSettings, "Configuration settings");
             this.btnSettings.UseVisualStyleBackColor = true;
-            this.btnSettings.Click += new System.EventHandler(this.BtnSettings_Click);
+            this.btnSettings.Click += new System.EventHandler(this.EventHandler_Settings_Click);
             // 
             // btnRunOptionsSwap
             // 
@@ -1582,7 +1583,7 @@
             this.btnRunOptionsSwap.Text = "S";
             this.tipToolTips.SetToolTip(this.btnRunOptionsSwap, "Swap the contents of Source/Destination");
             this.btnRunOptionsSwap.UseVisualStyleBackColor = true;
-            this.btnRunOptionsSwap.Click += new System.EventHandler(this.SwapSourceAndDestination);
+            this.btnRunOptionsSwap.Click += new System.EventHandler(this.EventHandler_SwapSourceAndDestination);
             // 
             // lblBuyOptionsSupply
             // 
@@ -1715,7 +1716,7 @@
             this.txtBuyOptionsPlanetary.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tipToolTips.SetToolTip(this.txtBuyOptionsPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
         "?");
-            this.txtBuyOptionsPlanetary.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Planetary_KeyPress);
+            this.txtBuyOptionsPlanetary.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_Planetary_KeyPress);
             // 
             // chkBuyOptionsBlkMkt
             // 
@@ -1749,7 +1750,7 @@
             this.txtBuyOptionsPads.TabIndex = 77;
             this.txtBuyOptionsPads.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tipToolTips.SetToolTip(this.txtBuyOptionsPads, "Minimum pad sizes to consider a hop, can be M, L, and/or ?");
-            this.txtBuyOptionsPads.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.PadSize_KeyPress);
+            this.txtBuyOptionsPads.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_PadSize_KeyPress);
             // 
             // chkBuyOptionsOneStop
             // 
@@ -1762,7 +1763,7 @@
             this.chkBuyOptionsOneStop.Text = "1-Stop";
             this.tipToolTips.SetToolTip(this.chkBuyOptionsOneStop, "Filters stations that don\'t contain all commodities searched for (volatile)");
             this.chkBuyOptionsOneStop.UseVisualStyleBackColor = true;
-            this.chkBuyOptionsOneStop.CheckedChanged += new System.EventHandler(this.BuyOptionsOneStop_CheckedChanged);
+            this.chkBuyOptionsOneStop.CheckedChanged += new System.EventHandler(this.EventHandler_BuyOptionsOneStop_CheckedChanged);
             // 
             // numBuyOptionsAbove
             // 
@@ -1860,7 +1861,7 @@
             this.tipToolTips.SetToolTip(this.optBuyOptionsPrice, "Keeps items sorted by price when using --near\r\n (otherwise items are listed by di" +
         "stance and then price)");
             this.optBuyOptionsPrice.UseVisualStyleBackColor = true;
-            this.optBuyOptionsPrice.CheckedChanged += new System.EventHandler(this.BuyOptionsPrice_CheckedChanged);
+            this.optBuyOptionsPrice.CheckedChanged += new System.EventHandler(this.EventHandler_BuyOptionsPrice_CheckedChanged);
             // 
             // optBuyOptionsSupply
             // 
@@ -2039,7 +2040,7 @@
             this.txtSellOptionsPads.TabIndex = 77;
             this.txtSellOptionsPads.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tipToolTips.SetToolTip(this.txtSellOptionsPads, "Minimum pad sizes to consider a hop, can be M, L, and/or ?");
-            this.txtSellOptionsPads.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.PadSize_KeyPress);
+            this.txtSellOptionsPads.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_PadSize_KeyPress);
             // 
             // lblSellOptionsLimit
             // 
@@ -2073,7 +2074,7 @@
             this.txtSellOptionsPlanetary.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tipToolTips.SetToolTip(this.txtSellOptionsPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
         "?");
-            this.txtSellOptionsPlanetary.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Planetary_KeyPress);
+            this.txtSellOptionsPlanetary.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_Planetary_KeyPress);
             // 
             // numSellOptionsLimit
             // 
@@ -2229,7 +2230,7 @@
             this.txtRaresOptionsPads.TabIndex = 77;
             this.txtRaresOptionsPads.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tipToolTips.SetToolTip(this.txtRaresOptionsPads, "Minimum pad sizes to consider a hop, can be M, L, and/or ?");
-            this.txtRaresOptionsPads.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.PadSize_KeyPress);
+            this.txtRaresOptionsPads.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_PadSize_KeyPress);
             // 
             // lblRaresOptionsLimit
             // 
@@ -2277,7 +2278,7 @@
             this.txtRaresOptionsPlanetary.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tipToolTips.SetToolTip(this.txtRaresOptionsPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
         "?\r\n");
-            this.txtRaresOptionsPlanetary.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Planetary_KeyPress);
+            this.txtRaresOptionsPlanetary.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_Planetary_KeyPress);
             // 
             // chkRaresOptionsQuiet
             // 
@@ -2423,7 +2424,7 @@
             this.btnTradeOptionsSwap.Text = "S";
             this.tipToolTips.SetToolTip(this.btnTradeOptionsSwap, "Swap the contents of Source/Destination");
             this.btnTradeOptionsSwap.UseVisualStyleBackColor = true;
-            this.btnTradeOptionsSwap.Click += new System.EventHandler(this.SwapSourceAndDestination);
+            this.btnTradeOptionsSwap.Click += new System.EventHandler(this.EventHandler_SwapSourceAndDestination);
             // 
             // lblTradeOptionDestination
             // 
@@ -2448,8 +2449,8 @@
             this.tipToolTips.SetToolTip(this.cboTradeOptionDestination, "Destination point in the form of system or system/station\r\nCtrl+Enter adds a Syst" +
         "em/Station to the favorites\r\nShift+Enter removes a System/Station from the favor" +
         "ites");
-            this.cboTradeOptionDestination.SelectedIndexChanged += new System.EventHandler(this.DestinationChanged);
-            this.cboTradeOptionDestination.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DestSystemComboBox_KeyDown);
+            this.cboTradeOptionDestination.SelectedIndexChanged += new System.EventHandler(this.EventHandler_DestinationChanged);
+            this.cboTradeOptionDestination.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EventHandler_DestSystemComboBox_KeyDown);
             // 
             // lblMarketOptionsType
             // 
@@ -2508,7 +2509,7 @@
             this.btnNavOptionsSwap.Text = "S";
             this.tipToolTips.SetToolTip(this.btnNavOptionsSwap, "Swap the contents of Source/Destination");
             this.btnNavOptionsSwap.UseVisualStyleBackColor = true;
-            this.btnNavOptionsSwap.Click += new System.EventHandler(this.SwapSourceAndDestination);
+            this.btnNavOptionsSwap.Click += new System.EventHandler(this.EventHandler_SwapSourceAndDestination);
             // 
             // chkNavOptionsStations
             // 
@@ -2565,8 +2566,8 @@
             this.tipToolTips.SetToolTip(this.cboNavOptionsDestination, "Destination point in the form of system or system/station\r\nCtrl+Enter adds a Syst" +
         "em/Station to the favorites\r\nShift+Enter removes a System/Station from the favor" +
         "ites");
-            this.cboNavOptionsDestination.SelectedIndexChanged += new System.EventHandler(this.DestinationChanged);
-            this.cboNavOptionsDestination.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DestSystemComboBox_KeyDown);
+            this.cboNavOptionsDestination.SelectedIndexChanged += new System.EventHandler(this.EventHandler_DestinationChanged);
+            this.cboNavOptionsDestination.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EventHandler_DestSystemComboBox_KeyDown);
             // 
             // txtNavOptionsAvoid
             // 
@@ -2632,7 +2633,7 @@
             this.txtNavOptionsPads.TabIndex = 81;
             this.txtNavOptionsPads.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tipToolTips.SetToolTip(this.txtNavOptionsPads, "Minimum pad sizes to consider a hop, can be M, L, and/or ?");
-            this.txtNavOptionsPads.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.PadSize_KeyPress);
+            this.txtNavOptionsPads.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_PadSize_KeyPress);
             // 
             // lblNavOptionsPlanetary
             // 
@@ -2656,7 +2657,7 @@
             this.txtNavOptionsPlanetary.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tipToolTips.SetToolTip(this.txtNavOptionsPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
         "?");
-            this.txtNavOptionsPlanetary.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Planetary_KeyPress);
+            this.txtNavOptionsPlanetary.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_Planetary_KeyPress);
             // 
             // numNavOptionsLy
             // 
@@ -2804,7 +2805,7 @@
             this.chkLocalOptionsTrading.Text = "Trading";
             this.tipToolTips.SetToolTip(this.chkLocalOptionsTrading, "Limit stations to those which which have markets or trade data.");
             this.chkLocalOptionsTrading.UseVisualStyleBackColor = true;
-            this.chkLocalOptionsTrading.Click += new System.EventHandler(this.LocalFilterCheckBoxChanged);
+            this.chkLocalOptionsTrading.Click += new System.EventHandler(this.EventHandler_LocalFilterCheckBoxChanged);
             // 
             // numLocalOptionsLy
             // 
@@ -2862,7 +2863,7 @@
             this.txtLocalOptionsPads.TabIndex = 99;
             this.txtLocalOptionsPads.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tipToolTips.SetToolTip(this.txtLocalOptionsPads, "Minimum pad sizes to consider a hop, can be M, L, and/or ?");
-            this.txtLocalOptionsPads.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.PadSize_KeyPress);
+            this.txtLocalOptionsPads.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_PadSize_KeyPress);
             // 
             // lblLocalOptionsPlanetary
             // 
@@ -2886,7 +2887,7 @@
             this.txtLocalOptionsPlanetary.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tipToolTips.SetToolTip(this.txtLocalOptionsPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
         "?");
-            this.txtLocalOptionsPlanetary.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Planetary_KeyPress);
+            this.txtLocalOptionsPlanetary.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_Planetary_KeyPress);
             // 
             // btnLocalOptionsReset
             // 
@@ -2898,7 +2899,7 @@
             this.btnLocalOptionsReset.Text = "R";
             this.tipToolTips.SetToolTip(this.btnLocalOptionsReset, "Reset the station filters.");
             this.btnLocalOptionsReset.UseVisualStyleBackColor = true;
-            this.btnLocalOptionsReset.Click += new System.EventHandler(this.ResetLocalFilters);
+            this.btnLocalOptionsReset.Click += new System.EventHandler(this.EventHandler_ResetLocalFilters);
             // 
             // chkLocalOptionsStations
             // 
@@ -2910,7 +2911,7 @@
             this.chkLocalOptionsStations.Text = "Stations";
             this.tipToolTips.SetToolTip(this.chkLocalOptionsStations, "Filter destinations that don\'t contain stations");
             this.chkLocalOptionsStations.UseVisualStyleBackColor = true;
-            this.chkLocalOptionsStations.Click += new System.EventHandler(this.LocalFilterCheckBoxChanged);
+            this.chkLocalOptionsStations.Click += new System.EventHandler(this.EventHandler_LocalFilterCheckBoxChanged);
             // 
             // chkLocalOptionsOutfitting
             // 
@@ -2923,7 +2924,7 @@
             this.chkLocalOptionsOutfitting.Text = "Outfitting";
             this.tipToolTips.SetToolTip(this.chkLocalOptionsOutfitting, "Does the station have outfitting facilities? (Default is unknown)");
             this.chkLocalOptionsOutfitting.UseVisualStyleBackColor = true;
-            this.chkLocalOptionsOutfitting.Click += new System.EventHandler(this.LocalFilterCheckBoxChanged);
+            this.chkLocalOptionsOutfitting.Click += new System.EventHandler(this.EventHandler_LocalFilterCheckBoxChanged);
             // 
             // chkLocalOptionsRearm
             // 
@@ -2936,7 +2937,7 @@
             this.chkLocalOptionsRearm.Text = "Rearm";
             this.tipToolTips.SetToolTip(this.chkLocalOptionsRearm, "Does the station have rearm facilities? (Default is unknown)");
             this.chkLocalOptionsRearm.UseVisualStyleBackColor = true;
-            this.chkLocalOptionsRearm.Click += new System.EventHandler(this.LocalFilterCheckBoxChanged);
+            this.chkLocalOptionsRearm.Click += new System.EventHandler(this.EventHandler_LocalFilterCheckBoxChanged);
             // 
             // chkLocalOptionsCommodities
             // 
@@ -2949,7 +2950,7 @@
             this.chkLocalOptionsCommodities.Text = "Commodities";
             this.tipToolTips.SetToolTip(this.chkLocalOptionsCommodities, "Does the station have a commodities market? (Default is unknown)");
             this.chkLocalOptionsCommodities.UseVisualStyleBackColor = true;
-            this.chkLocalOptionsCommodities.Click += new System.EventHandler(this.LocalFilterCheckBoxChanged);
+            this.chkLocalOptionsCommodities.Click += new System.EventHandler(this.EventHandler_LocalFilterCheckBoxChanged);
             // 
             // chkLocalOptionsRepair
             // 
@@ -2962,7 +2963,7 @@
             this.chkLocalOptionsRepair.Text = "Repair";
             this.tipToolTips.SetToolTip(this.chkLocalOptionsRepair, "Does the station have repair facilities? (Default is unknown)");
             this.chkLocalOptionsRepair.UseVisualStyleBackColor = true;
-            this.chkLocalOptionsRepair.Click += new System.EventHandler(this.LocalFilterCheckBoxChanged);
+            this.chkLocalOptionsRepair.Click += new System.EventHandler(this.EventHandler_LocalFilterCheckBoxChanged);
             // 
             // chkLocalOptionsBlkMkt
             // 
@@ -2975,7 +2976,7 @@
             this.chkLocalOptionsBlkMkt.Text = "Black Market";
             this.tipToolTips.SetToolTip(this.chkLocalOptionsBlkMkt, "Does the station have a black market? (Default is unknown)");
             this.chkLocalOptionsBlkMkt.UseVisualStyleBackColor = true;
-            this.chkLocalOptionsBlkMkt.Click += new System.EventHandler(this.LocalFilterCheckBoxChanged);
+            this.chkLocalOptionsBlkMkt.Click += new System.EventHandler(this.EventHandler_LocalFilterCheckBoxChanged);
             // 
             // chkLocalOptionsRefuel
             // 
@@ -2988,7 +2989,7 @@
             this.chkLocalOptionsRefuel.Text = "Refuel";
             this.tipToolTips.SetToolTip(this.chkLocalOptionsRefuel, "Does the station have refueling facilities? (Default is unknown)");
             this.chkLocalOptionsRefuel.UseVisualStyleBackColor = true;
-            this.chkLocalOptionsRefuel.Click += new System.EventHandler(this.LocalFilterCheckBoxChanged);
+            this.chkLocalOptionsRefuel.Click += new System.EventHandler(this.EventHandler_LocalFilterCheckBoxChanged);
             // 
             // chkLocalOptionsShipyard
             // 
@@ -3001,7 +3002,7 @@
             this.chkLocalOptionsShipyard.Text = "Shipyard";
             this.tipToolTips.SetToolTip(this.chkLocalOptionsShipyard, "Does the station have a shipyard? (Default is unknown)");
             this.chkLocalOptionsShipyard.UseVisualStyleBackColor = true;
-            this.chkLocalOptionsShipyard.Click += new System.EventHandler(this.LocalFilterCheckBoxChanged);
+            this.chkLocalOptionsShipyard.Click += new System.EventHandler(this.EventHandler_LocalFilterCheckBoxChanged);
             // 
             // btnLocalOptionsAll
             // 
@@ -3012,7 +3013,7 @@
             this.btnLocalOptionsAll.Text = "A";
             this.tipToolTips.SetToolTip(this.btnLocalOptionsAll, "Set all the station filters.");
             this.btnLocalOptionsAll.UseVisualStyleBackColor = true;
-            this.btnLocalOptionsAll.Click += new System.EventHandler(this.SetLocalFilters);
+            this.btnLocalOptionsAll.Click += new System.EventHandler(this.EventHandler_SetLocalFilters);
             // 
             // chkSellOptionsBlkMkt
             // 
@@ -3038,7 +3039,7 @@
             this.btnStationInfo.Text = "i";
             this.tipToolTips.SetToolTip(this.btnStationInfo, "Show some details of the selected station.");
             this.btnStationInfo.UseVisualStyleBackColor = true;
-            this.btnStationInfo.Click += new System.EventHandler(this.StationInfo_Click);
+            this.btnStationInfo.Click += new System.EventHandler(this.EventHandler_StationInfo_Click);
             // 
             // lvShipVendorOptionsShips
             // 
@@ -3133,7 +3134,7 @@
             this.tabControl1.Size = new System.Drawing.Size(855, 210);
             this.tabControl1.TabIndex = 23;
             this.tabControl1.TabStop = false;
-            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.TabControl1_SelectedIndexChanged);
+            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.EventHandler_TabControl1_SelectedIndexChanged);
             // 
             // pagOutput
             // 
@@ -3160,7 +3161,7 @@
             this.rtbOutput.TabIndex = 0;
             this.rtbOutput.TabStop = false;
             this.rtbOutput.Text = "";
-            this.rtbOutput.TextChanged += new System.EventHandler(this.Td_outputBox_TextChanged);
+            this.rtbOutput.TextChanged += new System.EventHandler(this.EventHandler_Td_outputBox_TextChanged);
             // 
             // tabSavedPage1
             // 
@@ -3291,10 +3292,10 @@
             this.grdPilotsLog.Size = new System.Drawing.Size(842, 178);
             this.grdPilotsLog.TabIndex = 0;
             this.grdPilotsLog.VirtualMode = true;
-            this.grdPilotsLog.CellContextMenuStripNeeded += new System.Windows.Forms.DataGridViewCellContextMenuStripNeededEventHandler(this.PilotsLogDataGrid_CellContextMenuStripNeeded);
-            this.grdPilotsLog.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.PilotsLogDataGrid_CellValueNeeded);
-            this.grdPilotsLog.CellValuePushed += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.PilotsLogDataGrid_CellValuePushed);
-            this.grdPilotsLog.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.PilotsLogDataGrid_UserDeletingRow);
+            this.grdPilotsLog.CellContextMenuStripNeeded += new System.Windows.Forms.DataGridViewCellContextMenuStripNeededEventHandler(this.EventHandler_PilotsLogDataGrid_CellContextMenuStripNeeded);
+            this.grdPilotsLog.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.EventHandler_PilotsLogDataGrid_CellValueNeeded);
+            this.grdPilotsLog.CellValuePushed += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.EventHandler_PilotsLogDataGrid_CellValuePushed);
+            this.grdPilotsLog.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.EventHandler_PilotsLogDataGrid_UserDeletingRow);
             // 
             // mnuStrip2
             // 
@@ -3315,14 +3316,14 @@
             this.mnuInsertAtGridRow.Name = "mnuInsertAtGridRow";
             this.mnuInsertAtGridRow.Size = new System.Drawing.Size(183, 22);
             this.mnuInsertAtGridRow.Text = "Insert Row";
-            this.mnuInsertAtGridRow.Click += new System.EventHandler(this.InsertAtGridRow_Click);
+            this.mnuInsertAtGridRow.Click += new System.EventHandler(this.EventHandler_InsertAtGridRow_Click);
             // 
             // mnuRemoveAtGridRow
             // 
             this.mnuRemoveAtGridRow.Name = "mnuRemoveAtGridRow";
             this.mnuRemoveAtGridRow.Size = new System.Drawing.Size(183, 22);
             this.mnuRemoveAtGridRow.Text = "Remove Row";
-            this.mnuRemoveAtGridRow.Click += new System.EventHandler(this.RemoveAtGridRow_Click);
+            this.mnuRemoveAtGridRow.Click += new System.EventHandler(this.EventHandler_RemoveAtGridRow_Click);
             // 
             // sepSeparator4
             // 
@@ -3334,14 +3335,14 @@
             this.mnuForceRefreshGridView.Name = "mnuForceRefreshGridView";
             this.mnuForceRefreshGridView.Size = new System.Drawing.Size(183, 22);
             this.mnuForceRefreshGridView.Text = "Force Refresh";
-            this.mnuForceRefreshGridView.Click += new System.EventHandler(this.ForceRefreshGridView_Click);
+            this.mnuForceRefreshGridView.Click += new System.EventHandler(this.EventHandler_ForceRefreshGridView_Click);
             // 
             // mnuForceResortMenuItem
             // 
             this.mnuForceResortMenuItem.Name = "mnuForceResortMenuItem";
             this.mnuForceResortMenuItem.Size = new System.Drawing.Size(183, 22);
             this.mnuForceResortMenuItem.Text = "Force Re-sort";
-            this.mnuForceResortMenuItem.Click += new System.EventHandler(this.ForceResortMenuItem_Click);
+            this.mnuForceResortMenuItem.Click += new System.EventHandler(this.EventHandler_ForceResortMenuItem_Click);
             // 
             // sepSeparator5
             // 
@@ -3353,14 +3354,14 @@
             this.mnuCopySystemToSrc.Name = "mnuCopySystemToSrc";
             this.mnuCopySystemToSrc.Size = new System.Drawing.Size(183, 22);
             this.mnuCopySystemToSrc.Text = "Copy System to Src";
-            this.mnuCopySystemToSrc.Click += new System.EventHandler(this.CopySystemToSrc_Click);
+            this.mnuCopySystemToSrc.Click += new System.EventHandler(this.EventHandler_CopySystemToSrc_Click);
             // 
             // mnuCopySystemToDest
             // 
             this.mnuCopySystemToDest.Name = "mnuCopySystemToDest";
             this.mnuCopySystemToDest.Size = new System.Drawing.Size(183, 22);
             this.mnuCopySystemToDest.Text = "Copy System to Dest";
-            this.mnuCopySystemToDest.Click += new System.EventHandler(this.CopySystemToDest_Click);
+            this.mnuCopySystemToDest.Click += new System.EventHandler(this.EventHandler_CopySystemToDest_Click);
             // 
             // panSellOptions
             // 
@@ -3388,8 +3389,8 @@
             this.panSellOptions.Name = "panSellOptions";
             this.panSellOptions.Size = new System.Drawing.Size(320, 195);
             this.panSellOptions.TabIndex = 4;
-            this.panSellOptions.EnabledChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
-            this.panSellOptions.VisibleChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
+            this.panSellOptions.EnabledChanged += new System.EventHandler(this.EventHandler_OptionsPanel_StateChanged);
+            this.panSellOptions.VisibleChanged += new System.EventHandler(this.EventHandler_OptionsPanel_StateChanged);
             // 
             // grpSellOptionsSort
             // 
@@ -3430,8 +3431,8 @@
             this.panBuyOptions.Size = new System.Drawing.Size(320, 195);
             this.panBuyOptions.TabIndex = 3;
             this.panBuyOptions.Visible = false;
-            this.panBuyOptions.EnabledChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
-            this.panBuyOptions.VisibleChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
+            this.panBuyOptions.EnabledChanged += new System.EventHandler(this.EventHandler_OptionsPanel_StateChanged);
+            this.panBuyOptions.VisibleChanged += new System.EventHandler(this.EventHandler_OptionsPanel_StateChanged);
             // 
             // grpBuyOptionsSort
             // 
@@ -3524,7 +3525,7 @@
             this.lblTrackerLink.TabStop = true;
             this.lblTrackerLink.Text = "Report bugs/issues";
             this.lblTrackerLink.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblTrackerLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.TrackerLinkLabel_LinkClicked);
+            this.lblTrackerLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.EventHandler_TrackerLinkLabel_LinkClicked);
             // 
             // lblFaqLink
             // 
@@ -3536,7 +3537,7 @@
             this.lblFaqLink.TabIndex = 67;
             this.lblFaqLink.TabStop = true;
             this.lblFaqLink.Text = "Help/FAQ";
-            this.lblFaqLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.FaqLinkLabel_LinkClicked);
+            this.lblFaqLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.EventHandler_FaqLinkLabel_LinkClicked);
             // 
             // backgroundWorker7
             // 
@@ -3651,6 +3652,7 @@
             // 
             // panMethods
             // 
+            this.panMethods.Controls.Add(this.btnDbMaintenance);
             this.panMethods.Controls.Add(this.btnStationInfo);
             this.panMethods.Controls.Add(this.btnSaveSettings);
             this.panMethods.Controls.Add(this.btnCmdrProfile);
@@ -3689,8 +3691,8 @@
             this.panRaresOptions.Size = new System.Drawing.Size(320, 195);
             this.panRaresOptions.TabIndex = 5;
             this.panRaresOptions.Visible = false;
-            this.panRaresOptions.EnabledChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
-            this.panRaresOptions.VisibleChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
+            this.panRaresOptions.EnabledChanged += new System.EventHandler(this.EventHandler_OptionsPanel_StateChanged);
+            this.panRaresOptions.VisibleChanged += new System.EventHandler(this.EventHandler_OptionsPanel_StateChanged);
             // 
             // grpRaresOptionsType
             // 
@@ -3725,8 +3727,8 @@
             this.panTradeOptions.Size = new System.Drawing.Size(320, 195);
             this.panTradeOptions.TabIndex = 3;
             this.panTradeOptions.Visible = false;
-            this.panTradeOptions.EnabledChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
-            this.panTradeOptions.VisibleChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
+            this.panTradeOptions.EnabledChanged += new System.EventHandler(this.EventHandler_OptionsPanel_StateChanged);
+            this.panTradeOptions.VisibleChanged += new System.EventHandler(this.EventHandler_OptionsPanel_StateChanged);
             // 
             // panMarketOptions
             // 
@@ -3736,8 +3738,8 @@
             this.panMarketOptions.Size = new System.Drawing.Size(320, 195);
             this.panMarketOptions.TabIndex = 5;
             this.panMarketOptions.Visible = false;
-            this.panMarketOptions.EnabledChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
-            this.panMarketOptions.VisibleChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
+            this.panMarketOptions.EnabledChanged += new System.EventHandler(this.EventHandler_OptionsPanel_StateChanged);
+            this.panMarketOptions.VisibleChanged += new System.EventHandler(this.EventHandler_OptionsPanel_StateChanged);
             // 
             // grpMarketOptionsType
             // 
@@ -3759,8 +3761,8 @@
             this.panShipVendorOptions.Size = new System.Drawing.Size(320, 195);
             this.panShipVendorOptions.TabIndex = 6;
             this.panShipVendorOptions.Visible = false;
-            this.panShipVendorOptions.EnabledChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
-            this.panShipVendorOptions.VisibleChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
+            this.panShipVendorOptions.EnabledChanged += new System.EventHandler(this.EventHandler_OptionsPanel_StateChanged);
+            this.panShipVendorOptions.VisibleChanged += new System.EventHandler(this.EventHandler_OptionsPanel_StateChanged);
             // 
             // panNavOptions
             // 
@@ -3785,8 +3787,8 @@
             this.panNavOptions.Size = new System.Drawing.Size(320, 195);
             this.panNavOptions.TabIndex = 3;
             this.panNavOptions.Visible = false;
-            this.panNavOptions.EnabledChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
-            this.panNavOptions.VisibleChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
+            this.panNavOptions.EnabledChanged += new System.EventHandler(this.EventHandler_OptionsPanel_StateChanged);
+            this.panNavOptions.VisibleChanged += new System.EventHandler(this.EventHandler_OptionsPanel_StateChanged);
             // 
             // panOldDataOptions
             // 
@@ -3802,8 +3804,8 @@
             this.panOldDataOptions.Size = new System.Drawing.Size(320, 195);
             this.panOldDataOptions.TabIndex = 6;
             this.panOldDataOptions.Visible = false;
-            this.panOldDataOptions.EnabledChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
-            this.panOldDataOptions.VisibleChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
+            this.panOldDataOptions.EnabledChanged += new System.EventHandler(this.EventHandler_OptionsPanel_StateChanged);
+            this.panOldDataOptions.VisibleChanged += new System.EventHandler(this.EventHandler_OptionsPanel_StateChanged);
             // 
             // panLocalOptions
             // 
@@ -3829,8 +3831,8 @@
             this.panLocalOptions.Size = new System.Drawing.Size(320, 195);
             this.panLocalOptions.TabIndex = 5;
             this.panLocalOptions.Visible = false;
-            this.panLocalOptions.EnabledChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
-            this.panLocalOptions.VisibleChanged += new System.EventHandler(this.OptionsPanel_StateChanged);
+            this.panLocalOptions.EnabledChanged += new System.EventHandler(this.EventHandler_OptionsPanel_StateChanged);
+            this.panLocalOptions.VisibleChanged += new System.EventHandler(this.EventHandler_OptionsPanel_StateChanged);
             // 
             // panOptions
             // 
@@ -3849,6 +3851,18 @@
             this.panOptions.Name = "panOptions";
             this.panOptions.Size = new System.Drawing.Size(322, 197);
             this.panOptions.TabIndex = 1;
+            // 
+            // btnDbMaintenance
+            // 
+            this.btnDbMaintenance.Location = new System.Drawing.Point(484, 0);
+            this.btnDbMaintenance.Name = "btnDbMaintenance";
+            this.btnDbMaintenance.Size = new System.Drawing.Size(68, 23);
+            this.btnDbMaintenance.TabIndex = 10;
+            this.btnDbMaintenance.TabStop = false;
+            this.btnDbMaintenance.Text = "DB Maint.";
+            this.tipToolTips.SetToolTip(this.btnDbMaintenance, "Various database maintenance operations.");
+            this.btnDbMaintenance.UseVisualStyleBackColor = true;
+            this.btnDbMaintenance.Click += new System.EventHandler(this.EventHandler_DbMaintenance_Click);
             // 
             // MainForm
             // 
@@ -3871,11 +3885,11 @@
             this.MinimumSize = new System.Drawing.Size(882, 514);
             this.Name = "MainForm";
             this.Text = "Trade Dangerous Helper";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
-            this.Load += new System.EventHandler(this.MainForm_Load);
-            this.Shown += new System.EventHandler(this.MainForm_Shown);
-            this.LocationChanged += new System.EventHandler(this.MainForm_LocationChanged);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.EventHandler_MainForm_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.EventHandler_MainForm_FormClosed);
+            this.Load += new System.EventHandler(this.EventHandler_MainForm_Load);
+            this.Shown += new System.EventHandler(this.EventHandler_MainForm_Shown);
+            this.LocationChanged += new System.EventHandler(this.EventHandler_MainForm_LocationChanged);
             this.mnuSetValues.ResumeLayout(false);
             this.mnuStrip1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numRunOptionsRoutes)).EndInit();
@@ -4258,6 +4272,7 @@
         private System.Windows.Forms.ListView lvShipVendorOptionsShips;
         private System.Windows.Forms.ColumnHeader hdrShip;
         private System.Windows.Forms.ColumnHeader hdrCost;
+        private System.Windows.Forms.Button btnDbMaintenance;
     }
 }
 

@@ -16,43 +16,6 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Process the reqest for a database update.
-        /// </summary>
-        private void AnalyseDatabase()
-        {
-            // Display warning message and ask for input.
-            DialogResult dialog = TopMostMessageBox.Show(
-                true,
-                true,
-                "This may take a very long time (~20 minutes). Are you sure you want to do this?",
-                "TD Helper - Warning",
-                MessageBoxButtons.YesNoCancel);
-
-            switch (dialog)
-            {
-                case DialogResult.Cancel:
-                    // Do nothing and leave the form open.
-                    break;
-
-                case DialogResult.No:
-                    // Reset the output parameters and close the form.
-                    MainForm.DBUpdateCommandString = string.Empty;
-
-                    Close();
-
-                    break;
-
-                case DialogResult.Yes:
-                    // Set the output parameters and close the form.
-                    MainForm.DBUpdateCommandString = "ANALYZE";
-
-                    Close();
-
-                    break;
-            }
-        }
-
-        /// <summary>
         /// Check the state of the params.
         /// </summary>
         private void CheckParameterState()
@@ -81,16 +44,6 @@ namespace TDHelper
         private void EventHandler_All_CheckedChanged(object sender, EventArgs e)
         {
             SetAll();
-        }
-
-        /// <summary>
-        /// The event handler for analyse clicked.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void EventHandler_Analyse_Click(object sender, EventArgs e)
-        {
-            AnalyseDatabase();
         }
 
         /// <summary>

@@ -47,7 +47,6 @@
             this.toolTips = new System.Windows.Forms.ToolTip(this.components);
             this.btnReset = new System.Windows.Forms.Button();
             this.btnUpdateDb = new System.Windows.Forms.Button();
-            this.btnAnalyse = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // chkAll
@@ -253,22 +252,11 @@
             this.btnUpdateDb.UseVisualStyleBackColor = true;
             this.btnUpdateDb.Click += new System.EventHandler(this.EventHandler_UpdateDb_Click);
             // 
-            // btnAnalyse
-            // 
-            this.btnAnalyse.Location = new System.Drawing.Point(259, 81);
-            this.btnAnalyse.Name = "btnAnalyse";
-            this.btnAnalyse.Size = new System.Drawing.Size(75, 23);
-            this.btnAnalyse.TabIndex = 16;
-            this.btnAnalyse.Text = "Analyse";
-            this.btnAnalyse.UseVisualStyleBackColor = true;
-            this.btnAnalyse.Click += new System.EventHandler(this.EventHandler_Analyse_Click);
-            // 
             // EddbLinkDbUpdateForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(346, 187);
-            this.Controls.Add(this.btnAnalyse);
             this.Controls.Add(this.btnUpdateDb);
             this.Controls.Add(this.btnReset);
             this.Controls.Add(this.chkUpvend);
@@ -313,6 +301,5 @@
         private System.Windows.Forms.ToolTip toolTips;
         private System.Windows.Forms.Button btnReset;
         private System.Windows.Forms.Button btnUpdateDb;
-        private System.Windows.Forms.Button btnAnalyse;
     }
 }

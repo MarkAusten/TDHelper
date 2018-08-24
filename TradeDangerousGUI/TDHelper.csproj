@@ -140,6 +140,12 @@
     <Compile Include="Delegates.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="DbMaintenanceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DbMaintenanceForm.Designer.cs">
+      <DependentUpon>DbMaintenanceForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="EddbLinkDbUpdateForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -190,6 +196,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Utilities.cs" />
+    <EmbeddedResource Include="DbMaintenanceForm.resx">
+      <DependentUpon>DbMaintenanceForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EddbLinkDbUpdateForm.resx">
       <DependentUpon>EddbLinkDbUpdateForm.cs</DependentUpon>
     </EmbeddedResource>

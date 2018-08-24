@@ -242,26 +242,7 @@ namespace TDHelper
         /// <param name="conn">The connection to the database.</param>
         private void AnalyseDatabase(SQLiteConnection conn)
         {
-            using (SQLiteCommand cmd = tdConn.CreateCommand())
-            {
-                bool isOpen = false;
-
-                try
-                {
-                    isOpen = OpenConnection(cmd.Connection);
-
-                    cmd.CommandText = "ANALYZE";
-
-                    cmd.ExecuteNonQuery();
-                }
-                finally
-                {
-                    if (!isOpen)
-                    {
-                        CloseConnection(cmd.Connection);
-                    }
-                }
-            }
+            SendNonQueryCommandToDatabase("ANALYZE", conn);
         }
 
         private void BuildOutput(bool refreshMethod)
@@ -857,9 +838,9 @@ namespace TDHelper
         }
 
         private bool HasValidColumn(
-            SQLiteConnection conn,
-            string tableName,
-            string columnName)
+                    SQLiteConnection conn,
+                    string tableName,
+                    string columnName)
         {
             // this method returns true if a column exists
             using (SQLiteCommand cmd = new SQLiteCommand("PRAGMA table_info(" + tableName + ")", conn))
@@ -930,8 +911,8 @@ namespace TDHelper
         }
 
         private bool InvalidatedRowUpdate(
-            bool refreshMode,
-            int rowIndex)
+                    bool refreshMode,
+                    int rowIndex)
         {
             if (refreshMode)
             {
@@ -1225,8 +1206,8 @@ namespace TDHelper
         }
 
         private List<string> LoadSystemsFromLogs(
-            bool refreshMode,
-            List<string> filePaths)
+                    bool refreshMode,
+                    List<string> filePaths)
         {
             // get the latest timestamp from the DB.
             string timestamp = this.GetLastTimestamp();
@@ -1755,6 +1736,37 @@ namespace TDHelper
         }
 
         /// <summary>
+        /// Send the non-query command to the SQLite databases.
+        /// </summary>
+        /// <param name="command">The command to be issued to the database.</param>
+        /// <param name="conn">The connection to the database.</param>
+        private void SendNonQueryCommandToDatabase(
+            string command,
+            SQLiteConnection conn)
+        {
+            using (SQLiteCommand cmd = conn.CreateCommand())
+            {
+                bool isOpen = false;
+
+                try
+                {
+                    isOpen = OpenConnection(cmd.Connection);
+
+                    cmd.CommandText = command;
+
+                    cmd.ExecuteNonQuery();
+                }
+                finally
+                {
+                    if (!isOpen)
+                    {
+                        CloseConnection(cmd.Connection);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Set the connections to the databases.
         /// </summary>
         private void SetConnections()
@@ -1956,6 +1968,27 @@ namespace TDHelper
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Send the vacuum command to the SQLite databases.
+        /// </summary>
+        private void VacuumAllDatabases()
+        {
+            CloseConnection(tdConn);
+            CloseConnection(pilotsLogConn);
+
+            VacuumDatabase(GetConnection(tdPath));
+            VacuumDatabase(GetConnection(pilotsLogDBPath));
+        }
+
+        /// <summary>
+        /// Send the vacuum command to the SQLite databases.
+        /// </summary>
+        /// <param name="conn">The connection to the database.</param>
+        private void VacuumDatabase(SQLiteConnection conn)
+        {
+            SendNonQueryCommandToDatabase("VACUUM", conn);
         }
 
         private void VacuumPilotsLogDB()

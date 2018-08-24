@@ -81,17 +81,6 @@ namespace TDHelper
         private CultureInfo userCulture = CultureInfo.CurrentCulture;
         private IList<string> validConfigs = new List<string>();
 
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                CreateParams cp = base.CreateParams;
-                cp.ExStyle |= 0x02000000;  // Turn on WS_EX_COMPOSITED
-                return cp;
-            }
-        }
-        #endregion FormProps
-
         public MainForm()
         {
             InitializeComponent();
@@ -120,7 +109,7 @@ namespace TDHelper
 
             testSystemsTimer.AutoReset = false;
             testSystemsTimer.Interval = 10000;
-            testSystemsTimer.Elapsed += this.TestSystemsTimer_Delegate;
+            testSystemsTimer.Elapsed += this.EventHandler_TestSystemsTimer_Delegate;
 
             btnCmdrProfile.Enabled = ValidateEdce();
 
@@ -128,6 +117,18 @@ namespace TDHelper
             SetOptionPanelList();
             ShowOrHideOptionsPanel(0);
         }
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000;  // Turn on WS_EX_COMPOSITED
+                return cp;
+            }
+        }
+
+        #endregion FormProps
 
         /// <summary>
         /// Add the avoid option.
@@ -276,18 +277,14 @@ namespace TDHelper
                 : " {0}".With(verb);
         }
 
-        private void AltConfigBox_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            settingsRef.LastUsedConfig = cboCommandersShips.Text;
-            SetShipList();
-        }
-
         /// <summary>
         /// This worker delegate updates the commodities and recent systems lists
         /// </summary>
         /// <param name="sender">The sender object.</param>
         /// <param name="e">The event arguments.</param>
-        private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        private void BackgroundWorker1_DoWork(
+            object sender,
+            DoWorkEventArgs e)
         {
             // let the refresh methods decide what to refresh
             this.Invoke(new Action(() =>
@@ -296,7 +293,9 @@ namespace TDHelper
             }));
         }
 
-        private void BackgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void BackgroundWorker1_RunWorkerCompleted(
+            object sender,
+            RunWorkerCompletedEventArgs e)
         {
             EnableBtnStarts();
 
@@ -326,7 +325,9 @@ namespace TDHelper
         /// </summary>
         /// <param name="sender">The sender object.</param>
         /// <param name="e">The event arguments.</param>
-        private void BackgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
+        private void BackgroundWorker2_DoWork(
+            object sender,
+            DoWorkEventArgs e)
         {
             commandString = GetMethodCommandString(methodIndex);
 
@@ -352,7 +353,9 @@ namespace TDHelper
             }
         }
 
-        private void BackgroundWorker2_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void BackgroundWorker2_RunWorkerCompleted(
+            object sender,
+            RunWorkerCompletedEventArgs e)
         {
             if (!backgroundWorker2.IsBusy)
             {
@@ -407,7 +410,9 @@ namespace TDHelper
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void BackgroundWorker3_DoWork(object sender, DoWorkEventArgs e)
+        private void BackgroundWorker3_DoWork(
+            object sender,
+            DoWorkEventArgs e)
         {
             stopwatch.Start(); // start the timer
 
@@ -423,7 +428,9 @@ namespace TDHelper
             }
         }
 
-        private void BackgroundWorker3_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void BackgroundWorker3_RunWorkerCompleted(
+            object sender,
+            RunWorkerCompletedEventArgs e)
         {
             // when we get the !IsRunning signal, write out
             this.Invoke(new Action(() =>
@@ -439,9 +446,29 @@ namespace TDHelper
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void BackgroundWorker4_DoWork(object sender, DoWorkEventArgs e)
+        private void BackgroundWorker4_DoWork(
+            object sender,
+            DoWorkEventArgs e)
         {
             if (DBUpdateCommandString == "ANALYZE")
+            {
+                // only start the stopwatch for callers that run in the background
+                if (!backgroundWorker3.IsBusy)
+                {
+                    backgroundWorker3.RunWorkerAsync();
+                }
+                else
+                {
+                    stopwatch.Start();
+                }
+
+                circularBuffer.Clear();
+
+                StackCircularBuffer("Analysing database...\n");
+
+                VacuumAllDatabases();
+            }
+            if (DBUpdateCommandString == "VACUUM")
             {
                 // only start the stopwatch for callers that run in the background
                 if (!backgroundWorker3.IsBusy)
@@ -468,7 +495,9 @@ namespace TDHelper
             commandString = string.Empty; // reset path for thread safety
         }
 
-        private void BackgroundWorker4_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void BackgroundWorker4_RunWorkerCompleted(
+            object sender,
+            RunWorkerCompletedEventArgs e)
         {
             if (!backgroundWorker4.IsBusy)
             {
@@ -497,7 +526,9 @@ namespace TDHelper
             }
         }
 
-        private void BackgroundWorker5_DoWork(object sender, DoWorkEventArgs e)
+        private void BackgroundWorker5_DoWork(
+            object sender,
+            DoWorkEventArgs e)
         {
             // this background worker is for the auto-updater
             if (!settingsRef.DoNotUpdate && !Program.updateOverride)
@@ -507,7 +538,9 @@ namespace TDHelper
             }
         }
 
-        private void BackgroundWorker5_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void BackgroundWorker5_RunWorkerCompleted(
+            object sender,
+            RunWorkerCompletedEventArgs e)
         {
             if (settingsRef.HasUpdated)
             {
@@ -523,7 +556,9 @@ namespace TDHelper
             DoHotSwapCleanup();
         }
 
-        private void BackgroundWorker6_DoWork(object sender, DoWorkEventArgs e)
+        private void BackgroundWorker6_DoWork(
+            object sender,
+            DoWorkEventArgs e)
         {
             /*
              * This worker delegate is intended to update the system list every few seconds,
@@ -576,7 +611,9 @@ namespace TDHelper
             }
         }
 
-        private void BackgroundWorker6_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void BackgroundWorker6_RunWorkerCompleted(
+            object sender,
+            RunWorkerCompletedEventArgs e)
         {
             testSystemsTimer.Start(); // fire again after ~10s
         }
@@ -586,7 +623,9 @@ namespace TDHelper
         /// </summary>
         /// <param name="sender">The calling object.</param>
         /// <param name="e">The event parameters.</param>
-        private void BackgroundWorker7_DoWork(object sender, DoWorkEventArgs e)
+        private void BackgroundWorker7_DoWork(
+            object sender,
+            DoWorkEventArgs e)
         {
             if (buttonCaller == 22)
             {
@@ -619,7 +658,9 @@ namespace TDHelper
             commandString = string.Empty; // reset path for thread safety
         }
 
-        private void BackgroundWorker7_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void BackgroundWorker7_RunWorkerCompleted(
+            object sender,
+            RunWorkerCompletedEventArgs e)
         {
             if (!backgroundWorker7.IsBusy)
             {
@@ -636,140 +677,6 @@ namespace TDHelper
                 }
 
                 this.UpdateCommanderAndShipDetails();
-            }
-        }
-
-        private void BmktCheckBox_Click(object sender, EventArgs e)
-        {
-            // an exception for the market command
-            if (methodIndex == 4 && chkRunOptionsDirect.Checked)
-            {
-                // we cannot have both buy and sell enabled
-                chkRunOptionsDirect.Checked = false;
-                chkRunOptionsBlkMkt.Checked = true;
-            }
-        }
-
-        /// <summary>
-        /// Handle the Cmdr Profile functionality.
-        /// </summary>
-        /// <param name="sender">The object sender.</param>
-        /// <param name="e">The event args.</param>
-        private void BtnCmdrProfile_Click(object sender, EventArgs e)
-        {
-            if (!backgroundWorker7.IsBusy)
-            {
-                // Cmdr Profile button.
-                buttonCaller = 22;
-                DisablebtnStarts(); // disable buttons during uncancellable operations
-
-                backgroundWorker7.RunWorkerAsync();
-            }
-        }
-
-        private void BtnDbUpdate_Click(object sender, EventArgs e)
-        {
-            EddbLinkDbUpdateForm eddblinkForm = new EddbLinkDbUpdateForm()
-            {
-                StartPosition = FormStartPosition.CenterParent
-            };
-
-            eddblinkForm.ShowDialog(this);
-
-            Application.DoEvents();
-
-            if (!string.IsNullOrEmpty(DBUpdateCommandString))
-            {
-                ValidatePaths();
-
-                if (!backgroundWorker4.IsBusy)
-                {
-                    // UpdateDB Button
-                    buttonCaller = 5;
-                    DisablebtnStarts(); // disable buttons during uncancellable operations
-
-                    backgroundWorker4.RunWorkerAsync();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Handle the save settings functionality.
-        /// </summary>
-        /// <param name="sender">The object sender.</param>
-        /// <param name="e">The event args.</param>
-        private void BtnSaveSettings_Click(object sender, EventArgs e)
-        {
-            this.btnSaveSettings.Enabled = false;
-
-            CopySettingsFromForm();
-            SaveSettingsToIniFile();
-
-            this.btnSaveSettings.Enabled = true;
-        }
-
-        private void BtnSettings_Click(object sender, EventArgs e)
-        {
-            bool oldValue = settingsRef.DisableNetLogs;
-
-            SettingsForm SettingsForm = new SettingsForm()
-            {
-                StartPosition = FormStartPosition.CenterParent
-            };
-
-            SettingsForm.ShowDialog(this);
-
-            Application.DoEvents();
-
-            // Chec to see if the user has unchecked the disable net logs setting
-            if (settingsRef.DisableNetLogs != oldValue && oldValue)
-            {
-                // Check the verbose logging setting.
-                ValidateVerboseLogging();
-            }
-
-            if (callForReset)
-            {
-                // wipe our settings and reinitialize
-                File.Delete(configFile);
-                settingsRef.Reset(settingsRef);
-                ValidateSettings();
-                SaveSettingsToIniFile();
-                CopySettingsFromConfig();
-            }
-        }
-
-        private void BtnStart_Click(object sender, EventArgs e)
-        {
-            // Prevent double clicks.
-            btnStart.Enabled = false;
-            btnStationInfo.Enabled = false;
-
-            ProcessCommand();
-        }
-
-        private void BuyOptionsOneStop_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkBuyOptionsOneStop.Checked)
-            {
-                optBuyOptionsPrice.Checked = false;
-            }
-        }
-
-        private void BuyOptionsPrice_CheckedChanged(object sender, EventArgs e)
-        {
-            if (optBuyOptionsPrice.Checked)
-            {
-                chkBuyOptionsOneStop.Checked = false;
-            }
-        }
-
-        private void CboShipsSold_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Escape)
-            {
-                e.Handled = true;
-                //                cboShipsSold.SelectionLength = 0;
             }
         }
 
@@ -794,97 +701,6 @@ namespace TDHelper
             }
         }
 
-        private void ChkLoop_Click(object sender, EventArgs e)
-        {
-            if (chkRunOptionsDirect.Checked)
-            {
-                chkRunOptionsDirect.Checked = false;
-                chkRunOptionsLoop.Checked = true;
-            }
-
-            if (chkRunOptionsUnique.Checked)
-            {
-                chkRunOptionsUnique.Checked = false;
-                chkRunOptionsLoop.Checked = true;
-            }
-
-            if (chkRunOptionsShorten.Checked)
-            {
-                chkRunOptionsShorten.Checked = false;
-                chkRunOptionsTowards.Checked = false;
-                chkRunOptionsLoop.Checked = true;
-            }
-            else if (settingsRef.Towards || chkRunOptionsTowards.Checked)
-            {
-                settingsRef.Towards = false;
-                chkRunOptionsTowards.Checked = false;
-            }
-        }
-
-        private void ChkTowards_Click(object sender, EventArgs e)
-        {
-            if (settingsRef.Loop || chkRunOptionsLoop.Checked)
-            {
-                settingsRef.Loop = false;
-                chkRunOptionsLoop.Checked = false;
-            }
-            else if (!string.IsNullOrEmpty(cboRunOptionsDestination.Text))
-            {
-                if (!chkRunOptionsTowards.Checked)
-                {
-                    chkRunOptionsTowards.Checked = false;
-                }
-                else if (chkRunOptionsTowards.Checked)
-                {
-                    chkRunOptionsTowards.Checked = true;
-                    chkRunOptionsShorten.Checked = false;
-                }
-            }
-            else
-            {
-                chkRunOptionsTowards.Checked = false;
-            }
-        }
-
-        private void ClearSaved1MenuItem_Click(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty(rtbSaved1.Text))
-            {
-                rtbSaved1.Text = string.Empty;
-
-                if (File.Exists(savedFile1))
-                {
-                    File.Delete(savedFile1);
-                }
-            }
-        }
-
-        private void ClearSaved2MenuItem_Click(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty(rtbSaved2.Text))
-            {
-                rtbSaved2.Text = string.Empty;
-
-                if (File.Exists(savedFile2))
-                {
-                    File.Delete(savedFile2);
-                }
-            }
-        }
-
-        private void ClearSaved3MenuItem_Click(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty(rtbSaved3.Text))
-            {
-                rtbSaved3.Text = string.Empty;
-
-                if (File.Exists(savedFile3))
-                {
-                    File.Delete(savedFile3);
-                }
-            }
-        }
-
         /// <summary>
         /// Clear the status display.
         /// </summary>
@@ -897,81 +713,6 @@ namespace TDHelper
             }
 
             ClearCircularBuffer();
-        }
-
-        private void ComboBox_DropDown(object sender, EventArgs e)
-        {
-            dropdownOpened = true;
-        }
-
-        private void ComboBox_DropDownClosed(object sender, EventArgs e)
-        {
-            dropdownOpened = false;
-        }
-
-        private void ContextMenuStrip1_Opening(object sender, CancelEventArgs e)
-        {
-            RichTextBox clickedControl = (RichTextBox)this.mnuStrip1.SourceControl;
-
-            if (clickedControl.Name == txtNotes.Name && !mnuDelete.Enabled)
-            {
-                mnuCut.Enabled = true;
-                mnuDelete.Enabled = true;
-                mnuPaste.Enabled = true;
-                mnuNotesClear.Visible = true;
-                mnuSavePage1.Enabled = false;
-                mnuSavePage2.Enabled = false;
-                mnuSavePage3.Enabled = false;
-            }
-            else if (clickedControl.Name == rtbSaved1.Name
-                || clickedControl.Name == rtbSaved2.Name
-                || clickedControl.Name == rtbSaved3.Name
-                || clickedControl.Name == rtbOutput.Name)
-            {
-                mnuCut.Enabled = false;
-                mnuDelete.Enabled = false;
-                mnuPaste.Enabled = false;
-                mnuNotesClear.Visible = false;
-                mnuSavePage1.Enabled = true;
-                mnuSavePage2.Enabled = true;
-                mnuSavePage3.Enabled = true;
-            }
-
-            // control clearing
-            if (clickedControl.Name == rtbSaved1.Name)
-            {
-                nmuClearSaved1.Visible = true;
-                mnuClearSaved2.Visible = false;
-                mnuClearSaved3.Visible = false;
-            }
-            else if (clickedControl.Name == rtbSaved2.Name)
-            {
-                mnuClearSaved2.Visible = true;
-                nmuClearSaved1.Visible = false;
-                mnuClearSaved3.Visible = false;
-            }
-            else if (clickedControl.Name == rtbSaved3.Name)
-            {
-                mnuClearSaved3.Visible = true;
-                mnuClearSaved2.Visible = false;
-                nmuClearSaved1.Visible = false;
-            }
-            else
-            {
-                nmuClearSaved1.Visible = false;
-                mnuClearSaved2.Visible = false;
-                mnuClearSaved3.Visible = false;
-            }
-        }
-
-        /// <summary>
-        /// The event handler for the mnuCopy1 click event.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void Copy1_Click(object sender, EventArgs e)
-        {
-            CopyTextToClipboard(sender);
         }
 
         /// <summary>
@@ -1055,14 +796,6 @@ namespace TDHelper
 
             PropertyInfo prop = settings.GetType().GetProperty(propertyName);
             control.Value = (decimal)prop.GetValue(settings);
-        }
-
-        private void CopyMenuItem_Click(object sender, EventArgs e)
-        {
-            RichTextBox clickedControl = (RichTextBox)this.mnuStrip1.SourceControl;
-
-            clickedControl.Focus();
-            clickedControl.Copy();
         }
 
         /// <summary>
@@ -1171,26 +904,6 @@ namespace TDHelper
             settingsRef.Planetary = ContainsPlanetary(txtRunOptionsPlanetary.Text);
         }
 
-        private void CopySystemToDest_Click(object sender, EventArgs e)
-        {
-            if (grdPilotsLog.Rows.Count > 0 && !string.IsNullOrEmpty(grdPilotsLog.Rows[dRowIndex].Cells[2].Value.ToString()))
-            {
-                // grab the system from the system field, if it exists, copy to the src box
-                string dbSys = grdPilotsLog.Rows[dRowIndex].Cells[2].Value.ToString();
-                cboRunOptionsDestination.Text = dbSys;
-            }
-        }
-
-        private void CopySystemToSrc_Click(object sender, EventArgs e)
-        {
-            if (grdPilotsLog.Rows.Count > 0 && !string.IsNullOrEmpty(grdPilotsLog.Rows[dRowIndex].Cells[2].Value.ToString()))
-            {
-                // grab the system from the system field, if it exists, copy to the src box
-                string dbSys = grdPilotsLog.Rows[dRowIndex].Cells[2].Value.ToString();
-                cboSourceSystem.Text = dbSys;
-            }
-        }
-
         /// <summary>
         /// Copy the text from the control to the clipboard.
         /// </summary>
@@ -1218,24 +931,6 @@ namespace TDHelper
             {
                 Clipboard.SetText(((ComboBox)control).SelectedText);
             }
-        }
-
-        /// <summary>
-        /// The event handler for the mnuCut1 click event.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void Cut1_Click(object sender, EventArgs e)
-        {
-            CutTextToClipboard(sender);
-        }
-
-        private void CutMenuItem_Click(object sender, EventArgs e)
-        {
-            RichTextBox clickedControl = (RichTextBox)this.mnuStrip1.SourceControl;
-
-            clickedControl.Focus();
-            clickedControl.Cut();
         }
 
         /// <summary>
@@ -1274,116 +969,6 @@ namespace TDHelper
             }
         }
 
-        private void DeleteMenuItem_Click(object sender, EventArgs e)
-        {
-            RichTextBox clickedControl = (RichTextBox)this.mnuStrip1.SourceControl;
-
-            if (clickedControl.Name == txtNotes.Name)
-            {
-                txtNotes.SelectedText = string.Empty;
-            }
-        }
-
-        /// <summary>
-        /// The event handler for destination changed.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void DestinationChanged(object sender, EventArgs e)
-        {
-            if (!RefreshingDestinations)
-            {
-                RefreshingDestinations = true;
-
-                ComboBox destination = ((ComboBox)sender);
-
-                SetAllDestinations(destination.Text);
-
-                CheckBox towards = destination.Parent.Controls.OfType<CheckBox>()
-                    .FirstOrDefault(x => x.Name.Equals("chkRunOptionsTowards"));
-
-                // wait for the user to type a few characters
-                if (destination.Text.Length > 3)
-                {
-                    string filteredString = RemoveExtraWhitespace(destination.Text);
-
-                    ValidateDestForEndJumps();
-                }
-
-                // Deal with the towards check box if one exists on this panel.
-                if (towards != null)
-                {
-                    towards.Enabled = destination.Text.Length > 3 && cboSourceSystem.Text.Length > 3;
-                }
-
-                CheckBox shorten = destination.Parent.Controls.OfType<CheckBox>()
-                    .FirstOrDefault(x => x.Name.Equals("chkRunOptionsShorten"));
-
-                // Deal with the shorten check box if one exists on this panel.
-                if (shorten != null)
-                {
-                    shorten.Enabled = destination.Text.Length > 0;
-                }
-
-                RefreshingDestinations = false;
-            }
-        }
-
-        private void DestSystemComboBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            ComboBox control = (ComboBox)sender;
-
-            string filteredString = RemoveExtraWhitespace(control.Text);
-
-            if ((e.KeyCode == Keys.Enter & e.Modifiers == Keys.Control)
-                && StringInList(filteredString, outputSysStnNames))
-            {
-                // if ctrl+enter, is a known system/station, and not in our net log, mark it down
-                AddMarkedStation(filteredString, currentMarkedStations);
-                BuildOutput(true);
-                SaveSettingsToIniFile();
-
-                e.Handled = true;
-            }
-            else if ((e.KeyCode == Keys.Enter & e.Modifiers == Keys.Shift)
-                && StringInList(filteredString, currentMarkedStations))
-            {
-                // if shift+enter, item is in our list, remove it
-                RemoveMarkedStation(filteredString, currentMarkedStations);
-
-                int index = IndexInList(filteredString, output_unclean);
-
-                BuildOutput(true);
-                SaveSettingsToIniFile();
-
-                e.Handled = true;
-            }
-            else if (e.KeyCode == Keys.Escape
-                && !string.IsNullOrEmpty(control.Text))
-            {
-                control.Text = RemoveSystemOrStation(filteredString);
-
-                e.Handled = true;
-            }
-        }
-
-        private void DirectCheckBox_Click(object sender, EventArgs e)
-        {
-            if (chkRunOptionsLoop.Checked)
-            {
-                chkRunOptionsLoop.Checked = false;
-                chkRunOptionsDirect.Checked = true;
-            }
-
-            // an exception for the market command
-            if (methodIndex == 4 && chkRunOptionsBlkMkt.Checked)
-            {
-                // we cannot have both buy and sell enabled
-                chkRunOptionsBlkMkt.Checked = false;
-                chkRunOptionsDirect.Checked = true;
-            }
-        }
-
         /// <summary>
         /// Disable all the option panels.
         /// </summary>
@@ -1405,6 +990,7 @@ namespace TDHelper
             btnGetSystem.Enabled = false;
             btnMiniMode.Enabled = false;
             btnStationInfo.Enabled = false;
+            btnDbMaintenance.Enabled = false;
 
             // an exception for Run commands
             if (buttonCaller != 1)
@@ -1458,30 +1044,6 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Called on clicking one of the distance menu items.
-        /// </summary>
-        /// <param name="sender">The menu item clicked.</param>
-        /// <param name="e">The event arguments.</param>
-        private void DistanceMenuItem_Click(object sender, EventArgs e)
-        {
-            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
-            var sourceControl = ((ContextMenuStrip)(menuItem.GetCurrentParent())).SourceControl;
-
-            if (sourceControl is NumericUpDown)
-            {
-                SetDecimalControlValue((NumericUpDown)sourceControl, menuItem.Name);
-            }
-            else if (sourceControl is TextBox)
-            {
-                SetTextBoxControlValue((TextBox)sourceControl, menuItem.Name);
-            }
-            else if (sourceControl is ComboBox)
-            {
-                SetComboBoxControlValue((ComboBox)sourceControl, menuItem.Name);
-            }
-        }
-
-        /// <summary>
         /// Disable all the option panels.
         /// </summary>
         private void EnableAllOptionPanels()
@@ -1496,12 +1058,11 @@ namespace TDHelper
 
         private void EnableBtnStarts()
         {
-            //ShowOrHideOptionsPanel(methodFromIndex);
-
             // reenable other controls when done
             btnDbUpdate.Enabled = true;
             btnCmdrProfile.Enabled = ValidateEdce();
             btnGetSystem.Enabled = true;
+            btnDbMaintenance.Enabled = true;
 
             // fix Run button when returning from non-Run commands
             if (buttonCaller == 1 || !btnStart.Enabled)
@@ -1527,22 +1088,1573 @@ namespace TDHelper
             panel.Enabled = enable;
         }
 
-        private void FaqLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        #region Event Handlers
+        /// <summary>
+        /// The event handler for alt cobfig selection change committed.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_AltConfigBox_SelectionChangeCommitted(
+            object sender,
+            EventArgs e)
+        {
+            settingsRef.LastUsedConfig = cboCommandersShips.Text;
+            SetShipList();
+        }
+
+        private void EventHandler_Avoid_TextChanged(
+            object sender,
+            EventArgs e)
+        {
+            // account for startJumpsBox
+            if (numRunOptionsStartJumps.Value > 0)
+                settingsRef.Avoid = txtAvoid.Text;
+        }
+
+        private void EventHandler_BmktCheckBox_Click(
+            object sender,
+            EventArgs e)
+        {
+            // an exception for the market command
+            if (methodIndex == 4 && chkRunOptionsDirect.Checked)
+            {
+                // we cannot have both buy and sell enabled
+                chkRunOptionsDirect.Checked = false;
+                chkRunOptionsBlkMkt.Checked = true;
+            }
+        }
+
+        private void EventHandler_BuyOptionsOneStop_CheckedChanged(
+            object sender,
+            EventArgs e)
+        {
+            if (chkBuyOptionsOneStop.Checked)
+            {
+                optBuyOptionsPrice.Checked = false;
+            }
+        }
+
+        private void EventHandler_BuyOptionsPrice_CheckedChanged(
+            object sender,
+            EventArgs e)
+        {
+            if (optBuyOptionsPrice.Checked)
+            {
+                chkBuyOptionsOneStop.Checked = false;
+            }
+        }
+
+        private void EventHandler_ClearSaved1MenuItem_Click(
+            object sender,
+            EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(rtbSaved1.Text))
+            {
+                rtbSaved1.Text = string.Empty;
+
+                if (File.Exists(savedFile1))
+                {
+                    File.Delete(savedFile1);
+                }
+            }
+        }
+
+        private void EventHandler_ClearSaved2MenuItem_Click(
+            object sender,
+            EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(rtbSaved2.Text))
+            {
+                rtbSaved2.Text = string.Empty;
+
+                if (File.Exists(savedFile2))
+                {
+                    File.Delete(savedFile2);
+                }
+            }
+        }
+
+        private void EventHandler_ClearSaved3MenuItem_Click(
+            object sender,
+            EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(rtbSaved3.Text))
+            {
+                rtbSaved3.Text = string.Empty;
+
+                if (File.Exists(savedFile3))
+                {
+                    File.Delete(savedFile3);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handle the Cmdr Profile functionality.
+        /// </summary>
+        /// <param name="sender">The object sender.</param>
+        /// <param name="e">The event args.</param>
+        private void EventHandler_CmdrProfile_Click(
+            object sender,
+            EventArgs e)
+        {
+            if (!backgroundWorker7.IsBusy)
+            {
+                // Cmdr Profile button.
+                buttonCaller = 22;
+                DisablebtnStarts(); // disable buttons during uncancellable operations
+
+                backgroundWorker7.RunWorkerAsync();
+            }
+        }
+
+        private void EventHandler_ContextMenuStrip1_Opening(
+            object sender,
+            CancelEventArgs e)
+        {
+            RichTextBox clickedControl = (RichTextBox)this.mnuStrip1.SourceControl;
+
+            if (clickedControl.Name == txtNotes.Name && !mnuDelete.Enabled)
+            {
+                mnuCut.Enabled = true;
+                mnuDelete.Enabled = true;
+                mnuPaste.Enabled = true;
+                mnuNotesClear.Visible = true;
+                mnuSavePage1.Enabled = false;
+                mnuSavePage2.Enabled = false;
+                mnuSavePage3.Enabled = false;
+            }
+            else if (clickedControl.Name == rtbSaved1.Name
+                || clickedControl.Name == rtbSaved2.Name
+                || clickedControl.Name == rtbSaved3.Name
+                || clickedControl.Name == rtbOutput.Name)
+            {
+                mnuCut.Enabled = false;
+                mnuDelete.Enabled = false;
+                mnuPaste.Enabled = false;
+                mnuNotesClear.Visible = false;
+                mnuSavePage1.Enabled = true;
+                mnuSavePage2.Enabled = true;
+                mnuSavePage3.Enabled = true;
+            }
+
+            // control clearing
+            if (clickedControl.Name == rtbSaved1.Name)
+            {
+                nmuClearSaved1.Visible = true;
+                mnuClearSaved2.Visible = false;
+                mnuClearSaved3.Visible = false;
+            }
+            else if (clickedControl.Name == rtbSaved2.Name)
+            {
+                mnuClearSaved2.Visible = true;
+                nmuClearSaved1.Visible = false;
+                mnuClearSaved3.Visible = false;
+            }
+            else if (clickedControl.Name == rtbSaved3.Name)
+            {
+                mnuClearSaved3.Visible = true;
+                mnuClearSaved2.Visible = false;
+                nmuClearSaved1.Visible = false;
+            }
+            else
+            {
+                nmuClearSaved1.Visible = false;
+                mnuClearSaved2.Visible = false;
+                mnuClearSaved3.Visible = false;
+            }
+        }
+
+        /// <summary>
+        /// The event handler for the mnuCopy1 click event.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_Copy1_Click(
+            object sender,
+            EventArgs e)
+        {
+            CopyTextToClipboard(sender);
+        }
+
+        private void EventHandler_CopyMenuItem_Click(
+            object sender,
+            EventArgs e)
+        {
+            RichTextBox clickedControl = (RichTextBox)this.mnuStrip1.SourceControl;
+
+            clickedControl.Focus();
+            clickedControl.Copy();
+        }
+
+        private void EventHandler_CopySystemToDest_Click(
+            object sender,
+            EventArgs e)
+        {
+            if (grdPilotsLog.Rows.Count > 0 && !string.IsNullOrEmpty(grdPilotsLog.Rows[dRowIndex].Cells[2].Value.ToString()))
+            {
+                // grab the system from the system field, if it exists, copy to the src box
+                string dbSys = grdPilotsLog.Rows[dRowIndex].Cells[2].Value.ToString();
+                cboRunOptionsDestination.Text = dbSys;
+            }
+        }
+
+        private void EventHandler_CopySystemToSrc_Click(
+            object sender,
+            EventArgs e)
+        {
+            if (grdPilotsLog.Rows.Count > 0 && !string.IsNullOrEmpty(grdPilotsLog.Rows[dRowIndex].Cells[2].Value.ToString()))
+            {
+                // grab the system from the system field, if it exists, copy to the src box
+                string dbSys = grdPilotsLog.Rows[dRowIndex].Cells[2].Value.ToString();
+                cboSourceSystem.Text = dbSys;
+            }
+        }
+
+        /// <summary>
+        /// The event handler for the mnuCut1 click event.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_Cut1_Click(
+            object sender,
+            EventArgs e)
+        {
+            CutTextToClipboard(sender);
+        }
+
+        private void EventHandler_CutMenuItem_Click(
+            object sender,
+            EventArgs e)
+        {
+            RichTextBox clickedControl = (RichTextBox)this.mnuStrip1.SourceControl;
+
+            clickedControl.Focus();
+            clickedControl.Cut();
+        }
+
+        /// <summary>
+        /// The DB Maintenance click event handler.
+        /// </summary>
+        /// <param name="sender">The calling object.</param>
+        /// <param name="e">The event parameters.</param>
+        private void EventHandler_DbMaintenance_Click(
+            object sender,
+            EventArgs e)
+        {
+            ShowFormAndProcess(new DbMaintenanceForm());
+        }
+
+        /// <summary>
+        /// The DB Update click event handler.
+        /// </summary>
+        /// <param name="sender">The calling object.</param>
+        /// <param name="e">The event parameters.</param>
+        private void EventHandler_DbUpdate_Click(
+            object sender,
+            EventArgs e)
+        {
+            ShowFormAndProcess(new EddbLinkDbUpdateForm());
+        }
+
+        private void EventHandler_DeleteMenuItem_Click(
+            object sender,
+            EventArgs e)
+        {
+            RichTextBox clickedControl = (RichTextBox)this.mnuStrip1.SourceControl;
+
+            if (clickedControl.Name == txtNotes.Name)
+            {
+                txtNotes.SelectedText = string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// The event handler for destination changed.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_DestinationChanged(
+            object sender,
+            EventArgs e)
+        {
+            if (!RefreshingDestinations)
+            {
+                RefreshingDestinations = true;
+
+                ComboBox destination = ((ComboBox)sender);
+
+                SetAllDestinations(destination.Text);
+
+                CheckBox towards = destination.Parent.Controls.OfType<CheckBox>()
+                    .FirstOrDefault(x => x.Name.Equals("chkRunOptionsTowards"));
+
+                // wait for the user to type a few characters
+                if (destination.Text.Length > 3)
+                {
+                    string filteredString = RemoveExtraWhitespace(destination.Text);
+
+                    ValidateDestForEndJumps();
+                }
+
+                // Deal with the towards check box if one exists on this panel.
+                if (towards != null)
+                {
+                    towards.Enabled = destination.Text.Length > 3 && cboSourceSystem.Text.Length > 3;
+                }
+
+                CheckBox shorten = destination.Parent.Controls.OfType<CheckBox>()
+                    .FirstOrDefault(x => x.Name.Equals("chkRunOptionsShorten"));
+
+                // Deal with the shorten check box if one exists on this panel.
+                if (shorten != null)
+                {
+                    shorten.Enabled = destination.Text.Length > 0;
+                }
+
+                RefreshingDestinations = false;
+            }
+        }
+
+        private void EventHandler_DestSystemComboBox_KeyDown(
+            object sender,
+            KeyEventArgs e)
+        {
+            ComboBox control = (ComboBox)sender;
+
+            string filteredString = RemoveExtraWhitespace(control.Text);
+
+            if ((e.KeyCode == Keys.Enter & e.Modifiers == Keys.Control)
+                && StringInList(filteredString, outputSysStnNames))
+            {
+                // if ctrl+enter, is a known system/station, and not in our net log, mark it down
+                AddMarkedStation(filteredString, currentMarkedStations);
+                BuildOutput(true);
+                SaveSettingsToIniFile();
+
+                e.Handled = true;
+            }
+            else if ((e.KeyCode == Keys.Enter & e.Modifiers == Keys.Shift)
+                && StringInList(filteredString, currentMarkedStations))
+            {
+                // if shift+enter, item is in our list, remove it
+                RemoveMarkedStation(filteredString, currentMarkedStations);
+
+                int index = IndexInList(filteredString, output_unclean);
+
+                BuildOutput(true);
+                SaveSettingsToIniFile();
+
+                e.Handled = true;
+            }
+            else if (e.KeyCode == Keys.Escape
+                && !string.IsNullOrEmpty(control.Text))
+            {
+                control.Text = RemoveSystemOrStation(filteredString);
+
+                e.Handled = true;
+            }
+        }
+
+        private void EventHandler_DirectCheckBox_Click(
+            object sender,
+            EventArgs e)
+        {
+            if (chkRunOptionsLoop.Checked)
+            {
+                chkRunOptionsLoop.Checked = false;
+                chkRunOptionsDirect.Checked = true;
+            }
+
+            // an exception for the market command
+            if (methodIndex == 4 && chkRunOptionsBlkMkt.Checked)
+            {
+                // we cannot have both buy and sell enabled
+                chkRunOptionsBlkMkt.Checked = false;
+                chkRunOptionsDirect.Checked = true;
+            }
+        }
+
+        /// <summary>
+        /// Called on clicking one of the distance menu items.
+        /// </summary>
+        /// <param name="sender">The menu item clicked.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_DistanceMenuItem_Click(
+            object sender,
+            EventArgs e)
+        {
+            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
+            var sourceControl = ((ContextMenuStrip)(menuItem.GetCurrentParent())).SourceControl;
+
+            if (sourceControl is NumericUpDown)
+            {
+                SetDecimalControlValue((NumericUpDown)sourceControl, menuItem.Name);
+            }
+            else if (sourceControl is TextBox)
+            {
+                SetTextBoxControlValue((TextBox)sourceControl, menuItem.Name);
+            }
+            else if (sourceControl is ComboBox)
+            {
+                SetComboBoxControlValue((ComboBox)sourceControl, menuItem.Name);
+            }
+        }
+
+        private void EventHandler_DropDown(
+            object sender,
+            EventArgs e)
+        {
+            dropdownOpened = true;
+        }
+
+        private void EventHandler_DropDownClosed(
+            object sender,
+            EventArgs e)
+        {
+            dropdownOpened = false;
+        }
+
+        private void EventHandler_FaqLinkLabel_LinkClicked(
+            object sender,
+            LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("https://github.com/MarkAusten/TDHelper/wiki/Home");
         }
 
-        private void ForceRefreshGridView_Click(object sender, EventArgs e)
+        private void EventHandler_ForceRefreshGridView_Click(
+            object sender,
+            EventArgs e)
         {
             InvalidatedRowUpdate(true, -1); // force an invalidate and reload
         }
 
-        private void ForceResortMenuItem_Click(object sender, EventArgs e)
+        private void EventHandler_ForceResortMenuItem_Click(
+            object sender,
+            EventArgs e)
         {
             grdPilotsLog.Columns["Timestamp"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             grdPilotsLog.Columns["System"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             grdPilotsLog.Columns["Notes"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
         }
+
+        private void EventHandler_GetSystemButton_Click(
+            object sender,
+            EventArgs e)
+        {
+            buttonCaller = 2;
+
+            if (Control.ModifierKeys == Keys.Control)
+            {
+                buttonCaller = 16; // mark us as needing a full refresh
+            }
+
+            DisablebtnStarts();
+
+            ShowStatus("Checking for updated net logs...");
+            ValidateNetLogPath(null);
+            ShowStatusCompleted();
+
+            if (!backgroundWorker1.IsBusy)
+            {
+                backgroundWorker1.RunWorkerAsync();
+            }
+        }
+
+        private void EventHandler_InsertAtGridRow_Click(
+            object sender,
+            EventArgs e)
+        {
+            if (grdPilotsLog.Rows.Count > 0)
+            {
+                // add a row with the timestamp of the selected row
+                // basically an insert-below-index when we use select(*)
+                string timestamp = grdPilotsLog.Rows[dRowIndex].Cells["Timestamp"].Value.ToString();
+
+                AddAtTimestampDBRow(GenerateRecentTimestamp(timestamp));
+                InvalidatedRowUpdate(true, -1);
+            }
+            else
+            {
+                // special case for an empty gridview
+                AddAtTimestampDBRow(CurrentTimestamp());
+                InvalidatedRowUpdate(true, -1);
+            }
+        }
+
+        private void EventHandler_LocalFilterCheckBoxChanged(
+            object sender,
+            EventArgs e)
+        {
+            IEnumerable<CheckBox> checkboxes = panLocalOptions.Controls.OfType<CheckBox>();
+
+            btnLocalOptionsReset.Enabled = checkboxes.Count(x => x.Checked) > 0;
+            btnLocalOptionsAll.Enabled = checkboxes.Count(x => x.Checked) > 0;
+        }
+
+        private void EventHandler_LocalPlanetary_TextChanged(
+            object sender,
+            EventArgs e)
+        {
+            txtLocalOptionsPlanetary.Text = ContainsPlanetary(txtLocalOptionsPlanetary.Text);
+        }
+
+        private void EventHandler_Loop_Click(
+            object sender,
+            EventArgs e)
+        {
+            if (chkRunOptionsDirect.Checked)
+            {
+                chkRunOptionsDirect.Checked = false;
+                chkRunOptionsLoop.Checked = true;
+            }
+
+            if (chkRunOptionsUnique.Checked)
+            {
+                chkRunOptionsUnique.Checked = false;
+                chkRunOptionsLoop.Checked = true;
+            }
+
+            if (chkRunOptionsShorten.Checked)
+            {
+                chkRunOptionsShorten.Checked = false;
+                chkRunOptionsTowards.Checked = false;
+                chkRunOptionsLoop.Checked = true;
+            }
+            else if (settingsRef.Towards || chkRunOptionsTowards.Checked)
+            {
+                settingsRef.Towards = false;
+                chkRunOptionsTowards.Checked = false;
+            }
+        }
+
+        private void EventHandler_MainForm_FormClosed(
+            object sender,
+            FormClosedEventArgs e)
+        {
+            // forcefully shutdown the process handler first
+            td_proc.Close();
+            td_proc.Dispose();
+            Application.Exit();
+        }
+
+        private void EventHandler_MainForm_FormClosing(
+            object sender,
+            FormClosingEventArgs e)
+        {
+            // serialize window data to the default config file
+            CopySettingsFromForm();
+
+            settingsRef.LocationParent = SaveWinLoc(this);
+            settingsRef.SizeParent = SaveWinSize(this);
+
+            SaveSettingsToIniFile();
+
+            OptimiseAllDatabases();
+        }
+
+        private void EventHandler_MainForm_Load(
+            object sender,
+            EventArgs e)
+        {
+            SplashScreen.SetStatus("Set form position...");
+
+            Screen screen = Screen.FromControl(this);
+            Rectangle workingArea = screen.WorkingArea;
+            int[] winLoc = LoadWinLoc(settingsRef.LocationParent);
+            int[] winSize = LoadWinSize(settingsRef.SizeParent);
+
+            // restore window size from config
+            if (winSize.Length != 0 &&
+                winSize != null)
+            {
+                this.Size = new Size(winSize[0], winSize[1]);
+            }
+            else
+            {
+                // save our default size to the config
+                settingsRef.SizeParent = SaveWinSize(this);
+            }
+
+            // try to remember and restore the window location
+            if (winLoc.Length != 0 && winLoc != null)
+            {
+                this.Location = new Point(winLoc[0], winLoc[1]);
+                // if we're restoring the location, let's force it to be visible on screen
+                ForceFormOnScreen(this);
+            }
+            else
+            {
+                this.Location = new Point()
+                {
+                    X = Math.Max(workingArea.X, workingArea.X + (workingArea.Width - this.Width) / 2),
+                    Y = Math.Max(workingArea.Y, workingArea.Y + (workingArea.Height - this.Height) / 2)
+                };
+            }
+
+            if (!settingsRef.DisableNetLogs)
+            {
+                SetSplashScreenStatus("Collecting Net Log file names...");
+
+                RefreshNetLogFileList();
+            }
+
+            // bind our alternate config files
+            SplashScreen.SetStatus("Set ship list...");
+
+            SetShipList(true);
+
+            if (settingsRef.HasUpdated)
+            {
+                // display the changelog for the user
+                settingsRef.HasUpdated = false; // we've updated
+
+                SaveSettingsToIniFile();
+                DoHotSwapCleanup(); // call cleanup to remove unnecessary files if they exist
+
+                // show the user the changelog after an update
+                if (File.Exists(Path.Combine(assemblyPath, "Changelog.txt")))
+                {
+                    SplashScreen.CloseForm();
+
+                    ChangeLogForm changelogForm = new ChangeLogForm();
+                    changelogForm.ShowDialog(this); // modal
+                    changelogForm.Dispose();
+                }
+            }
+            else
+            {
+                backgroundWorker5.RunWorkerAsync(); // start the auto-updater delegate
+            }
+
+            // load our last saved config
+            if (!string.IsNullOrEmpty(settingsRef.LastUsedConfig))
+            {
+                SplashScreen.SetStatus("Load ship settings...");
+
+                LoadSettings();
+            }
+
+            SplashScreen.SetStatus("Completed.");
+        }
+
+        private void EventHandler_MainForm_LocationChanged(
+            object sender,
+            EventArgs e)
+        {
+            Rectangle workingArea = Screen.FromControl(this).WorkingArea;
+
+            if (Math.Abs(workingArea.Left - this.Left) < SnapDist)
+            {
+                this.Left = workingArea.Left;
+            }
+            else if (Math.Abs(this.Left + this.Width - workingArea.Left - workingArea.Width) < SnapDist)
+            {
+                this.Left = workingArea.Left + workingArea.Width - this.Width;
+            }
+
+            if (Math.Abs(workingArea.Top - this.Top) < SnapDist)
+            {
+                this.Top = workingArea.Top;
+            }
+            else if (Math.Abs(this.Top + this.Height - workingArea.Top - workingArea.Height) < SnapDist)
+            {
+                this.Top = workingArea.Top + workingArea.Height - this.Height;
+            }
+        }
+
+        private void EventHandler_MainForm_Shown(
+            object sender,
+            EventArgs e)
+        {
+            // Call the refresh method for the run options panel.
+            OptionsPanelRefresh(panRunOptions);
+
+            // start the database uploader
+            backgroundWorker6.RunWorkerAsync();
+
+            SplashScreen.CloseForm();
+        }
+
+        private void EventHandler_MethodComboBox_SelectedIndexChanged(
+            object sender,
+            EventArgs e)
+        {
+            methodIndex = cboMethod.SelectedIndex;
+            MethodSelectState();
+
+            cboMethod.Enabled = true;
+        }
+
+        private void EventHandler_MiniModeButton_Click(
+            object sender,
+            EventArgs e)
+        {
+            TdMiniForm childForm = new TdMiniForm(this); // pass a reference from parentForm
+
+            // populate the treeview from the last valid run output
+            ParseRunOutput(tv_outputBox, childForm.TreeViewBox);
+
+            childForm.Text = t_childTitle; // set our profit estimate
+
+            // show our minimode
+            this.Hide();
+            childForm.ShowDialog(); // always modal, never instance
+
+            // save some globals
+            SaveSettingsToIniFile();
+            this.Show(); // restore when we return
+        }
+
+        private void EventHandler_NotesClearMenuItem_Click(
+            object sender,
+            EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(txtNotes.Text))
+            {
+                txtNotes.Text = string.Empty;
+
+                if (File.Exists(notesFile))
+                {
+                    File.Delete(notesFile);
+                }
+            }
+        }
+
+        private void EventHandler_NumericUpDown_Enter(
+            object sender,
+            EventArgs e)
+        {
+            // fix for text selection upon focusing numericupdown controls
+            (sender as NumericUpDown).Select(0, (sender as NumericUpDown).Text.Length);
+        }
+
+        private void EventHandler_NumericUpDown_MouseUp(
+            object sender,
+            MouseEventArgs e)
+        {
+            (sender as NumericUpDown).Select(0, (sender as NumericUpDown).Text.Length);
+        }
+
+        /// <summary>
+        /// Check to see if the options panel has a pad size text box and if it is blanks then
+        /// set it to the same value as the currently selected ship.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EventHandler_OptionsPanel_StateChanged(
+            object sender,
+            EventArgs e)
+        {
+            OptionsPanelRefresh((Panel)sender);
+        }
+
+        /// <summary>
+        /// Ensure that the pad sizes are M, L, ? or a combination of these.
+        /// </summary>
+        /// <param name="sender">The text box.</param>
+        /// <param name="e">The current key press.</param>
+        private void EventHandler_PadSize_KeyPress(
+            object sender,
+            KeyPressEventArgs e)
+        {
+            TextBox padSizes = ((TextBox)sender);
+
+            string key = e.KeyChar.ToString().ToUpper();
+            string selected = padSizes.Text;
+
+            // filter for valid chars
+            if ("SML?".Contains(key))
+            {
+                if (selected.Contains(key))
+                {
+                    selected = selected.Replace(key, " ");
+                }
+                else
+                {
+                    selected += key;
+                }
+
+                if (selected.Trim().Length == 0)
+                {
+                    selected = string.Empty;
+                }
+
+                padSizes.Text = ContainsPadSizes(selected);
+            }
+
+            e.Handled = true;
+        }
+
+        /// <summary>
+        /// The event handler for the mnuPaste1 click event.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_Paste1_Click(
+            object sender,
+            EventArgs e)
+        {
+            PasteTextToControl(sender);
+        }
+
+        private void EventHandler_PasteMenuItem_Click(
+            object sender,
+            EventArgs e)
+        {
+            RichTextBox clickedControl = (RichTextBox)this.mnuStrip1.SourceControl;
+
+            clickedControl.Focus();
+            clickedControl.Paste();
+        }
+
+        private void EventHandler_PilotsLogDataGrid_CellContextMenuStripNeeded(
+            object sender,
+            DataGridViewCellContextMenuStripNeededEventArgs e)
+        {
+            // prevent OOR exception
+            if (e.RowIndex == -1 || e.ColumnIndex == -1)
+            {
+                return;
+            }
+
+            if (sender != null)
+            {
+                // save the datasource index, and the datagrid index of the row
+                grdPilotsLog.ClearSelection(); // prevent weirdness
+                pRowIndex = int.Parse(localTable.Rows[e.RowIndex][0].ToString());
+                dRowIndex = e.RowIndex;
+                grdPilotsLog.Rows[dRowIndex].Selected = true;
+            }
+        }
+
+        private void EventHandler_PilotsLogDataGrid_CellValueNeeded(
+            object sender,
+            DataGridViewCellValueEventArgs e)
+        {
+            if (e.RowIndex < retriever.RowCount && e.ColumnIndex < retriever.RowCount)
+            {
+                e.Value = memoryCache.RetrieveElement(e.RowIndex, e.ColumnIndex);
+            }
+        }
+
+        private void EventHandler_PilotsLogDataGrid_CellValuePushed(
+            object sender,
+            DataGridViewCellValueEventArgs e)
+        {
+            if (e.RowIndex < retriever.RowCount && e.ColumnIndex < retriever.RowCount)
+            {
+                // update our local table
+                localTable.Rows[e.RowIndex][e.ColumnIndex] = e.Value;
+                List<DataRow> row = new List<DataRow> { localTable.Rows[e.RowIndex] };
+
+                // update the physical DB and repaint
+                UpdateDBRow(row);
+                InvalidatedRowUpdate(false, e.RowIndex);
+            }
+        }
+
+        private void EventHandler_PilotsLogDataGrid_UserDeletingRow(
+            object sender,
+            DataGridViewRowCancelEventArgs e)
+        {
+            if (e.Row.Index < retriever.RowCount && e.Row.Index >= 0
+                && grdPilotsLog.SelectedRows.Count > 0)
+            {
+                int rowIndex = -1;
+                int.TryParse(grdPilotsLog.Rows[e.Row.Index].Cells[0].Value.ToString(), out rowIndex);
+
+                if (rowIndex >= 0)
+                {
+                    if (grdPilotsLog.SelectedRows.Count == 1)
+                    {
+                        RemoveDBRow(rowIndex);
+                        UpdateLocalTable();
+                        memoryCache.RemoveRow(e.Row.Index, rowIndex);
+                    }
+                    else if (grdPilotsLog.SelectedRows.Count > 1 && dgRowIDIndexer.Count == 0)
+                    {
+                        // let's batch the commits for performance
+                        batchedRowCount = grdPilotsLog.SelectedRows.Count;
+                        foreach (DataGridViewRow r in grdPilotsLog.SelectedRows)
+                        {
+                            int curRowIndex = int.Parse(r.Cells[0].Value.ToString());
+                            dgRowIndexer.Add(e.Row.Index);
+                            dgRowIDIndexer.Add(curRowIndex);
+                        }
+
+                        grdPilotsLog.Visible = false; // prevent retrieval
+                    }
+
+                    if (batchedRowCount != -1)
+                    {
+                        batchedRowCount--; // keep track of our re-entry
+                    }
+
+                    if (dgRowIDIndexer.Count > 0 && batchedRowCount == 0)
+                    {
+                        // we've got queued commits to remove (should trigger on the last removed row)
+                        RemoveDBRows(dgRowIDIndexer);
+                        UpdateLocalTable();
+                        memoryCache.RemoveRows(dgRowIndexer, dgRowIDIndexer);
+                        grdPilotsLog.Visible = true; // re-enable retrieval
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Ensure that the planetary options are M, L, ? or a combination of these.
+        /// </summary>
+        /// <param name="sender">The text box.</param>
+        /// <param name="e">The current key press.</param>
+        private void EventHandler_Planetary_KeyPress(
+            object sender,
+            KeyPressEventArgs e)
+        {
+            TextBox planetary = ((TextBox)sender);
+
+            string key = e.KeyChar.ToString().ToUpper();
+            string selected = planetary.Text;
+
+            // filter for valid chars
+            if ("YN?".Contains(key))
+            {
+                if (selected.Contains(key))
+                {
+                    selected = selected.Replace(key, " ");
+                }
+                else
+                {
+                    selected += key;
+                }
+
+                planetary.Text = ContainsPlanetary(selected);
+            }
+
+            e.Handled = true;
+        }
+
+        private void EventHandler_ProcErrorDataHandler(
+            object sender,
+            DataReceivedEventArgs output)
+        {
+            if (output.Data != null)
+            {
+                StackCircularBuffer(output.Data + "\n");
+            }
+        }
+
+        private void EventHandler_ProcOutputDataHandler(
+            object sender,
+            DataReceivedEventArgs output)
+        {
+            string[] exceptions = new string[] { "NOTE:", "####" };
+            string filteredOutput = string.Empty;
+
+            if (output.Data != null)
+            {
+                // prevent a null reference
+                if (output.Data.Contains("\a"))
+                {
+                    filteredOutput = output.Data.Replace("\a", string.Empty) + "\n";
+                }
+                else if (output.Data.StartsWith("["))
+                {
+                    filteredOutput = output.Data + "\r";
+                }
+                else
+                {
+                    filteredOutput = output.Data + "\n";
+                }
+
+                if (buttonCaller != 5 && buttonCaller != 12 && !exceptions.Any(output.Data.Contains) && methodIndex != 5 || methodIndex != 6)
+                {
+                    // hide output if calculating
+                    StackCircularBuffer(filteredOutput);
+                }
+                else if (methodIndex == 5 || buttonCaller == 5 || buttonCaller == 12)
+                {
+                    // don't hide any output if updating DB or exporting
+                    StackCircularBuffer(filteredOutput);
+                }
+            }
+        }
+
+        private void EventHandler_PushNotesMenuItem_Click(
+            object sender,
+            EventArgs e)
+        {
+            RichTextBox clickedControl = (RichTextBox)this.mnuStrip1.SourceControl;
+            clickedControl.Focus();
+
+            if (clickedControl.SelectedText.Length > 0)
+            {
+                Clipboard.SetData(DataFormats.Text, clickedControl.SelectedText);
+            }
+            else
+            {
+                clickedControl.SelectAll();
+                Clipboard.SetData(DataFormats.Text, clickedControl.SelectedText);
+            }
+
+            if (Clipboard.ContainsText(TextDataFormat.Text))
+            {
+                using (FileStream fs = new FileStream(notesFile, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
+                using (StreamWriter stream = new StreamWriter(fs))
+                {
+                    if (methodIndex == 1)
+                    {
+                        stream.WriteLine("Buy " + cboBuyOptionsCommodities.Text.ToString()
+                            + " (near "
+                            + cboSourceSystem.Text.ToString()
+                            + "):\n"
+                            + Clipboard.GetData(DataFormats.Text).ToString());
+                    }
+                    else if (methodIndex == 2)
+                    {
+                        stream.WriteLine("Sell " + cboSellOptionsCommodities.Text.ToString()
+                            + " (near "
+                            + cboSourceSystem.Text.ToString()
+                            + "):\n"
+                            + Clipboard.GetData(DataFormats.Text).ToString());
+                    }
+                    else
+                    {
+                        stream.WriteLine(Clipboard.GetData(DataFormats.Text).ToString());
+                    }
+                }
+            }
+        }
+
+        private void EventHandler_RemoveAtGridRow_Click(
+            object sender,
+            EventArgs e)
+        {
+            if (grdPilotsLog.Rows.Count > 0)
+            {
+                RemoveDBRow(pRowIndex);
+                UpdateLocalTable();
+                memoryCache.RemoveRow(dRowIndex, pRowIndex);
+                grdPilotsLog.InvalidateRow(dRowIndex);
+            }
+        }
+
+        /// <summary>
+        /// Reset the local filters.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_ResetLocalFilters(
+            object sender,
+            EventArgs e)
+        {
+            ResetAllLocalFilters();
+        }
+
+        private void EventHandler_SavePage1MenuItem_Click(
+            object sender,
+            EventArgs e)
+        {
+            if (rtbOutput.SelectedText.Length > 0)
+            {
+                WriteSavedPage(rtbOutput.SelectedText, savedFile1);
+            }
+            else
+            {
+                WriteSavedPage(rtbOutput.Text, savedFile1);
+            }
+        }
+
+        private void EventHandler_SavePage2MenuItem_Click(
+            object sender,
+            EventArgs e)
+        {
+            if (rtbOutput.SelectedText.Length > 0)
+            {
+                WriteSavedPage(rtbOutput.SelectedText, savedFile2);
+            }
+            else
+            {
+                WriteSavedPage(rtbOutput.Text, savedFile2);
+            }
+        }
+
+        private void EventHandler_SavePage3MenuItem_Click(
+            object sender,
+            EventArgs e)
+        {
+            if (rtbOutput.SelectedText.Length > 0)
+            {
+                WriteSavedPage(rtbOutput.SelectedText, savedFile3);
+            }
+            else
+            {
+                WriteSavedPage(rtbOutput.Text, savedFile3);
+            }
+        }
+
+        /// <summary>
+        /// Handle the save settings functionality.
+        /// </summary>
+        /// <param name="sender">The object sender.</param>
+        /// <param name="e">The event args.</param>
+        private void EventHandler_SaveSettings_Click(
+            object sender,
+            EventArgs e)
+        {
+            this.btnSaveSettings.Enabled = false;
+
+            CopySettingsFromForm();
+            SaveSettingsToIniFile();
+
+            this.btnSaveSettings.Enabled = true;
+        }
+
+        /// <summary>
+        /// The event handler for the mnuSelectAll1 click event.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_SelectAll1_Click(
+            object sender,
+            EventArgs e)
+        {
+            SelectAllControlText(sender);
+        }
+
+        private void EventHandler_SelectMenuItem_Click(
+            object sender,
+            EventArgs e)
+        {
+            RichTextBox clickedControl = (RichTextBox)this.mnuStrip1.SourceControl;
+
+            clickedControl.Focus();
+            clickedControl.SelectAll();
+        }
+
+        /// <summary>
+        /// Set the local filters.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_SetLocalFilters(
+            object sender,
+            EventArgs e)
+        {
+            SetAllLocalFilters();
+        }
+
+        /// <summary>
+        /// The event handler for settings clicked.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_Settings_Click(
+            object sender,
+            EventArgs e)
+        {
+            bool oldValue = settingsRef.DisableNetLogs;
+
+            SettingsForm SettingsForm = new SettingsForm()
+            {
+                StartPosition = FormStartPosition.CenterParent
+            };
+
+            SettingsForm.ShowDialog(this);
+
+            Application.DoEvents();
+
+            // Chec to see if the user has unchecked the disable net logs setting
+            if (settingsRef.DisableNetLogs != oldValue && oldValue)
+            {
+                // Check the verbose logging setting.
+                ValidateVerboseLogging();
+            }
+
+            if (callForReset)
+            {
+                // wipe our settings and reinitialize
+                File.Delete(configFile);
+                settingsRef.Reset(settingsRef);
+                ValidateSettings();
+                SaveSettingsToIniFile();
+                CopySettingsFromConfig();
+            }
+        }
+
+        /// <summary>
+        /// Set up the context menu state depending on the controls clicked.
+        /// </summary>
+        /// <param name="sender">The context menu strip.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_SetValuesMenu_Opening(
+            object sender,
+            CancelEventArgs e)
+        {
+            string clickedControlName = ((ContextMenuStrip)sender).SourceControl.Name;
+
+            // Setup the menu.
+            switch (clickedControlName)
+            {
+                case "numBuyOptionsSupply":
+                case "numSellOptionsDemand":
+                case "numRouteOptionsDemand":
+                case "numRouteOptionsStock":
+                    mnuLadenLY.Enabled = false;
+                    mnuUnladenLY.Enabled = false;
+                    mnuCapacity.Enabled = true;
+                    break;
+
+                case "numBuyOptionsNearLy":
+                case "numLocalOptionsLy":
+                case "numNavOptionsLy":
+                case "numOldDataOptionsNearLy":
+                case "numRaresOptionsLy":
+                case "numSellOptionsNearLy":
+                    mnuLadenLY.Enabled = true;
+                    mnuUnladenLY.Enabled = true;
+                    mnuCapacity.Enabled = false;
+                    break;
+
+                default:
+                    mnuLadenLY.Enabled = false;
+                    mnuUnladenLY.Enabled = false;
+                    mnuCapacity.Enabled = false;
+                    break;
+            }
+
+            var control = ((ContextMenuStrip)sender).SourceControl;
+
+            if (control is TextBox ||
+                control is ComboBox)
+            {
+                string text = string.Empty;
+                string selectedText = string.Empty;
+
+                if (control is TextBox)
+                {
+                    text = ((TextBox)control).Text;
+                    selectedText = ((TextBox)control).SelectedText;
+                }
+                else if (control is ComboBox)
+                {
+                    text = ((ComboBox)control).Text;
+                    selectedText = ((ComboBox)control).SelectedText;
+                }
+
+                if (text.Length > 0)
+                {
+                    if (selectedText.Length > 0)
+                    {
+                        mnuCut1.Enabled = true;
+                        mnuCopy1.Enabled = true;
+                    }
+                    else
+                    {
+                        mnuCut1.Enabled = false;
+                        mnuCopy1.Enabled = false;
+                    }
+
+                    mnuSelectAll1.Enabled = true;
+                }
+                else
+                {
+                    mnuCut1.Enabled = false;
+                    mnuCopy1.Enabled = false;
+                }
+
+                mnuPaste1.Enabled = true;
+            }
+            else
+            {
+                mnuCut1.Enabled = false;
+                mnuCopy1.Enabled = false;
+                mnuPaste1.Enabled = false;
+                mnuSelectAll1.Enabled = false;
+            }
+
+            mnuReset.Enabled = true;
+        }
+
+        private void EventHandler_ShipsSold_KeyDown(
+            object sender,
+            KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                e.Handled = true;
+                //                cboShipsSold.SelectionLength = 0;
+            }
+        }
+
+        private void EventHandler_ShortenCheckBox_Click(
+            object sender,
+            EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(cboRunOptionsDestination.Text))
+            {
+                if (!chkRunOptionsShorten.Checked)
+                {
+                    chkRunOptionsLoop.Checked = false;
+                    chkRunOptionsTowards.Checked = false;
+                }
+                else if (chkRunOptionsShorten.Checked)
+                {
+                    if (chkRunOptionsLoop.Checked)
+                    {
+                        chkRunOptionsLoop.Checked = false;
+                    }
+
+                    chkRunOptionsShorten.Checked = true;
+                    chkRunOptionsTowards.Checked = false;
+                }
+            }
+            else
+            {
+                chkRunOptionsShorten.Checked = false;
+            }
+        }
+
+        private void EventHandler_SrcSystemComboBox_KeyDown(
+            object sender,
+            KeyEventArgs e)
+        {
+            if (methodIndex != 10)
+            {
+                // make sure we filter unwanted characters from the string
+                string filteredString = RemoveExtraWhitespace(cboSourceSystem.Text);
+
+                if ((e.KeyCode == Keys.Enter & e.Modifiers == Keys.Control)
+                    && StringInList(filteredString, outputSysStnNames))
+                {
+                    // if ctrl+enter, is a known system/station, and not in our net log, mark it down
+                    AddMarkedStation(filteredString, currentMarkedStations);
+                    BuildOutput(true);
+                    SaveSettingsToIniFile();
+
+                    e.Handled = true;
+                }
+                else if ((e.KeyCode == Keys.Enter & e.Modifiers == Keys.Shift)
+                    && StringInList(filteredString, currentMarkedStations))
+                {
+                    // if shift+enter, item is in our list, remove it
+                    RemoveMarkedStation(filteredString, currentMarkedStations);
+
+                    int index = IndexInList(filteredString, output_unclean);
+
+                    BuildOutput(true);
+                    SaveSettingsToIniFile();
+
+                    e.Handled = true;
+                }
+                else if (e.KeyCode == Keys.Escape
+                    && !string.IsNullOrEmpty(filteredString))
+                {
+                    cboSourceSystem.Text = RemoveSystemOrStation(filteredString);
+
+                    e.Handled = true;
+                }
+            }
+        }
+
+        private void EventHandler_SrcSystemComboBox_TextChanged(
+            object sender,
+            EventArgs e)
+        {
+            // wait for the user to type a few characters
+            if (cboSourceSystem.Text.Length > 3 && methodIndex != 10)
+            {
+                string filteredString = RemoveExtraWhitespace(cboSourceSystem.Text);
+                PopulateStationPanel(filteredString);
+
+                chkRunOptionsTowards.Enabled = cboRunOptionsDestination.Text.Length > 3; // requires "--fr"
+            }
+            else
+            {
+                chkRunOptionsTowards.Enabled = false;
+            }
+
+            SetStationInfoButtonState();
+        }
+
+        private void EventHandler_Start_Click(
+            object sender,
+            EventArgs e)
+        {
+            // Prevent double clicks.
+            btnStart.Enabled = false;
+            btnStationInfo.Enabled = false;
+
+            ProcessCommand();
+        }
+
+        private void EventHandler_StationDropDown_SelectedIndexChanged(
+            object sender,
+            EventArgs e)
+        {
+            //stationIndex = stationDropDown.SelectedIndex;
+
+            //if (methodIndex == 6)
+            //{
+            //    // if we're in ShipVendor mode
+            //    if (stationIndex == 2)
+            //    {
+            //        // disable when list'ing
+            //        cboShipsSold.Enabled = false;
+            //        lblShipsSold.Enabled = false;
+            //    }
+            //    else
+            //    {
+            //        cboShipsSold.Enabled = true;
+            //        lblShipsSold.Enabled = true;
+            //    }
+            //}
+        }
+
+        private void EventHandler_StationInfo_Click(
+            object sender,
+            EventArgs e)
+        {
+            // Prevent double clicks
+            btnStationInfo.Enabled = false;
+            btnStart.Enabled = false;
+
+            methodIndex = 10;
+
+            ProcessCommand();
+        }
+
+        private void EventHandler_SwapSourceAndDestination(
+            object sender,
+            EventArgs e)
+        {
+            // Locate the destination control for the currently enabled options panel.
+            ComboBox destination = ((Button)sender).Parent.Controls.OfType<ComboBox>()
+                .FirstOrDefault(x => x.Name.ToLower().Contains("destination"));
+
+            if (destination != null)
+            {
+                string target = RemoveExtraWhitespace(destination.Text);
+                string source = RemoveExtraWhitespace(cboSourceSystem.Text);
+
+                destination.Text = source;
+                cboSourceSystem.Text = target;
+            }
+        }
+
+        private void EventHandler_TabControl1_SelectedIndexChanged(
+            object sender,
+            EventArgs e)
+        {
+            if (fromPane == 4)
+            {
+                // if we're coming from the notes pane we should save when we switch
+                txtNotes.SaveFile(notesFile, RichTextBoxStreamType.PlainText);
+            }
+
+            if (tabControl1.SelectedIndex == 0 &&
+                !string.IsNullOrEmpty(rtbOutput.Text))
+            {
+                CheckForParsableOutput(rtbOutput);
+
+                rtbOutput.Focus(); // always focus our text box
+
+                pagOutput.Font = new Font(pagOutput.Font, FontStyle.Regular); // reset the font
+            }
+            else if (tabControl1.SelectedIndex == 4 &&
+                CheckIfFileOpens(notesFile))
+            {
+                txtNotes.LoadFile(notesFile, RichTextBoxStreamType.PlainText);
+
+                txtNotes.Focus();
+            }
+            else if (tabControl1.SelectedIndex == 1)
+            {
+                LoadFileIntoPage(savedFile1, rtbSaved1);
+            }
+            else if (tabControl1.SelectedIndex == 2)
+            {
+                LoadFileIntoPage(savedFile2, rtbSaved2);
+            }
+            else if (tabControl1.SelectedIndex == 3)
+            {
+                LoadFileIntoPage(savedFile3, rtbSaved3);
+            }
+
+            fromPane = tabControl1.SelectedIndex;
+        }
+
+        private void EventHandler_Td_outputBox_TextChanged(
+            object sender,
+            EventArgs e)
+        {
+            if (buttonCaller == 5)
+            {
+                // catch the database update button, we want to see its output
+                rtbOutput.SelectionStart = rtbOutput.Text.Length;
+                rtbOutput.ScrollToCaret();
+                rtbOutput.Refresh();
+            }
+        }
+
+        private void EventHandler_TestSystemsTimer_Delegate(
+            object sender,
+            ElapsedEventArgs e)
+        {
+            Debug.WriteLine(string.Format("testSystems Firing at: {0}", CurrentTimestamp()));
+
+            if (!backgroundWorker6.IsBusy && !settingsRef.DisableNetLogs && !string.IsNullOrEmpty(settingsRef.NetLogPath))
+            {
+                backgroundWorker6.RunWorkerAsync();
+            }
+        }
+
+        private void EventHandler_Towards_Click(
+            object sender,
+            EventArgs e)
+        {
+            if (settingsRef.Loop || chkRunOptionsLoop.Checked)
+            {
+                settingsRef.Loop = false;
+                chkRunOptionsLoop.Checked = false;
+            }
+            else if (!string.IsNullOrEmpty(cboRunOptionsDestination.Text))
+            {
+                if (!chkRunOptionsTowards.Checked)
+                {
+                    chkRunOptionsTowards.Checked = false;
+                }
+                else if (chkRunOptionsTowards.Checked)
+                {
+                    chkRunOptionsTowards.Checked = true;
+                    chkRunOptionsShorten.Checked = false;
+                }
+            }
+            else
+            {
+                chkRunOptionsTowards.Checked = false;
+            }
+        }
+
+        private void EventHandler_TrackerLinkLabel_LinkClicked(
+            object sender,
+            LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/MarkAusten/TDHelper/issues/new");
+        }
+
+        private void EventHandler_UniqueCheckBox_Click(
+            object sender,
+            EventArgs e)
+        {
+            if (chkRunOptionsLoop.Checked)
+            {
+                chkRunOptionsLoop.Checked = false;
+                chkRunOptionsUnique.Checked = true;
+            }
+        }
+        #endregion
 
         /// <summary>
         /// Get the buy command string.
@@ -2100,27 +3212,6 @@ namespace TDHelper
             return cmdPath;
         }
 
-        private void GetSystemButton_Click(object sender, EventArgs e)
-        {
-            buttonCaller = 2;
-
-            if (Control.ModifierKeys == Keys.Control)
-            {
-                buttonCaller = 16; // mark us as needing a full refresh
-            }
-
-            DisablebtnStarts();
-
-            ShowStatus("Checking for updated net logs...");
-            ValidateNetLogPath(null);
-            ShowStatusCompleted();
-
-            if (!backgroundWorker1.IsBusy)
-            {
-                backgroundWorker1.RunWorkerAsync();
-            }
-        }
-
         /// <summary>
         /// Get the trade command string.
         /// </summary>
@@ -2156,25 +3247,6 @@ namespace TDHelper
             EnableOptions(panRouteOptions, false);
         }
 
-        private void InsertAtGridRow_Click(object sender, EventArgs e)
-        {
-            if (grdPilotsLog.Rows.Count > 0)
-            {
-                // add a row with the timestamp of the selected row
-                // basically an insert-below-index when we use select(*)
-                string timestamp = grdPilotsLog.Rows[dRowIndex].Cells["Timestamp"].Value.ToString();
-
-                AddAtTimestampDBRow(GenerateRecentTimestamp(timestamp));
-                InvalidatedRowUpdate(true, -1);
-            }
-            else
-            {
-                // special case for an empty gridview
-                AddAtTimestampDBRow(CurrentTimestamp());
-                InvalidatedRowUpdate(true, -1);
-            }
-        }
-
         /// <summary>
         /// Load the speicifed file into the specified control.
         /// </summary>
@@ -2199,160 +3271,6 @@ namespace TDHelper
             }
         }
 
-        private void LocalFilterCheckBoxChanged(object sender, EventArgs e)
-        {
-            IEnumerable<CheckBox> checkboxes = panLocalOptions.Controls.OfType<CheckBox>();
-
-            btnLocalOptionsReset.Enabled = checkboxes.Count(x => x.Checked) > 0;
-            btnLocalOptionsAll.Enabled = checkboxes.Count(x => x.Checked) > 0;
-        }
-
-        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            // forcefully shutdown the process handler first
-            td_proc.Close();
-            td_proc.Dispose();
-            Application.Exit();
-        }
-
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            // serialize window data to the default config file
-            CopySettingsFromForm();
-
-            settingsRef.LocationParent = SaveWinLoc(this);
-            settingsRef.SizeParent = SaveWinSize(this);
-
-            SaveSettingsToIniFile();
-
-            OptimiseAllDatabases();
-        }
-
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-            SplashScreen.SetStatus("Set form position...");
-
-            Screen screen = Screen.FromControl(this);
-            Rectangle workingArea = screen.WorkingArea;
-            int[] winLoc = LoadWinLoc(settingsRef.LocationParent);
-            int[] winSize = LoadWinSize(settingsRef.SizeParent);
-
-            // restore window size from config
-            if (winSize.Length != 0 &&
-                winSize != null)
-            {
-                this.Size = new Size(winSize[0], winSize[1]);
-            }
-            else
-            {
-                // save our default size to the config
-                settingsRef.SizeParent = SaveWinSize(this);
-            }
-
-            // try to remember and restore the window location
-            if (winLoc.Length != 0 && winLoc != null)
-            {
-                this.Location = new Point(winLoc[0], winLoc[1]);
-                // if we're restoring the location, let's force it to be visible on screen
-                ForceFormOnScreen(this);
-            }
-            else
-            {
-                this.Location = new Point()
-                {
-                    X = Math.Max(workingArea.X, workingArea.X + (workingArea.Width - this.Width) / 2),
-                    Y = Math.Max(workingArea.Y, workingArea.Y + (workingArea.Height - this.Height) / 2)
-                };
-            }
-
-            if (!settingsRef.DisableNetLogs)
-            {
-                SetSplashScreenStatus("Collecting Net Log file names...");
-
-                RefreshNetLogFileList();
-            }
-
-            // bind our alternate config files
-            SplashScreen.SetStatus("Set ship list...");
-
-            SetShipList(true);
-
-            if (settingsRef.HasUpdated)
-            {
-                // display the changelog for the user
-                settingsRef.HasUpdated = false; // we've updated
-
-                SaveSettingsToIniFile();
-                DoHotSwapCleanup(); // call cleanup to remove unnecessary files if they exist
-
-                // show the user the changelog after an update
-                if (File.Exists(Path.Combine(assemblyPath, "Changelog.txt")))
-                {
-                    SplashScreen.CloseForm();
-
-                    ChangeLogForm changelogForm = new ChangeLogForm();
-                    changelogForm.ShowDialog(this); // modal
-                    changelogForm.Dispose();
-                }
-            }
-            else
-            {
-                backgroundWorker5.RunWorkerAsync(); // start the auto-updater delegate
-            }
-
-            // load our last saved config
-            if (!string.IsNullOrEmpty(settingsRef.LastUsedConfig))
-            {
-                SplashScreen.SetStatus("Load ship settings...");
-
-                LoadSettings();
-            }
-
-            SplashScreen.SetStatus("Completed.");
-        }
-
-        private void MainForm_LocationChanged(object sender, EventArgs e)
-        {
-            Rectangle workingArea = Screen.FromControl(this).WorkingArea;
-
-            if (Math.Abs(workingArea.Left - this.Left) < SnapDist)
-            {
-                this.Left = workingArea.Left;
-            }
-            else if (Math.Abs(this.Left + this.Width - workingArea.Left - workingArea.Width) < SnapDist)
-            {
-                this.Left = workingArea.Left + workingArea.Width - this.Width;
-            }
-
-            if (Math.Abs(workingArea.Top - this.Top) < SnapDist)
-            {
-                this.Top = workingArea.Top;
-            }
-            else if (Math.Abs(this.Top + this.Height - workingArea.Top - workingArea.Height) < SnapDist)
-            {
-                this.Top = workingArea.Top + workingArea.Height - this.Height;
-            }
-        }
-
-        private void MainForm_Shown(object sender, EventArgs e)
-        {
-            // Call the refresh method for the run options panel.
-            OptionsPanelRefresh(panRunOptions);
-
-            // start the database uploader
-            backgroundWorker6.RunWorkerAsync();
-
-            SplashScreen.CloseForm();
-        }
-
-        private void MethodComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            methodIndex = cboMethod.SelectedIndex;
-            MethodSelectState();
-
-            cboMethod.Enabled = true;
-        }
-
         private void MethodSelectState()
         {
             SuspendLayout();
@@ -2369,59 +3287,6 @@ namespace TDHelper
             ResumeLayout();
         }
 
-        private void MiniModeButton_Click(object sender, EventArgs e)
-        {
-            TdMiniForm childForm = new TdMiniForm(this); // pass a reference from parentForm
-
-            // populate the treeview from the last valid run output
-            ParseRunOutput(tv_outputBox, childForm.TreeViewBox);
-
-            childForm.Text = t_childTitle; // set our profit estimate
-
-            // show our minimode
-            this.Hide();
-            childForm.ShowDialog(); // always modal, never instance
-
-            // save some globals
-            SaveSettingsToIniFile();
-            this.Show(); // restore when we return
-        }
-
-        private void NotesClearMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty(txtNotes.Text))
-            {
-                txtNotes.Text = string.Empty;
-
-                if (File.Exists(notesFile))
-                {
-                    File.Delete(notesFile);
-                }
-            }
-        }
-
-        private void NumericUpDown_Enter(object sender, EventArgs e)
-        {
-            // fix for text selection upon focusing numericupdown controls
-            (sender as NumericUpDown).Select(0, (sender as NumericUpDown).Text.Length);
-        }
-
-        private void NumericUpDown_MouseUp(object sender, MouseEventArgs e)
-        {
-            (sender as NumericUpDown).Select(0, (sender as NumericUpDown).Text.Length);
-        }
-
-        /// <summary>
-        /// Check to see if the options panel has a pad size text box and if it is blanks then
-        /// set it to the same value as the currently selected ship.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OptionsPanel_StateChanged(object sender, EventArgs e)
-        {
-            OptionsPanelRefresh((Panel)sender);
-        }
-
         /// <summary>
         /// Check to see if the options panel has a pad size text box and if it is blanks then
         /// set it to the same value as the currently selected ship.
@@ -2433,41 +3298,6 @@ namespace TDHelper
             SetDestinations(panel);
             SetCommodities(panel);
             SetAvailableShips(panel);
-        }
-
-        /// <summary>
-        /// Ensure that the pad sizes are M, L, ? or a combination of these.
-        /// </summary>
-        /// <param name="sender">The text box.</param>
-        /// <param name="e">The current key press.</param>
-        private void PadSize_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            TextBox padSizes = ((TextBox)sender);
-
-            string key = e.KeyChar.ToString().ToUpper();
-            string selected = padSizes.Text;
-
-            // filter for valid chars
-            if ("SML?".Contains(key))
-            {
-                if (selected.Contains(key))
-                {
-                    selected = selected.Replace(key, " ");
-                }
-                else
-                {
-                    selected += key;
-                }
-
-                if (selected.Trim().Length == 0)
-                {
-                    selected = string.Empty;
-                }
-
-                padSizes.Text = ContainsPadSizes(selected);
-            }
-
-            e.Handled = true;
         }
 
         private CheckState ParseCheckState(string input)
@@ -2490,24 +3320,6 @@ namespace TDHelper
             }
 
             return state;
-        }
-
-        /// <summary>
-        /// The event handler for the mnuPaste1 click event.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void Paste1_Click(object sender, EventArgs e)
-        {
-            PasteTextToControl(sender);
-        }
-
-        private void PasteMenuItem_Click(object sender, EventArgs e)
-        {
-            RichTextBox clickedControl = (RichTextBox)this.mnuStrip1.SourceControl;
-
-            clickedControl.Focus();
-            clickedControl.Paste();
         }
 
         /// <summary>
@@ -2560,143 +3372,6 @@ namespace TDHelper
             }
         }
 
-        private void PilotsLogDataGrid_CellContextMenuStripNeeded(
-                                    object sender,
-                                    DataGridViewCellContextMenuStripNeededEventArgs e)
-        {
-            // prevent OOR exception
-            if (e.RowIndex == -1 || e.ColumnIndex == -1)
-            {
-                return;
-            }
-
-            if (sender != null)
-            {
-                // save the datasource index, and the datagrid index of the row
-                grdPilotsLog.ClearSelection(); // prevent weirdness
-                pRowIndex = int.Parse(localTable.Rows[e.RowIndex][0].ToString());
-                dRowIndex = e.RowIndex;
-                grdPilotsLog.Rows[dRowIndex].Selected = true;
-            }
-        }
-
-        private void PilotsLogDataGrid_CellValueNeeded(
-                                    object sender,
-                                    DataGridViewCellValueEventArgs e)
-        {
-            if (e.RowIndex < retriever.RowCount && e.ColumnIndex < retriever.RowCount)
-            {
-                e.Value = memoryCache.RetrieveElement(e.RowIndex, e.ColumnIndex);
-            }
-        }
-
-        private void PilotsLogDataGrid_CellValuePushed(
-                                    object sender,
-                                    DataGridViewCellValueEventArgs e)
-        {
-            if (e.RowIndex < retriever.RowCount && e.ColumnIndex < retriever.RowCount)
-            {
-                // update our local table
-                localTable.Rows[e.RowIndex][e.ColumnIndex] = e.Value;
-                List<DataRow> row = new List<DataRow> { localTable.Rows[e.RowIndex] };
-
-                // update the physical DB and repaint
-                UpdateDBRow(row);
-                InvalidatedRowUpdate(false, e.RowIndex);
-            }
-        }
-
-        private void PilotsLogDataGrid_UserDeletingRow(
-                                    object sender,
-                                    DataGridViewRowCancelEventArgs e)
-        {
-            if (e.Row.Index < retriever.RowCount && e.Row.Index >= 0
-                && grdPilotsLog.SelectedRows.Count > 0)
-            {
-                int rowIndex = -1;
-                int.TryParse(grdPilotsLog.Rows[e.Row.Index].Cells[0].Value.ToString(), out rowIndex);
-
-                if (rowIndex >= 0)
-                {
-                    if (grdPilotsLog.SelectedRows.Count == 1)
-                    {
-                        RemoveDBRow(rowIndex);
-                        UpdateLocalTable();
-                        memoryCache.RemoveRow(e.Row.Index, rowIndex);
-                    }
-                    else if (grdPilotsLog.SelectedRows.Count > 1 && dgRowIDIndexer.Count == 0)
-                    {
-                        // let's batch the commits for performance
-                        batchedRowCount = grdPilotsLog.SelectedRows.Count;
-                        foreach (DataGridViewRow r in grdPilotsLog.SelectedRows)
-                        {
-                            int curRowIndex = int.Parse(r.Cells[0].Value.ToString());
-                            dgRowIndexer.Add(e.Row.Index);
-                            dgRowIDIndexer.Add(curRowIndex);
-                        }
-
-                        grdPilotsLog.Visible = false; // prevent retrieval
-                    }
-
-                    if (batchedRowCount != -1)
-                    {
-                        batchedRowCount--; // keep track of our re-entry
-                    }
-
-                    if (dgRowIDIndexer.Count > 0 && batchedRowCount == 0)
-                    {
-                        // we've got queued commits to remove (should trigger on the last removed row)
-                        RemoveDBRows(dgRowIDIndexer);
-                        UpdateLocalTable();
-                        memoryCache.RemoveRows(dgRowIndexer, dgRowIDIndexer);
-                        grdPilotsLog.Visible = true; // re-enable retrieval
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Ensure that the planetary options are M, L, ? or a combination of these.
-        /// </summary>
-        /// <param name="sender">The text box.</param>
-        /// <param name="e">The current key press.</param>
-        private void Planetary_KeyPress(
-            object sender,
-            KeyPressEventArgs e)
-        {
-            TextBox planetary = ((TextBox)sender);
-
-            string key = e.KeyChar.ToString().ToUpper();
-            string selected = planetary.Text;
-
-            // filter for valid chars
-            if ("YN?".Contains(key))
-            {
-                if (selected.Contains(key))
-                {
-                    selected = selected.Replace(key, " ");
-                }
-                else
-                {
-                    selected += key;
-                }
-
-                planetary.Text = ContainsPlanetary(selected);
-            }
-
-            e.Handled = true;
-        }
-
-        private void ProcErrorDataHandler(
-                                    object sender,
-                                    DataReceivedEventArgs output)
-        {
-            if (output.Data != null)
-            {
-                StackCircularBuffer(output.Data + "\n");
-            }
-        }
-
         /// <summary>
         /// Process the currently set up command.
         /// </summary>
@@ -2708,86 +3383,6 @@ namespace TDHelper
             GetSourceTargetAndCommodity();
 
             DoRunEvent(); // externalized
-        }
-
-        private void ProcOutputDataHandler(
-                                    object sender,
-                                    DataReceivedEventArgs output)
-        {
-            string[] exceptions = new string[] { "NOTE:", "####" };
-            string filteredOutput = string.Empty;
-
-            if (output.Data != null)
-            {
-                // prevent a null reference
-                if (output.Data.Contains("\a"))
-                {
-                    filteredOutput = output.Data.Replace("\a", string.Empty) + "\n";
-                }
-                else if (output.Data.StartsWith("["))
-                {
-                    filteredOutput = output.Data + "\r";
-                }
-                else
-                {
-                    filteredOutput = output.Data + "\n";
-                }
-
-                if (buttonCaller != 5 && buttonCaller != 12 && !exceptions.Any(output.Data.Contains) && methodIndex != 5 || methodIndex != 6)
-                {
-                    // hide output if calculating
-                    StackCircularBuffer(filteredOutput);
-                }
-                else if (methodIndex == 5 || buttonCaller == 5 || buttonCaller == 12)
-                {
-                    // don't hide any output if updating DB or exporting
-                    StackCircularBuffer(filteredOutput);
-                }
-            }
-        }
-
-        private void PushNotesMenuItem_Click(object sender, EventArgs e)
-        {
-            RichTextBox clickedControl = (RichTextBox)this.mnuStrip1.SourceControl;
-            clickedControl.Focus();
-
-            if (clickedControl.SelectedText.Length > 0)
-            {
-                Clipboard.SetData(DataFormats.Text, clickedControl.SelectedText);
-            }
-            else
-            {
-                clickedControl.SelectAll();
-                Clipboard.SetData(DataFormats.Text, clickedControl.SelectedText);
-            }
-
-            if (Clipboard.ContainsText(TextDataFormat.Text))
-            {
-                using (FileStream fs = new FileStream(notesFile, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
-                using (StreamWriter stream = new StreamWriter(fs))
-                {
-                    if (methodIndex == 1)
-                    {
-                        stream.WriteLine("Buy " + cboBuyOptionsCommodities.Text.ToString()
-                            + " (near "
-                            + cboSourceSystem.Text.ToString()
-                            + "):\n"
-                            + Clipboard.GetData(DataFormats.Text).ToString());
-                    }
-                    else if (methodIndex == 2)
-                    {
-                        stream.WriteLine("Sell " + cboSellOptionsCommodities.Text.ToString()
-                            + " (near "
-                            + cboSourceSystem.Text.ToString()
-                            + "):\n"
-                            + Clipboard.GetData(DataFormats.Text).ToString());
-                    }
-                    else
-                    {
-                        stream.WriteLine(Clipboard.GetData(DataFormats.Text).ToString());
-                    }
-                }
-            }
         }
 
         /// <summary>
@@ -2804,17 +3399,6 @@ namespace TDHelper
             }
 
             EnableOptions(panRouteOptions, methodFromIndex == 0);
-        }
-
-        private void RemoveAtGridRow_Click(object sender, EventArgs e)
-        {
-            if (grdPilotsLog.Rows.Count > 0)
-            {
-                RemoveDBRow(pRowIndex);
-                UpdateLocalTable();
-                memoryCache.RemoveRow(dRowIndex, pRowIndex);
-                grdPilotsLog.InvalidateRow(dRowIndex);
-            }
         }
 
         /// <summary>
@@ -2847,62 +3431,6 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Reset the local filters.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void ResetLocalFilters(object sender, EventArgs e)
-        {
-            ResetAllLocalFilters();
-        }
-
-        private void SavePage1MenuItem_Click(object sender, EventArgs e)
-        {
-            if (rtbOutput.SelectedText.Length > 0)
-            {
-                WriteSavedPage(rtbOutput.SelectedText, savedFile1);
-            }
-            else
-            {
-                WriteSavedPage(rtbOutput.Text, savedFile1);
-            }
-        }
-
-        private void SavePage2MenuItem_Click(object sender, EventArgs e)
-        {
-            if (rtbOutput.SelectedText.Length > 0)
-            {
-                WriteSavedPage(rtbOutput.SelectedText, savedFile2);
-            }
-            else
-            {
-                WriteSavedPage(rtbOutput.Text, savedFile2);
-            }
-        }
-
-        private void SavePage3MenuItem_Click(object sender, EventArgs e)
-        {
-            if (rtbOutput.SelectedText.Length > 0)
-            {
-                WriteSavedPage(rtbOutput.SelectedText, savedFile3);
-            }
-            else
-            {
-                WriteSavedPage(rtbOutput.Text, savedFile3);
-            }
-        }
-
-        /// <summary>
-        /// The event handler for the mnuSelectAll1 click event.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void SelectAll1_Click(object sender, EventArgs e)
-        {
-            SelectAllControlText(sender);
-        }
-
-        /// <summary>
         /// Select all the text on the control.
         /// </summary>
         /// <param name="sender">The clicked control.</param>
@@ -2921,14 +3449,6 @@ namespace TDHelper
             {
                 ((ComboBox)control).SelectAll();
             }
-        }
-
-        private void SelectMenuItem_Click(object sender, EventArgs e)
-        {
-            RichTextBox clickedControl = (RichTextBox)this.mnuStrip1.SourceControl;
-
-            clickedControl.Focus();
-            clickedControl.SelectAll();
         }
 
         /// <summary>
@@ -3118,16 +3638,6 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Set the local filters.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void SetLocalFilters(object sender, EventArgs e)
-        {
-            SetAllLocalFilters();
-        }
-
-        /// <summary>
         /// Set up the option panels list.
         /// </summary>
         private void SetOptionPanelList()
@@ -3221,120 +3731,28 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Set up the context menu state depending on the controls clicked.
+        /// Show the form and process any required options.
         /// </summary>
-        /// <param name="sender">The context menu strip.</param>
-        /// <param name="e">The event arguments.</param>
-        private void SetValuesMenu_Opening(object sender, CancelEventArgs e)
+        private void ShowFormAndProcess(Form formToshow)
         {
-            string clickedControlName = ((ContextMenuStrip)sender).SourceControl.Name;
+            formToshow.StartPosition = FormStartPosition.CenterParent;
 
-            // Setup the menu.
-            switch (clickedControlName)
+            formToshow.ShowDialog(this);
+
+            Application.DoEvents();
+
+            if (!string.IsNullOrEmpty(DBUpdateCommandString))
             {
-                case "numBuyOptionsSupply":
-                case "numSellOptionsDemand":
-                case "numRouteOptionsDemand":
-                case "numRouteOptionsStock":
-                    mnuLadenLY.Enabled = false;
-                    mnuUnladenLY.Enabled = false;
-                    mnuCapacity.Enabled = true;
-                    break;
+                ValidatePaths();
 
-                case "numBuyOptionsNearLy":
-                case "numLocalOptionsLy":
-                case "numNavOptionsLy":
-                case "numOldDataOptionsNearLy":
-                case "numRaresOptionsLy":
-                case "numSellOptionsNearLy":
-                    mnuLadenLY.Enabled = true;
-                    mnuUnladenLY.Enabled = true;
-                    mnuCapacity.Enabled = false;
-                    break;
-
-                default:
-                    mnuLadenLY.Enabled = false;
-                    mnuUnladenLY.Enabled = false;
-                    mnuCapacity.Enabled = false;
-                    break;
-            }
-
-            var control = ((ContextMenuStrip)sender).SourceControl;
-
-            if (control is TextBox ||
-                control is ComboBox)
-            {
-                string text = string.Empty;
-                string selectedText = string.Empty;
-
-                if (control is TextBox)
+                if (!backgroundWorker4.IsBusy)
                 {
-                    text = ((TextBox)control).Text;
-                    selectedText = ((TextBox)control).SelectedText;
-                }
-                else if (control is ComboBox)
-                {
-                    text = ((ComboBox)control).Text;
-                    selectedText = ((ComboBox)control).SelectedText;
-                }
+                    // UpdateDB Button
+                    buttonCaller = 5;
+                    DisablebtnStarts(); // disable buttons during uncancellable operations
 
-                if (text.Length > 0)
-                {
-                    if (selectedText.Length > 0)
-                    {
-                        mnuCut1.Enabled = true;
-                        mnuCopy1.Enabled = true;
-                    }
-                    else
-                    {
-                        mnuCut1.Enabled = false;
-                        mnuCopy1.Enabled = false;
-                    }
-
-                    mnuSelectAll1.Enabled = true;
+                    backgroundWorker4.RunWorkerAsync();
                 }
-                else
-                {
-                    mnuCut1.Enabled = false;
-                    mnuCopy1.Enabled = false;
-                }
-
-                mnuPaste1.Enabled = true;
-            }
-            else
-            {
-                mnuCut1.Enabled = false;
-                mnuCopy1.Enabled = false;
-                mnuPaste1.Enabled = false;
-                mnuSelectAll1.Enabled = false;
-            }
-
-            mnuReset.Enabled = true;
-        }
-
-        private void ShortenCheckBox_Click(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty(cboRunOptionsDestination.Text))
-            {
-                if (!chkRunOptionsShorten.Checked)
-                {
-                    chkRunOptionsLoop.Checked = false;
-                    chkRunOptionsTowards.Checked = false;
-                }
-                else if (chkRunOptionsShorten.Checked)
-                {
-                    if (chkRunOptionsLoop.Checked)
-                    {
-                        chkRunOptionsLoop.Checked = false;
-                    }
-
-                    chkRunOptionsShorten.Checked = true;
-                    chkRunOptionsTowards.Checked = false;
-                }
-            }
-            else
-            {
-                chkRunOptionsShorten.Checked = false;
             }
         }
 
@@ -3392,199 +3810,6 @@ namespace TDHelper
             ClearStatus(wait);
         }
 
-        private void SrcSystemComboBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (methodIndex != 10)
-            {
-                // make sure we filter unwanted characters from the string
-                string filteredString = RemoveExtraWhitespace(cboSourceSystem.Text);
-
-                if ((e.KeyCode == Keys.Enter & e.Modifiers == Keys.Control)
-                    && StringInList(filteredString, outputSysStnNames))
-                {
-                    // if ctrl+enter, is a known system/station, and not in our net log, mark it down
-                    AddMarkedStation(filteredString, currentMarkedStations);
-                    BuildOutput(true);
-                    SaveSettingsToIniFile();
-
-                    e.Handled = true;
-                }
-                else if ((e.KeyCode == Keys.Enter & e.Modifiers == Keys.Shift)
-                    && StringInList(filteredString, currentMarkedStations))
-                {
-                    // if shift+enter, item is in our list, remove it
-                    RemoveMarkedStation(filteredString, currentMarkedStations);
-
-                    int index = IndexInList(filteredString, output_unclean);
-
-                    BuildOutput(true);
-                    SaveSettingsToIniFile();
-
-                    e.Handled = true;
-                }
-                else if (e.KeyCode == Keys.Escape
-                    && !string.IsNullOrEmpty(filteredString))
-                {
-                    cboSourceSystem.Text = RemoveSystemOrStation(filteredString);
-
-                    e.Handled = true;
-                }
-            }
-        }
-
-        private void SrcSystemComboBox_TextChanged(object sender, EventArgs e)
-        {
-            // wait for the user to type a few characters
-            if (cboSourceSystem.Text.Length > 3 && methodIndex != 10)
-            {
-                string filteredString = RemoveExtraWhitespace(cboSourceSystem.Text);
-                PopulateStationPanel(filteredString);
-
-                chkRunOptionsTowards.Enabled = cboRunOptionsDestination.Text.Length > 3; // requires "--fr"
-            }
-            else
-            {
-                chkRunOptionsTowards.Enabled = false;
-            }
-
-            SetStationInfoButtonState();
-        }
-
-        private void StationDropDown_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //stationIndex = stationDropDown.SelectedIndex;
-
-            //if (methodIndex == 6)
-            //{
-            //    // if we're in ShipVendor mode
-            //    if (stationIndex == 2)
-            //    {
-            //        // disable when list'ing
-            //        cboShipsSold.Enabled = false;
-            //        lblShipsSold.Enabled = false;
-            //    }
-            //    else
-            //    {
-            //        cboShipsSold.Enabled = true;
-            //        lblShipsSold.Enabled = true;
-            //    }
-            //}
-        }
-
-        private void StationInfo_Click(object sender, EventArgs e)
-        {
-            // Prevent double clicks
-            btnStationInfo.Enabled = false;
-            btnStart.Enabled = false;
-
-            methodIndex = 10;
-
-            ProcessCommand();
-        }
-
-        private void SwapSourceAndDestination(object sender, EventArgs e)
-        {
-            // Locate the destination control for the currently enabled options panel.
-            ComboBox destination = ((Button)sender).Parent.Controls.OfType<ComboBox>()
-                .FirstOrDefault(x => x.Name.ToLower().Contains("destination"));
-
-            if (destination != null)
-            {
-                string target = RemoveExtraWhitespace(destination.Text);
-                string source = RemoveExtraWhitespace(cboSourceSystem.Text);
-
-                destination.Text = source;
-                cboSourceSystem.Text = target;
-            }
-        }
-
-        private void TabControl1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (fromPane == 4)
-            {
-                // if we're coming from the notes pane we should save when we switch
-                txtNotes.SaveFile(notesFile, RichTextBoxStreamType.PlainText);
-            }
-
-            if (tabControl1.SelectedIndex == 0 &&
-                !string.IsNullOrEmpty(rtbOutput.Text))
-            {
-                CheckForParsableOutput(rtbOutput);
-
-                rtbOutput.Focus(); // always focus our text box
-
-                pagOutput.Font = new Font(pagOutput.Font, FontStyle.Regular); // reset the font
-            }
-            else if (tabControl1.SelectedIndex == 4 &&
-                CheckIfFileOpens(notesFile))
-            {
-                txtNotes.LoadFile(notesFile, RichTextBoxStreamType.PlainText);
-
-                txtNotes.Focus();
-            }
-            else if (tabControl1.SelectedIndex == 1)
-            {
-                LoadFileIntoPage(savedFile1, rtbSaved1);
-            }
-            else if (tabControl1.SelectedIndex == 2)
-            {
-                LoadFileIntoPage(savedFile2, rtbSaved2);
-            }
-            else if (tabControl1.SelectedIndex == 3)
-            {
-                LoadFileIntoPage(savedFile3, rtbSaved3);
-            }
-
-            fromPane = tabControl1.SelectedIndex;
-        }
-
-        private void Td_outputBox_TextChanged(object sender, EventArgs e)
-        {
-            if (buttonCaller == 5)
-            {
-                // catch the database update button, we want to see its output
-                rtbOutput.SelectionStart = rtbOutput.Text.Length;
-                rtbOutput.ScrollToCaret();
-                rtbOutput.Refresh();
-            }
-        }
-
-        private void TestSystemsTimer_Delegate(object sender, ElapsedEventArgs e)
-        {
-            Debug.WriteLine(string.Format("testSystems Firing at: {0}", CurrentTimestamp()));
-
-            if (!backgroundWorker6.IsBusy && !settingsRef.DisableNetLogs && !string.IsNullOrEmpty(settingsRef.NetLogPath))
-            {
-                backgroundWorker6.RunWorkerAsync();
-            }
-        }
-
-        private void TrackerLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            System.Diagnostics.Process.Start("https://github.com/MarkAusten/TDHelper/issues/new");
-        }
-
-        private void TxtAvoid_TextChanged(object sender, EventArgs e)
-        {
-            // account for startJumpsBox
-            if (numRunOptionsStartJumps.Value > 0)
-                settingsRef.Avoid = txtAvoid.Text;
-        }
-
-        private void TxtLocalPlanetary_TextChanged(object sender, EventArgs e)
-        {
-            txtLocalOptionsPlanetary.Text = ContainsPlanetary(txtLocalOptionsPlanetary.Text);
-        }
-
-        private void UniqueCheckBox_Click(object sender, EventArgs e)
-        {
-            if (chkRunOptionsLoop.Checked)
-            {
-                chkRunOptionsLoop.Checked = false;
-                chkRunOptionsUnique.Checked = true;
-            }
-        }
-
         private void ValidateDestForEndJumps()
         {
             if (!string.IsNullOrEmpty(cboRunOptionsDestination.Text) && methodIndex != 4)
@@ -3598,6 +3823,5 @@ namespace TDHelper
                 lblRunOptionsEndJumps.Enabled = false;
             }
         }
-
     }
 }
