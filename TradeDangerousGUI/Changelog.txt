@@ -1,3 +1,10 @@
+v2.0.6.0
+--------
+* Added new database maintenance form.
+* Moved analyse to new form.
+* Added vacuum command on new form.
+* fixed bug that triewd to run ANALYSE or VACUUM via TD after processing.
+
 v2.0.5.9
 --------
 * Fixed issues #30, #31 & #32.
