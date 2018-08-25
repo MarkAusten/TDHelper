@@ -462,11 +462,13 @@ namespace TDHelper
                     stopwatch.Start();
                 }
 
-                circularBuffer.Clear();
+                ClearCircularBuffer();
 
                 StackCircularBuffer("Analysing database...{0}".With(Environment.NewLine));
 
-                VacuumAllDatabases();
+//                VacuumAllDatabases();
+
+                StackCircularBuffer("Analysis completed.{0}".With(Environment.NewLine));
             }
             else if (DBUpdateCommandString == "VACUUM")
             {
@@ -480,11 +482,13 @@ namespace TDHelper
                     stopwatch.Start();
                 }
 
-                circularBuffer.Clear();
+                ClearCircularBuffer();
 
                 StackCircularBuffer("Vacuuming database...{0}".With(Environment.NewLine));
 
-                AnalyseAllDatabases();
+//                AnalyseAllDatabases();
+
+                StackCircularBuffer("Vacuum completed.{0}".With(Environment.NewLine));
             }
             else
             {
@@ -3749,6 +3753,7 @@ namespace TDHelper
         /// </summary>
         private void ShowFormAndProcess(Form formToshow)
         {
+            DBUpdateCommandString = string.Empty;
             formToshow.StartPosition = FormStartPosition.CenterParent;
 
             formToshow.ShowDialog(this);
