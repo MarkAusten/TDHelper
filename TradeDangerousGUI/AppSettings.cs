@@ -36,8 +36,8 @@ namespace TDHelper
             // visible screen and make it as small as possible
             Form topmostForm = new Form()
             {
-                Size = new System.Drawing.Size(1, 1),
-                Icon = TDHelper.Properties.Resources.TDH_Icon,
+                Size = new Size(1, 1),
+                Icon = Properties.Resources.TDH_Icon,
                 ShowIcon = true,
                 Text = title,
                 StartPosition = FormStartPosition.Manual,

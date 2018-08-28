@@ -1198,6 +1198,7 @@ namespace TDHelper
             ShipTranslation.Add("Type9", "Type 9");
             ShipTranslation.Add("Type9_Military", "Type 10");
             ShipTranslation.Add("TypeX", "Alliance Chieftain");
+            ShipTranslation.Add("TypeX_2", "Alliance Crusader");
             ShipTranslation.Add("TypeX_3", "Alliance Challenger");
             ShipTranslation.Add("Viper", "Viper MkIII");
             ShipTranslation.Add("Viper_MkIV", "Viper MkIV");
