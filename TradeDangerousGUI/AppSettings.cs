@@ -87,7 +87,7 @@ namespace TDHelper
                 assemblyGuid
                     = attributes.Length == 0
                     ? string.Empty
-                    : ((System.Runtime.InteropServices.GuidAttribute)attributes[0]).Value.ToUpper();
+                    : ((GuidAttribute)attributes[0]).Value.ToUpper();
 
                 return assemblyGuid;
             }
@@ -411,7 +411,7 @@ namespace TDHelper
         public static string SaveWinLoc(Form x)
         {
             // save winLoc to a given variable object
-            return string.Format("{0},{1}", x.Location.X, x.Location.Y);
+            return "{0},{1}".With(x.Location.X, x.Location.Y);
         }
 
         public static string SaveWinSize(Form x)
@@ -438,7 +438,7 @@ namespace TDHelper
                 modHeight = x.Size.Height.ToString();
             }
 
-            return string.Format("{0},{1}", modWidth, modHeight);
+            return "{0},{1}".With(modWidth, modHeight);
         }
 
         public static bool SectionHasKey(
@@ -525,14 +525,21 @@ namespace TDHelper
                 : string.Empty;
         }
 
+        /// <summary>
+        /// Some basic config fie validation.
+        /// </summary>
+        /// <param name="filePath">The path to the config fie.</param>
+        /// <returns></returns>
         public static bool ValidateConfigFile(string filePath)
         {
             bool fileIsValid = false;
 
+            // Check if the file opens.
             if (CheckIfFileOpens(filePath))
             {
                 Configuration config = Configuration.LoadFromFile(filePath);
 
+                // The app section is a required section.
                 fileIsValid = config.GetSectionsNamed("App").Count() == 1;
             }
 
@@ -829,28 +836,20 @@ namespace TDHelper
         {
             FontConverter conv = new FontConverter();
 
-            if (this.TreeViewFont != null)
-            {
-                return conv.ConvertFromInvariantString(this.TreeViewFont) as Font;
-            }
-            else
-            {
-                return null;
-            }
+            return 
+                TreeViewFont == null
+                ? null
+                : conv.ConvertFromInvariantString(TreeViewFont) as Font;
         }
 
         public string ConvertToFontString(Font fontObject)
         {
             FontConverter conv = new FontConverter();
 
-            if (fontObject != null)
-            {
-                return conv.ConvertToInvariantString(fontObject);
-            }
-            else
-            {
-                return string.Empty;
-            }
+            return
+                fontObject == null
+                ? null
+                : conv.ConvertToInvariantString(fontObject);
         }
 
         #endregion Props
