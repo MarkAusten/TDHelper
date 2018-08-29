@@ -162,8 +162,8 @@ namespace TDHelper
         {
             if (CheckIfFileOpens(configFile))
             {
-                Configuration config = Configuration.LoadFromFile(configFile);
-                TDSettings settings = MainForm.settingsRef;
+                Configuration config = GetConfigurationObject();
+                TDSettings settings = settingsRef;
 
                 Section configSection = config["App"];
 
@@ -515,18 +515,10 @@ namespace TDHelper
         /// <returns></returns>
         public static bool ValidateConfigFile(string filePath)
         {
-            bool fileIsValid = false;
+            Configuration config = GetConfigurationObject();
 
-            // Check if the file opens.
-            if (CheckIfFileOpens(filePath))
-            {
-                Configuration config = Configuration.LoadFromFile(filePath);
-
-                // The app section is a required section.
-                fileIsValid = config.GetSectionsNamed("App").Count() == 1;
-            }
-
-            return fileIsValid;
+            // The app section is a required section.
+            return config.GetSectionsNamed("App").Count() == 1;
         }
 
         public static void ValidateVerboseLogging()
@@ -605,17 +597,6 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Return a SharpConfig Configuration object.
-        /// </summary>
-        /// <returns>A SharpConfig Configuration object.</returns>
-        private static Configuration GetConfigurationObject()
-        {
-            return CheckIfFileOpens(configFile)
-                ? Configuration.LoadFromFile(configFile)
-                : new Configuration();
-        }
-
-        /// <summary>
         /// Get a list of available ships from the settings.
         /// </summary>
         /// <returns>A list of available ships.</returns>
@@ -642,6 +623,17 @@ namespace TDHelper
             return ships
                 .OrderBy(x => x)
                 .ToList();
+        }
+
+        /// <summary>
+        /// Return a SharpConfig Configuration object.
+        /// </summary>
+        /// <returns>A SharpConfig Configuration object.</returns>
+        private static Configuration GetConfigurationObject()
+        {
+            return CheckIfFileOpens(configFile)
+                ? Configuration.LoadFromFile(configFile)
+                : new Configuration();
         }
 
         private static List<string> ParseMarkedStations()

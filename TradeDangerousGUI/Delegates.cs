@@ -1283,7 +1283,7 @@ namespace TDHelper
             settingsRef.LastUsedConfig = sectionName;
 
             // Get the details of all the commander's ships and set up the available ships.
-            Configuration config = Configuration.LoadFromFile(configFile);
+            Configuration config = GetConfigurationObject();
 
             string availableShips = string.Empty;
 

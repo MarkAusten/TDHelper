@@ -478,8 +478,8 @@ namespace TDHelper
                 cboCommandersShips.DataSource = validConfigs;
             }
 
-            TDSettings settings = MainForm.settingsRef;
-            SharpConfig.Configuration config = SharpConfig.Configuration.LoadFromFile(configFile);
+            TDSettings settings = settingsRef;
+            SharpConfig.Configuration config = GetConfigurationObject();
 
             if (string.IsNullOrEmpty(settings.LastUsedConfig))
             {
@@ -532,7 +532,7 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Given the ship's name find the ship ID.
+        /// Given the ship's name find the section containing the ship data.
         /// </summary>
         /// <param name="shipName">The ship's name.</param>
         /// <returns>The ship section ID.</returns>
