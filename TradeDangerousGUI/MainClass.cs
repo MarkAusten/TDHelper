@@ -507,7 +507,7 @@ namespace TDHelper
 
             cboCommandersShips.SelectedIndex
                = !string.IsNullOrEmpty(settings.LastUsedConfig)
-               ? cboCommandersShips.FindStringExact(settings.LastUsedConfig)
+               ? cboCommandersShips.FindStringExact(GetShipNameFromConfigSection(settings.LastUsedConfig))
                : 0;
 
             numRouteOptionsShipCapacity.Value = settings.Capacity;
@@ -515,6 +515,47 @@ namespace TDHelper
             numLadenLy.Value = Math.Max(settings.LadenLY, numLadenLy.Minimum);
             txtPadSize.Text = settings.Padsizes;
             numUnladenLy.Value = Math.Max(settings.UnladenLY, numUnladenLy.Minimum);
+        }
+
+        /// <summary>
+        /// Get the ship name from the specified config section. 
+        /// </summary>
+        /// <param name="sectionName">The name of the section contining the ship data.</param>
+        /// <returns>The ship name.</returns>
+        private string GetShipNameFromConfigSection(string sectionName)
+        {
+            SharpConfig.Configuration config = GetConfigurationObject();
+
+            SharpConfig.Section configSection = config[sectionName];
+
+            return GetStringSetting(configSection, "shipName");
+        }
+
+        /// <summary>
+        /// Given the ship's name find the ship ID.
+        /// </summary>
+        /// <param name="shipName">The ship's name.</param>
+        /// <returns>The ship section ID.</returns>
+        private string GetShipIdFromConfig(string shipName)
+        {
+            string result = string.Empty;
+
+            SharpConfig.Configuration config = GetConfigurationObject();
+
+            foreach (string sectionName in settingsRef
+                .AvailableShips
+                .Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                SharpConfig.Section configSection = config[sectionName];
+
+                if (GetStringSetting(configSection, "shipName").Equals(shipName))
+                {
+                    result = sectionName;
+                    break;
+                }
+            }
+
+            return result;
         }
 
         /// <summary>

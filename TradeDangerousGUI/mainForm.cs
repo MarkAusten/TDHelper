@@ -1116,7 +1116,7 @@ namespace TDHelper
             object sender,
             EventArgs e)
         {
-            settingsRef.LastUsedConfig = cboCommandersShips.Text;
+            settingsRef.LastUsedConfig = GetShipIdFromConfig(cboCommandersShips.Text);
             SetShipList();
         }
 

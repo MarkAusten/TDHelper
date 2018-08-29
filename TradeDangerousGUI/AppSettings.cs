@@ -22,10 +22,10 @@ namespace TDHelper
          */
 
         static public DialogResult Show(
-            bool onTop, 
-            bool playAlert, 
-            string message, 
-            string title, 
+            bool onTop,
+            bool playAlert,
+            string message,
+            string title,
             MessageBoxButtons buttons)
         {
             Rectangle rect = SystemInformation.VirtualScreen;
@@ -123,7 +123,7 @@ namespace TDHelper
         /// <param name="key">The value key</param>
         /// <returns>The required value.</returns>
         public static bool GetBooleanSetting(
-            Section section, 
+            Section section,
             string key)
         {
             return SectionHasKey(section, key) ? section[key].BoolValue : false;
@@ -136,7 +136,7 @@ namespace TDHelper
         /// <param name="key">The value key</param>
         /// <returns>The required value.</returns>
         public static decimal GetDecimalSetting(
-            Section section, 
+            Section section,
             string key)
         {
             return SectionHasKey(section, key) ? section[key].DecimalValue : 0M;
@@ -149,7 +149,7 @@ namespace TDHelper
         /// <param name="key">The value key</param>
         /// <returns><The required value./returns>
         public static string GetStringSetting(
-            Section section, 
+            Section section,
             string key)
         {
             return SectionHasKey(section, key) ? section[key].StringValue : string.Empty;
@@ -288,12 +288,9 @@ namespace TDHelper
         /// </summary>
         public static void SaveSettingsToIniFile()
         {
-            Configuration config
-                = CheckIfFileOpens(configFile)
-                ? Configuration.LoadFromFile(configFile)
-                : new Configuration();
+            Configuration config = GetConfigurationObject();
 
-            TDSettings settings = MainForm.settingsRef;
+            TDSettings settings = settingsRef;
 
             Section configSection = config["App"];
 
@@ -442,7 +439,7 @@ namespace TDHelper
         }
 
         public static bool SectionHasKey(
-            Section section, 
+            Section section,
             string key)
         {
             bool result = section.FirstOrDefault(x => x.Name == key) != null;
@@ -512,20 +509,6 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Refresh the list of net log files.
-        /// </summary>
-        private static void RefreshNetLogFileList()
-        {
-            // refresh our path to the latest netlog
-            latestLogPaths = CollectLogPaths(settingsRef.NetLogPath, "netLog*.log");
-
-            recentLogPath
-                = latestLogPaths != null && latestLogPaths.Count > 0
-                ? latestLogPaths[0]
-                : string.Empty;
-        }
-
-        /// <summary>
         /// Some basic config fie validation.
         /// </summary>
         /// <param name="filePath">The path to the config fie.</param>
@@ -551,7 +534,7 @@ namespace TDHelper
             if (!verboseLoggingChecked)
             {
                 // Open the AppConfig file and check to see if the setting is found.
-                string path = Path.Combine(Path.GetDirectoryName(settingsRef.NetLogPath), "AppConfig.xml"); 
+                string path = Path.Combine(Path.GetDirectoryName(settingsRef.NetLogPath), "AppConfig.xml");
 
                 XDocument file = XDocument.Load(path, LoadOptions.PreserveWhitespace);
                 XElement parentElement = file.Element("AppConfig");
@@ -622,20 +605,41 @@ namespace TDHelper
         }
 
         /// <summary>
+        /// Return a SharpConfig Configuration object.
+        /// </summary>
+        /// <returns>A SharpConfig Configuration object.</returns>
+        private static Configuration GetConfigurationObject()
+        {
+            return CheckIfFileOpens(configFile)
+                ? Configuration.LoadFromFile(configFile)
+                : new Configuration();
+        }
+
+        /// <summary>
         /// Get a list of available ships from the settings.
         /// </summary>
         /// <returns>A list of available ships.</returns>
         public IList<string> SetAvailableShips()
         {
-            if (string.IsNullOrEmpty(MainForm.settingsRef.AvailableShips))
+            if (string.IsNullOrEmpty(settingsRef.AvailableShips))
             {
-                MainForm.settingsRef.AvailableShips = "default";
+                settingsRef.AvailableShips = "default";
             }
 
-            return MainForm
-                .settingsRef
+            Configuration config = GetConfigurationObject();
+
+            IList<string> ships = new List<string>();
+
+            foreach (string shipId in settingsRef
                 .AvailableShips
-                .Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries)
+                .Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                Section configSection = config[shipId];
+
+                ships.Add(GetStringSetting(configSection, "shipName"));
+            }
+
+            return ships
                 .OrderBy(x => x)
                 .ToList();
         }
@@ -652,11 +656,25 @@ namespace TDHelper
             return result;
         }
 
+        /// <summary>
+        /// Refresh the list of net log files.
+        /// </summary>
+        private static void RefreshNetLogFileList()
+        {
+            // refresh our path to the latest netlog
+            latestLogPaths = CollectLogPaths(settingsRef.NetLogPath, "netLog*.log");
+
+            recentLogPath
+                = latestLogPaths != null && latestLogPaths.Count > 0
+                ? latestLogPaths[0]
+                : string.Empty;
+        }
+
         private void AddMarkedStation(
-            string input, 
+            string input,
             List<string> parentList)
         {
-            if (!IsMarkedStation(input, parentList) && 
+            if (!IsMarkedStation(input, parentList) &&
                 StringInList(input, outputSysStnNames) &&
                 !StringInList(input, parentList))
             {
@@ -677,14 +695,14 @@ namespace TDHelper
         }
 
         private bool IsMarkedStation(
-            string input, 
+            string input,
             List<string> parentList)
         {
             return StringInList(input, parentList);
         }
 
         private void RemoveMarkedStation(
-            string input, 
+            string input,
             List<string> parentList)
         {
             int index = IndexInList(input, parentList);
@@ -804,6 +822,7 @@ namespace TDHelper
         public decimal MaxLSDistance { get; set; }
         public bool MiniModeOnTop { get; set; }
         public string NetLogPath { get; set; }
+        public decimal NumberOfRoutes { get; set; }
         public string Padsizes { get; set; }
         public string Planetary { get; set; }
         public decimal PruneHops { get; set; }
@@ -811,7 +830,6 @@ namespace TDHelper
         public string PythonPath { get; set; }
         public bool Quiet { get; set; }
         public decimal RebuyPercentage { get; set; }
-        public decimal NumberOfRoutes { get; set; }
         public bool Shorten { get; set; }
         public bool ShowJumps { get; set; }
         public bool ShowProgress { get; set; }
@@ -836,7 +854,7 @@ namespace TDHelper
         {
             FontConverter conv = new FontConverter();
 
-            return 
+            return
                 TreeViewFont == null
                 ? null
                 : conv.ConvertFromInvariantString(TreeViewFont) as Font;

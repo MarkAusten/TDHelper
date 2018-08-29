@@ -420,6 +420,11 @@ namespace TDHelper
             return padSizes;
         }
 
+        /// <summary>
+        /// Get the ship name from the json.
+        /// </summary>
+        /// <param name="ship">The JToken containing the ship data.</param>
+        /// <returns>The ship name.</returns>
         private string GetShipName(JToken ship)
         {
             string shipId = string.Empty;
