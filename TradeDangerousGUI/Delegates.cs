@@ -1244,14 +1244,6 @@ namespace TDHelper
             decimal modulesValue = 0m;
             decimal rebuyPercentage = settingsRef.RebuyPercentage;
 
-            // Determine the insurance of the current ship.
-            //decimal hullValue = (decimal)cmdrProfile["profile"]["ship"]["value"]["hull"];
-            //decimal modulesValue = (decimal)cmdrProfile["profile"]["ship"]["value"]["modules"];
-            //decimal rebuyPercentage = settingsRef.RebuyPercentage;
-
-            //// The 0.0000004 is a fudge factor to make the insurance values match the ones calculated by Frontier.
-            //this.numShipInsurance.Value = Math.Floor(((hullValue + modulesValue) * (rebuyPercentage - 0.0000004m) / 100));
-
             // Determine the cargo capacity of the current ship.
             decimal capacity = 0;
             int stringLength = "Int_CargoRack_Size".Length;
@@ -1280,9 +1272,10 @@ namespace TDHelper
             }
 
             // Set this ship as the currently selected ship.
-            string currentlySelected = GetShipName(cmdrProfile["profile"]["ship"]);
+            string shipName = GetShipName(cmdrProfile["profile"]["ship"]);
+            string sectionName = "Ship ID {0}".With(cmdrProfile["profile"]["ship"]["id"]);
 
-            settingsRef.LastUsedConfig = currentlySelected;
+            settingsRef.LastUsedConfig = sectionName;
 
             // Get the details of all the commander's ships and set up the available ships.
             Configuration config = Configuration.LoadFromFile(configFile);
@@ -1308,12 +1301,13 @@ namespace TDHelper
                     ? ship
                     : ship.First;
 
-                string sectionName = GetShipName(shipObject);
+                sectionName = "Ship ID {0}".With(shipObject["id"]);
+                shipName = GetShipName(shipObject);
 
                 availableShips += ",{0}".With(sectionName);
 
                 decimal shipCapacity
-                    = sectionName == currentlySelected
+                    = sectionName == settingsRef.LastUsedConfig
                     ? capacity
                     : 0;
 
@@ -1346,6 +1340,7 @@ namespace TDHelper
                     ? unladenLy
                     : 1;
 
+                config[sectionName]["shipName"].StringValue = shipName;
                 config[sectionName]["hullValue"].DecimalValue = hullValue;
                 config[sectionName]["modulesValue"].DecimalValue = modulesValue;
                 config[sectionName]["Insurance"].DecimalValue = Math.Floor(((hullValue + modulesValue) * (rebuyPercentage - 0.0000004m) / 100));

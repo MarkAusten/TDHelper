@@ -680,7 +680,7 @@ namespace TDHelper
                     PlayAlert();
                 }
 
-                this.UpdateCommanderAndShipDetails();
+                UpdateCommanderAndShipDetails();
             }
         }
 
