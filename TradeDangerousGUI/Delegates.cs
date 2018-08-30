@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -364,58 +365,14 @@ namespace TDHelper
         /// <returns>The padsizes upon which the ship may land.</returns>
         private string GetPadSizes(string shipType)
         {
-            string padSizes = string.Empty;
+            ShipConfig ship = ((ShipSection)ConfigurationManager.GetSection("ships"))
+                .ShipSettings.Cast<ShipConfig>()
+                .FirstOrDefault(x => x.ShipType.Equals(shipType));
 
-            switch (shipType)
-            {
-                case "Adder":
-                case "CobraMkIII":
-                case "CobraMkIV":
-                case "DiamondBack":
-                case "DiamondBackXL":
-                case "Dolphin":
-                case "Eagle":
-                case "Empire_Courier":
-                case "Empire_Eagle":
-                case "Hauler":
-                case "SideWinder":
-                case "Viper":
-                case "Viper_MkIV":
-                case "Vulture":
-                    padSizes = "SML?";
-                    break;
-
-                case "Anaconda":
-                case "BelugaLiner":
-                case "Cutter":
-                case "Empire_Trader":
-                case "Federation_Corvette":
-                case "Orca":
-                case "Type7":
-                case "Type9":
-                case "Type9_Military": // Type 10
-                    padSizes = "L";
-                    break;
-
-                case "Asp":
-                case "Asp_Scout":
-                case "Federation_Dropship":
-                case "Federation_Dropship_MkII":
-                case "Federation_Gunship":
-                case "FerDeLance":
-                case "Independant_Trader": // Keelback
-                case "Krait_MkII":
-                case "Python":
-                case "Type6":
-                case "TypeX": // Chieftain
-                case "TypeX_3": // Challenger
-                    padSizes = "ML";
-                    break;
-
-                default:
-                    padSizes = string.Empty;
-                    break;
-            }
+            string padSizes
+                = ship == null
+                ? string.Empty
+                : ship.PadSizes;
 
             return padSizes;
         }
@@ -1172,42 +1129,12 @@ namespace TDHelper
         {
             ShipTranslation.Clear();
 
-            ShipTranslation.Add("Adder", "Adder");
-            ShipTranslation.Add("Anaconda", "Anaconda");
-            ShipTranslation.Add("Asp", "Asp Explorer");
-            ShipTranslation.Add("Asp_Scout", "Asp Scout");
-            ShipTranslation.Add("BelugaLiner", "Beluga");
-            ShipTranslation.Add("CobraMkIII", "Cobra MkIII");
-            ShipTranslation.Add("CobraMkIV", "Cobra MkIV");
-            ShipTranslation.Add("Cutter", "Imperial Cutter");
-            ShipTranslation.Add("DiamondBack", "DiamondBack Scout");
-            ShipTranslation.Add("DiamondBackXL", "DiamondBack Explorer");
-            ShipTranslation.Add("Dolphin", "Dolphin");
-            ShipTranslation.Add("Eagle", "Eagle");
-            ShipTranslation.Add("Empire_Courier", "Imperial Courier");
-            ShipTranslation.Add("Empire_Eagle", "Imperial Eagle");
-            ShipTranslation.Add("Empire_Trader", "Imperial Clipper");
-            ShipTranslation.Add("Federation_Corvette", "Federal Corvette");
-            ShipTranslation.Add("Federation_Dropship", "Federal Dropship");
-            ShipTranslation.Add("Federation_Dropship_MkII", "Federal Assault Ship");
-            ShipTranslation.Add("Federation_Gunship", "Federal Gunship");
-            ShipTranslation.Add("FerDeLance", "Fer-de-Lance");
-            ShipTranslation.Add("Hauler", "Hauler");
-            ShipTranslation.Add("Independant_Trader", "Keelback");
-            ShipTranslation.Add("Krait_MkII", "Krait MkII");
-            ShipTranslation.Add("Orca", "Orca");
-            ShipTranslation.Add("Python", "Python");
-            ShipTranslation.Add("SideWinder", "Sidewinder");
-            ShipTranslation.Add("Type6", "Type 6");
-            ShipTranslation.Add("Type7", "Type 7");
-            ShipTranslation.Add("Type9", "Type 9");
-            ShipTranslation.Add("Type9_Military", "Type 10");
-            ShipTranslation.Add("TypeX", "Alliance Chieftain");
-            ShipTranslation.Add("TypeX_2", "Alliance Crusader");
-            ShipTranslation.Add("TypeX_3", "Alliance Challenger");
-            ShipTranslation.Add("Viper", "Viper MkIII");
-            ShipTranslation.Add("Viper_MkIV", "Viper MkIV");
-            ShipTranslation.Add("Vulture", "Vulture");
+            ShipSection shipSection = ((ShipSection)ConfigurationManager.GetSection("ships"));
+
+            foreach (ShipConfig ship in shipSection.ShipSettings.Cast<ShipConfig>())
+            {
+                ShipTranslation.Add(ship.ShipType, ship.Name);
+            }
         }
 
         /// <summary>
@@ -1283,7 +1210,7 @@ namespace TDHelper
             settingsRef.LastUsedConfig = sectionName;
 
             // Get the details of all the commander's ships and set up the available ships.
-            Configuration config = GetConfigurationObject();
+            SharpConfig.Configuration config = GetConfigurationObject();
 
             string availableShips = string.Empty;
 

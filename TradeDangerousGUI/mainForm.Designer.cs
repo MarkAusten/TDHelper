@@ -248,6 +248,7 @@
             this.lvShipVendorOptionsShips = new System.Windows.Forms.ListView();
             this.hdrShip = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.hdrCost = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.btnDbMaintenance = new System.Windows.Forms.Button();
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker4 = new System.ComponentModel.BackgroundWorker();
             this.panRunOptions = new System.Windows.Forms.Panel();
@@ -308,7 +309,6 @@
             this.panOldDataOptions = new System.Windows.Forms.Panel();
             this.panLocalOptions = new System.Windows.Forms.Panel();
             this.panOptions = new System.Windows.Forms.Panel();
-            this.btnDbMaintenance = new System.Windows.Forms.Button();
             this.mnuSetValues.SuspendLayout();
             this.mnuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRunOptionsRoutes)).BeginInit();
@@ -590,7 +590,7 @@
             // 
             this.chkRunOptionsTowards.AutoSize = true;
             this.chkRunOptionsTowards.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkRunOptionsTowards.Location = new System.Drawing.Point(220, 55);
+            this.chkRunOptionsTowards.Location = new System.Drawing.Point(233, 55);
             this.chkRunOptionsTowards.Name = "chkRunOptionsTowards";
             this.chkRunOptionsTowards.Size = new System.Drawing.Size(67, 17);
             this.chkRunOptionsTowards.TabIndex = 11;
@@ -605,7 +605,7 @@
             // 
             this.chkRunOptionsLoop.AutoSize = true;
             this.chkRunOptionsLoop.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkRunOptionsLoop.Location = new System.Drawing.Point(3, 35);
+            this.chkRunOptionsLoop.Location = new System.Drawing.Point(16, 35);
             this.chkRunOptionsLoop.Name = "chkRunOptionsLoop";
             this.chkRunOptionsLoop.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.chkRunOptionsLoop.Size = new System.Drawing.Size(50, 17);
@@ -760,7 +760,7 @@
             // chkRunOptionsDirect
             // 
             this.chkRunOptionsDirect.AutoSize = true;
-            this.chkRunOptionsDirect.Location = new System.Drawing.Point(3, 81);
+            this.chkRunOptionsDirect.Location = new System.Drawing.Point(16, 81);
             this.chkRunOptionsDirect.Name = "chkRunOptionsDirect";
             this.chkRunOptionsDirect.Size = new System.Drawing.Size(54, 17);
             this.chkRunOptionsDirect.TabIndex = 4;
@@ -773,7 +773,7 @@
             // numRunOptionsRoutes
             // 
             this.numRunOptionsRoutes.ContextMenuStrip = this.mnuSetValues;
-            this.numRunOptionsRoutes.Location = new System.Drawing.Point(131, 112);
+            this.numRunOptionsRoutes.Location = new System.Drawing.Point(144, 112);
             this.numRunOptionsRoutes.Maximum = new decimal(new int[] {
             50000,
             0,
@@ -791,7 +791,7 @@
             // numRunOptionsEndJumps
             // 
             this.numRunOptionsEndJumps.ContextMenuStrip = this.mnuSetValues;
-            this.numRunOptionsEndJumps.Location = new System.Drawing.Point(131, 86);
+            this.numRunOptionsEndJumps.Location = new System.Drawing.Point(144, 86);
             this.numRunOptionsEndJumps.Name = "numRunOptionsEndJumps";
             this.numRunOptionsEndJumps.Size = new System.Drawing.Size(46, 20);
             this.numRunOptionsEndJumps.TabIndex = 8;
@@ -804,7 +804,7 @@
             // numRunOptionsStartJumps
             // 
             this.numRunOptionsStartJumps.ContextMenuStrip = this.mnuSetValues;
-            this.numRunOptionsStartJumps.Location = new System.Drawing.Point(131, 60);
+            this.numRunOptionsStartJumps.Location = new System.Drawing.Point(144, 60);
             this.numRunOptionsStartJumps.Name = "numRunOptionsStartJumps";
             this.numRunOptionsStartJumps.Size = new System.Drawing.Size(46, 20);
             this.numRunOptionsStartJumps.TabIndex = 7;
@@ -917,7 +917,7 @@
             // 
             this.chkRunOptionsUnique.AutoSize = true;
             this.chkRunOptionsUnique.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkRunOptionsUnique.Location = new System.Drawing.Point(227, 78);
+            this.chkRunOptionsUnique.Location = new System.Drawing.Point(240, 78);
             this.chkRunOptionsUnique.Name = "chkRunOptionsUnique";
             this.chkRunOptionsUnique.Size = new System.Drawing.Size(60, 17);
             this.chkRunOptionsUnique.TabIndex = 12;
@@ -1073,7 +1073,7 @@
             // lblRunOptionsRoutes
             // 
             this.lblRunOptionsRoutes.AutoSize = true;
-            this.lblRunOptionsRoutes.Location = new System.Drawing.Point(81, 114);
+            this.lblRunOptionsRoutes.Location = new System.Drawing.Point(94, 114);
             this.lblRunOptionsRoutes.Name = "lblRunOptionsRoutes";
             this.lblRunOptionsRoutes.Size = new System.Drawing.Size(44, 13);
             this.lblRunOptionsRoutes.TabIndex = 58;
@@ -1128,7 +1128,7 @@
             // lblRunOptionsStartJumps
             // 
             this.lblRunOptionsStartJumps.AutoSize = true;
-            this.lblRunOptionsStartJumps.Location = new System.Drawing.Point(60, 63);
+            this.lblRunOptionsStartJumps.Location = new System.Drawing.Point(73, 63);
             this.lblRunOptionsStartJumps.Name = "lblRunOptionsStartJumps";
             this.lblRunOptionsStartJumps.Size = new System.Drawing.Size(65, 13);
             this.lblRunOptionsStartJumps.TabIndex = 43;
@@ -1140,7 +1140,7 @@
             // 
             this.lblRunOptionsEndJumps.AutoSize = true;
             this.lblRunOptionsEndJumps.Enabled = false;
-            this.lblRunOptionsEndJumps.Location = new System.Drawing.Point(63, 88);
+            this.lblRunOptionsEndJumps.Location = new System.Drawing.Point(76, 88);
             this.lblRunOptionsEndJumps.Name = "lblRunOptionsEndJumps";
             this.lblRunOptionsEndJumps.Size = new System.Drawing.Size(62, 13);
             this.lblRunOptionsEndJumps.TabIndex = 41;
@@ -1174,7 +1174,7 @@
             // chkRunOptionsBlkMkt
             // 
             this.chkRunOptionsBlkMkt.AutoSize = true;
-            this.chkRunOptionsBlkMkt.Location = new System.Drawing.Point(3, 58);
+            this.chkRunOptionsBlkMkt.Location = new System.Drawing.Point(16, 58);
             this.chkRunOptionsBlkMkt.Name = "chkRunOptionsBlkMkt";
             this.chkRunOptionsBlkMkt.Size = new System.Drawing.Size(51, 17);
             this.chkRunOptionsBlkMkt.TabIndex = 3;
@@ -1393,7 +1393,7 @@
             this.cboCommandersShips.TabIndex = 0;
             this.cboCommandersShips.TabStop = false;
             this.tipToolTips.SetToolTip(this.cboCommandersShips, "Select a ship");
-            this.cboCommandersShips.SelectionChangeCommitted += new System.EventHandler(this.EventHandler_AltConfigBox_SelectionChangeCommitted);
+            this.cboCommandersShips.SelectionChangeCommitted += new System.EventHandler(this.EventHandler_Ships_SelectionChangeCommitted);
             // 
             // icoUpdateNotify
             // 
@@ -1438,7 +1438,7 @@
             // lblRunOptionsLoopInt
             // 
             this.lblRunOptionsLoopInt.AutoSize = true;
-            this.lblRunOptionsLoopInt.Location = new System.Drawing.Point(76, 36);
+            this.lblRunOptionsLoopInt.Location = new System.Drawing.Point(89, 36);
             this.lblRunOptionsLoopInt.Name = "lblRunOptionsLoopInt";
             this.lblRunOptionsLoopInt.Size = new System.Drawing.Size(49, 13);
             this.lblRunOptionsLoopInt.TabIndex = 59;
@@ -1448,7 +1448,7 @@
             // numRunOptionsLoopInt
             // 
             this.numRunOptionsLoopInt.ContextMenuStrip = this.mnuSetValues;
-            this.numRunOptionsLoopInt.Location = new System.Drawing.Point(131, 34);
+            this.numRunOptionsLoopInt.Location = new System.Drawing.Point(144, 34);
             this.numRunOptionsLoopInt.Name = "numRunOptionsLoopInt";
             this.numRunOptionsLoopInt.Size = new System.Drawing.Size(46, 20);
             this.numRunOptionsLoopInt.TabIndex = 6;
@@ -1462,7 +1462,7 @@
             this.chkRunOptionsShorten.AutoSize = true;
             this.chkRunOptionsShorten.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkRunOptionsShorten.Enabled = false;
-            this.chkRunOptionsShorten.Location = new System.Drawing.Point(224, 32);
+            this.chkRunOptionsShorten.Location = new System.Drawing.Point(237, 32);
             this.chkRunOptionsShorten.Name = "chkRunOptionsShorten";
             this.chkRunOptionsShorten.Size = new System.Drawing.Size(63, 17);
             this.chkRunOptionsShorten.TabIndex = 10;
@@ -1503,7 +1503,7 @@
             // chkRunOptionsJumps
             // 
             this.chkRunOptionsJumps.AutoSize = true;
-            this.chkRunOptionsJumps.Location = new System.Drawing.Point(3, 104);
+            this.chkRunOptionsJumps.Location = new System.Drawing.Point(16, 104);
             this.chkRunOptionsJumps.Name = "chkRunOptionsJumps";
             this.chkRunOptionsJumps.Size = new System.Drawing.Size(56, 17);
             this.chkRunOptionsJumps.TabIndex = 5;
@@ -1540,7 +1540,7 @@
             // lblRunOptionsPlanetary
             // 
             this.lblRunOptionsPlanetary.AutoSize = true;
-            this.lblRunOptionsPlanetary.Location = new System.Drawing.Point(195, 114);
+            this.lblRunOptionsPlanetary.Location = new System.Drawing.Point(208, 114);
             this.lblRunOptionsPlanetary.Name = "lblRunOptionsPlanetary";
             this.lblRunOptionsPlanetary.Size = new System.Drawing.Size(54, 13);
             this.lblRunOptionsPlanetary.TabIndex = 69;
@@ -1551,7 +1551,7 @@
             // txtRunOptionsPlanetary
             // 
             this.txtRunOptionsPlanetary.ContextMenuStrip = this.mnuSetValues;
-            this.txtRunOptionsPlanetary.Location = new System.Drawing.Point(255, 111);
+            this.txtRunOptionsPlanetary.Location = new System.Drawing.Point(268, 111);
             this.txtRunOptionsPlanetary.MaxLength = 3;
             this.txtRunOptionsPlanetary.Name = "txtRunOptionsPlanetary";
             this.txtRunOptionsPlanetary.Size = new System.Drawing.Size(32, 20);
@@ -3067,6 +3067,18 @@
             this.hdrCost.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.hdrCost.Width = 150;
             // 
+            // btnDbMaintenance
+            // 
+            this.btnDbMaintenance.Location = new System.Drawing.Point(484, 0);
+            this.btnDbMaintenance.Name = "btnDbMaintenance";
+            this.btnDbMaintenance.Size = new System.Drawing.Size(68, 23);
+            this.btnDbMaintenance.TabIndex = 10;
+            this.btnDbMaintenance.TabStop = false;
+            this.btnDbMaintenance.Text = "DB Maint.";
+            this.tipToolTips.SetToolTip(this.btnDbMaintenance, "Various database maintenance operations.");
+            this.btnDbMaintenance.UseVisualStyleBackColor = true;
+            this.btnDbMaintenance.Click += new System.EventHandler(this.EventHandler_DbMaintenance_Click);
+            // 
             // backgroundWorker3
             // 
             this.backgroundWorker3.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker3_DoWork);
@@ -3851,18 +3863,6 @@
             this.panOptions.Name = "panOptions";
             this.panOptions.Size = new System.Drawing.Size(322, 197);
             this.panOptions.TabIndex = 1;
-            // 
-            // btnDbMaintenance
-            // 
-            this.btnDbMaintenance.Location = new System.Drawing.Point(484, 0);
-            this.btnDbMaintenance.Name = "btnDbMaintenance";
-            this.btnDbMaintenance.Size = new System.Drawing.Size(68, 23);
-            this.btnDbMaintenance.TabIndex = 10;
-            this.btnDbMaintenance.TabStop = false;
-            this.btnDbMaintenance.Text = "DB Maint.";
-            this.tipToolTips.SetToolTip(this.btnDbMaintenance, "Various database maintenance operations.");
-            this.btnDbMaintenance.UseVisualStyleBackColor = true;
-            this.btnDbMaintenance.Click += new System.EventHandler(this.EventHandler_DbMaintenance_Click);
             // 
             // MainForm
             // 

@@ -1112,7 +1112,7 @@ namespace TDHelper
         /// </summary>
         /// <param name="sender">The sender object.</param>
         /// <param name="e">The event arguments.</param>
-        private void EventHandler_AltConfigBox_SelectionChangeCommitted(
+        private void EventHandler_Ships_SelectionChangeCommitted(
             object sender,
             EventArgs e)
         {
@@ -1120,15 +1120,27 @@ namespace TDHelper
             SetShipList();
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_Avoid_TextChanged(
             object sender,
             EventArgs e)
         {
             // account for startJumpsBox
             if (numRunOptionsStartJumps.Value > 0)
+            {
                 settingsRef.Avoid = txtAvoid.Text;
+            }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_BmktCheckBox_Click(
             object sender,
             EventArgs e)
@@ -1142,6 +1154,11 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_BuyOptionsOneStop_CheckedChanged(
             object sender,
             EventArgs e)
@@ -1152,6 +1169,11 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_BuyOptionsPrice_CheckedChanged(
             object sender,
             EventArgs e)
@@ -1162,49 +1184,60 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Clear the specified control and delete the speicified file.
+        /// </summary>
+        /// <param name="control">The control to be cleared.</param>
+        /// <param name="file">The file to be deleted.</param>
+        private void ClearSavedText(
+            Control control, 
+            string file)
+        {
+            if (!string.IsNullOrEmpty(control.Text))
+            {
+                control.Text = string.Empty;
+            }
+
+            if (File.Exists(file))
+            {
+                File.Delete(file);
+            }
+        }
+
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_ClearSaved1MenuItem_Click(
             object sender,
             EventArgs e)
         {
-            if (!string.IsNullOrEmpty(rtbSaved1.Text))
-            {
-                rtbSaved1.Text = string.Empty;
-
-                if (File.Exists(savedFile1))
-                {
-                    File.Delete(savedFile1);
-                }
-            }
+            ClearSavedText(rtbSaved1, savedFile1);
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_ClearSaved2MenuItem_Click(
             object sender,
             EventArgs e)
         {
-            if (!string.IsNullOrEmpty(rtbSaved2.Text))
-            {
-                rtbSaved2.Text = string.Empty;
-
-                if (File.Exists(savedFile2))
-                {
-                    File.Delete(savedFile2);
-                }
-            }
+            ClearSavedText(rtbSaved2, savedFile2);
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_ClearSaved3MenuItem_Click(
             object sender,
             EventArgs e)
         {
-            if (!string.IsNullOrEmpty(rtbSaved3.Text))
-            {
-                rtbSaved3.Text = string.Empty;
-
-                if (File.Exists(savedFile3))
-                {
-                    File.Delete(savedFile3);
-                }
-            }
+            ClearSavedText(rtbSaved3, savedFile3);
         }
 
         /// <summary>
@@ -1226,6 +1259,11 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_ContextMenuStrip1_Opening(
             object sender,
             CancelEventArgs e)
@@ -1295,6 +1333,11 @@ namespace TDHelper
             CopyTextToClipboard(sender);
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_CopyMenuItem_Click(
             object sender,
             EventArgs e)
@@ -1305,6 +1348,11 @@ namespace TDHelper
             clickedControl.Copy();
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_CopySystemToDest_Click(
             object sender,
             EventArgs e)
@@ -1317,6 +1365,11 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_CopySystemToSrc_Click(
             object sender,
             EventArgs e)
@@ -1341,6 +1394,11 @@ namespace TDHelper
             CutTextToClipboard(sender);
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_CutMenuItem_Click(
             object sender,
             EventArgs e)
@@ -1375,6 +1433,11 @@ namespace TDHelper
             ShowFormAndProcess(new EddbLinkDbUpdateForm());
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_DeleteMenuItem_Click(
             object sender,
             EventArgs e)
@@ -1434,6 +1497,11 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_DestSystemComboBox_KeyDown(
             object sender,
             KeyEventArgs e)
@@ -1474,6 +1542,11 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_DirectCheckBox_Click(
             object sender,
             EventArgs e)
@@ -1519,6 +1592,11 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_DropDown(
             object sender,
             EventArgs e)
@@ -1526,6 +1604,11 @@ namespace TDHelper
             dropdownOpened = true;
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_DropDownClosed(
             object sender,
             EventArgs e)
@@ -1533,6 +1616,11 @@ namespace TDHelper
             dropdownOpened = false;
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_FaqLinkLabel_LinkClicked(
             object sender,
             LinkLabelLinkClickedEventArgs e)
@@ -1540,6 +1628,11 @@ namespace TDHelper
             Process.Start("https://github.com/MarkAusten/TDHelper/wiki/Home");
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_ForceRefreshGridView_Click(
             object sender,
             EventArgs e)
@@ -1547,6 +1640,11 @@ namespace TDHelper
             InvalidatedRowUpdate(true, -1); // force an invalidate and reload
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_ForceResortMenuItem_Click(
             object sender,
             EventArgs e)
@@ -1556,6 +1654,11 @@ namespace TDHelper
             grdPilotsLog.Columns["Notes"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_GetSystemButton_Click(
             object sender,
             EventArgs e)
@@ -1579,6 +1682,11 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_InsertAtGridRow_Click(
             object sender,
             EventArgs e)
@@ -1600,6 +1708,11 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_LocalFilterCheckBoxChanged(
             object sender,
             EventArgs e)
@@ -1610,6 +1723,11 @@ namespace TDHelper
             btnLocalOptionsAll.Enabled = checkboxes.Count(x => x.Checked) > 0;
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_LocalPlanetary_TextChanged(
             object sender,
             EventArgs e)
@@ -1617,6 +1735,11 @@ namespace TDHelper
             txtLocalOptionsPlanetary.Text = ContainsPlanetary(txtLocalOptionsPlanetary.Text);
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_Loop_Click(
             object sender,
             EventArgs e)
@@ -1646,6 +1769,11 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_MainForm_FormClosed(
             object sender,
             FormClosedEventArgs e)
@@ -1656,6 +1784,11 @@ namespace TDHelper
             Application.Exit();
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_MainForm_FormClosing(
             object sender,
             FormClosingEventArgs e)
@@ -1671,6 +1804,11 @@ namespace TDHelper
             OptimiseAllDatabases();
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_MainForm_Load(
             object sender,
             EventArgs e)
@@ -1756,6 +1894,11 @@ namespace TDHelper
             SplashScreen.SetStatus("Completed.");
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_MainForm_LocationChanged(
             object sender,
             EventArgs e)
@@ -1781,6 +1924,11 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_MainForm_Shown(
             object sender,
             EventArgs e)
@@ -1794,6 +1942,11 @@ namespace TDHelper
             SplashScreen.CloseForm();
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_MethodComboBox_SelectedIndexChanged(
             object sender,
             EventArgs e)
@@ -1804,6 +1957,11 @@ namespace TDHelper
             cboMethod.Enabled = true;
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_MiniModeButton_Click(
             object sender,
             EventArgs e)
@@ -1824,21 +1982,23 @@ namespace TDHelper
             this.Show(); // restore when we return
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_NotesClearMenuItem_Click(
             object sender,
             EventArgs e)
         {
-            if (!string.IsNullOrEmpty(txtNotes.Text))
-            {
-                txtNotes.Text = string.Empty;
-
-                if (File.Exists(notesFile))
-                {
-                    File.Delete(notesFile);
-                }
-            }
+            ClearSavedText(txtNotes, notesFile);
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_NumericUpDown_Enter(
             object sender,
             EventArgs e)
@@ -1847,6 +2007,11 @@ namespace TDHelper
             (sender as NumericUpDown).Select(0, (sender as NumericUpDown).Text.Length);
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_NumericUpDown_MouseUp(
             object sender,
             MouseEventArgs e)
@@ -1878,30 +2043,46 @@ namespace TDHelper
         {
             TextBox padSizes = ((TextBox)sender);
 
-            string key = e.KeyChar.ToString().ToUpper();
-            string selected = padSizes.Text;
+            padSizes.Text = ContainsPadSizes(CheckKeyPress(
+                padSizes.Text, 
+                e.KeyChar.ToString().ToUpper(), 
+                PAD_SIZE_FILTER));
 
-            // filter for valid chars
-            if ("SML?".Contains(key))
+            e.Handled = true;
+        }
+
+        /// <summary>
+        /// Ensure that the key pressed is in the filter string.
+        /// </summary>
+        /// <param name="selected">The currently selected text.</param>
+        /// <param name="key">The key pressed.</param>
+        /// <param name="filter">The filter of allowed characters.</param>
+        /// <returns></returns>
+        private string CheckKeyPress(
+            string selected, 
+            string key, 
+            string filter)
+        {
+            string result = selected;
+
+            if (filter.Contains(key))
             {
                 if (selected.Contains(key))
                 {
-                    selected = selected.Replace(key, " ");
+                    result = selected.Replace(key, " ");
                 }
                 else
                 {
-                    selected += key;
+                    result += key;
                 }
 
                 if (selected.Trim().Length == 0)
                 {
-                    selected = string.Empty;
+                    result = string.Empty;
                 }
-
-                padSizes.Text = ContainsPadSizes(selected);
             }
 
-            e.Handled = true;
+            return result;
         }
 
         /// <summary>
@@ -1916,6 +2097,11 @@ namespace TDHelper
             PasteTextToControl(sender);
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_PasteMenuItem_Click(
             object sender,
             EventArgs e)
@@ -1926,17 +2112,19 @@ namespace TDHelper
             clickedControl.Paste();
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_PilotsLogDataGrid_CellContextMenuStripNeeded(
             object sender,
             DataGridViewCellContextMenuStripNeededEventArgs e)
         {
             // prevent OOR exception
-            if (e.RowIndex == -1 || e.ColumnIndex == -1)
-            {
-                return;
-            }
-
-            if (sender != null)
+            if (e.RowIndex > -1 && 
+                e.ColumnIndex > -1 && 
+                sender!= null)
             {
                 // save the datasource index, and the datagrid index of the row
                 grdPilotsLog.ClearSelection(); // prevent weirdness
@@ -1946,21 +2134,33 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_PilotsLogDataGrid_CellValueNeeded(
             object sender,
             DataGridViewCellValueEventArgs e)
         {
-            if (e.RowIndex < retriever.RowCount && e.ColumnIndex < retriever.RowCount)
+            if (e.RowIndex < retriever.RowCount && 
+                e.ColumnIndex < retriever.RowCount)
             {
                 e.Value = memoryCache.RetrieveElement(e.RowIndex, e.ColumnIndex);
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_PilotsLogDataGrid_CellValuePushed(
             object sender,
             DataGridViewCellValueEventArgs e)
         {
-            if (e.RowIndex < retriever.RowCount && e.ColumnIndex < retriever.RowCount)
+            if (e.RowIndex < retriever.RowCount && 
+                e.ColumnIndex < retriever.RowCount)
             {
                 // update our local table
                 localTable.Rows[e.RowIndex][e.ColumnIndex] = e.Value;
@@ -1972,12 +2172,18 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_PilotsLogDataGrid_UserDeletingRow(
             object sender,
             DataGridViewRowCancelEventArgs e)
         {
-            if (e.Row.Index < retriever.RowCount && e.Row.Index >= 0
-                && grdPilotsLog.SelectedRows.Count > 0)
+            if (e.Row.Index < retriever.RowCount && 
+                e.Row.Index >= 0 &&
+                grdPilotsLog.SelectedRows.Count > 0)
             {
                 int rowIndex = -1;
                 int.TryParse(grdPilotsLog.Rows[e.Row.Index].Cells[0].Value.ToString(), out rowIndex);
@@ -1994,6 +2200,7 @@ namespace TDHelper
                     {
                         // let's batch the commits for performance
                         batchedRowCount = grdPilotsLog.SelectedRows.Count;
+
                         foreach (DataGridViewRow r in grdPilotsLog.SelectedRows)
                         {
                             int curRowIndex = int.Parse(r.Cells[0].Value.ToString());
@@ -2032,27 +2239,19 @@ namespace TDHelper
         {
             TextBox planetary = ((TextBox)sender);
 
-            string key = e.KeyChar.ToString().ToUpper();
-            string selected = planetary.Text;
-
-            // filter for valid chars
-            if ("YN?".Contains(key))
-            {
-                if (selected.Contains(key))
-                {
-                    selected = selected.Replace(key, " ");
-                }
-                else
-                {
-                    selected += key;
-                }
-
-                planetary.Text = ContainsPlanetary(selected);
-            }
+            planetary.Text = ContainsPlanetary(CheckKeyPress(
+                planetary.Text, 
+                e.KeyChar.ToString().ToUpper(), 
+                PLANETARY_FILTER));
 
             e.Handled = true;
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_ProcErrorDataHandler(
             object sender,
             DataReceivedEventArgs output)
@@ -2063,6 +2262,11 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_ProcOutputDataHandler(
             object sender,
             DataReceivedEventArgs output)
@@ -2099,6 +2303,11 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_PushNotesMenuItem_Click(
             object sender,
             EventArgs e)
@@ -2145,6 +2354,11 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_RemoveAtGridRow_Click(
             object sender,
             EventArgs e)
@@ -2170,6 +2384,11 @@ namespace TDHelper
             ResetAllLocalFilters();
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_SavePage1MenuItem_Click(
             object sender,
             EventArgs e)
@@ -2184,6 +2403,11 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_SavePage2MenuItem_Click(
             object sender,
             EventArgs e)
@@ -2198,6 +2422,11 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_SavePage3MenuItem_Click(
             object sender,
             EventArgs e)
@@ -2241,6 +2470,11 @@ namespace TDHelper
             SelectAllControlText(sender);
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_SelectMenuItem_Click(
             object sender,
             EventArgs e)
@@ -2395,6 +2629,11 @@ namespace TDHelper
             mnuReset.Enabled = true;
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_ShipsSold_KeyDown(
             object sender,
             KeyEventArgs e)
@@ -2406,6 +2645,11 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_ShortenCheckBox_Click(
             object sender,
             EventArgs e)
@@ -2434,6 +2678,11 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_SrcSystemComboBox_KeyDown(
             object sender,
             KeyEventArgs e)
@@ -2476,6 +2725,11 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_SrcSystemComboBox_TextChanged(
             object sender,
             EventArgs e)
@@ -2496,6 +2750,11 @@ namespace TDHelper
             SetStationInfoButtonState();
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_Start_Click(
             object sender,
             EventArgs e)
@@ -2507,29 +2766,11 @@ namespace TDHelper
             ProcessCommand();
         }
 
-        private void EventHandler_StationDropDown_SelectedIndexChanged(
-            object sender,
-            EventArgs e)
-        {
-            //stationIndex = stationDropDown.SelectedIndex;
-
-            //if (methodIndex == 6)
-            //{
-            //    // if we're in ShipVendor mode
-            //    if (stationIndex == 2)
-            //    {
-            //        // disable when list'ing
-            //        cboShipsSold.Enabled = false;
-            //        lblShipsSold.Enabled = false;
-            //    }
-            //    else
-            //    {
-            //        cboShipsSold.Enabled = true;
-            //        lblShipsSold.Enabled = true;
-            //    }
-            //}
-        }
-
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_StationInfo_Click(
             object sender,
             EventArgs e)
@@ -2543,6 +2784,11 @@ namespace TDHelper
             ProcessCommand();
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_SwapSourceAndDestination(
             object sender,
             EventArgs e)
@@ -2561,6 +2807,11 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_TabControl1_SelectedIndexChanged(
             object sender,
             EventArgs e)
@@ -2603,6 +2854,11 @@ namespace TDHelper
             fromPane = tabControl1.SelectedIndex;
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_Td_outputBox_TextChanged(
             object sender,
             EventArgs e)
@@ -2616,6 +2872,11 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_TestSystemsTimer_Delegate(
             object sender,
             ElapsedEventArgs e)
@@ -2628,6 +2889,11 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_Towards_Click(
             object sender,
             EventArgs e)
@@ -2655,13 +2921,23 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_TrackerLinkLabel_LinkClicked(
             object sender,
             LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/MarkAusten/TDHelper/issues/new");
+            Process.Start("https://github.com/MarkAusten/TDHelper/issues/new");
         }
 
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_UniqueCheckBox_Click(
             object sender,
             EventArgs e)

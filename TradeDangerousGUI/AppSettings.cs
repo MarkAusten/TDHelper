@@ -123,7 +123,7 @@ namespace TDHelper
         /// <param name="key">The value key</param>
         /// <returns>The required value.</returns>
         public static bool GetBooleanSetting(
-            Section section,
+            SharpConfig.Section section,
             string key)
         {
             return SectionHasKey(section, key) ? section[key].BoolValue : false;
@@ -136,7 +136,7 @@ namespace TDHelper
         /// <param name="key">The value key</param>
         /// <returns>The required value.</returns>
         public static decimal GetDecimalSetting(
-            Section section,
+            SharpConfig.Section section,
             string key)
         {
             return SectionHasKey(section, key) ? section[key].DecimalValue : 0M;
@@ -149,7 +149,7 @@ namespace TDHelper
         /// <param name="key">The value key</param>
         /// <returns><The required value./returns>
         public static string GetStringSetting(
-            Section section,
+            SharpConfig.Section section,
             string key)
         {
             return SectionHasKey(section, key) ? section[key].StringValue : string.Empty;
@@ -165,7 +165,7 @@ namespace TDHelper
                 Configuration config = GetConfigurationObject();
                 TDSettings settings = settingsRef;
 
-                Section configSection = config["App"];
+                SharpConfig.Section configSection = config["App"];
 
                 settings.Age = GetDecimalSetting(configSection, "Age");
                 settings.Avoid = GetStringSetting(configSection, "Avoid");
@@ -292,7 +292,7 @@ namespace TDHelper
 
             TDSettings settings = settingsRef;
 
-            Section configSection = config["App"];
+            SharpConfig.Section configSection = config["App"];
 
             // Settgins used for trade route calculation.
             configSection["Age"].DecimalValue = settings.Age;
@@ -439,7 +439,7 @@ namespace TDHelper
         }
 
         public static bool SectionHasKey(
-            Section section,
+            SharpConfig.Section section,
             string key)
         {
             bool result = section.FirstOrDefault(x => x.Name == key) != null;
@@ -615,7 +615,7 @@ namespace TDHelper
                 .AvailableShips
                 .Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries))
             {
-                Section configSection = config[shipId];
+                SharpConfig.Section configSection = config[shipId];
 
                 ships.Add(new ComboBoxItem()
                 {
@@ -682,12 +682,12 @@ namespace TDHelper
 
         private string ContainsPadSizes(string text)
         {
-            return ToggleAndSort(text, "SML?");
+            return ToggleAndSort(text, PAD_SIZE_FILTER);
         }
 
         private string ContainsPlanetary(string text)
         {
-            return ToggleAndSort(text, "YN?");
+            return ToggleAndSort(text, PLANETARY_FILTER);
         }
 
         private bool IsMarkedStation(

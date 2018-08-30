@@ -196,6 +196,7 @@
     <Compile Include="UpdateClass.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ShipsConfigMap.cs" />
     <Compile Include="Utilities.cs" />
     <EmbeddedResource Include="DbMaintenanceForm.resx">
       <DependentUpon>DbMaintenanceForm.cs</DependentUpon>

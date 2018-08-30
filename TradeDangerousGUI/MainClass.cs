@@ -21,6 +21,8 @@ namespace TDHelper
     {
         public const string ITEM_CSV_FILE = @"data\Item.csv";
         public const string SHIP_CSV_FILE = @"data\Ship.csv";
+        public const string PAD_SIZE_FILTER = "SML?";
+        public const string PLANETARY_FILTER = "YN?";
 
         #region Props
 
