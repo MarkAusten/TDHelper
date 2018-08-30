@@ -532,33 +532,6 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Given the ship's name find the section containing the ship data.
-        /// </summary>
-        /// <param name="shipName">The ship's name.</param>
-        /// <returns>The ship section ID.</returns>
-        private string GetShipIdFromConfig(string shipName)
-        {
-            string result = string.Empty;
-
-            SharpConfig.Configuration config = GetConfigurationObject();
-
-            foreach (string sectionName in settingsRef
-                .AvailableShips
-                .Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                SharpConfig.Section configSection = config[sectionName];
-
-                if (GetStringSetting(configSection, "shipName").Equals(shipName))
-                {
-                    result = sectionName;
-                    break;
-                }
-            }
-
-            return result;
-        }
-
-        /// <summary>
         /// Validate the various path settings.
         /// </summary>
         public void ValidatePaths()
@@ -670,32 +643,17 @@ namespace TDHelper
             return sanitized;
         }
 
+        /// <summary>
+        /// Determine if the specified array contains duplicate entries.
+        /// </summary>
+        /// <param name="inputArray">The array to be checked.</param>
+        /// <returns>True if duplicates are found.</returns>
         private bool ArrayContainsDuplicate(string[] inputArray)
         {
-            // compare the strings in the array to see if duplicates exist
-            int count = 0;
-
-            for (int i = 0; i < inputArray.Length; i++)
-            {
-                count = 1; // we always have at least 1 occurance
-
-                for (int j = 0; j < inputArray.Length; j++)
-                {
-                    if (i != j)
-                    {
-                        // only count uniques that are exactly equal
-                        if (inputArray[i].Equals(inputArray[j], StringComparison.OrdinalIgnoreCase))
-                            count++;
-                    }
-                }
-
-                if (count > 1)
-                {
-                    return true; // break as soon as any duplicates are found
-                }
-            }
-
-            return false;
+            // Groups the array and count the number of groups that have more than one entry.
+            return inputArray.GroupBy(x => x)
+              .Where(g => g.Count() > 1)
+              .Count() > 0;
         }
 
         private void BuildSettings()

@@ -133,6 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppSettings.cs" />
+    <Compile Include="ComboBoxItem.cs" />
     <Compile Include="Database.cs">
       <SubType>Form</SubType>
     </Compile>

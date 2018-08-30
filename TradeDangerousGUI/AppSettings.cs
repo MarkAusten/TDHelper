@@ -600,7 +600,7 @@ namespace TDHelper
         /// Get a list of available ships from the settings.
         /// </summary>
         /// <returns>A list of available ships.</returns>
-        public IList<string> SetAvailableShips()
+        public IList<ComboBoxItem> SetAvailableShips()
         {
             if (string.IsNullOrEmpty(settingsRef.AvailableShips))
             {
@@ -609,7 +609,7 @@ namespace TDHelper
 
             Configuration config = GetConfigurationObject();
 
-            IList<string> ships = new List<string>();
+            IList<ComboBoxItem> ships = new List<ComboBoxItem>();
 
             foreach (string shipId in settingsRef
                 .AvailableShips
@@ -617,11 +617,15 @@ namespace TDHelper
             {
                 Section configSection = config[shipId];
 
-                ships.Add(GetStringSetting(configSection, "shipName"));
+                ships.Add(new ComboBoxItem()
+                {
+                    Text = GetStringSetting(configSection, "shipName"),
+                    Value = shipId
+                });
             }
 
             return ships
-                .OrderBy(x => x)
+                .OrderBy(x => x.Text)
                 .ToList();
         }
 

@@ -79,7 +79,7 @@ namespace TDHelper
         private System.Timers.Timer testSystemsTimer = new System.Timers.Timer();
         private string tv_outputBox = string.Empty;
         private CultureInfo userCulture = CultureInfo.CurrentCulture;
-        private IList<string> validConfigs = new List<string>();
+        private IList<ComboBoxItem> validConfigs = new List<ComboBoxItem>();
 
         public MainForm()
         {
@@ -1116,7 +1116,7 @@ namespace TDHelper
             object sender,
             EventArgs e)
         {
-            settingsRef.LastUsedConfig = GetShipIdFromConfig(cboCommandersShips.Text);
+            settingsRef.LastUsedConfig = ((ComboBoxItem)cboCommandersShips.SelectedItem).Value.ToString();
             SetShipList();
         }
 
