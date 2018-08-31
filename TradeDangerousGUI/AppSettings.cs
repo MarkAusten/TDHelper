@@ -125,9 +125,10 @@ namespace TDHelper
         /// <returns>The required value.</returns>
         public static bool GetBooleanSetting(
             SharpConfig.Section section,
-            string key)
+            string key,
+            bool defaultValue = false)
         {
-            return SectionHasKey(section, key) ? section[key].BoolValue : false;
+            return SectionHasKey(section, key) ? section[key].BoolValue : defaultValue;
         }
 
         /// <summary>
@@ -152,9 +153,10 @@ namespace TDHelper
         /// <returns><The required value./returns>
         public static string GetStringSetting(
             SharpConfig.Section section,
-            string key)
+            string key,
+            string defaultValue = "")
         {
-            return SectionHasKey(section, key) ? section[key].StringValue : string.Empty;
+            return SectionHasKey(section, key) ? section[key].StringValue : defaultValue;
         }
 
         /// <summary>
@@ -176,6 +178,7 @@ namespace TDHelper
                 settings.ExtraRunParams = GetStringSetting(configSection, "ExtraRunParams");
                 settings.GPT = GetDecimalSetting(configSection, "GPT");
                 settings.Hops = GetDecimalSetting(configSection, "Hops");
+                settings.IncludeInsurance = GetBooleanSetting(configSection, "IncludeInsurance", true);
                 settings.Jumps = GetDecimalSetting(configSection, "Jumps");
                 settings.Limit = GetDecimalSetting(configSection, "Limit");
                 settings.Loop = GetBooleanSetting(configSection, "Loop");
@@ -306,6 +309,7 @@ namespace TDHelper
             configSection["ExtraRunParams"].StringValue = settings.ExtraRunParams ?? string.Empty;
             configSection["GPT"].DecimalValue = settings.GPT;
             configSection["Hops"].DecimalValue = settings.Hops;
+            configSection["IncludeInsurance"].BoolValue = settings.IncludeInsurance;
             configSection["Jumps"].DecimalValue = settings.Jumps;
             configSection["Limit"].DecimalValue = settings.Limit;
             configSection["Loop"].BoolValue = settings.Loop;
@@ -850,6 +854,7 @@ namespace TDHelper
         public bool HasUpdated { get; set; }
         public decimal Hops { get; set; }
         public string ImportPath { get; set; }
+        public bool IncludeInsurance { get; set; }
         public decimal Insurance { get; set; }
         public decimal Jumps { get; set; }
         public decimal LadenLY { get; set; }
@@ -938,6 +943,7 @@ namespace TDHelper
             instance.HasUpdated = false;
             instance.Hops = 0;
             instance.ImportPath = string.Empty;
+            instance.IncludeInsurance = true;
             instance.Insurance = 0;
             instance.Jumps = 0;
             instance.LadenLY = 0;

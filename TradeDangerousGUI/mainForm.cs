@@ -832,6 +832,7 @@ namespace TDHelper
 
             chkRunOptionsBlkMkt.Checked = settingsRef.BlackMarket;
             chkRunOptionsDirect.Checked = settingsRef.Direct;
+            chkIncludeInsurance.Checked = settingsRef.IncludeInsurance;
             chkRunOptionsLoop.Checked = settingsRef.Loop;
             chkRunOptionsShorten.Checked = settingsRef.Shorten;
             chkRunOptionsJumps.Checked = settingsRef.ShowJumps;
@@ -895,6 +896,7 @@ namespace TDHelper
 
             settingsRef.BlackMarket = chkRunOptionsBlkMkt.Checked;
             settingsRef.Direct = chkRunOptionsDirect.Checked;
+            settingsRef.IncludeInsurance = chkIncludeInsurance.Checked;
             settingsRef.Loop = chkRunOptionsLoop.Checked;
             settingsRef.Shorten = chkRunOptionsShorten.Checked;
             settingsRef.ShowJumps = chkRunOptionsJumps.Checked;
@@ -3314,7 +3316,12 @@ namespace TDHelper
 
             cmdPath += AddNumericOption(numRouteOptionsShipCapacity.Value, "cap");
             cmdPath += AddNumericOption(numRouteOptionsLimit.Value, "lim");
-            cmdPath += AddNumericOption(numShipInsurance.Value, "ins");
+
+            if (chkIncludeInsurance.Checked)
+            {
+                cmdPath += AddNumericOption(numShipInsurance.Value, "ins");
+            }
+
             cmdPath += AddNumericOption(numCommandersCredits.Value, "cr");
             cmdPath += AddNumericOption(numLadenLy.Value, "ly");
             cmdPath += AddNumericOption(numUnladenLy.Value, "empty");

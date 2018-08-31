@@ -309,6 +309,7 @@
             this.panOldDataOptions = new System.Windows.Forms.Panel();
             this.panLocalOptions = new System.Windows.Forms.Panel();
             this.panOptions = new System.Windows.Forms.Panel();
+            this.chkIncludeInsurance = new System.Windows.Forms.CheckBox();
             this.mnuSetValues.SuspendLayout();
             this.mnuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRunOptionsRoutes)).BeginInit();
@@ -3086,6 +3087,7 @@
             // 
             // panRunOptions
             // 
+            this.panRunOptions.Controls.Add(this.chkIncludeInsurance);
             this.panRunOptions.Controls.Add(this.btnRunOptionsSwap);
             this.panRunOptions.Controls.Add(this.lblRunOptionsLoopInt);
             this.panRunOptions.Controls.Add(this.lblRunOptionsPlanetary);
@@ -3859,6 +3861,18 @@
             this.panOptions.Size = new System.Drawing.Size(322, 197);
             this.panOptions.TabIndex = 1;
             // 
+            // chkIncludeInsurance
+            // 
+            this.chkIncludeInsurance.AutoSize = true;
+            this.chkIncludeInsurance.Location = new System.Drawing.Point(16, 127);
+            this.chkIncludeInsurance.Name = "chkIncludeInsurance";
+            this.chkIncludeInsurance.Size = new System.Drawing.Size(73, 17);
+            this.chkIncludeInsurance.TabIndex = 71;
+            this.chkIncludeInsurance.TabStop = false;
+            this.chkIncludeInsurance.Text = "Insurance";
+            this.tipToolTips.SetToolTip(this.chkIncludeInsurance, "Include the insurance in the RUN calculation.");
+            this.chkIncludeInsurance.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -4268,6 +4282,7 @@
         private System.Windows.Forms.ColumnHeader hdrShip;
         private System.Windows.Forms.ColumnHeader hdrCost;
         private System.Windows.Forms.Button btnDbMaintenance;
+        private System.Windows.Forms.CheckBox chkIncludeInsurance;
     }
 }
 
