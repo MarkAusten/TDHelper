@@ -58,7 +58,7 @@ namespace TDHelper
         public string t_lastSystem;
         public Process td_proc = new Process();
         private const int circularBufferSize = 32768;
-        private int batchedRowCount = -1;
+//        private int batchedRowCount = -1;
         private StringBuilder circularBuffer = new StringBuilder(circularBufferSize);
         private List<int> dgRowIDIndexer = new List<int>();
         private List<int> dgRowIndexer = new List<int>();

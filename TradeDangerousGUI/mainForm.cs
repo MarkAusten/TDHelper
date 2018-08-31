@@ -1110,7 +1110,56 @@ namespace TDHelper
 
         #region Event Handlers
         /// <summary>
-        /// The event handler for alt cobfig selection change committed.
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_GridCellBeginEdit(
+            Object sender,
+            DataGridViewCellCancelEventArgs e)
+        {
+            // Save the current value.
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            {
+                grdPilotsLog.Tag = grdPilotsLog.CurrentCell.Value;
+            }
+        }
+
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_GridCellValidating(
+            Object sender,
+            DataGridViewCellValidatingEventArgs e)
+        {
+            // Cancel the edit if the value has not changed.
+            if (grdPilotsLog.Tag == grdPilotsLog.CurrentCell.Value)
+            {
+                e.Cancel = true;
+            }
+        }
+
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_GridCellEndEdit(
+            Object sender,
+            DataGridViewCellEventArgs e)
+        {
+            object[] data = ((DataRowView)grdPilotsLog.CurrentRow.DataBoundItem).Row.ItemArray;
+
+            if (int.TryParse(data[0].ToString(), out int id))
+            {
+                UpdateNotes(id, data[3].ToString());
+            }
+        }
+
+        /// <summary>
+        /// Event handler.
         /// </summary>
         /// <param name="sender">The sender object.</param>
         /// <param name="e">The event arguments.</param>
@@ -1192,7 +1241,7 @@ namespace TDHelper
         /// <param name="control">The control to be cleared.</param>
         /// <param name="file">The file to be deleted.</param>
         private void ClearSavedText(
-            Control control, 
+            Control control,
             string file)
         {
             if (!string.IsNullOrEmpty(control.Text))
@@ -1850,6 +1899,9 @@ namespace TDHelper
                 };
             }
 
+            // Ensure that the pilot's log database has the correct schema.
+            CreatePilotsLogDB();
+
             if (!settingsRef.DisableNetLogs)
             {
                 SetSplashScreenStatus("Collecting Net Log file names...");
@@ -2046,8 +2098,8 @@ namespace TDHelper
             TextBox padSizes = ((TextBox)sender);
 
             padSizes.Text = ContainsPadSizes(CheckKeyPress(
-                padSizes.Text, 
-                e.KeyChar.ToString().ToUpper(), 
+                padSizes.Text,
+                e.KeyChar.ToString().ToUpper(),
                 PAD_SIZE_FILTER));
 
             e.Handled = true;
@@ -2061,8 +2113,8 @@ namespace TDHelper
         /// <param name="filter">The filter of allowed characters.</param>
         /// <returns></returns>
         private string CheckKeyPress(
-            string selected, 
-            string key, 
+            string selected,
+            string key,
             string filter)
         {
             string result = selected;
@@ -2124,9 +2176,9 @@ namespace TDHelper
             DataGridViewCellContextMenuStripNeededEventArgs e)
         {
             // prevent OOR exception
-            if (e.RowIndex > -1 && 
-                e.ColumnIndex > -1 && 
-                sender!= null)
+            if (e.RowIndex > -1 &&
+                e.ColumnIndex > -1 &&
+                sender != null)
             {
                 // save the datasource index, and the datagrid index of the row
                 grdPilotsLog.ClearSelection(); // prevent weirdness
@@ -2145,11 +2197,11 @@ namespace TDHelper
             object sender,
             DataGridViewCellValueEventArgs e)
         {
-            if (e.RowIndex < retriever.RowCount && 
-                e.ColumnIndex < retriever.RowCount)
-            {
-                e.Value = memoryCache.RetrieveElement(e.RowIndex, e.ColumnIndex);
-            }
+            //if (e.RowIndex < retriever.RowCount && 
+            //    e.ColumnIndex < retriever.RowCount)
+            //{
+            //    e.Value = memoryCache.RetrieveElement(e.RowIndex, e.ColumnIndex);
+            //}
         }
 
         /// <summary>
@@ -2161,17 +2213,17 @@ namespace TDHelper
             object sender,
             DataGridViewCellValueEventArgs e)
         {
-            if (e.RowIndex < retriever.RowCount && 
-                e.ColumnIndex < retriever.RowCount)
-            {
-                // update our local table
-                localTable.Rows[e.RowIndex][e.ColumnIndex] = e.Value;
-                List<DataRow> row = new List<DataRow> { localTable.Rows[e.RowIndex] };
+            //if (e.RowIndex < retriever.RowCount && 
+            //    e.ColumnIndex < retriever.RowCount)
+            //{
+            //    // update our local table
+            //    localTable.Rows[e.RowIndex][e.ColumnIndex] = e.Value;
+            //    List<DataRow> row = new List<DataRow> { localTable.Rows[e.RowIndex] };
 
-                // update the physical DB and repaint
-                UpdateDBRow(row);
-                InvalidatedRowUpdate(false, e.RowIndex);
-            }
+            //    // update the physical DB and repaint
+            //    UpdateDBRow(row);
+            //    InvalidatedRowUpdate(false, e.RowIndex);
+            //}
         }
 
         /// <summary>
@@ -2183,51 +2235,51 @@ namespace TDHelper
             object sender,
             DataGridViewRowCancelEventArgs e)
         {
-            if (e.Row.Index < retriever.RowCount && 
-                e.Row.Index >= 0 &&
-                grdPilotsLog.SelectedRows.Count > 0)
-            {
-                int rowIndex = -1;
-                int.TryParse(grdPilotsLog.Rows[e.Row.Index].Cells[0].Value.ToString(), out rowIndex);
+            //if (e.Row.Index < retriever.RowCount && 
+            //    e.Row.Index >= 0 &&
+            //    grdPilotsLog.SelectedRows.Count > 0)
+            //{
+            //    int rowIndex = -1;
+            //    int.TryParse(grdPilotsLog.Rows[e.Row.Index].Cells[0].Value.ToString(), out rowIndex);
 
-                if (rowIndex >= 0)
-                {
-                    if (grdPilotsLog.SelectedRows.Count == 1)
-                    {
-                        RemoveDBRow(rowIndex);
-                        UpdateLocalTable();
-                        memoryCache.RemoveRow(e.Row.Index, rowIndex);
-                    }
-                    else if (grdPilotsLog.SelectedRows.Count > 1 && dgRowIDIndexer.Count == 0)
-                    {
-                        // let's batch the commits for performance
-                        batchedRowCount = grdPilotsLog.SelectedRows.Count;
+            //    if (rowIndex >= 0)
+            //    {
+            //        if (grdPilotsLog.SelectedRows.Count == 1)
+            //        {
+            //            RemoveDBRow(rowIndex);
+            //            UpdateLocalTable();
+            //            memoryCache.RemoveRow(e.Row.Index, rowIndex);
+            //        }
+            //        else if (grdPilotsLog.SelectedRows.Count > 1 && dgRowIDIndexer.Count == 0)
+            //        {
+            //            // let's batch the commits for performance
+            //            batchedRowCount = grdPilotsLog.SelectedRows.Count;
 
-                        foreach (DataGridViewRow r in grdPilotsLog.SelectedRows)
-                        {
-                            int curRowIndex = int.Parse(r.Cells[0].Value.ToString());
-                            dgRowIndexer.Add(e.Row.Index);
-                            dgRowIDIndexer.Add(curRowIndex);
-                        }
+            //            foreach (DataGridViewRow r in grdPilotsLog.SelectedRows)
+            //            {
+            //                int curRowIndex = int.Parse(r.Cells[0].Value.ToString());
+            //                dgRowIndexer.Add(e.Row.Index);
+            //                dgRowIDIndexer.Add(curRowIndex);
+            //            }
 
-                        grdPilotsLog.Visible = false; // prevent retrieval
-                    }
+            //            grdPilotsLog.Visible = false; // prevent retrieval
+            //        }
 
-                    if (batchedRowCount != -1)
-                    {
-                        batchedRowCount--; // keep track of our re-entry
-                    }
+            //        if (batchedRowCount != -1)
+            //        {
+            //            batchedRowCount--; // keep track of our re-entry
+            //        }
 
-                    if (dgRowIDIndexer.Count > 0 && batchedRowCount == 0)
-                    {
-                        // we've got queued commits to remove (should trigger on the last removed row)
-                        RemoveDBRows(dgRowIDIndexer);
-                        UpdateLocalTable();
-                        memoryCache.RemoveRows(dgRowIndexer, dgRowIDIndexer);
-                        grdPilotsLog.Visible = true; // re-enable retrieval
-                    }
-                }
-            }
+            //        if (dgRowIDIndexer.Count > 0 && batchedRowCount == 0)
+            //        {
+            //            // we've got queued commits to remove (should trigger on the last removed row)
+            //            RemoveDBRows(dgRowIDIndexer);
+            //            UpdateLocalTable();
+            //            memoryCache.RemoveRows(dgRowIndexer, dgRowIDIndexer);
+            //            grdPilotsLog.Visible = true; // re-enable retrieval
+            //        }
+            //    }
+            //}
         }
 
         /// <summary>
@@ -2242,8 +2294,8 @@ namespace TDHelper
             TextBox planetary = ((TextBox)sender);
 
             planetary.Text = ContainsPlanetary(CheckKeyPress(
-                planetary.Text, 
-                e.KeyChar.ToString().ToUpper(), 
+                planetary.Text,
+                e.KeyChar.ToString().ToUpper(),
                 PLANETARY_FILTER));
 
             e.Handled = true;
@@ -2369,7 +2421,7 @@ namespace TDHelper
             {
                 RemoveDBRow(pRowIndex);
                 UpdateLocalTable();
-                memoryCache.RemoveRow(dRowIndex, pRowIndex);
+                //                memoryCache.RemoveRow(dRowIndex, pRowIndex);
                 grdPilotsLog.InvalidateRow(dRowIndex);
             }
         }

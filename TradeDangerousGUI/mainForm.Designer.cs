@@ -249,6 +249,7 @@
             this.hdrShip = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.hdrCost = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnDbMaintenance = new System.Windows.Forms.Button();
+            this.chkIncludeInsurance = new System.Windows.Forms.CheckBox();
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker4 = new System.ComponentModel.BackgroundWorker();
             this.panRunOptions = new System.Windows.Forms.Panel();
@@ -309,7 +310,6 @@
             this.panOldDataOptions = new System.Windows.Forms.Panel();
             this.panLocalOptions = new System.Windows.Forms.Panel();
             this.panOptions = new System.Windows.Forms.Panel();
-            this.chkIncludeInsurance = new System.Windows.Forms.CheckBox();
             this.mnuSetValues.SuspendLayout();
             this.mnuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRunOptionsRoutes)).BeginInit();
@@ -3075,6 +3075,18 @@
             this.btnDbMaintenance.UseVisualStyleBackColor = true;
             this.btnDbMaintenance.Click += new System.EventHandler(this.EventHandler_DbMaintenance_Click);
             // 
+            // chkIncludeInsurance
+            // 
+            this.chkIncludeInsurance.AutoSize = true;
+            this.chkIncludeInsurance.Location = new System.Drawing.Point(16, 127);
+            this.chkIncludeInsurance.Name = "chkIncludeInsurance";
+            this.chkIncludeInsurance.Size = new System.Drawing.Size(73, 17);
+            this.chkIncludeInsurance.TabIndex = 71;
+            this.chkIncludeInsurance.TabStop = false;
+            this.chkIncludeInsurance.Text = "Insurance";
+            this.tipToolTips.SetToolTip(this.chkIncludeInsurance, "Include the insurance in the RUN calculation.");
+            this.chkIncludeInsurance.UseVisualStyleBackColor = true;
+            // 
             // backgroundWorker3
             // 
             this.backgroundWorker3.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker3_DoWork);
@@ -3292,19 +3304,18 @@
             this.grdPilotsLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.grdPilotsLog.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.grdPilotsLog.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
             this.grdPilotsLog.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.grdPilotsLog.ContextMenuStrip = this.mnuStrip2;
+            this.grdPilotsLog.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.grdPilotsLog.Location = new System.Drawing.Point(3, 3);
             this.grdPilotsLog.Name = "grdPilotsLog";
+            this.grdPilotsLog.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.grdPilotsLog.Size = new System.Drawing.Size(842, 178);
             this.grdPilotsLog.TabIndex = 0;
-            this.grdPilotsLog.VirtualMode = true;
             this.grdPilotsLog.CellContextMenuStripNeeded += new System.Windows.Forms.DataGridViewCellContextMenuStripNeededEventHandler(this.EventHandler_PilotsLogDataGrid_CellContextMenuStripNeeded);
-            this.grdPilotsLog.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.EventHandler_PilotsLogDataGrid_CellValueNeeded);
-            this.grdPilotsLog.CellValuePushed += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.EventHandler_PilotsLogDataGrid_CellValuePushed);
-            this.grdPilotsLog.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.EventHandler_PilotsLogDataGrid_UserDeletingRow);
+            this.grdPilotsLog.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.EventHandler_GridCellEndEdit);
+            this.grdPilotsLog.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.EventHandler_GridCellValidating);
             // 
             // mnuStrip2
             // 
@@ -3860,18 +3871,6 @@
             this.panOptions.Name = "panOptions";
             this.panOptions.Size = new System.Drawing.Size(322, 197);
             this.panOptions.TabIndex = 1;
-            // 
-            // chkIncludeInsurance
-            // 
-            this.chkIncludeInsurance.AutoSize = true;
-            this.chkIncludeInsurance.Location = new System.Drawing.Point(16, 127);
-            this.chkIncludeInsurance.Name = "chkIncludeInsurance";
-            this.chkIncludeInsurance.Size = new System.Drawing.Size(73, 17);
-            this.chkIncludeInsurance.TabIndex = 71;
-            this.chkIncludeInsurance.TabStop = false;
-            this.chkIncludeInsurance.Text = "Insurance";
-            this.tipToolTips.SetToolTip(this.chkIncludeInsurance, "Include the insurance in the RUN calculation.");
-            this.chkIncludeInsurance.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 

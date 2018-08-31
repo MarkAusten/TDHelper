@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using System.Diagnostics;
 
 namespace TDHelper
 {
@@ -321,18 +322,25 @@ namespace TDHelper
         {
             get
             {
+                bool isOpen = false;
+
                 try
                 {
-                    OpenConnection(countCmd.Connection);
+                    isOpen = OpenConnection(countCmd.Connection);
 
                     // Retrieve the row count from the database.
                     countCmd.CommandText = "SELECT COUNT(*) FROM " + tableName;
+
                     rowCountValue = Convert.ToInt32(countCmd.ExecuteScalar());
                 }
                 finally
                 {
-                    CloseConnection(countCmd.Connection);
+                    if (!isOpen)
+                    {
+                        CloseConnection(countCmd.Connection);
+                    }
                 }
+
                 return rowCountValue;
             }
         }
@@ -376,15 +384,22 @@ namespace TDHelper
         /// <param name="conn">The connection to be closed.</param>
         public void CloseConnection(SQLiteConnection conn)
         {
-            if (conn != null &&
-                conn.State == ConnectionState.Open)
+            try
             {
-                using (SQLiteCommand cmd = new SQLiteCommand("PRAGMA optimise", conn))
+                if (conn != null &&
+                    conn.State == ConnectionState.Open)
                 {
-                    cmd.ExecuteNonQuery();
-                }
+                    using (SQLiteCommand cmd = new SQLiteCommand("PRAGMA optimise", conn))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
 
-                conn.Close();
+                    conn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
             }
         }
 
@@ -448,6 +463,11 @@ namespace TDHelper
                 selectCmd.Parameters.AddWithValue("@rowsPerPage", rowsPerPage);
 
                 adapter.SelectCommand = selectCmd;
+
+                if (selectCmd.Connection.State != ConnectionState.Open)
+                {
+                    System.Diagnostics.Debugger.Break();
+                }
 
                 if (this.RowCount > 0)
                 {

@@ -1,3 +1,7 @@
+v2.0.8.1
+--------
+* Fixed issue #34. Add check box to include/exclude insurance in run calculations.
+
 v2.0.8.0
 --------
 * On first start up, before the commander profie option is run, the ship list now defaults to all the ships with their initial, just purchased, options.

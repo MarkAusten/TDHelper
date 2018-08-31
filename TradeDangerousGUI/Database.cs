@@ -17,7 +17,7 @@ namespace TDHelper
     {
         #region Props
 
-        public Cache memoryCache;
+//        public Cache memoryCache;
         private List<string> box_outputNames = new List<string>();
         private DataTable localTable = new DataTable();
         private DataTable nonstn_table = new DataTable();
@@ -27,8 +27,8 @@ namespace TDHelper
         // Output
         private List<string> outputSysStnNames = new List<string>();
 
-        private SQLiteConnection pilotsLogConn = null;
-        private DataRetriever retriever;
+        private static SQLiteConnection pilotsLogConn = null;
+//        private DataRetriever retriever;
         private DataTable ship_table = new DataTable();
 
         // Inputs
@@ -44,6 +44,11 @@ namespace TDHelper
             string path,
             string pattern)
         {
+            CreatePilotsLogDB();
+
+            // Get a list of the previously scanned net logs.
+            IDictionary<string, NetLogModel> alreadyScanned = GetPreviouslyScanned();
+
             // only collect log paths that contain system names
             try
             {
@@ -57,23 +62,48 @@ namespace TDHelper
                 {
                     foreach (FileInfo f in fileList.OrderBy(f => f.LastWriteTime))
                     {
-                        string filePath = Path.Combine(path, f.ToString());
+                        string filename = f.ToString();
+                        string filePath = Path.Combine(path, filename);
 
-                        using (TextReader reader = new StreamReader(filePath, Encoding.UTF8))
+                        if (alreadyScanned.ContainsKey(filename))
                         {
-                            // check if there are any files that match the mask, return null if nothing matches
-                            string tempLines = reader.ReadToEnd(); // pull into memory
-                            Match timestampMatch = Regex.Match(tempLines, @"(\d{2,4}\-\d\d\-\d\d)[\s\-](\d\d:\d\d)");
-                            Match systemMatch = Regex.Match(tempLines, @"\{(\d\d:\d\d:\d\d).+System:""(.+)""");
+                            NetLogModel model = alreadyScanned[filename];
 
-                            if (systemMatch.Success && timestampMatch.Success)
+                            if (model.HasSystems)
                             {
-                                string timestampHeader
-                                    = timestampMatch.Groups[1].Value.ToString()
-                                    + " "
-                                    + systemMatch.Groups[1].Value.ToString();
+                                logPaths.Add(model.HeaderTimestamp, filePath);
+                            }
+                        }
+                        else
+                        {
+                            string timestampHeader = string.Empty;
 
-                                logPaths.Add(timestampHeader, filePath);
+                            using (TextReader reader = new StreamReader(filePath, Encoding.UTF8))
+                            {
+                                // check if there are any files that match the mask, return null if nothing matches
+                                string tempLines = reader.ReadToEnd(); // pull into memory
+                                Match timestampMatch = Regex.Match(tempLines, @"(\d{2,4}\-\d\d\-\d\d)[\s\-](\d\d:\d\d)");
+                                Match systemMatch = Regex.Match(tempLines, @"\{(\d\d:\d\d:\d\d).+System:""(.+)""");
+                                timestampHeader = string.Empty;
+
+                                if (timestampMatch.Success)
+                                {
+                                    if (systemMatch.Success)
+                                    {
+                                        timestampHeader
+                                            = timestampMatch.Groups[1].Value.ToString()
+                                            + " "
+                                            + systemMatch.Groups[1].Value.ToString();
+
+                                        logPaths.Add(timestampHeader, filePath);
+                                    }
+                                    else
+                                    {
+                                        timestampHeader = timestampMatch.Groups[1].Value.ToString();
+                                    }
+                                }
+
+                                AddToNetLogsTable(filename, systemMatch.Success && timestampMatch.Success, timestampHeader);
                             }
                         }
                     }
@@ -95,18 +125,109 @@ namespace TDHelper
         }
 
         /// <summary>
+        /// Add a new record to the NetLogs table.
+        /// </summary>
+        /// <param name="filename">The name of the netlog file.</param>
+        /// <param name="hasSystems">True if the netlog contains at least one system.</param>
+        /// <param name="headerTimestamp">The timestamp of the log header.</param>
+        private static void AddToNetLogsTable(
+            string filename, 
+            bool hasSystems, 
+            string headerTimestamp)
+        {
+            using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
+            {
+                bool isOpen = false;
+
+                try
+                {
+                    isOpen = OpenConnection(cmd.Connection);
+
+                    cmd.CommandText = "insert into NetLogs values (@Filename, @HasSystems, @HeaderTimestamp)";
+
+                    cmd.Parameters.AddWithValue("@Filename", filename);
+                    cmd.Parameters.AddWithValue("@HasSystems", (hasSystems ? 1 : 0));
+                    cmd.Parameters.AddWithValue("@HeaderTimestamp", headerTimestamp);
+
+                    cmd.ExecuteNonQuery();
+                }
+                catch
+                {
+                    // We should not normally get here as the method id only called if the record does not exist.
+                    // If there was an exception then the entry somehow already existed so do nothing.
+                }
+                finally
+                {
+                    if (!isOpen)
+                    {
+                        CloseConnection(cmd.Connection);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Retrieve a list of netlog filenames that have already been scanned.
+        /// </summary>
+        /// <returns>A lisst of netlog filenames and </returns>
+        private static IDictionary<string, NetLogModel> GetPreviouslyScanned()
+        {
+            IDictionary<string, NetLogModel> result = new Dictionary<string, NetLogModel>();
+
+            using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
+            {
+                bool isOpen = false;
+
+                try
+                {
+                    isOpen = OpenConnection(cmd.Connection);
+
+                    cmd.CommandText = "select Filename, HasSystems, HeaderTimestamp from NetLogs";
+
+                    using (SQLiteDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            result.Add(
+                                (string)reader[0], 
+                                new NetLogModel()
+                                {
+                                    Filename = (string)reader[0],
+                                    HasSystems = (int)reader[1] == 1,
+                                    HeaderTimestamp = (string)reader[2]
+                                });
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+                finally
+                {
+                    if (!isOpen)
+                    {
+                        CloseConnection(cmd.Connection);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Carry out any pre-close operations and then close the connection.
         /// </summary>
         /// <param name="conn">The connection to be closed.</param>
-        public void CloseConnection(SQLiteConnection conn)
+        public static void CloseConnection(SQLiteConnection conn)
         {
             if (conn != null &&
                 conn.State == ConnectionState.Open)
             {
-                using (SQLiteCommand cmd = new SQLiteCommand("PRAGMA optimise", conn))
-                {
-                    cmd.ExecuteNonQuery();
-                }
+                //using (SQLiteCommand cmd = new SQLiteCommand("PRAGMA optimise", conn))
+                //{
+                //    cmd.ExecuteNonQuery();
+                //}
 
                 conn.Close();
             }
@@ -133,7 +254,7 @@ namespace TDHelper
         /// </summary>
         /// <param name="conn">The connection to be opened.</param>
         /// <returns>True if the initial state of the connection was open.</returns>
-        public bool OpenConnection(SQLiteConnection conn)
+        public static bool OpenConnection(SQLiteConnection conn)
         {
             bool isOpen = conn != null && conn.State == ConnectionState.Open;
 
@@ -385,6 +506,12 @@ namespace TDHelper
 
         private void BuildPilotsLog()
         {
+            // Ensure that the database has the correct schema.
+            CreatePilotsLogDB();
+
+            // Populate the SystemLog tavble.
+            PopulatePilotsLogDB();
+
             // here we either build or load our database
             if (grdPilotsLog.Rows.Count == 0)
             {
@@ -392,10 +519,6 @@ namespace TDHelper
                     HasValidRows("SystemLog"))
                 {
                     InvalidatedRowUpdate(true, -1);
-                }
-                else
-                {
-                    CreatePilotsLogDB(); // make from scratch
                 }
             }
             else if (HasValidRows("SystemLog"))
@@ -447,7 +570,10 @@ namespace TDHelper
             }
         }
 
-        private void CreatePilotsLogDB()
+        /// <summary>
+        /// Ensure that the pilot's log DB has the correct schema.
+        /// </summary>
+        private static void CreatePilotsLogDB()
         {
             using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
             {
@@ -459,26 +585,56 @@ namespace TDHelper
 
                     if (!HasValidColumn(cmd.Connection, "SystemLog", "System"))
                     {
-                        // create our table first
-                        cmd.CommandText = "CREATE TABLE SystemLog (ID INTEGER PRIMARY KEY AUTOINCREMENT, Timestamp NVARCHAR, System NVARCHAR, Notes NVARCHAR)";
+                        // Create the SystemLog table.
+                        cmd.CommandText 
+                            = " create table SystemLog ("
+                            + " ID integer primary key autoincrement,"
+                            + " Timestamp nvarchar,"
+                            + " System nvarchar,"
+                            + " Notes nvarchar)";
+
                         cmd.ExecuteNonQuery();
 
                         // Create a unique index.
-                        cmd.CommandText = "CREATE UNIQUE INDEX IF NOT EXISTS SystemTimestamp ON SystemLog (System, Timestamp)";
+                        cmd.CommandText = "create unique index if not exists SystemTimestamp on SystemLog (System, Timestamp)";
                         cmd.ExecuteNonQuery();
                     }
-                    else if (HasValidRows("SystemLog"))
-                    {
-                        /*
-                                                // wipe before inserting, ensures most recent records
-                                                cmd.CommandText = "DELETE FROM SystemLog";
-                                                cmd.ExecuteNonQuery();
 
-                                                // clean up after ourselves
-                                                cmd.CommandText = "VACUUM";
-                                                cmd.ExecuteNonQuery();
-                        */
+                    if (!HasValidColumn(cmd.Connection, "NetLogs", "Filename"))
+                    {
+                        // Create the Netlogs table.
+                        cmd.CommandText 
+                            = " create table NetLogs ("
+                            + " Filename nvarchar primary key,"
+                            + " HasSystems int,"
+                            + " HeaderTimestamp nvarchar)";
+
+                        cmd.ExecuteNonQuery();
+
+                        // Create an index.
+                        cmd.CommandText = "create index if not exists FileHasSystems on SystemLog (HasSystems)";
+                        cmd.ExecuteNonQuery();
                     }
+                }
+                finally
+                {
+                    if (!isOpen)
+                    {
+                        CloseConnection(cmd.Connection);
+                    }
+                }
+            }
+        }
+
+        private void PopulatePilotsLogDB()
+        {
+            using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
+            {
+                bool isOpen = false;
+
+                try
+                {
+                    isOpen = OpenConnection(cmd.Connection);
 
                     if (netLogOutput.Count > 0)
                     {
@@ -504,23 +660,23 @@ namespace TDHelper
 
                     this.Invoke(new Action(() =>
                     {
-                        retriever = new DataRetriever(cmd.Connection, "SystemLog");
+                        //retriever = new DataRetriever(cmd.Connection, "SystemLog");
 
-                        foreach (DataColumn c in retriever.Columns)
-                        {
-                            grdPilotsLog.Columns.Add(c.ColumnName, c.ColumnName);
-                        }
+                        //foreach (DataColumn c in retriever.Columns)
+                        //{
+                        //    grdPilotsLog.Columns.Add(c.ColumnName, c.ColumnName);
+                        //}
 
-                        // setup the gridview
-                        UpdateLocalTable();
-                        memoryCache = new Cache(retriever, 24);
+                        //// setup the gridview
+                        //UpdateLocalTable();
+                        //memoryCache = new Cache(retriever, 24);
 
-                        grdPilotsLog.RowCount = retriever.RowCount;
+                        //grdPilotsLog.RowCount = retriever.RowCount;
 
-                        grdPilotsLog.Columns["ID"].Visible = false;
-                        grdPilotsLog.Columns["Timestamp"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-                        grdPilotsLog.Columns["System"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-                        grdPilotsLog.Columns["Notes"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                        //grdPilotsLog.Columns["ID"].Visible = false;
+                        //grdPilotsLog.Columns["Timestamp"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+                        //grdPilotsLog.Columns["System"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+                        //grdPilotsLog.Columns["Notes"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                     }));
                 }
                 //catch
@@ -837,10 +993,10 @@ namespace TDHelper
             return hasTable;
         }
 
-        private bool HasValidColumn(
-                    SQLiteConnection conn,
-                    string tableName,
-                    string columnName)
+        private static bool HasValidColumn(
+            SQLiteConnection conn,
+            string tableName,
+            string columnName)
         {
             // this method returns true if a column exists
             using (SQLiteCommand cmd = new SQLiteCommand("PRAGMA table_info(" + tableName + ")", conn))
@@ -891,9 +1047,11 @@ namespace TDHelper
             // this method returns true if there are any valid rows
             using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
             {
+                bool isOpen = false;
+
                 try
                 {
-                    OpenConnection(cmd.Connection);
+                    isOpen = OpenConnection(cmd.Connection);
 
                     cmd.CommandText = "SELECT COUNT(*) FROM SystemLog";
 
@@ -903,7 +1061,10 @@ namespace TDHelper
                 }
                 finally
                 {
-                    CloseConnection(cmd.Connection);
+                    if (!isOpen)
+                    {
+                        CloseConnection(cmd.Connection);
+                    }
                 }
             }
 
@@ -927,29 +1088,29 @@ namespace TDHelper
                 // invalidate the cache pages
                 UpdateLocalTable();
 
-                retriever = new DataRetriever(pilotsLogConn, "SystemLog");
-                memoryCache = new Cache(retriever, 24);
+                //retriever = new DataRetriever(pilotsLogConn, "SystemLog");
+                //memoryCache = new Cache(retriever, 24);
 
-                // force a refresh/repaint
-                this.Invoke(new Action(() =>
-                {
-                    grdPilotsLog.RowCount = retriever.RowCount;
-                    grdPilotsLog.Refresh();
-                }));
+                //// force a refresh/repaint
+                //this.Invoke(new Action(() =>
+                //{
+                //    grdPilotsLog.RowCount = retriever.RowCount;
+                //    grdPilotsLog.Refresh();
+                //}));
             }
             else
             {
                 // partial refresh
                 UpdateLocalTable();
 
-                retriever = new DataRetriever(pilotsLogConn, "SystemLog");
-                memoryCache = new Cache(retriever, 24);
+                //retriever = new DataRetriever(pilotsLogConn, "SystemLog");
+                //memoryCache = new Cache(retriever, 24);
 
-                this.Invoke(new Action(() =>
-                {
-                    grdPilotsLog.RowCount = retriever.RowCount;
-                    grdPilotsLog.InvalidateRow(rowIndex);
-                }));
+                //this.Invoke(new Action(() =>
+                //{
+                //    grdPilotsLog.RowCount = retriever.RowCount;
+                //    grdPilotsLog.InvalidateRow(rowIndex);
+                //}));
             }
 
             return false;
@@ -1100,43 +1261,62 @@ namespace TDHelper
         {
             if (HasValidColumn(pilotsLogConn, "SystemLog", "System"))
             {
-                //try
-                //{
-                UpdateLocalTable();
-
-                retriever = new DataRetriever(pilotsLogConn, "SystemLog");
-
-                this.Invoke(new Action(() =>
+                try
                 {
-                    if (grdPilotsLog.Columns.Count != localTable.Columns.Count)
-                    {
-                        foreach (DataColumn c in retriever.Columns)
-                        {
-                            grdPilotsLog.Columns.Add(c.ColumnName, c.ColumnName);
-                        }
-                    }
+                    UpdateLocalTable();
 
-                    grdPilotsLog.Rows.Clear();
-
-                    memoryCache = new Cache(retriever, 24);
+                    grdPilotsLog.DataSource = null;
+                    grdPilotsLog.DataSource = localTable;
 
                     grdPilotsLog.Refresh();
-
-                    grdPilotsLog.RowCount = retriever.RowCount;
 
                     if (grdPilotsLog.RowCount > 0)
                     {
                         grdPilotsLog.Columns["ID"].Visible = false;
+
                         grdPilotsLog.Columns["Timestamp"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+                        grdPilotsLog.Columns["Timestamp"].ReadOnly = true;
+
                         grdPilotsLog.Columns["System"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+                        grdPilotsLog.Columns["System"].ReadOnly = true;
+
                         grdPilotsLog.Columns["Notes"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                        grdPilotsLog.Columns["Notes"].ReadOnly = false;
                     }
-                }));
-                //}
-                //catch (SQLiteException)
-                //{
-                //    throw;
-                //}
+
+                    //retriever = new DataRetriever(pilotsLogConn, "SystemLog");
+
+                    //this.Invoke(new Action(() =>
+                    //{
+                    //    if (grdPilotsLog.Columns.Count != localTable.Columns.Count)
+                    //    {
+                    //        foreach (DataColumn c in retriever.Columns)
+                    //        {
+                    //            grdPilotsLog.Columns.Add(c.ColumnName, c.ColumnName);
+                    //        }
+                    //    }
+
+                    //    grdPilotsLog.Rows.Clear();
+
+                    //    memoryCache = new Cache(retriever, 24);
+
+                    //    grdPilotsLog.Refresh();
+
+                    //    grdPilotsLog.RowCount = retriever.RowCount;
+
+                    //    if (grdPilotsLog.RowCount > 0)
+                    //    {
+                    //        grdPilotsLog.Columns["ID"].Visible = false;
+                    //        grdPilotsLog.Columns["Timestamp"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+                    //        grdPilotsLog.Columns["System"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+                    //        grdPilotsLog.Columns["Notes"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    //    }
+                    //}));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
             }
         }
 
@@ -1864,6 +2044,47 @@ namespace TDHelper
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Update the notes for the specified record.
+        /// </summary>
+        /// <param name="id">The ID of the record to be updated.</param>
+        /// <param name="notes">The notes to be saved.</param>
+        private void UpdateNotes(
+            int id,
+            string notes)
+        {
+            using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
+            {
+                bool isOpen = false;
+
+                try
+                {
+                    isOpen = OpenConnection(cmd.Connection);
+
+                    cmd.CommandText = "update SystemLog set Notes = @Notes where ID = @ID";
+
+                    cmd.Parameters.AddWithValue("@ID", id);
+                    cmd.Parameters.AddWithValue("@Notes", notes);
+
+                    using (SQLiteTransaction transaction = cmd.Connection.BeginTransaction())
+                    {
+                        cmd.ExecuteNonQuery();
+
+                        transaction.Commit();
+                    }
+
+                    UpdateLocalTable();
+                }
+                finally
+                {
+                    if (!isOpen)
+                    {
+                        CloseConnection(cmd.Connection);
+                    }
+                }
+            }
         }
 
         private void UpdateLocalTable()
