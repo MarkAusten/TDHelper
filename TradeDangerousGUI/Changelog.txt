@@ -1,10 +1,14 @@
-v2.0.7.0
+v2.0.8.0
+--------
+* On first start up, before the commander profie option is run, the ship list now defaults to all the ships with their initial, just purchased, options.
+
+vv2.0.7.0
 --------
 * Changed the sections in which the ship data is stored to use the invaariant internal ship ID. This prevents problems when changing the ship's name or call sign.
 * Added new ComboBoxItem class that simulated the ListItem class found in MVC and ASP.
 * Moved ship data to config file.
 
-v2.0.6.1
+2.0.6.1
 --------
 * Fixed issue #33
 

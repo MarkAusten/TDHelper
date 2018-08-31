@@ -2,45 +2,11 @@
 
 namespace TDHelper
 {
-    public class ShipConfig : ConfigurationElement
-    {
-        [ConfigurationProperty("padsizes", IsRequired = true)]
-        public string PadSizes
-        {
-            get { return (string)base["padsizes"]; }
-            set { base["padsizes"] = value; }
-        }
-
-        [ConfigurationProperty("name", IsRequired = true)]
-        public string Name
-        {
-            get { return (string)base["name"]; }
-            set { base["name"] = value; }
-        }
-
-        [ConfigurationProperty("shiptype", IsKey = true, IsRequired = true)]
-        public string ShipType
-        {
-            get { return (string)base["shiptype"]; }
-            set { base["shiptype"] = value; }
-        }
-    }
-
     public class ShipCollection : ConfigurationElementCollection
     {
         public ShipCollection()
         {
             this.AddElementName = "ship";
-        }
-
-        protected override object GetElementKey(ConfigurationElement element)
-        {
-            return (element as ShipConfig).ShipType;
-        }
-
-        protected override ConfigurationElement CreateNewElement()
-        {
-            return new ShipConfig();
         }
 
         public new ShipConfig this[string key]
@@ -51,6 +17,61 @@ namespace TDHelper
         public ShipConfig this[int ind]
         {
             get { return base.BaseGet(ind) as ShipConfig; }
+        }
+
+        protected override ConfigurationElement CreateNewElement()
+        {
+            return new ShipConfig();
+        }
+
+        protected override object GetElementKey(ConfigurationElement element)
+        {
+            return (element as ShipConfig).ShipType;
+        }
+    }
+
+    public class ShipConfig : ConfigurationElement
+    {
+        [ConfigurationProperty("initialcapacity", IsRequired = false)]
+        public string InitialCapacity
+        {
+            get { return (string)base["initialcapacity"]; }
+            set { base["initialcapacity"] = value; }
+        }
+
+        [ConfigurationProperty("initialladenly", IsRequired = false)]
+        public string InitialLadenLY
+        {
+            get { return (string)base["initialladenly"]; }
+            set { base["initialladenly"] = value; }
+        }
+
+        [ConfigurationProperty("initialunladenly", IsRequired = false)]
+        public string InitialUnladenLY
+        {
+            get { return (string)base["initialunladenly"]; }
+            set { base["initialunladenly"] = value; }
+        }
+
+        [ConfigurationProperty("name", IsRequired = true)]
+        public string Name
+        {
+            get { return (string)base["name"]; }
+            set { base["name"] = value; }
+        }
+
+        [ConfigurationProperty("padsizes", IsRequired = true)]
+        public string PadSizes
+        {
+            get { return (string)base["padsizes"]; }
+            set { base["padsizes"] = value; }
+        }
+
+        [ConfigurationProperty("shiptype", IsKey = true, IsRequired = true)]
+        public string ShipType
+        {
+            get { return (string)base["shiptype"]; }
+            set { base["shiptype"] = value; }
         }
     }
 
@@ -72,6 +93,7 @@ namespace TDHelper
             return (ShipSection)ConfigurationManager.GetSection(sectionName);
         }
     }
+
     /*
     public sealed class ShipsConfigMapConfigElement : ConfigurationElement
     {

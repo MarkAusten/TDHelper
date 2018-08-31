@@ -216,7 +216,7 @@ namespace TDHelper
         }
 
         public static DialogResult ValidateNetLogPath(
-            string altPath, 
+            string altPath,
             bool force = false)
         {
             DialogResult result = DialogResult.None;
@@ -483,10 +483,10 @@ namespace TDHelper
             TDSettings settings = settingsRef;
             SharpConfig.Configuration config = GetConfigurationObject();
 
-            if (string.IsNullOrEmpty(settings.LastUsedConfig))
-            {
-                settings.LastUsedConfig = "Default";
-            }
+            //if (string.IsNullOrEmpty(settings.LastUsedConfig))
+            //{
+            //    settings.LastUsedConfig = "Default";
+            //}
 
             bool hasSection = config.FirstOrDefault(x => x.Name == settings.LastUsedConfig) != null;
 
@@ -627,7 +627,7 @@ namespace TDHelper
 
             string[] filteredLines = input
                 .Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
-                .Where (x => !string.IsNullOrWhiteSpace(x))
+                .Where(x => !string.IsNullOrWhiteSpace(x))
                 .Where(x => !exceptions.Any(y => x.Contains(y)))
                 .ToArray();
 
@@ -834,21 +834,21 @@ namespace TDHelper
         private void ReadCircularBuffer()
         {
             // here we consume our buffer
-           Invoke(new Action(() =>
-            {
+            Invoke(new Action(() =>
+             {
                 // Stop the control updating.
                 BeginControlUpdate(rtbOutput);
 
                 // COnsume the buffer.
                 if (circularBuffer.Length > 0 && circularBuffer.Length <= circularBuffer.Capacity)
-                {
+                 {
                     // if our buffer is full, display it
                     rtbOutput.Text = circularBuffer.ToString();
-                    rtbOutput.SelectionStart = rtbOutput.TextLength;
-                    rtbOutput.ScrollToCaret();
-                }
-                else
-                {
+                     rtbOutput.SelectionStart = rtbOutput.TextLength;
+                     rtbOutput.ScrollToCaret();
+                 }
+                 else
+                 {
                     // if the buffer overflows, wipe and return empty
                     ClearCircularBuffer(); // circularBuffer = new StringBuilder(circularBufferSize);
                 }
@@ -858,7 +858,7 @@ namespace TDHelper
 
                 // Enable the control updating.
                 EndControlUpdate(rtbOutput);
-            }));
+             }));
         }
 
         /// <summary>
@@ -896,11 +896,11 @@ namespace TDHelper
             control.Invalidate();
             control.Refresh();
         }
-        
+
         /// <summary>
-                 /// Set the title of the main form.
-                 /// </summary>
-                 /// <param name="mainform"></param>
+        /// Set the title of the main form.
+        /// </summary>
+        /// <param name="mainform"></param>
         private void SetFormTitle(Form mainform)
         {
             // Let's change the title to the current version
@@ -1095,9 +1095,10 @@ namespace TDHelper
         /// <param name="control">The associated control.</param>
         private void ValidateSetting(
             string propertyName,
-            NumericUpDown control)
+            NumericUpDown control,
+            decimal defaultValue = -1)
         {
-            ValidateSettingValue(propertyName, control, settingsRef);
+            ValidateSettingValue(propertyName, control, settingsRef, defaultValue);
         }
 
         /// <summary>
@@ -1109,7 +1110,8 @@ namespace TDHelper
         private void ValidateSettingValue(
             string propertyName,
             NumericUpDown control,
-            TDSettings settings)
+            TDSettings settings,
+            decimal defaultValue = -1)
         {
             // retrieve the value from the settings object.
             PropertyInfo prop = settings.GetType().GetProperty(propertyName);
@@ -1120,7 +1122,10 @@ namespace TDHelper
             // Compare with the control limits and set a new value if outside those limits.
             if (value < control.Minimum)
             {
-                newValue = control.Minimum;
+                newValue 
+                    = defaultValue == -1
+                    ? control.Minimum
+                    : defaultValue;
             }
             else if (value > control.Maximum)
             {
@@ -1168,39 +1173,6 @@ namespace TDHelper
             {
                 File.WriteAllText(file, filteredOutput, Encoding.UTF8);
             }
-        }
-
-        private void WriteSettings()
-        {
-            /*
-             * This method writes all the known variables to an xml file.
-             *
-             * This can also be used to generate a fresh file if necessary.
-             */
-
-            // save the path for reload on startup
-            if (!string.IsNullOrEmpty(settingsRef.LastUsedConfig)
-                && settingsRef.LastUsedConfig.Contains("Default"))
-            {
-                settingsRef.LastUsedConfig = "Default";
-            }
-            else
-            {
-                settingsRef.LastUsedConfig = configFile;
-            }
-
-            SerializeMarkedStations(currentMarkedStations); // convert object to built string
-            CopySettingsFromForm();
-
-            settingsRef.LocationParent = SaveWinLoc(this);
-            settingsRef.SizeParent = SaveWinSize(this);
-
-            if (tabControl1.SelectedTab == tabControl1.TabPages["notesPage"])
-            {
-                txtNotes.SaveFile(notesFile, RichTextBoxStreamType.PlainText);
-            }
-
-            SaveSettingsToIniFile();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -137,9 +138,10 @@ namespace TDHelper
         /// <returns>The required value.</returns>
         public static decimal GetDecimalSetting(
             SharpConfig.Section section,
-            string key)
+            string key,
+            decimal defaultValue = 0M)
         {
-            return SectionHasKey(section, key) ? section[key].DecimalValue : 0M;
+            return SectionHasKey(section, key) ? section[key].DecimalValue : defaultValue;
         }
 
         /// <summary>
@@ -162,7 +164,7 @@ namespace TDHelper
         {
             if (CheckIfFileOpens(configFile))
             {
-                Configuration config = GetConfigurationObject();
+                SharpConfig.Configuration config = GetConfigurationObject();
                 TDSettings settings = settingsRef;
 
                 SharpConfig.Section configSection = config["App"];
@@ -178,7 +180,7 @@ namespace TDHelper
                 settings.Limit = GetDecimalSetting(configSection, "Limit");
                 settings.Loop = GetBooleanSetting(configSection, "Loop");
                 settings.LoopInt = GetDecimalSetting(configSection, "LoopInt");
-                settings.LSPenalty = GetDecimalSetting(configSection, "LSPenalty");
+                settings.LSPenalty = GetDecimalSetting(configSection, "LSPenalty", 12.5M);
                 settings.Margin = GetDecimalSetting(configSection, "Margin");
                 settings.MarkedStations = GetStringSetting(configSection, "MarkedStations");
                 settings.MaxGPT = GetDecimalSetting(configSection, "MaxGPT");
@@ -201,7 +203,7 @@ namespace TDHelper
                 configSection = config["Commander"];
 
                 settings.CmdrName = GetStringSetting(configSection, "CmdrName");
-                settings.Credits = GetDecimalSetting(configSection, "Credits");
+                settings.Credits = GetDecimalSetting(configSection, "Credits", 100M);
                 settings.RebuyPercentage = GetDecimalSetting(configSection, "RebuyPercentage");
 
                 // TD Helper system settings.
@@ -234,10 +236,10 @@ namespace TDHelper
                 settings.SkipVend = GetBooleanSetting(configSection, "SkipVend");
                 settings.Solo = GetBooleanSetting(configSection, "Solo");
 
-                if (string.IsNullOrEmpty(settings.AvailableShips))
-                {
-                    settings.AvailableShips = "Default";
-                }
+                //if (string.IsNullOrEmpty(settings.AvailableShips))
+                //{
+                //    settings.AvailableShips = "Default";
+                //}
             }
         }
 
@@ -288,7 +290,7 @@ namespace TDHelper
         /// </summary>
         public static void SaveSettingsToIniFile()
         {
-            Configuration config = GetConfigurationObject();
+            SharpConfig.Configuration config = GetConfigurationObject();
 
             TDSettings settings = settingsRef;
 
@@ -515,7 +517,7 @@ namespace TDHelper
         /// <returns></returns>
         public static bool ValidateConfigFile(string filePath)
         {
-            Configuration config = GetConfigurationObject();
+            SharpConfig.Configuration config = GetConfigurationObject();
 
             // The app section is a required section.
             return config.GetSectionsNamed("App").Count() == 1;
@@ -604,25 +606,25 @@ namespace TDHelper
         {
             if (string.IsNullOrEmpty(settingsRef.AvailableShips))
             {
-                settingsRef.AvailableShips = "default";
+                LoadInitialShipList();
             }
-
-            Configuration config = GetConfigurationObject();
 
             IList<ComboBoxItem> ships = new List<ComboBoxItem>();
 
-            foreach (string shipId in settingsRef
-                .AvailableShips
-                .Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                SharpConfig.Section configSection = config[shipId];
+            SharpConfig.Configuration config = GetConfigurationObject();
 
-                ships.Add(new ComboBoxItem()
+            foreach (string shipId in settingsRef
+                    .AvailableShips
+                    .Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    Text = GetStringSetting(configSection, "shipName"),
-                    Value = shipId
-                });
-            }
+                    SharpConfig.Section configSection = config[shipId];
+
+                    ships.Add(new ComboBoxItem()
+                    {
+                        Text = GetStringSetting(configSection, "shipName"),
+                        Value = shipId
+                    });
+                }
 
             return ships
                 .OrderBy(x => x.Text)
@@ -630,14 +632,60 @@ namespace TDHelper
         }
 
         /// <summary>
+        /// Populate the config with the initial ship data.
+        /// </summary>
+        private void LoadInitialShipList()
+        {
+            SharpConfig.Configuration config = GetConfigurationObject();
+
+            ShipSection shipSection = ((ShipSection)ConfigurationManager.GetSection("ships"));
+
+            int id = 0;
+            string availableShips = string.Empty;
+
+            foreach (ShipConfig ship in shipSection.ShipSettings.Cast<ShipConfig>())
+            {
+                string sectionName = "Default {0}".With(++id);
+                settingsRef.AvailableShips += ",{0}".With(sectionName);
+
+                config[sectionName]["Capacity"].DecimalValue
+                    = decimal.TryParse(ship.InitialCapacity, out decimal capacity)
+                    ? capacity
+                    : 1;
+
+                config[sectionName]["LadenLY"].DecimalValue
+                    = decimal.TryParse(ship.InitialLadenLY, out decimal ladenLy)
+                    ? ladenLy
+                    : 1;
+
+                config[sectionName]["unladenLY"].DecimalValue
+                    = decimal.TryParse(ship.InitialUnladenLY, out decimal unladenLy)
+                    ? unladenLy
+                    : 1;
+
+                config[sectionName]["shipName"].StringValue = ship.Name;
+                config[sectionName]["Padsizes"].StringValue = ship.PadSizes;
+
+                if (ship.Name.Equals("Sidewinder"))
+                {
+                    settingsRef.LastUsedConfig = sectionName;
+                }
+            }
+
+            config.SaveToFile(configFile);
+
+            settingsRef.AvailableShips = settingsRef.AvailableShips.Substring(1);
+        }
+
+        /// <summary>
         /// Return a SharpConfig Configuration object.
         /// </summary>
         /// <returns>A SharpConfig Configuration object.</returns>
-        private static Configuration GetConfigurationObject()
+        private static SharpConfig.Configuration GetConfigurationObject()
         {
             return CheckIfFileOpens(configFile)
-                ? Configuration.LoadFromFile(configFile)
-                : new Configuration();
+                ? SharpConfig.Configuration.LoadFromFile(configFile)
+                : new SharpConfig.Configuration();
         }
 
         private static List<string> ParseMarkedStations()
@@ -899,7 +947,7 @@ namespace TDHelper
             instance.LocationParent = string.Empty;
             instance.Loop = false;
             instance.LoopInt = 0;
-            instance.LSPenalty = 0;
+            instance.LSPenalty = 12.5M;
             instance.Margin = 0;
             instance.MarkedStations = string.Empty;
             instance.MaxGPT = 0;

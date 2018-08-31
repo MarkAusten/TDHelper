@@ -1007,11 +1007,6 @@
             // numCommandersCredits
             // 
             this.numCommandersCredits.Location = new System.Drawing.Point(396, 30);
-            this.numCommandersCredits.Minimum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
             this.numCommandersCredits.Name = "numCommandersCredits";
             this.numCommandersCredits.Size = new System.Drawing.Size(125, 20);
             this.numCommandersCredits.TabIndex = 6;
