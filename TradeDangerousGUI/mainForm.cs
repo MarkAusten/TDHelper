@@ -573,8 +573,9 @@ namespace TDHelper
 
             if (settingsRef.TestSystems)
             {
-                if (string.IsNullOrEmpty(t_lastSysCheck) && !string.IsNullOrEmpty(t_lastSystem)
-                    && !StringInList(t_lastSystem, outputSysStnNames))
+                if (string.IsNullOrEmpty(t_lastSysCheck) && 
+                    !string.IsNullOrEmpty(t_lastSystem) &&
+                    !StringInList(t_lastSystem, outputSysStnNames))
                 {
                     // alert the user if we're starting in an unknown system
                     PlayUnknown();
@@ -592,9 +593,11 @@ namespace TDHelper
 
                     t_lastSysCheck = t_lastSystem;
                 }
-                else if ((!string.IsNullOrEmpty(t_lastSysCheck) && !t_lastSysCheck.Equals(t_lastSystem)
-                    && !StringInList(t_lastSystem, outputSysStnNames)) || string.IsNullOrEmpty(t_lastSysCheck)
-                    && !StringInList(t_lastSystem, outputSysStnNames))
+                else if ((!string.IsNullOrEmpty(t_lastSysCheck) && 
+                    !t_lastSysCheck.Equals(t_lastSystem) && 
+                    !StringInList(t_lastSystem, outputSysStnNames)) || 
+                    string.IsNullOrEmpty(t_lastSysCheck) && 
+                    !StringInList(t_lastSystem, outputSysStnNames))
                 {
                     // if we've already checked a recent system, only check the newest entered system once
                     PlayUnknown(); // alert the user
@@ -2985,7 +2988,9 @@ namespace TDHelper
         {
             Debug.WriteLine(string.Format("testSystems Firing at: {0}", CurrentTimestamp()));
 
-            if (!backgroundWorker6.IsBusy && !settingsRef.DisableNetLogs && !string.IsNullOrEmpty(settingsRef.NetLogPath))
+            if (!backgroundWorker6.IsBusy && 
+                !settingsRef.DisableNetLogs && 
+                !string.IsNullOrEmpty(settingsRef.NetLogPath))
             {
                 backgroundWorker6.RunWorkerAsync();
             }

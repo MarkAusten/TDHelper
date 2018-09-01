@@ -3,10 +3,11 @@ v2.0.8.1
 * Fixed issue #34. Add check box to include/exclude insurance in run calculations.
 * The pilot's log now initially only loads up the first 50 most recent systems. There are two new contxt menu options on the grid to load up the next 50 as well or all the systems.
 * removed Inset and delete row options from the grid context menu.
+* Added max capacity to ships data and used this value to set the maximum value allowed in the ship cargo capacity control.
 
 v2.0.8.0
 --------
-* On first start up, before the commander profie option is run, the ship list now defaults to all the ships with their initial, just purchased, options.
+* On first start up, before the commander profile option is run, the ship list now defaults to all the ships with their initial, just purchased, options.
 
 vv2.0.7.0
 --------

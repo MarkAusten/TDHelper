@@ -736,10 +736,10 @@ namespace TDHelper
                         m_timer.Stop();
                     }
                 }
-                //catch
-                //{
-                //    throw;
-                //}
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
                 finally
                 {
                     if (hasRun)
