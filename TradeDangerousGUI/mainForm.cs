@@ -1738,6 +1738,22 @@ namespace TDHelper
         /// </summary>
         /// <param name="sender">The sender object.</param>
         /// <param name="e">The event arguments.</param>
+        private void EventHandler_GridMenu_Opening(
+            object sender, 
+            CancelEventArgs e)
+        {
+            // Disable the Next 50 menu item if all records have been loaded.
+            long records = GetTotalRecordCount("SystemLog");
+
+            mnuNext50.Enabled = (LoadedRecords < records);
+            mnuLoadAll.Enabled = (LoadedRecords < records);
+        }
+
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_InsertAtGridRow_Click(
             object sender,
             EventArgs e)
@@ -1757,6 +1773,22 @@ namespace TDHelper
                 AddAtTimestampDBRow(CurrentTimestamp());
                 InvalidatedRowUpdate(true, -1);
             }
+        }
+
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_LoadAll_Click(
+            object sender,
+            EventArgs e)
+        {
+            int currentRecord = grdPilotsLog.CurrentRow.Index;
+
+            LoadAllVisitedSystems();
+
+            grdPilotsLog.FirstDisplayedScrollingRowIndex = currentRecord;
         }
 
         /// <summary>
@@ -1900,7 +1932,7 @@ namespace TDHelper
             }
 
             // Ensure that the pilot's log database has the correct schema.
-            CreatePilotsLogDB();
+            CheckPilotsLogDatabaseSchema();
 
             if (!settingsRef.DisableNetLogs)
             {
@@ -2009,6 +2041,22 @@ namespace TDHelper
             MethodSelectState();
 
             cboMethod.Enabled = true;
+        }
+
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_Next50_Click(
+            object sender, 
+            EventArgs e)
+        {
+            int currentRecord = grdPilotsLog.CurrentRow.Index;
+
+            LoadNext50VisitedSystems();
+
+            grdPilotsLog.FirstDisplayedScrollingRowIndex = currentRecord;
         }
 
         /// <summary>

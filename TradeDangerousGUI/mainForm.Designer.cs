@@ -268,8 +268,7 @@
             this.tabLogPage = new System.Windows.Forms.TabPage();
             this.grdPilotsLog = new System.Windows.Forms.DataGridView();
             this.mnuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.mnuInsertAtGridRow = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuRemoveAtGridRow = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuNext50 = new System.Windows.Forms.ToolStripMenuItem();
             this.sepSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuForceRefreshGridView = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuForceResortMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -310,6 +309,7 @@
             this.panOldDataOptions = new System.Windows.Forms.Panel();
             this.panLocalOptions = new System.Windows.Forms.Panel();
             this.panOptions = new System.Windows.Forms.Panel();
+            this.mnuLoadAll = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSetValues.SuspendLayout();
             this.mnuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRunOptionsRoutes)).BeginInit();
@@ -3320,8 +3320,8 @@
             // mnuStrip2
             // 
             this.mnuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuInsertAtGridRow,
-            this.mnuRemoveAtGridRow,
+            this.mnuNext50,
+            this.mnuLoadAll,
             this.sepSeparator4,
             this.mnuForceRefreshGridView,
             this.mnuForceResortMenuItem,
@@ -3329,21 +3329,15 @@
             this.mnuCopySystemToSrc,
             this.mnuCopySystemToDest});
             this.mnuStrip2.Name = "contextMenuStrip2";
-            this.mnuStrip2.Size = new System.Drawing.Size(184, 148);
+            this.mnuStrip2.Size = new System.Drawing.Size(184, 170);
+            this.mnuStrip2.Opening += new System.ComponentModel.CancelEventHandler(this.EventHandler_GridMenu_Opening);
             // 
-            // mnuInsertAtGridRow
+            // mnuNext50
             // 
-            this.mnuInsertAtGridRow.Name = "mnuInsertAtGridRow";
-            this.mnuInsertAtGridRow.Size = new System.Drawing.Size(183, 22);
-            this.mnuInsertAtGridRow.Text = "Insert Row";
-            this.mnuInsertAtGridRow.Click += new System.EventHandler(this.EventHandler_InsertAtGridRow_Click);
-            // 
-            // mnuRemoveAtGridRow
-            // 
-            this.mnuRemoveAtGridRow.Name = "mnuRemoveAtGridRow";
-            this.mnuRemoveAtGridRow.Size = new System.Drawing.Size(183, 22);
-            this.mnuRemoveAtGridRow.Text = "Remove Row";
-            this.mnuRemoveAtGridRow.Click += new System.EventHandler(this.EventHandler_RemoveAtGridRow_Click);
+            this.mnuNext50.Name = "mnuNext50";
+            this.mnuNext50.Size = new System.Drawing.Size(183, 22);
+            this.mnuNext50.Text = "Load Next 50";
+            this.mnuNext50.Click += new System.EventHandler(this.EventHandler_Next50_Click);
             // 
             // sepSeparator4
             // 
@@ -3872,6 +3866,13 @@
             this.panOptions.Size = new System.Drawing.Size(322, 197);
             this.panOptions.TabIndex = 1;
             // 
+            // mnuLoadAll
+            // 
+            this.mnuLoadAll.Name = "mnuLoadAll";
+            this.mnuLoadAll.Size = new System.Drawing.Size(183, 22);
+            this.mnuLoadAll.Text = "Load All";
+            this.mnuLoadAll.Click += new System.EventHandler(this.EventHandler_LoadAll_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -4113,13 +4114,10 @@
         private System.Windows.Forms.LinkLabel lblTrackerLink;
         private System.Windows.Forms.LinkLabel lblFaqLink;
         private System.Windows.Forms.ContextMenuStrip mnuStrip2;
-        private System.Windows.Forms.ToolStripMenuItem mnuInsertAtGridRow;
         private System.Windows.Forms.ToolStripMenuItem mnuForceRefreshGridView;
-        private System.Windows.Forms.ToolStripSeparator sepSeparator4;
         private System.Windows.Forms.ToolStripSeparator sepSeparator5;
         private System.Windows.Forms.ToolStripMenuItem mnuCopySystemToSrc;
         private System.Windows.Forms.ToolStripMenuItem mnuCopySystemToDest;
-        private System.Windows.Forms.ToolStripMenuItem mnuRemoveAtGridRow;
         private System.Windows.Forms.ToolStripMenuItem mnuForceResortMenuItem;
         private System.Windows.Forms.Button btnCmdrProfile;
         private System.ComponentModel.BackgroundWorker backgroundWorker7;
@@ -4282,6 +4280,9 @@
         private System.Windows.Forms.ColumnHeader hdrCost;
         private System.Windows.Forms.Button btnDbMaintenance;
         private System.Windows.Forms.CheckBox chkIncludeInsurance;
+        private System.Windows.Forms.ToolStripMenuItem mnuNext50;
+        private System.Windows.Forms.ToolStripSeparator sepSeparator4;
+        private System.Windows.Forms.ToolStripMenuItem mnuLoadAll;
     }
 }
 
