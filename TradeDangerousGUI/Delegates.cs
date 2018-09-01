@@ -1206,6 +1206,7 @@ namespace TDHelper
             // Set this ship as the currently selected ship.
             string shipName = GetShipName(cmdrProfile["profile"]["ship"]);
             string sectionName = "Ship ID {0}".With(cmdrProfile["profile"]["ship"]["id"]);
+            string shipType = (string)cmdrProfile["profile"]["ship"]["name"];
 
             settingsRef.LastUsedConfig = sectionName;
 
@@ -1235,6 +1236,7 @@ namespace TDHelper
 
                 sectionName = "Ship ID {0}".With(shipObject["id"]);
                 shipName = GetShipName(shipObject);
+                shipType = (string)shipObject["name"];
 
                 availableShips += ",{0}".With(sectionName);
 
@@ -1272,6 +1274,7 @@ namespace TDHelper
                     ? unladenLy
                     : 1;
 
+                config[sectionName]["shipType"].StringValue = shipType;
                 config[sectionName]["shipName"].StringValue = shipName;
                 config[sectionName]["hullValue"].DecimalValue = hullValue;
                 config[sectionName]["modulesValue"].DecimalValue = modulesValue;

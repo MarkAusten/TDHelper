@@ -482,11 +482,7 @@ namespace TDHelper
 
             TDSettings settings = settingsRef;
             SharpConfig.Configuration config = GetConfigurationObject();
-
-            //if (string.IsNullOrEmpty(settings.LastUsedConfig))
-            //{
-            //    settings.LastUsedConfig = "Default";
-            //}
+            string shipType = string.Empty;
 
             bool hasSection = config.FirstOrDefault(x => x.Name == settings.LastUsedConfig) != null;
 
@@ -497,6 +493,7 @@ namespace TDHelper
                 settings.LadenLY = GetConfigSetting(config, settings.LastUsedConfig, "LadenLY");
                 settings.Padsizes = ContainsPadSizes(config[settings.LastUsedConfig]["Padsizes"].StringValue);
                 settings.UnladenLY = GetConfigSetting(config, settings.LastUsedConfig, "UnladenLY");
+                shipType = config[settings.LastUsedConfig]["ShipType"].StringValue;
             }
             else
             {
@@ -517,6 +514,20 @@ namespace TDHelper
             numLadenLy.Value = Math.Max(settings.LadenLY, numLadenLy.Minimum);
             txtPadSize.Text = settings.Padsizes;
             numUnladenLy.Value = Math.Max(settings.UnladenLY, numUnladenLy.Minimum);
+            numRouteOptionsShipCapacity.Maximum = Decimal.MaxValue;
+
+            if (!string.IsNullOrEmpty(shipType))
+            {
+                ShipConfig ship = ((ShipSection)ConfigurationManager.GetSection("ships"))
+                .ShipSettings.Cast<ShipConfig>()
+                .FirstOrDefault(x => x.ShipType == shipType);
+
+                if (ship != null &&
+                    decimal.TryParse(ship.MaxCapacity, out decimal maxCapacity))
+                {
+                    numRouteOptionsShipCapacity.Maximum = maxCapacity;
+                }
+            }
         }
 
         /// <summary>

@@ -32,25 +32,32 @@ namespace TDHelper
 
     public class ShipConfig : ConfigurationElement
     {
-        [ConfigurationProperty("initialcapacity", IsRequired = false)]
+        [ConfigurationProperty("initialcapacity", IsRequired = true)]
         public string InitialCapacity
         {
             get { return (string)base["initialcapacity"]; }
             set { base["initialcapacity"] = value; }
         }
 
-        [ConfigurationProperty("initialladenly", IsRequired = false)]
+        [ConfigurationProperty("initialladenly", IsRequired = true)]
         public string InitialLadenLY
         {
             get { return (string)base["initialladenly"]; }
             set { base["initialladenly"] = value; }
         }
 
-        [ConfigurationProperty("initialunladenly", IsRequired = false)]
+        [ConfigurationProperty("initialunladenly", IsRequired = true)]
         public string InitialUnladenLY
         {
             get { return (string)base["initialunladenly"]; }
             set { base["initialunladenly"] = value; }
+        }
+
+        [ConfigurationProperty("maxcapacity", IsRequired = true)]
+        public string MaxCapacity
+        {
+            get { return (string)base["maxcapacity"]; }
+            set { base["maxcapacity"] = value; }
         }
 
         [ConfigurationProperty("name", IsRequired = true)]

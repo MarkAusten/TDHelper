@@ -269,6 +269,7 @@
             this.grdPilotsLog = new System.Windows.Forms.DataGridView();
             this.mnuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuNext50 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuLoadAll = new System.Windows.Forms.ToolStripMenuItem();
             this.sepSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuForceRefreshGridView = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuForceResortMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -309,7 +310,6 @@
             this.panOldDataOptions = new System.Windows.Forms.Panel();
             this.panLocalOptions = new System.Windows.Forms.Panel();
             this.panOptions = new System.Windows.Forms.Panel();
-            this.mnuLoadAll = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSetValues.SuspendLayout();
             this.mnuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRunOptionsRoutes)).BeginInit();
@@ -392,7 +392,7 @@
             // btnStart
             // 
             this.btnStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnStart.Location = new System.Drawing.Point(787, 1);
+            this.btnStart.Location = new System.Drawing.Point(787, 0);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(69, 23);
             this.btnStart.TabIndex = 8;
@@ -1091,7 +1091,7 @@
             "Navigation",
             "OldData",
             "Local"});
-            this.cboMethod.Location = new System.Drawing.Point(699, 2);
+            this.cboMethod.Location = new System.Drawing.Point(699, 1);
             this.cboMethod.Name = "cboMethod";
             this.cboMethod.Size = new System.Drawing.Size(82, 21);
             this.cboMethod.TabIndex = 7;
@@ -3329,7 +3329,7 @@
             this.mnuCopySystemToSrc,
             this.mnuCopySystemToDest});
             this.mnuStrip2.Name = "contextMenuStrip2";
-            this.mnuStrip2.Size = new System.Drawing.Size(184, 170);
+            this.mnuStrip2.Size = new System.Drawing.Size(184, 148);
             this.mnuStrip2.Opening += new System.ComponentModel.CancelEventHandler(this.EventHandler_GridMenu_Opening);
             // 
             // mnuNext50
@@ -3338,6 +3338,13 @@
             this.mnuNext50.Size = new System.Drawing.Size(183, 22);
             this.mnuNext50.Text = "Load Next 50";
             this.mnuNext50.Click += new System.EventHandler(this.EventHandler_Next50_Click);
+            // 
+            // mnuLoadAll
+            // 
+            this.mnuLoadAll.Name = "mnuLoadAll";
+            this.mnuLoadAll.Size = new System.Drawing.Size(183, 22);
+            this.mnuLoadAll.Text = "Load All";
+            this.mnuLoadAll.Click += new System.EventHandler(this.EventHandler_LoadAll_Click);
             // 
             // sepSeparator4
             // 
@@ -3653,8 +3660,8 @@
             // 
             // panRouteOptions
             // 
-            this.panRouteOptions.Controls.Add(this.panMisc);
             this.panRouteOptions.Controls.Add(this.panHops);
+            this.panRouteOptions.Controls.Add(this.panMisc);
             this.panRouteOptions.Controls.Add(this.panStock);
             this.panRouteOptions.Controls.Add(this.panShipData);
             this.panRouteOptions.Controls.Add(this.panProfit);
@@ -3852,26 +3859,19 @@
             // 
             this.panOptions.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panOptions.Controls.Add(this.panRunOptions);
-            this.panOptions.Controls.Add(this.panShipVendorOptions);
-            this.panOptions.Controls.Add(this.panBuyOptions);
+            this.panOptions.Controls.Add(this.panTradeOptions);
             this.panOptions.Controls.Add(this.panSellOptions);
             this.panOptions.Controls.Add(this.panRaresOptions);
-            this.panOptions.Controls.Add(this.panMarketOptions);
-            this.panOptions.Controls.Add(this.panNavOptions);
             this.panOptions.Controls.Add(this.panOldDataOptions);
+            this.panOptions.Controls.Add(this.panNavOptions);
+            this.panOptions.Controls.Add(this.panMarketOptions);
             this.panOptions.Controls.Add(this.panLocalOptions);
-            this.panOptions.Controls.Add(this.panTradeOptions);
+            this.panOptions.Controls.Add(this.panBuyOptions);
+            this.panOptions.Controls.Add(this.panShipVendorOptions);
             this.panOptions.Location = new System.Drawing.Point(10, 33);
             this.panOptions.Name = "panOptions";
             this.panOptions.Size = new System.Drawing.Size(322, 197);
             this.panOptions.TabIndex = 1;
-            // 
-            // mnuLoadAll
-            // 
-            this.mnuLoadAll.Name = "mnuLoadAll";
-            this.mnuLoadAll.Size = new System.Drawing.Size(183, 22);
-            this.mnuLoadAll.Text = "Load All";
-            this.mnuLoadAll.Click += new System.EventHandler(this.EventHandler_LoadAll_Click);
             // 
             // MainForm
             // 

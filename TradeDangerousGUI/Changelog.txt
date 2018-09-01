@@ -1,6 +1,8 @@
 v2.0.8.1
 --------
 * Fixed issue #34. Add check box to include/exclude insurance in run calculations.
+* The pilot's log now initially only loads up the first 50 most recent systems. There are two new contxt menu options on the grid to load up the next 50 as well or all the systems.
+* removed Inset and delete row options from the grid context menu.
 
 v2.0.8.0
 --------
@@ -21,7 +23,7 @@ v2.0.6.0
 * Added new database maintenance form.
 * Moved analyse to new form.
 * Added vacuum command on new form.
-* fixed bug that triewd to run ANALYSE or VACUUM via TD after processing.
+* fixed bug that tried to run ANALYSE or VACUUM via TD after processing.
 
 v2.0.5.9
 --------

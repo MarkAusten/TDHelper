@@ -669,6 +669,7 @@ namespace TDHelper
 
                 config[sectionName]["shipName"].StringValue = ship.Name;
                 config[sectionName]["Padsizes"].StringValue = ship.PadSizes;
+                config[sectionName]["shipType"].StringValue = ship.ShipType;
 
                 if (ship.Name.Equals("Sidewinder"))
                 {
