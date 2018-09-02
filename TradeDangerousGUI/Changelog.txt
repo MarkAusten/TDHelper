@@ -4,6 +4,7 @@ v2.0.8.1
 * The pilot's log now initially only loads up the first 50 most recent systems. There are two new contxt menu options on the grid to load up the next 50 as well or all the systems.
 * removed Inset and delete row options from the grid context menu.
 * Added max capacity to ships data and used this value to set the maximum value allowed in the ship cargo capacity control.
+* Added code to detect comma decimal points and convert to full stop decimal points.
 
 v2.0.8.0
 --------

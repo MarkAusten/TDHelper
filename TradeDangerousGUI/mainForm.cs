@@ -187,9 +187,11 @@ namespace TDHelper
             decimal value,
             string option)
         {
+            string stringValue = value.ToEnglishString();
+
             return value == 0
                 ? string.Empty
-                : " --{0}={1}".With(option, value);
+                : " --{0}={1}".With(option, stringValue);
         }
 
         /// <summary>

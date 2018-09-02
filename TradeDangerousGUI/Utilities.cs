@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -45,6 +46,28 @@ namespace TDHelper
 
                 yield return next;
             }
+        }
+
+        /// <summary>
+        /// Convert the number to string with a "." decimal point if required. 
+        /// </summary>
+        /// <param name="number">The number to be converted.</param>
+        /// <returns>The specified number as a string with a dot as a deciaml point.</returns>
+        public static string ToEnglishString(this decimal number)
+        {
+            string result = number.ToString();
+
+            // If the current culture uses commas as a decimal point, replace all deciml separators with a pipe, then all
+            // group separators with a comma and finally all pipes with a dot.
+            if (CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator != ".")
+            {
+                result = result
+                    .Replace(CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator, "|")
+                    .Replace(CultureInfo.CurrentCulture.NumberFormat.NumberGroupSeparator, ",")
+                    .Replace("|", ".");
+            }
+
+            return result;
         }
     }
 }
