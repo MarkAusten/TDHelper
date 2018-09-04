@@ -69,5 +69,27 @@ namespace TDHelper
 
             return result;
         }
+
+        /// <summary>
+        /// Get the message and all inner exception messages from the exception.
+        /// </summary>
+        /// <param name="ex">The exception with the messages.</param>
+        /// <returns>A full list of messages.</returns>
+        public static string GetFullMessage(this Exception ex)
+        {
+            string message = string.Empty;
+
+            Exception exception = ex;
+
+            do
+            {
+                message += "{0}{1}".With(Environment.NewLine, exception.Message);
+
+                exception = exception.InnerException;
+            }
+            while (exception != null);
+
+            return message.TrimStart(Environment.NewLine.ToCharArray());
+        }
     }
 }

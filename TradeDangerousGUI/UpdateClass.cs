@@ -185,7 +185,7 @@ namespace TDHelper
             }
             catch (Exception e)
             {
-                WriteToLog(MainForm.updateLogPath, "Exception: " + e.Message);
+                WriteToLog(MainForm.updateLogPath, "Exception: " + e.GetFullMessage());
             }
         }
 
@@ -205,11 +205,11 @@ namespace TDHelper
             }
             catch (IOException e)
             {
-                WriteToLog(MainForm.updateLogPath, "IOException: " + e.Message);
+                WriteToLog(MainForm.updateLogPath, "IOException: " + e.GetFullMessage());
             }
             catch (Exception e)
             {
-                WriteToLog(MainForm.updateLogPath, "Exception: " + e.Message);
+                WriteToLog(MainForm.updateLogPath, "Exception: " + e.GetFullMessage());
             }
         }
 
@@ -247,15 +247,9 @@ namespace TDHelper
             {
                 if (e.Message != "The remote server returned an error: (404) Not Found.")
                 {
-                    string message
-                        = e.InnerException != null && !string.IsNullOrEmpty(e.InnerException.Message)
-                        ? e.InnerException.Message 
-                        : string.Empty;
-
-                    WriteToLog(MainForm.updateLogPath, "{0} [URL: {1}] {2}".With(
-                        e.Message,
+                    WriteToLog(MainForm.updateLogPath, "[URL: {0}] {1}".With(
                         url,
-                        message));
+                        e.GetFullMessage()));
                 }
             }
 
@@ -340,7 +334,7 @@ namespace TDHelper
             }
             catch (Exception e)
             {
-                WriteToLog(MainForm.updateLogPath, e.Message);
+                WriteToLog(MainForm.updateLogPath, e.GetFullMessage());
             }
         }
 
@@ -406,7 +400,7 @@ namespace TDHelper
             }
             catch (Exception e)
             {
-                WriteToLog(MainForm.updateLogPath, "Exception: " + e.Message);
+                WriteToLog(MainForm.updateLogPath, "Exception: " + e.GetFullMessage());
                 return string.Empty;
             }
         }
@@ -438,7 +432,7 @@ namespace TDHelper
             }
             catch (Exception e)
             {
-                WriteToLog(MainForm.updateLogPath, "Exception: " + e.Message);
+                WriteToLog(MainForm.updateLogPath, "Exception: " + e.GetFullMessage());
             }
 
             return result;
@@ -481,7 +475,7 @@ namespace TDHelper
             }
             catch (Exception e)
             {
-                WriteToLog(MainForm.updateLogPath, "Exception: " + e.Message);
+                WriteToLog(MainForm.updateLogPath, "Exception: " + e.GetFullMessage());
                 return null;
             }
         }

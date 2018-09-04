@@ -146,7 +146,7 @@ namespace TDHelper
                         catch (Exception ex)
                         {
                             transaction.Rollback();
-                            Debug.WriteLine(ex.Message);
+                            Debug.WriteLine(ex.GetFullMessage());
                         }
                         finally
                         {
@@ -363,7 +363,7 @@ namespace TDHelper
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Debug.WriteLine(ex.GetFullMessage());
                 }
                 finally
                 {
@@ -410,7 +410,7 @@ namespace TDHelper
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Debug.WriteLine(ex.GetFullMessage());
                 }
                 finally
                 {
@@ -738,7 +738,7 @@ namespace TDHelper
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Debug.WriteLine(ex.GetFullMessage());
                 }
                 finally
                 {
@@ -1380,7 +1380,7 @@ namespace TDHelper
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Debug.WriteLine(ex.GetFullMessage());
                 }
             }
         }
@@ -2225,7 +2225,7 @@ namespace TDHelper
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(ex.Message);
+                        Debug.WriteLine(ex.GetFullMessage());
                     }
                     finally
                     {

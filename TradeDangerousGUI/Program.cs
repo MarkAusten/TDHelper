@@ -94,13 +94,7 @@ namespace TDHelper
                     "error.log");
 
                 // Get the exception message plus any inner exception messages.
-                string message = DateTime.Now.ToString("yyyy//MM/dd hh:mm:ss") + " : " + ex.Message;
-                Exception pointer = ex.InnerException;
-
-                while (pointer != null && string.IsNullOrEmpty(pointer.Message))
-                {
-                    message += Environment.NewLine + pointer.Message;
-                }
+                string message = DateTime.Now.ToString("yyyy//MM/dd hh:mm:ss") + " : " + ex.GetFullMessage();
 
                 // Append the message to the error log
                 File.AppendAllText(

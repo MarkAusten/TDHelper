@@ -185,7 +185,7 @@ namespace TDHelper
             catch (UnauthorizedAccessException) { /* eat it */ }
             catch (Exception e)
             {
-                UpdateClass.WriteToLog(updateLogPath, "Exception: " + e.Message);
+                UpdateClass.WriteToLog(updateLogPath, "Exception: " + e.GetFullMessage());
             }
         }
 
@@ -304,7 +304,7 @@ namespace TDHelper
                     catch (Exception ex)
                     {
                         // swallow the exception for the moment.
-                        Debug.WriteLine(ex.Message);
+                        Debug.WriteLine(ex.GetFullMessage());
                     }
                 }
                 finally
