@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
-using SharpConfig;
 
 namespace TDHelper
 {
@@ -622,66 +619,19 @@ namespace TDHelper
             foreach (string shipId in settingsRef
                     .AvailableShips
                     .Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    SharpConfig.Section configSection = config[shipId];
+            {
+                SharpConfig.Section configSection = config[shipId];
 
-                    ships.Add(new ComboBoxItem()
-                    {
-                        Text = GetStringSetting(configSection, "shipName"),
-                        Value = shipId
-                    });
-                }
+                ships.Add(new ComboBoxItem()
+                {
+                    Text = GetStringSetting(configSection, "shipName"),
+                    Value = shipId
+                });
+            }
 
             return ships
                 .OrderBy(x => x.Text)
                 .ToList();
-        }
-
-        /// <summary>
-        /// Populate the config with the initial ship data.
-        /// </summary>
-        private void LoadInitialShipList()
-        {
-            SharpConfig.Configuration config = GetConfigurationObject();
-
-            ShipSection shipSection = ((ShipSection)ConfigurationManager.GetSection("ships"));
-
-            int id = 0;
-            string availableShips = string.Empty;
-
-            foreach (ShipConfig ship in shipSection.ShipSettings.Cast<ShipConfig>())
-            {
-                string sectionName = "Default {0}".With(++id);
-                settingsRef.AvailableShips += ",{0}".With(sectionName);
-
-                config[sectionName]["Capacity"].DecimalValue
-                    = decimal.TryParse(ship.InitialCapacity, out decimal capacity)
-                    ? capacity
-                    : 1;
-
-                config[sectionName]["LadenLY"].DecimalValue
-                    = decimal.TryParse(ship.InitialLadenLY, out decimal ladenLy)
-                    ? ladenLy
-                    : 1;
-
-                config[sectionName]["unladenLY"].DecimalValue
-                    = decimal.TryParse(ship.InitialUnladenLY, out decimal unladenLy)
-                    ? unladenLy
-                    : 1;
-
-                config[sectionName]["shipName"].StringValue = ship.Name;
-                config[sectionName]["Padsizes"].StringValue = ship.PadSizes;
-                config[sectionName]["shipType"].StringValue = ship.ShipType;
-
-                if (ship.Name.Equals("Sidewinder"))
-                {
-                    settingsRef.LastUsedConfig = sectionName;
-                }
-            }
-
-            config.SaveToFile(configFile);
-
-            settingsRef.AvailableShips = settingsRef.AvailableShips.Substring(1);
         }
 
         /// <summary>
@@ -750,6 +700,53 @@ namespace TDHelper
             List<string> parentList)
         {
             return StringInList(input, parentList);
+        }
+
+        /// <summary>
+        /// Populate the config with the initial ship data.
+        /// </summary>
+        private void LoadInitialShipList()
+        {
+            SharpConfig.Configuration config = GetConfigurationObject();
+
+            ShipSection shipSection = ((ShipSection)ConfigurationManager.GetSection("ships"));
+
+            int id = 0;
+            string availableShips = string.Empty;
+
+            foreach (ShipConfig ship in shipSection.ShipSettings.Cast<ShipConfig>())
+            {
+                string sectionName = "Default {0}".With(++id);
+                settingsRef.AvailableShips += ",{0}".With(sectionName);
+
+                config[sectionName]["Capacity"].DecimalValue
+                    = decimal.TryParse(ship.InitialCapacity, out decimal capacity)
+                    ? capacity
+                    : 1;
+
+                config[sectionName]["LadenLY"].DecimalValue
+                    = decimal.TryParse(ship.InitialLadenLY, out decimal ladenLy)
+                    ? ladenLy
+                    : 1;
+
+                config[sectionName]["unladenLY"].DecimalValue
+                    = decimal.TryParse(ship.InitialUnladenLY, out decimal unladenLy)
+                    ? unladenLy
+                    : 1;
+
+                config[sectionName]["shipName"].StringValue = ship.Name;
+                config[sectionName]["Padsizes"].StringValue = ship.PadSizes;
+                config[sectionName]["shipType"].StringValue = ship.ShipType;
+
+                if (ship.Name.Equals("Sidewinder"))
+                {
+                    settingsRef.LastUsedConfig = sectionName;
+                }
+            }
+
+            config.SaveToFile(configFile);
+
+            settingsRef.AvailableShips = settingsRef.AvailableShips.Substring(1);
         }
 
         private void RemoveMarkedStation(
