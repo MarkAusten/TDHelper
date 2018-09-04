@@ -3192,11 +3192,11 @@ namespace TDHelper
                     switch (option.Text.ToLower())
                     {
                         case "buy":
-                            cmdPath += " --b";
+                            cmdPath += " --buy";
                             break;
 
                         case "sell":
-                            cmdPath += " --s";
+                            cmdPath += " --sell";
                             break;
                     }
                 }
