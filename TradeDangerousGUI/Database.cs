@@ -1726,52 +1726,60 @@ namespace TDHelper
         {
             List<string> commodities = new List<string>();
 
-            // read items from csv files
-            using (StreamReader reader1 = new StreamReader(File.OpenRead(t_itemListPath)))
+            // Check to see if the items file is available.
+            if (CheckIfFileOpens(t_itemListPath))
             {
-                // skip the first line of the item csv
-                if (!reader1.EndOfStream)
+                // read items from csv files
+                using (StreamReader reader1 = new StreamReader(File.OpenRead(t_itemListPath)))
                 {
-                    reader1.ReadLine();
+                    // skip the first line of the item csv
+                    if (!reader1.EndOfStream)
+                    {
+                        reader1.ReadLine();
+                    }
+
+                    // Read in the item list first
+                    while (!reader1.EndOfStream)
+                    {
+                        string line = reader1.ReadLine();
+                        string[] values = line.Split(',');
+                        string output = Convert.ToString(values[1]).Trim(new char[] { '\'', '\"' });
+
+                        commodities.Add(output);
+                    }
                 }
 
-                // Read in the item list first
-                while (!reader1.EndOfStream)
-                {
-                    string line = reader1.ReadLine();
-                    string[] values = line.Split(',');
-                    string output = Convert.ToString(values[1]).Trim(new char[] { '\'', '\"' });
-
-                    commodities.Add(output);
-                }
+                CommoditiesList.Clear();
+                CommoditiesList.AddRange(commodities);
             }
-
-            CommoditiesList.Clear();
-            CommoditiesList.AddRange(commodities);
 
             commodities.Clear();
 
-            using (var reader2 = new StreamReader(File.OpenRead(t_shipListPath)))
+            // check to se if the ships file is available.
+            if (CheckIfFileOpens(t_shipListPath))
             {
-                // skip the first line of the ship csv
-                if (!reader2.EndOfStream)
+                using (var reader2 = new StreamReader(File.OpenRead(t_shipListPath)))
                 {
-                    reader2.ReadLine();
+                    // skip the first line of the ship csv
+                    if (!reader2.EndOfStream)
+                    {
+                        reader2.ReadLine();
+                    }
+
+                    // Read in the ship list
+                    while (!reader2.EndOfStream)
+                    {
+                        string line = reader2.ReadLine();
+                        string[] values = line.Split(',');
+                        string output = Convert.ToString(values[1]).Trim(new char[] { '\'', '\"' });
+
+                        commodities.Add(output);
+                    }
                 }
 
-                // Read in the ship list
-                while (!reader2.EndOfStream)
-                {
-                    string line = reader2.ReadLine();
-                    string[] values = line.Split(',');
-                    string output = Convert.ToString(values[1]).Trim(new char[] { '\'', '\"' });
-
-                    commodities.Add(output);
-                }
+                ShipList.Clear();
+                ShipList.AddRange(commodities);
             }
-
-            ShipList.Clear();
-            ShipList.AddRange(commodities);
 
             CommoditiesList = CommoditiesList.OrderBy(x => x)
                 .ToList();
