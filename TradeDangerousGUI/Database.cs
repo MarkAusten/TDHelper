@@ -31,7 +31,6 @@ namespace TDHelper
         // Output
         private List<string> outputSysStnNames = new List<string>();
 
-        //        private DataRetriever retriever;
         private DataTable ship_table = new DataTable();
 
         // Inputs
@@ -1133,34 +1132,10 @@ namespace TDHelper
 
                     return true;
                 }
-
-                // invalidate the cache pages
-                UpdateLocalTable();
-
-                //retriever = new DataRetriever(pilotsLogConn, "SystemLog");
-                //memoryCache = new Cache(retriever, 24);
-
-                //// force a refresh/repaint
-                //this.Invoke(new Action(() =>
-                //{
-                //    grdPilotsLog.RowCount = retriever.RowCount;
-                //    grdPilotsLog.Refresh();
-                //}));
             }
-            else
-            {
-                // partial refresh
-                UpdateLocalTable();
 
-                //retriever = new DataRetriever(pilotsLogConn, "SystemLog");
-                //memoryCache = new Cache(retriever, 24);
-
-                //this.Invoke(new Action(() =>
-                //{
-                //    grdPilotsLog.RowCount = retriever.RowCount;
-                //    grdPilotsLog.InvalidateRow(rowIndex);
-                //}));
-            }
+            // partial refresh
+            UpdateLocalTable();
 
             return false;
         }
@@ -1348,35 +1323,6 @@ namespace TDHelper
                         grdPilotsLog.Columns["Notes"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                         grdPilotsLog.Columns["Notes"].ReadOnly = false;
                     }
-
-                    //retriever = new DataRetriever(pilotsLogConn, "SystemLog");
-
-                    //this.Invoke(new Action(() =>
-                    //{
-                    //    if (grdPilotsLog.Columns.Count != localTable.Columns.Count)
-                    //    {
-                    //        foreach (DataColumn c in retriever.Columns)
-                    //        {
-                    //            grdPilotsLog.Columns.Add(c.ColumnName, c.ColumnName);
-                    //        }
-                    //    }
-
-                    //    grdPilotsLog.Rows.Clear();
-
-                    //    memoryCache = new Cache(retriever, 24);
-
-                    //    grdPilotsLog.Refresh();
-
-                    //    grdPilotsLog.RowCount = retriever.RowCount;
-
-                    //    if (grdPilotsLog.RowCount > 0)
-                    //    {
-                    //        grdPilotsLog.Columns["ID"].Visible = false;
-                    //        grdPilotsLog.Columns["Timestamp"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-                    //        grdPilotsLog.Columns["System"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-                    //        grdPilotsLog.Columns["Notes"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-                    //    }
-                    //}));
                 }
                 catch (Exception ex)
                 {
@@ -1807,16 +1753,16 @@ namespace TDHelper
 
         private void PopulatePilotsLogDB()
         {
-            using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
+            if (netLogOutput.Count > 0)
             {
-                bool isOpen = false;
-
-                try
+                using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
                 {
-                    isOpen = OpenConnection(cmd.Connection);
+                    bool isOpen = false;
 
-                    if (netLogOutput.Count > 0)
+                    try
                     {
+                        isOpen = OpenConnection(cmd.Connection);
+
                         using (var transaction = pilotsLogConn.BeginTransaction())
                         {
                             // always do our inserts in a batch for ideal performance
@@ -1836,37 +1782,16 @@ namespace TDHelper
                             transaction.Commit();
                         }
                     }
-
-                    this.Invoke(new Action(() =>
+                    catch (Exception ex)
                     {
-                        //retriever = new DataRetriever(cmd.Connection, "SystemLog");
-
-                        //foreach (DataColumn c in retriever.Columns)
-                        //{
-                        //    grdPilotsLog.Columns.Add(c.ColumnName, c.ColumnName);
-                        //}
-
-                        //// setup the gridview
-                        //UpdateLocalTable();
-                        //memoryCache = new Cache(retriever, 24);
-
-                        //grdPilotsLog.RowCount = retriever.RowCount;
-
-                        //grdPilotsLog.Columns["ID"].Visible = false;
-                        //grdPilotsLog.Columns["Timestamp"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-                        //grdPilotsLog.Columns["System"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-                        //grdPilotsLog.Columns["Notes"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-                    }));
-                }
-                //catch
-                //{
-                //    throw;
-                //}
-                finally
-                {
-                    if (!isOpen)
+                        Debug.WriteLine(ex.GetFullMessage());
+                    }
+                    finally
                     {
-                        CloseConnection(cmd.Connection);
+                        if (!isOpen)
+                        {
+                            CloseConnection(cmd.Connection);
+                        }
                     }
                 }
             }
