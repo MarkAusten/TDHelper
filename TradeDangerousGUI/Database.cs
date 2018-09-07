@@ -281,10 +281,10 @@ namespace TDHelper
         {
             SQLiteConnection connection = conn;
 
-            SetConnections();
-
             if (conn == null)
             {
+                SetConnections();
+
                 switch (name.ToUpper())
                 {
                     case "TDH":
