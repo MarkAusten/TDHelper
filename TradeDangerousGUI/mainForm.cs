@@ -108,8 +108,8 @@ namespace TDHelper
             SetFormTitle(this);
 
             testSystemsTimer.AutoReset = false;
-            testSystemsTimer.Interval = 10000;
-            testSystemsTimer.Elapsed += this.EventHandler_TestSystemsTimer_Delegate;
+            testSystemsTimer.Interval = 60000;
+            testSystemsTimer.Elapsed += EventHandler_TestSystemsTimer_Delegate;
 
             btnCmdrProfile.Enabled = ValidateEdce();
 
@@ -562,15 +562,16 @@ namespace TDHelper
             DoHotSwapCleanup();
         }
 
+        /// <summary>
+        /// This worker delegate is intended to update the system list every few seconds,
+        /// notifying when an unrecognized system is detected.
+        /// </summary>
+        /// <param name="sender">The calling object.</param>
+        /// <param name="e">The event parameters.</param>
         private void BackgroundWorker6_DoWork(
             object sender,
             DoWorkEventArgs e)
         {
-            /*
-             * This worker delegate is intended to update the system list every few seconds,
-             * notifying when an unrecognized system is detected.
-             */
-
             BuildOutput(!hasRun);
 
             if (settingsRef.TestSystems)

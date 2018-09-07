@@ -249,6 +249,7 @@
             this.hdrCost = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnDbMaintenance = new System.Windows.Forms.Button();
             this.chkIncludeInsurance = new System.Windows.Forms.CheckBox();
+            this.cboCommandersShips = new SeparatorComboBox.SeparatorComboBox();
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker4 = new System.ComponentModel.BackgroundWorker();
             this.panRunOptions = new System.Windows.Forms.Panel();
@@ -309,7 +310,7 @@
             this.panOldDataOptions = new System.Windows.Forms.Panel();
             this.panLocalOptions = new System.Windows.Forms.Panel();
             this.panOptions = new System.Windows.Forms.Panel();
-            this.cboCommandersShips = new SeparatorComboBox.SeparatorComboBox();
+            this.panStatus = new System.Windows.Forms.Panel();
             this.mnuSetValues.SuspendLayout();
             this.mnuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRunOptionsRoutes)).BeginInit();
@@ -3076,6 +3077,26 @@
             this.tipToolTips.SetToolTip(this.chkIncludeInsurance, "Include the insurance in the RUN calculation.");
             this.chkIncludeInsurance.UseVisualStyleBackColor = true;
             // 
+            // cboCommandersShips
+            // 
+            this.cboCommandersShips.AutoAdjustItemHeight = false;
+            this.cboCommandersShips.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cboCommandersShips.DropDownHeight = 400;
+            this.cboCommandersShips.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboCommandersShips.FormattingEnabled = true;
+            this.cboCommandersShips.IntegralHeight = false;
+            this.cboCommandersShips.Location = new System.Drawing.Point(6, 4);
+            this.cboCommandersShips.Name = "cboCommandersShips";
+            this.cboCommandersShips.SeparatorColor = System.Drawing.Color.RoyalBlue;
+            this.cboCommandersShips.SeparatorMargin = 1;
+            this.cboCommandersShips.SeparatorStyle = System.Drawing.Drawing2D.DashStyle.Solid;
+            this.cboCommandersShips.SeparatorWidth = 2;
+            this.cboCommandersShips.Size = new System.Drawing.Size(272, 21);
+            this.cboCommandersShips.TabIndex = 1;
+            this.cboCommandersShips.TabStop = false;
+            this.tipToolTips.SetToolTip(this.cboCommandersShips, "Select a ship");
+            this.cboCommandersShips.SelectionChangeCommitted += new System.EventHandler(this.EventHandler_Ships_SelectionChangeCommitted);
+            // 
             // backgroundWorker3
             // 
             this.backgroundWorker3.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker3_DoWork);
@@ -3662,6 +3683,7 @@
             // 
             // panMethods
             // 
+            this.panMethods.Controls.Add(this.panStatus);
             this.panMethods.Controls.Add(this.btnDbMaintenance);
             this.panMethods.Controls.Add(this.btnStationInfo);
             this.panMethods.Controls.Add(this.btnSaveSettings);
@@ -3862,25 +3884,12 @@
             this.panOptions.Size = new System.Drawing.Size(322, 197);
             this.panOptions.TabIndex = 1;
             // 
-            // cboCommandersShips1
+            // panStatus
             // 
-            this.cboCommandersShips.AutoAdjustItemHeight = false;
-            this.cboCommandersShips.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.cboCommandersShips.DropDownHeight = 400;
-            this.cboCommandersShips.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboCommandersShips.FormattingEnabled = true;
-            this.cboCommandersShips.IntegralHeight = false;
-            this.cboCommandersShips.Location = new System.Drawing.Point(6, 4);
-            this.cboCommandersShips.Name = "cboCommandersShips1";
-            this.cboCommandersShips.SeparatorColor = System.Drawing.Color.RoyalBlue;
-            this.cboCommandersShips.SeparatorMargin = 1;
-            this.cboCommandersShips.SeparatorStyle = System.Drawing.Drawing2D.DashStyle.Solid;
-            this.cboCommandersShips.SeparatorWidth = 2;
-            this.cboCommandersShips.Size = new System.Drawing.Size(272, 21);
-            this.cboCommandersShips.TabIndex = 1;
-            this.cboCommandersShips.TabStop = false;
-            this.tipToolTips.SetToolTip(this.cboCommandersShips, "Select a ship");
-            this.cboCommandersShips.SelectionChangeCommitted += new System.EventHandler(this.EventHandler_Ships_SelectionChangeCommitted);
+            this.panStatus.Location = new System.Drawing.Point(25, 0);
+            this.panStatus.Name = "panStatus";
+            this.panStatus.Size = new System.Drawing.Size(23, 23);
+            this.panStatus.TabIndex = 1;
             // 
             // MainForm
             // 
@@ -4292,6 +4301,7 @@
         private System.Windows.Forms.ToolStripSeparator sepSeparator4;
         private System.Windows.Forms.ToolStripMenuItem mnuLoadAll;
         private SeparatorComboBox.SeparatorComboBox cboCommandersShips;
+        private System.Windows.Forms.Panel panStatus;
     }
 }
 
