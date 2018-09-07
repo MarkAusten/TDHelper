@@ -1,3 +1,8 @@
+v2.0.8.2
+--------
+* Added missing Adder in initial ship list.
+* The ship list now lists the ships owne by the commander (after a Commander Profile update) followed by a list of all available ship in their "just bought" configuration. The two sections are separated by a line in the list.
+
 v2.0.8.1
 --------
 * Fixed issue #34. Add check box to include/exclude insurance in run calculations.
