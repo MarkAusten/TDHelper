@@ -3951,7 +3951,7 @@ namespace TDHelper
         /// <param name="panel">The panel to be checked.</param>
         private void SetCommodities(Panel panel)
         {
-            // Only refresh the panelo if it is visible.
+            // Only refresh the panel if it is visible.
             if (panel.Visible)
             {
                 // See if this options panel has a commodity combo box.
@@ -3963,12 +3963,7 @@ namespace TDHelper
                     // Detach and reattach the destinations data source.
                     commodities.DataSource = null;
 
-                    int index
-                        = methodFromIndex == 0
-                        ? methodIndex
-                        : methodFromIndex;
-
-                    switch (index)
+                    switch (methodIndex)
                     {
                         case 1: // Buy
                                 // All commodities & ships
@@ -4072,7 +4067,8 @@ namespace TDHelper
             TextBox padsizes = panel.Controls.OfType<TextBox>()
                 .FirstOrDefault(x => x.Name.Contains("Pads"));
 
-            if (padsizes != null && string.IsNullOrEmpty(padsizes.Text))
+            if (padsizes != null && 
+                string.IsNullOrEmpty(padsizes.Text))
             {
                 // It has but it is empty so set it to the same value as the currently selected ship.
                 padsizes.Text = txtPadSize.Text;
@@ -4196,6 +4192,8 @@ namespace TDHelper
                 {
                     EnableOptions(panRouteOptions, show);
                 }
+
+                OptionsPanelRefresh(panel);
             }
         }
 
