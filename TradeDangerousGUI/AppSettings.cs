@@ -629,9 +629,20 @@ namespace TDHelper
                 });
             }
 
-            return ships
+            // Order the two sections separately.
+            IList<ComboBoxItem> owned = ships
+                .Where(x => x.Value.ToString().StartsWith("Ship ID"))
                 .OrderBy(x => x.Text)
                 .ToList();
+
+            IList<ComboBoxItem> initial = ships
+                .Where(x => x.Value.ToString().StartsWith("Default"))
+                .OrderBy(x => x.Text)
+                .ToList();
+
+            ships = new List<ComboBoxItem>(owned.Concat(initial));
+
+            return ships;
         }
 
         /// <summary>
@@ -712,7 +723,9 @@ namespace TDHelper
             ShipSection shipSection = ((ShipSection)ConfigurationManager.GetSection("ships"));
 
             int id = 0;
-            string availableShips = string.Empty;
+            string availableShips = settingsRef.AvailableShips;
+
+            bool noneOwned = string.IsNullOrEmpty(availableShips);
 
             foreach (ShipConfig ship in shipSection.ShipSettings.Cast<ShipConfig>())
             {
@@ -738,7 +751,8 @@ namespace TDHelper
                 config[sectionName]["Padsizes"].StringValue = ship.PadSizes;
                 config[sectionName]["shipType"].StringValue = ship.ShipType;
 
-                if (ship.Name.Equals("Sidewinder"))
+                if (noneOwned &&
+                    ship.Name.Equals("Sidewinder"))
                 {
                     settingsRef.LastUsedConfig = sectionName;
                 }
@@ -746,7 +760,7 @@ namespace TDHelper
 
             config.SaveToFile(configFile);
 
-            settingsRef.AvailableShips = settingsRef.AvailableShips.Substring(1);
+            settingsRef.AvailableShips = settingsRef.AvailableShips.Trim(new char[] { ',' });
         }
 
         private void RemoveMarkedStation(

@@ -476,8 +476,23 @@ namespace TDHelper
             if (refreshList)
             {
                 validConfigs = SetAvailableShips();
-                cboCommandersShips.DataSource = null;
-                cboCommandersShips.DataSource = validConfigs;
+                //cboCommandersShips.DataSource = null;
+                //cboCommandersShips.DataSource = validConfigs;
+
+                foreach (ComboBoxItem item in validConfigs)
+                {
+                    cboCommandersShips.Add(item);
+                }
+
+                int index = ((ShipSection)ConfigurationManager.GetSection("ships"))
+                    .ShipSettings
+                    .Cast<ShipConfig>()
+                    .Count();
+
+                if (index < cboCommandersShips.Items.Count)
+                {
+                    cboCommandersShips.SetSeparator(index);
+                }
             }
 
             TDSettings settings = settingsRef;
@@ -504,17 +519,15 @@ namespace TDHelper
                 settings.UnladenLY = 1;
             }
 
+            //cboCommandersShips.SelectedIndex
+            //   = !string.IsNullOrEmpty(settings.LastUsedConfig)
+            //   ? cboCommandersShips.FindStringExact(GetShipNameFromConfigSection(settings.LastUsedConfig))
+            //   : 0;
+
             cboCommandersShips.SelectedIndex
                = !string.IsNullOrEmpty(settings.LastUsedConfig)
                ? cboCommandersShips.FindStringExact(GetShipNameFromConfigSection(settings.LastUsedConfig))
                : 0;
-
-            numRouteOptionsShipCapacity.Value = settings.Capacity;
-            numShipInsurance.Value = Math.Max(settings.Insurance, numShipInsurance.Minimum);
-            numLadenLy.Value = Math.Max(settings.LadenLY, numLadenLy.Minimum);
-            txtPadSize.Text = settings.Padsizes;
-            numUnladenLy.Value = Math.Max(settings.UnladenLY, numUnladenLy.Minimum);
-            numRouteOptionsShipCapacity.Maximum = Decimal.MaxValue;
 
             if (!string.IsNullOrEmpty(shipType))
             {
@@ -528,6 +541,13 @@ namespace TDHelper
                     numRouteOptionsShipCapacity.Maximum = maxCapacity;
                 }
             }
+
+            numRouteOptionsShipCapacity.Value = settings.Capacity;
+            numShipInsurance.Value = Math.Max(settings.Insurance, numShipInsurance.Minimum);
+            numLadenLy.Value = Math.Max(settings.LadenLY, numLadenLy.Minimum);
+            txtPadSize.Text = settings.Padsizes;
+            numUnladenLy.Value = Math.Max(settings.UnladenLY, numUnladenLy.Minimum);
+            numRouteOptionsShipCapacity.Maximum = Decimal.MaxValue;
         }
 
         /// <summary>

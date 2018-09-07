@@ -1296,6 +1296,9 @@ namespace TDHelper
 
             config.SaveToFile(configFile);
 
+            // Add the base ships.
+            LoadInitialShipList();
+
             SetFormTitle(this);
             SetShipList(true);
         }
