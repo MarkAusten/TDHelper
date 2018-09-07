@@ -17,7 +17,8 @@ namespace TDHelper
     {
         #region Props
 
-        private static SQLiteConnection pilotsLogConn = null;
+        private static SQLiteConnection tdhConn = null;
+        private static SQLiteConnection tdConn = null;
 
         //        public Cache memoryCache;
         private List<string> box_outputNames = new List<string>();
@@ -38,7 +39,6 @@ namespace TDHelper
 
         private DataTable stnship_table = new DataTable();
 
-        private SQLiteConnection tdConn = null;
 
         #endregion Props
 
@@ -80,7 +80,7 @@ namespace TDHelper
                 // check the make sure the directory is populated
                 if (dInfo.Exists && fileList.Length > 0)
                 {
-                    using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
+                    using (SQLiteCommand cmd = GetCommandObject(tdhConn, "TDH"))
                     {
                         bool isOpen = false;
                         SQLiteTransaction transaction = null;
@@ -216,7 +216,7 @@ namespace TDHelper
             bool hasSystems,
             string headerTimestamp)
         {
-            using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
+            using (SQLiteCommand cmd = GetCommandObject(tdhConn, "TDH"))
             {
                 bool isOpen = false;
 
@@ -248,11 +248,65 @@ namespace TDHelper
         }
 
         /// <summary>
+        /// Create a conection to the specified database file.
+        /// </summary>
+        /// <param name="path">The path to the database file to which the connection should be made.</param>
+        /// <returns>An SQLite Connection.</returns>
+        private static SQLiteConnection GetConnection(string path)
+        {
+            return new SQLiteConnection("Data Source=" + path + ";Version=3;FKSupport=true;");
+        }
+
+        /// <summary>
+        /// Set the connections to the databases.
+        /// </summary>
+        private static void SetConnections()
+        {
+            tdPath = Path.Combine(settingsRef.TDPath, @"data\TradeDangerous.db");
+            tdhPath = Path.Combine(assemblyPath, "TDHelper.db");
+
+            tdConn = GetConnection(tdPath);
+            tdhConn = GetConnection(tdhPath);
+        }
+
+        /// <summary>
+        /// Create a command object from the connection or the named connection.
+        /// </summary>
+        /// <param name="conn">The connection to the database.</param>
+        /// <param name="name">The identifier of the database if the connections have not yet been set up.</param>
+        /// <returns>A command object.</returns>
+        private static SQLiteCommand GetCommandObject(
+            SQLiteConnection conn, 
+            string name)
+        {
+            SQLiteConnection connection = conn;
+
+            SetConnections();
+
+            if (conn == null)
+            {
+                switch (name.ToUpper())
+                {
+                    case "TDH":
+                        connection = tdhConn;
+                        break;
+
+                    case "TD":
+                        connection = tdConn;
+                        break;
+
+                }
+            }
+
+            return connection.CreateCommand();
+        }
+
+        /// <summary>
         /// Ensure that the pilot's log DB has the correct schema.
         /// </summary>
         private static void CheckPilotsLogDatabaseSchema()
         {
-            using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
+            using (SQLiteCommand cmd = GetCommandObject(tdhConn, "TDH"))
             {
                 bool isOpen = false;
 
@@ -382,7 +436,7 @@ namespace TDHelper
         {
             IDictionary<string, NetLogModel> result = new Dictionary<string, NetLogModel>();
 
-            using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
+            using (SQLiteCommand cmd = GetCommandObject(tdhConn, "TDH"))
             {
                 bool isOpen = false;
 
@@ -519,7 +573,7 @@ namespace TDHelper
         private bool AddAtTimestampDBRow(string timestamp)
         {
             // add a blank row with the timestamp from a given row, basically an insert-below-index during select()
-            using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
+            using (SQLiteCommand cmd = GetCommandObject(tdhConn, "TDH"))
             {
                 bool isOpen = false;
 
@@ -561,7 +615,7 @@ namespace TDHelper
         private bool AddDBRow()
         {
             // add a blank row with the current timestamp
-            using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
+            using (SQLiteCommand cmd = GetCommandObject(tdhConn, "TDH"))
             {
                 bool isOpen = false;
 
@@ -601,10 +655,10 @@ namespace TDHelper
         private void AnalyseAllDatabases()
         {
             CloseConnection(tdConn);
-            CloseConnection(pilotsLogConn);
+            CloseConnection(tdhConn);
 
             AnalyseDatabase(GetConnection(tdPath));
-            AnalyseDatabase(GetConnection(pilotsLogDBPath));
+            AnalyseDatabase(GetConnection(tdhPath));
         }
 
         /// <summary>
@@ -765,7 +819,7 @@ namespace TDHelper
             // here we either build or load our database
             if (grdPilotsLog.Rows.Count == 0)
             {
-                if (HasTable(pilotsLogConn, "SystemLog") &&
+                if (HasTable(tdhConn, "SystemLog") &&
                     HasValidRows("SystemLog"))
                 {
                     InvalidatedRowUpdate(true, -1);
@@ -894,23 +948,13 @@ namespace TDHelper
             }
         }
 
-        /// <summary>
-        /// Create a conection to the specified database file.
-        /// </summary>
-        /// <param name="path">The path to the database file to which the connection should be made.</param>
-        /// <returns>An SQLite Connection.</returns>
-        private SQLiteConnection GetConnection(string path)
-        {
-            return new SQLiteConnection("Data Source=" + path + ";Version=3;FKSupport=true;");
-        }
-
         private string GetLastTimestamp()
         {
             string timestamp = string.Empty;
 
             if (HasValidRows("SystemLog"))
             {
-                using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
+                using (SQLiteCommand cmd = GetCommandObject(tdhConn, "TDH"))
                 {
                     bool isOpen = false;
 
@@ -954,7 +998,7 @@ namespace TDHelper
         {
             long total = 0;
 
-            using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
+            using (SQLiteCommand cmd = GetCommandObject(tdhConn, "TDH"))
             {
                 bool isOpen = false;
 
@@ -1014,7 +1058,7 @@ namespace TDHelper
                 // check for one of the common columns
                 if (HasValidColumn(tdConn, "Station", "rearm"))
                 {
-                    using (SQLiteCommand cmd = tdConn.CreateCommand())
+                    using (SQLiteCommand cmd = GetCommandObject(tdConn, "TD"))
                     {
                         bool isOpen = false;
 
@@ -1215,7 +1259,7 @@ namespace TDHelper
                 }
 
                 // match on System.system_id = Station.system_id, output in "System | Station" format
-                using (SQLiteCommand cmd = tdConn.CreateCommand())
+                using (SQLiteCommand cmd = GetCommandObject(tdConn, "TD"))
                 {
                     bool isOpen = false;
 
@@ -1299,7 +1343,7 @@ namespace TDHelper
 
         private void LoadPilotsLogDB()
         {
-            if (HasValidColumn(pilotsLogConn, "SystemLog", "System"))
+            if (HasValidColumn(tdhConn, "SystemLog", "System"))
             {
                 try
                 {
@@ -1654,7 +1698,7 @@ namespace TDHelper
         /// </summary>
         private void OptimiseAllDatabases()
         {
-            OptimiseDatabase(pilotsLogConn);
+            OptimiseDatabase(tdhConn);
             OptimiseDatabase(tdConn);
         }
 
@@ -1755,7 +1799,7 @@ namespace TDHelper
         {
             if (netLogOutput.Count > 0)
             {
-                using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
+                using (SQLiteCommand cmd = GetCommandObject(tdhConn, "TDH"))
                 {
                     bool isOpen = false;
 
@@ -1763,7 +1807,7 @@ namespace TDHelper
                     {
                         isOpen = OpenConnection(cmd.Connection);
 
-                        using (var transaction = pilotsLogConn.BeginTransaction())
+                        using (var transaction = tdhConn.BeginTransaction())
                         {
                             // always do our inserts in a batch for ideal performance
                             cmd.CommandText = @"INSERT INTO SystemLog (Timestamp, System) VALUES null,@Timestamp,@System,null)";
@@ -1895,7 +1939,7 @@ namespace TDHelper
         {
             if (rowIndex >= 0)
             {
-                using (SQLiteCommand cmd = new SQLiteCommand("DELETE FROM SystemLog WHERE ID = @ID", pilotsLogConn))
+                using (SQLiteCommand cmd = new SQLiteCommand("DELETE FROM SystemLog WHERE ID = @ID", tdhConn))
                 {
                     bool isOpen = false;
 
@@ -1903,7 +1947,7 @@ namespace TDHelper
                     {
                         OpenConnection(cmd.Connection);
 
-                        var transaction = pilotsLogConn.BeginTransaction();
+                        var transaction = tdhConn.BeginTransaction();
                         isOpen = OpenConnection(cmd.Connection);
 
                         // delete all the rows specified by the index, using a transaction for efficiency
@@ -1938,7 +1982,7 @@ namespace TDHelper
             // remove a batch of rows (faster than removeDBRow)
             if (rowsIndex.Count > 0)
             {
-                using (SQLiteCommand cmd = new SQLiteCommand("DELETE FROM SystemLog WHERE ID = @ID", pilotsLogConn))
+                using (SQLiteCommand cmd = new SQLiteCommand("DELETE FROM SystemLog WHERE ID = @ID", tdhConn))
                 {
                     bool isOpen = false;
 
@@ -1946,7 +1990,7 @@ namespace TDHelper
                     {
                         isOpen = OpenConnection(cmd.Connection);
 
-                        using (SQLiteTransaction transaction = pilotsLogConn.BeginTransaction())
+                        using (SQLiteTransaction transaction = tdhConn.BeginTransaction())
                         {
                             foreach (int i in rowsIndex)
                             {
@@ -2011,18 +2055,6 @@ namespace TDHelper
             }
         }
 
-        /// <summary>
-        /// Set the connections to the databases.
-        /// </summary>
-        private void SetConnections()
-        {
-            tdPath = Path.Combine(settingsRef.TDPath, @"data\TradeDangerous.db");
-            pilotsLogDBPath = Path.Combine(assemblyPath, "TDHelper.db");
-
-            tdConn = GetConnection(tdPath);
-            pilotsLogConn = GetConnection(pilotsLogDBPath);
-        }
-
         private void SetSourceAndDestinationLists(bool first = false)
         {
             // bind the recent systems/stations first
@@ -2051,7 +2083,7 @@ namespace TDHelper
             // insert/update an existing set of rows
             if (rows.Count > 0)
             {
-                using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
+                using (SQLiteCommand cmd = GetCommandObject(tdhConn, "TDH"))
                 {
                     bool isOpen = false;
 
@@ -2068,7 +2100,7 @@ namespace TDHelper
 
                         //try
                         //{
-                        using (SQLiteTransaction transaction = pilotsLogConn.BeginTransaction())
+                        using (SQLiteTransaction transaction = tdhConn.BeginTransaction())
                         {
                             for (int i = rows.Count - 1; i >= 0; i--)
                             {
@@ -2117,9 +2149,9 @@ namespace TDHelper
         /// <param name="recordCount">The number of records to load.</param>
         private void UpdateLocalTable(long recordCount = 50)
         {
-            if (HasValidColumn(pilotsLogConn, "SystemLog", "System"))
+            if (HasValidColumn(tdhConn, "SystemLog", "System"))
             {
-                using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
+                using (SQLiteCommand cmd = GetCommandObject(tdhConn, "TDH"))
                 using (SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd))
                 {
                     bool isOpen = false;
@@ -2180,7 +2212,7 @@ namespace TDHelper
             int id,
             string notes)
         {
-            using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
+            using (SQLiteCommand cmd = GetCommandObject(tdhConn, "TDH"))
             {
                 bool isOpen = false;
 
@@ -2219,7 +2251,7 @@ namespace TDHelper
 
             if (exceptCount > 0)
             {
-                using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
+                using (SQLiteCommand cmd = GetCommandObject(tdhConn, "TDH"))
                 {
                     bool isOpen = false;
 
@@ -2232,7 +2264,7 @@ namespace TDHelper
                         cmd.Parameters.AddWithValue("@Timestamp", string.Empty);
                         cmd.Parameters.AddWithValue("@System", string.Empty);
 
-                        using (SQLiteTransaction transaction = pilotsLogConn.BeginTransaction())
+                        using (SQLiteTransaction transaction = tdhConn.BeginTransaction())
                         {
                             foreach (KeyValuePair<string, string> s in exceptKey)
                             {
@@ -2276,10 +2308,10 @@ namespace TDHelper
         private void VacuumAllDatabases()
         {
             CloseConnection(tdConn);
-            CloseConnection(pilotsLogConn);
+            CloseConnection(tdhConn);
 
             VacuumDatabase(GetConnection(tdPath));
-            VacuumDatabase(GetConnection(pilotsLogDBPath));
+            VacuumDatabase(GetConnection(tdhPath));
         }
 
         /// <summary>
@@ -2296,7 +2328,7 @@ namespace TDHelper
             // a simple method to vacuum our database
             //try
             //{
-            using (SQLiteCommand cmd = pilotsLogConn.CreateCommand())
+            using (SQLiteCommand cmd = GetCommandObject(tdhConn, "TDH"))
             {
                 bool isOpen = false;
 

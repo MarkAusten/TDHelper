@@ -70,12 +70,12 @@ namespace TDHelper
         private List<KeyValuePair<string, string>> localSystemList = new List<KeyValuePair<string, string>>();
         private Dictionary<string, string> netLogOutput = new Dictionary<string, string>();
         private List<string> output_unclean = new List<string>();
-        private string pilotsLogDBPath = string.Empty;
+        private static string tdhPath = string.Empty;
         private DataTable pilotsSystemLogTable = new DataTable("SystemLog");
         private int pRowIndex = 0;
         private Object readNetLock = new Object();
         private DataTable retrieverCacheTable = new DataTable();
-        private string tdPath = string.Empty;
+        private static string tdPath = string.Empty;
         private int insertPosition = 0;
 
         #endregion Props
