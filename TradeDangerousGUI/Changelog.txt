@@ -2,6 +2,8 @@ v2.0.8.2
 --------
 * Added missing Adder in initial ship list.
 * The ship list now lists the ships owne by the commander (after a Commander Profile update) followed by a list of all available ship in their "just bought" configuration. The two sections are separated by a line in the list.
+* Fixed bug where commodities on buy & sell panesl would not appear until you reselected the buy or sell query.
+* Changes log read time to 60 seconds.
 
 v2.0.8.1
 --------
