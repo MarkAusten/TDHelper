@@ -2243,100 +2243,6 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Event handler.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void EventHandler_PilotsLogDataGrid_CellValueNeeded(
-            object sender,
-            DataGridViewCellValueEventArgs e)
-        {
-            //if (e.RowIndex < retriever.RowCount && 
-            //    e.ColumnIndex < retriever.RowCount)
-            //{
-            //    e.Value = memoryCache.RetrieveElement(e.RowIndex, e.ColumnIndex);
-            //}
-        }
-
-        /// <summary>
-        /// Event handler.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void EventHandler_PilotsLogDataGrid_CellValuePushed(
-            object sender,
-            DataGridViewCellValueEventArgs e)
-        {
-            //if (e.RowIndex < retriever.RowCount && 
-            //    e.ColumnIndex < retriever.RowCount)
-            //{
-            //    // update our local table
-            //    localTable.Rows[e.RowIndex][e.ColumnIndex] = e.Value;
-            //    List<DataRow> row = new List<DataRow> { localTable.Rows[e.RowIndex] };
-
-            //    // update the physical DB and repaint
-            //    UpdateDBRow(row);
-            //    InvalidatedRowUpdate(false, e.RowIndex);
-            //}
-        }
-
-        /// <summary>
-        /// Event handler.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void EventHandler_PilotsLogDataGrid_UserDeletingRow(
-            object sender,
-            DataGridViewRowCancelEventArgs e)
-        {
-            //if (e.Row.Index < retriever.RowCount && 
-            //    e.Row.Index >= 0 &&
-            //    grdPilotsLog.SelectedRows.Count > 0)
-            //{
-            //    int rowIndex = -1;
-            //    int.TryParse(grdPilotsLog.Rows[e.Row.Index].Cells[0].Value.ToString(), out rowIndex);
-
-            //    if (rowIndex >= 0)
-            //    {
-            //        if (grdPilotsLog.SelectedRows.Count == 1)
-            //        {
-            //            RemoveDBRow(rowIndex);
-            //            UpdateLocalTable();
-            //            memoryCache.RemoveRow(e.Row.Index, rowIndex);
-            //        }
-            //        else if (grdPilotsLog.SelectedRows.Count > 1 && dgRowIDIndexer.Count == 0)
-            //        {
-            //            // let's batch the commits for performance
-            //            batchedRowCount = grdPilotsLog.SelectedRows.Count;
-
-            //            foreach (DataGridViewRow r in grdPilotsLog.SelectedRows)
-            //            {
-            //                int curRowIndex = int.Parse(r.Cells[0].Value.ToString());
-            //                dgRowIndexer.Add(e.Row.Index);
-            //                dgRowIDIndexer.Add(curRowIndex);
-            //            }
-
-            //            grdPilotsLog.Visible = false; // prevent retrieval
-            //        }
-
-            //        if (batchedRowCount != -1)
-            //        {
-            //            batchedRowCount--; // keep track of our re-entry
-            //        }
-
-            //        if (dgRowIDIndexer.Count > 0 && batchedRowCount == 0)
-            //        {
-            //            // we've got queued commits to remove (should trigger on the last removed row)
-            //            RemoveDBRows(dgRowIDIndexer);
-            //            UpdateLocalTable();
-            //            memoryCache.RemoveRows(dgRowIndexer, dgRowIDIndexer);
-            //            grdPilotsLog.Visible = true; // re-enable retrieval
-            //        }
-            //    }
-            //}
-        }
-
-        /// <summary>
         /// Ensure that the planetary options are M, L, ? or a combination of these.
         /// </summary>
         /// <param name="sender">The text box.</param>
@@ -2749,7 +2655,6 @@ namespace TDHelper
             if (e.KeyCode == Keys.Escape)
             {
                 e.Handled = true;
-                //                cboShipsSold.SelectionLength = 0;
             }
         }
 
@@ -3741,15 +3646,6 @@ namespace TDHelper
             control.Paste();
         }
 
-        ///// <summary>
-        ///// Select all the text on the control.
-        ///// </summary>
-        ///// <param name="control">The clicked control.</param>
-        //private void SelectAllControlText(TextBox control)
-        //{
-        //    control.Focus();
-        //    control.SelectAll();
-        //}
         /// <summary>
         /// Paste the text from the clipboard to the control.
         /// </summary>

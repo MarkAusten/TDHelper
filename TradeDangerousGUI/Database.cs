@@ -554,10 +554,10 @@ namespace TDHelper
                         }
                     }
                 }
-                //catch
-                //{
-                //    throw;
-                //}
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.GetFullMessage());
+                }
                 finally
                 {
                     if (!isOpen)
@@ -1033,8 +1033,6 @@ namespace TDHelper
 
             if (ValidateDBPath())
             {
-                //try
-                //{
                 Stopwatch m_timer = Stopwatch.StartNew();
 
                 if (stnship_table.Rows.Count != 0)
@@ -1145,11 +1143,6 @@ namespace TDHelper
 
                     m_timer.Stop();
                 }
-                //}
-                //catch
-                //{
-                //    throw;
-                //}
             }
         }
 
@@ -1247,8 +1240,6 @@ namespace TDHelper
                 string stationName = string.Empty;
                 string systemName = string.Empty;
 
-                //try
-                //{
                 Stopwatch m_timer = Stopwatch.StartNew();
 
                 // wipe to prevent duplicates
@@ -1313,15 +1304,6 @@ namespace TDHelper
                 outputSysStnNames = new List<string>(); // wipe before we fill
 
                 FilterDatabase(); // filter and fill our output
-                //}
-                //catch (SQLiteException)
-                //{
-                //    throw;
-                //}
-                //catch
-                //{
-                //    throw;
-                //}
             }
         }
 
@@ -1958,10 +1940,6 @@ namespace TDHelper
 
                         VacuumPilotsLogDB();
                     }
-                    //catch (Exception)
-                    //{
-                    //    throw;
-                    //}
                     finally
                     {
                         if (!isOpen)
@@ -2005,10 +1983,6 @@ namespace TDHelper
 
                         VacuumPilotsLogDB();
                     }
-                    //catch
-                    //{
-                    //    throw;
-                    //}
                     finally
                     {
                         if (!isOpen)
@@ -2098,8 +2072,6 @@ namespace TDHelper
                         cmd.Parameters.AddWithValue("@System", string.Empty);
                         cmd.Parameters.AddWithValue("@Notes", string.Empty);
 
-                        //try
-                        //{
                         using (SQLiteTransaction transaction = tdhConn.BeginTransaction())
                         {
                             for (int i = rows.Count - 1; i >= 0; i--)
@@ -2120,11 +2092,6 @@ namespace TDHelper
 
                             transaction.Commit();
                         }
-                        //}
-                        //catch
-                        //{
-                        //    throw;
-                        //}
 
                         UpdateLocalTable();
 
@@ -2268,18 +2235,10 @@ namespace TDHelper
                         {
                             foreach (KeyValuePair<string, string> s in exceptKey)
                             {
-                                //try
-                                //{
                                 cmd.Parameters["@Timestamp"].Value = s.Key;
                                 cmd.Parameters["@System"].Value = s.Value;
 
                                 cmd.ExecuteNonQuery();
-                                //}
-                                //catch
-                                //{
-                                //    throw;
-                                //    // Do nothing.
-                                //}
                             }
 
                             transaction.Commit();
@@ -2326,8 +2285,6 @@ namespace TDHelper
         private void VacuumPilotsLogDB()
         {
             // a simple method to vacuum our database
-            //try
-            //{
             using (SQLiteCommand cmd = GetCommandObject(tdhConn, "TDH"))
             {
                 bool isOpen = false;
@@ -2351,11 +2308,6 @@ namespace TDHelper
                     }
                 }
             }
-            //}
-            //catch
-            //{
-            //    throw;
-            //}
         }
 
         private bool ValidateDBPath()

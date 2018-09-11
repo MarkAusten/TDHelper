@@ -237,11 +237,6 @@ namespace TDHelper
 
                 settings.SkipVend = GetBooleanSetting(configSection, "SkipVend");
                 settings.Solo = GetBooleanSetting(configSection, "Solo");
-
-                //if (string.IsNullOrEmpty(settings.AvailableShips))
-                //{
-                //    settings.AvailableShips = "Default";
-                //}
             }
         }
 

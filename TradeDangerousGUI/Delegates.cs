@@ -1029,7 +1029,9 @@ namespace TDHelper
             #endregion verbosity3
 
             if (doc.Descendants("Route").FirstOrDefault() != null)
+            {
                 PopulateTreeView(doc, tvOutput); // pass to the next step
+            }
         }
 
         private void PopulateTreeView(XDocument xmlInput, TreeView tvBox)
@@ -1094,7 +1096,9 @@ namespace TDHelper
                 tvBox.ExpandAll(); // make sure we start expanded
             }
             else
+            {
                 throw new Exception("Failure to parse the input XML to the TreeView");
+            }
         }
 
         /// <summary>
