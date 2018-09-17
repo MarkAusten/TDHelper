@@ -791,7 +791,7 @@ namespace TDHelper
         {
             string result = text;
 
-            if (!string.IsNullOrEmpty(result))
+            if (result != null)
             {
                 char[] sortedArray = text.ToUpper()
                     .Distinct()

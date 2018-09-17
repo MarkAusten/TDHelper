@@ -2184,7 +2184,7 @@ namespace TDHelper
                     result += key;
                 }
 
-                if (selected.Trim().Length == 0)
+                if (result.Trim().Length == 0)
                 {
                     result = string.Empty;
                 }
