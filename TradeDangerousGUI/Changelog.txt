@@ -1,3 +1,7 @@
+v2.0.8.3
+--------
+* Fixed issue #40.
+
 v2.0.8.2
 --------
 * Added missing Adder in initial ship list.
