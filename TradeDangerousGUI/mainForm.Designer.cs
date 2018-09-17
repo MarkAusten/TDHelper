@@ -148,7 +148,6 @@
             this.lblBuyOptionsAbove = new System.Windows.Forms.Label();
             this.numBuyOptionsBelow = new System.Windows.Forms.NumericUpDown();
             this.lblBuyOptionsBelow = new System.Windows.Forms.Label();
-            this.cboBuyOptionsCommodities = new System.Windows.Forms.ComboBox();
             this.lblBuyOptionsCommodity = new System.Windows.Forms.Label();
             this.optBuyOptionsDistance = new System.Windows.Forms.RadioButton();
             this.optBuyOptionsPrice = new System.Windows.Forms.RadioButton();
@@ -157,7 +156,6 @@
             this.lblSellOptionsSort = new System.Windows.Forms.Label();
             this.optSellOptionsSupply = new System.Windows.Forms.RadioButton();
             this.optSellOptionsPrice = new System.Windows.Forms.RadioButton();
-            this.cboSellOptionsCommodities = new System.Windows.Forms.ComboBox();
             this.lblSellOptionsCommodity = new System.Windows.Forms.Label();
             this.numSellOptionsBelow = new System.Windows.Forms.NumericUpDown();
             this.lblSellOptionsBelow = new System.Windows.Forms.Label();
@@ -280,6 +278,7 @@
             this.grpSellOptionsSort = new System.Windows.Forms.GroupBox();
             this.panBuyOptions = new System.Windows.Forms.Panel();
             this.grpBuyOptionsSort = new System.Windows.Forms.GroupBox();
+            this.cboBuyOptionsCommodities = new TDHelper.CheckedComboBox();
             this.lblRouteOptionsJumps = new System.Windows.Forms.Label();
             this.lblRouteOptionsMaxLS = new System.Windows.Forms.Label();
             this.lblRouteOptionsPruneHops = new System.Windows.Forms.Label();
@@ -299,6 +298,7 @@
             this.panMisc = new System.Windows.Forms.Panel();
             this.panRouteOptions = new System.Windows.Forms.Panel();
             this.panMethods = new System.Windows.Forms.Panel();
+            this.panStatus = new System.Windows.Forms.Panel();
             this.panRaresOptions = new System.Windows.Forms.Panel();
             this.grpRaresOptionsType = new System.Windows.Forms.GroupBox();
             this.grpRaresOptionsSort = new System.Windows.Forms.GroupBox();
@@ -310,7 +310,7 @@
             this.panOldDataOptions = new System.Windows.Forms.Panel();
             this.panLocalOptions = new System.Windows.Forms.Panel();
             this.panOptions = new System.Windows.Forms.Panel();
-            this.panStatus = new System.Windows.Forms.Panel();
+            this.cboSellOptionsCommodities = new TDHelper.CheckedComboBox();
             this.mnuSetValues.SuspendLayout();
             this.mnuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRunOptionsRoutes)).BeginInit();
@@ -1803,16 +1803,6 @@
             this.lblBuyOptionsBelow.Text = "Below:";
             this.tipToolTips.SetToolTip(this.lblBuyOptionsBelow, "Commodities below this price are filtered out");
             // 
-            // cboBuyOptionsCommodities
-            // 
-            this.cboBuyOptionsCommodities.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cboBuyOptionsCommodities.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cboBuyOptionsCommodities.Location = new System.Drawing.Point(70, 31);
-            this.cboBuyOptionsCommodities.Name = "cboBuyOptionsCommodities";
-            this.cboBuyOptionsCommodities.Size = new System.Drawing.Size(244, 21);
-            this.cboBuyOptionsCommodities.TabIndex = 84;
-            this.tipToolTips.SetToolTip(this.cboBuyOptionsCommodities, "Commodities to search for using Buy/Sell, and can be delimited by comma");
-            // 
             // lblBuyOptionsCommodity
             // 
             this.lblBuyOptionsCommodity.AutoSize = true;
@@ -1907,16 +1897,6 @@
             this.tipToolTips.SetToolTip(this.optSellOptionsPrice, "Keeps items sorted by price when using --near\r\n (otherwise items are listed by di" +
         "stance and then price)");
             this.optSellOptionsPrice.UseVisualStyleBackColor = true;
-            // 
-            // cboSellOptionsCommodities
-            // 
-            this.cboSellOptionsCommodities.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cboSellOptionsCommodities.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cboSellOptionsCommodities.Location = new System.Drawing.Point(70, 31);
-            this.cboSellOptionsCommodities.Name = "cboSellOptionsCommodities";
-            this.cboSellOptionsCommodities.Size = new System.Drawing.Size(244, 21);
-            this.cboSellOptionsCommodities.TabIndex = 84;
-            this.tipToolTips.SetToolTip(this.cboSellOptionsCommodities, "Commodities to search for using Buy/Sell, and can be delimited by comma");
             // 
             // lblSellOptionsCommodity
             // 
@@ -3396,9 +3376,9 @@
             // 
             // panSellOptions
             // 
+            this.panSellOptions.Controls.Add(this.cboSellOptionsCommodities);
             this.panSellOptions.Controls.Add(this.chkSellOptionsBlkMkt);
             this.panSellOptions.Controls.Add(this.grpSellOptionsSort);
-            this.panSellOptions.Controls.Add(this.cboSellOptionsCommodities);
             this.panSellOptions.Controls.Add(this.lblSellOptionsCommodity);
             this.panSellOptions.Controls.Add(this.numSellOptionsBelow);
             this.panSellOptions.Controls.Add(this.lblSellOptionsBelow);
@@ -3437,8 +3417,8 @@
             // panBuyOptions
             // 
             this.panBuyOptions.Controls.Add(this.grpBuyOptionsSort);
-            this.panBuyOptions.Controls.Add(this.cboBuyOptionsCommodities);
             this.panBuyOptions.Controls.Add(this.lblBuyOptionsCommodity);
+            this.panBuyOptions.Controls.Add(this.cboBuyOptionsCommodities);
             this.panBuyOptions.Controls.Add(this.numBuyOptionsBelow);
             this.panBuyOptions.Controls.Add(this.lblBuyOptionsBelow);
             this.panBuyOptions.Controls.Add(this.numBuyOptionsAbove);
@@ -3476,6 +3456,21 @@
             this.grpBuyOptionsSort.Size = new System.Drawing.Size(310, 26);
             this.grpBuyOptionsSort.TabIndex = 86;
             this.grpBuyOptionsSort.TabStop = false;
+            // 
+            // cboBuyOptionsCommodities
+            // 
+            this.cboBuyOptionsCommodities.CheckOnClick = true;
+            this.cboBuyOptionsCommodities.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cboBuyOptionsCommodities.DropDownHeight = 1;
+            this.cboBuyOptionsCommodities.FormattingEnabled = true;
+            this.cboBuyOptionsCommodities.IntegralHeight = false;
+            this.cboBuyOptionsCommodities.Location = new System.Drawing.Point(72, 31);
+            this.cboBuyOptionsCommodities.MaxDropDownItems = 50;
+            this.cboBuyOptionsCommodities.Name = "cboBuyOptionsCommodities";
+            this.cboBuyOptionsCommodities.Size = new System.Drawing.Size(240, 21);
+            this.cboBuyOptionsCommodities.TabIndex = 68;
+            this.tipToolTips.SetToolTip(this.cboBuyOptionsCommodities, "With drop down list open DEL to unselect and, SHIFT+DEL to select all.");
+            this.cboBuyOptionsCommodities.ValueSeparator = ", ";
             // 
             // lblRouteOptionsJumps
             // 
@@ -3701,6 +3696,13 @@
             this.panMethods.Size = new System.Drawing.Size(856, 23);
             this.panMethods.TabIndex = 0;
             // 
+            // panStatus
+            // 
+            this.panStatus.Location = new System.Drawing.Point(25, 0);
+            this.panStatus.Name = "panStatus";
+            this.panStatus.Size = new System.Drawing.Size(23, 23);
+            this.panStatus.TabIndex = 1;
+            // 
             // panRaresOptions
             // 
             this.panRaresOptions.Controls.Add(this.grpRaresOptionsType);
@@ -3869,27 +3871,35 @@
             // panOptions
             // 
             this.panOptions.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panOptions.Controls.Add(this.panSellOptions);
+            this.panOptions.Controls.Add(this.panBuyOptions);
             this.panOptions.Controls.Add(this.panRunOptions);
             this.panOptions.Controls.Add(this.panTradeOptions);
-            this.panOptions.Controls.Add(this.panSellOptions);
             this.panOptions.Controls.Add(this.panRaresOptions);
             this.panOptions.Controls.Add(this.panOldDataOptions);
             this.panOptions.Controls.Add(this.panNavOptions);
             this.panOptions.Controls.Add(this.panMarketOptions);
             this.panOptions.Controls.Add(this.panLocalOptions);
-            this.panOptions.Controls.Add(this.panBuyOptions);
             this.panOptions.Controls.Add(this.panShipVendorOptions);
             this.panOptions.Location = new System.Drawing.Point(10, 33);
             this.panOptions.Name = "panOptions";
             this.panOptions.Size = new System.Drawing.Size(322, 197);
             this.panOptions.TabIndex = 1;
             // 
-            // panStatus
+            // cboSellOptionsCommodities
             // 
-            this.panStatus.Location = new System.Drawing.Point(25, 0);
-            this.panStatus.Name = "panStatus";
-            this.panStatus.Size = new System.Drawing.Size(23, 23);
-            this.panStatus.TabIndex = 1;
+            this.cboSellOptionsCommodities.CheckOnClick = true;
+            this.cboSellOptionsCommodities.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cboSellOptionsCommodities.DropDownHeight = 1;
+            this.cboSellOptionsCommodities.FormattingEnabled = true;
+            this.cboSellOptionsCommodities.IntegralHeight = false;
+            this.cboSellOptionsCommodities.Location = new System.Drawing.Point(72, 31);
+            this.cboSellOptionsCommodities.MaxDropDownItems = 50;
+            this.cboSellOptionsCommodities.Name = "cboSellOptionsCommodities";
+            this.cboSellOptionsCommodities.Size = new System.Drawing.Size(240, 21);
+            this.cboSellOptionsCommodities.TabIndex = 88;
+            this.tipToolTips.SetToolTip(this.cboSellOptionsCommodities, "With drop down list open DEL to unselect and, SHIFT+DEL to select all.");
+            this.cboSellOptionsCommodities.ValueSeparator = ", ";
             // 
             // MainForm
             // 
@@ -4157,7 +4167,6 @@
         private System.Windows.Forms.RadioButton optBuyOptionsSupply;
         private System.Windows.Forms.RadioButton optBuyOptionsDistance;
         private System.Windows.Forms.RadioButton optBuyOptionsPrice;
-        private System.Windows.Forms.ComboBox cboBuyOptionsCommodities;
         private System.Windows.Forms.Label lblBuyOptionsCommodity;
         private System.Windows.Forms.NumericUpDown numBuyOptionsBelow;
         private System.Windows.Forms.Label lblBuyOptionsBelow;
@@ -4182,7 +4191,6 @@
         private System.Windows.Forms.Label lblSellOptionsSort;
         private System.Windows.Forms.RadioButton optSellOptionsSupply;
         private System.Windows.Forms.RadioButton optSellOptionsPrice;
-        private System.Windows.Forms.ComboBox cboSellOptionsCommodities;
         private System.Windows.Forms.Label lblSellOptionsCommodity;
         private System.Windows.Forms.NumericUpDown numSellOptionsBelow;
         private System.Windows.Forms.Label lblSellOptionsBelow;
@@ -4302,6 +4310,8 @@
         private System.Windows.Forms.ToolStripMenuItem mnuLoadAll;
         private SeparatorComboBox.SeparatorComboBox cboCommandersShips;
         private System.Windows.Forms.Panel panStatus;
+        private TDHelper.CheckedComboBox cboBuyOptionsCommodities;
+        private CheckedComboBox cboSellOptionsCommodities;
     }
 }
 

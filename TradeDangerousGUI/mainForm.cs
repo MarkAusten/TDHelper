@@ -576,7 +576,7 @@ namespace TDHelper
 
             if (settingsRef.TestSystems)
             {
-                if (string.IsNullOrEmpty(t_lastSysCheck) && 
+                if (string.IsNullOrEmpty(t_lastSysCheck) &&
                     !string.IsNullOrEmpty(t_lastSystem) &&
                     !StringInList(t_lastSystem, outputSysStnNames))
                 {
@@ -596,10 +596,10 @@ namespace TDHelper
 
                     t_lastSysCheck = t_lastSystem;
                 }
-                else if ((!string.IsNullOrEmpty(t_lastSysCheck) && 
-                    !t_lastSysCheck.Equals(t_lastSystem) && 
-                    !StringInList(t_lastSystem, outputSysStnNames)) || 
-                    string.IsNullOrEmpty(t_lastSysCheck) && 
+                else if ((!string.IsNullOrEmpty(t_lastSysCheck) &&
+                    !t_lastSysCheck.Equals(t_lastSystem) &&
+                    !StringInList(t_lastSystem, outputSysStnNames)) ||
+                    string.IsNullOrEmpty(t_lastSysCheck) &&
                     !StringInList(t_lastSystem, outputSysStnNames))
                 {
                     // if we've already checked a recent system, only check the newest entered system once
@@ -708,6 +708,60 @@ namespace TDHelper
             else
             {
                 btnMiniMode.Enabled = false;
+            }
+        }
+
+        /// <summary>
+        /// Ensure that the key pressed is in the filter string.
+        /// </summary>
+        /// <param name="selected">The currently selected text.</param>
+        /// <param name="key">The key pressed.</param>
+        /// <param name="filter">The filter of allowed characters.</param>
+        /// <returns></returns>
+        private string CheckKeyPress(
+            string selected,
+            string key,
+            string filter)
+        {
+            string result = selected;
+
+            if (filter.Contains(key))
+            {
+                if (selected.Contains(key))
+                {
+                    result = selected.Replace(key, " ");
+                }
+                else
+                {
+                    result += key;
+                }
+
+                if (result.Trim().Length == 0)
+                {
+                    result = string.Empty;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Clear the specified control and delete the speicified file.
+        /// </summary>
+        /// <param name="control">The control to be cleared.</param>
+        /// <param name="file">The file to be deleted.</param>
+        private void ClearSavedText(
+            Control control,
+            string file)
+        {
+            if (!string.IsNullOrEmpty(control.Text))
+            {
+                control.Text = string.Empty;
+            }
+
+            if (File.Exists(file))
+            {
+                File.Delete(file);
             }
         }
 
@@ -1115,67 +1169,6 @@ namespace TDHelper
         }
 
         #region Event Handlers
-        /// <summary>
-        /// Event handler.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void EventHandler_GridCellBeginEdit(
-            Object sender,
-            DataGridViewCellCancelEventArgs e)
-        {
-            // Save the current value.
-            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
-            {
-                grdPilotsLog.Tag = grdPilotsLog.CurrentCell.Value;
-            }
-        }
-
-        /// <summary>
-        /// Event handler.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void EventHandler_GridCellValidating(
-            Object sender,
-            DataGridViewCellValidatingEventArgs e)
-        {
-            // Cancel the edit if the value has not changed.
-            if (grdPilotsLog.Tag == grdPilotsLog.CurrentCell.Value)
-            {
-                e.Cancel = true;
-            }
-        }
-
-        /// <summary>
-        /// Event handler.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void EventHandler_GridCellEndEdit(
-            Object sender,
-            DataGridViewCellEventArgs e)
-        {
-            object[] data = ((DataRowView)grdPilotsLog.CurrentRow.DataBoundItem).Row.ItemArray;
-
-            if (int.TryParse(data[0].ToString(), out int id))
-            {
-                UpdateNotes(id, data[3].ToString());
-            }
-        }
-
-        /// <summary>
-        /// Event handler.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void EventHandler_Ships_SelectionChangeCommitted(
-            object sender,
-            EventArgs e)
-        {
-            settingsRef.LastUsedConfig = ((ComboBoxItem)cboCommandersShips.SelectedItem).Value.ToString();
-            SetShipList();
-        }
 
         /// <summary>
         /// Event handler.
@@ -1238,26 +1231,6 @@ namespace TDHelper
             if (optBuyOptionsPrice.Checked)
             {
                 chkBuyOptionsOneStop.Checked = false;
-            }
-        }
-
-        /// <summary>
-        /// Clear the specified control and delete the speicified file.
-        /// </summary>
-        /// <param name="control">The control to be cleared.</param>
-        /// <param name="file">The file to be deleted.</param>
-        private void ClearSavedText(
-            Control control,
-            string file)
-        {
-            if (!string.IsNullOrEmpty(control.Text))
-            {
-                control.Text = string.Empty;
-            }
-
-            if (File.Exists(file))
-            {
-                File.Delete(file);
             }
         }
 
@@ -1744,8 +1717,57 @@ namespace TDHelper
         /// </summary>
         /// <param name="sender">The sender object.</param>
         /// <param name="e">The event arguments.</param>
+        private void EventHandler_GridCellBeginEdit(
+            Object sender,
+            DataGridViewCellCancelEventArgs e)
+        {
+            // Save the current value.
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            {
+                grdPilotsLog.Tag = grdPilotsLog.CurrentCell.Value;
+            }
+        }
+
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_GridCellEndEdit(
+            Object sender,
+            DataGridViewCellEventArgs e)
+        {
+            object[] data = ((DataRowView)grdPilotsLog.CurrentRow.DataBoundItem).Row.ItemArray;
+
+            if (int.TryParse(data[0].ToString(), out int id))
+            {
+                UpdateNotes(id, data[3].ToString());
+            }
+        }
+
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_GridCellValidating(
+            Object sender,
+            DataGridViewCellValidatingEventArgs e)
+        {
+            // Cancel the edit if the value has not changed.
+            if (grdPilotsLog.Tag == grdPilotsLog.CurrentCell.Value)
+            {
+                e.Cancel = true;
+            }
+        }
+
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_GridMenu_Opening(
-            object sender, 
+            object sender,
             CancelEventArgs e)
         {
             // Disable the Next 50 menu item if all records have been loaded.
@@ -2054,22 +2076,6 @@ namespace TDHelper
         /// </summary>
         /// <param name="sender">The sender object.</param>
         /// <param name="e">The event arguments.</param>
-        private void EventHandler_Next50_Click(
-            object sender, 
-            EventArgs e)
-        {
-            int currentRecord = grdPilotsLog.CurrentRow.Index;
-
-            LoadNext50VisitedSystems();
-
-            grdPilotsLog.FirstDisplayedScrollingRowIndex = currentRecord;
-        }
-
-        /// <summary>
-        /// Event handler.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
         private void EventHandler_MiniModeButton_Click(
             object sender,
             EventArgs e)
@@ -2088,6 +2094,22 @@ namespace TDHelper
             // save some globals
             SaveSettingsToIniFile();
             this.Show(); // restore when we return
+        }
+
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_Next50_Click(
+            object sender,
+            EventArgs e)
+        {
+            int currentRecord = grdPilotsLog.CurrentRow.Index;
+
+            LoadNext50VisitedSystems();
+
+            grdPilotsLog.FirstDisplayedScrollingRowIndex = currentRecord;
         }
 
         /// <summary>
@@ -2157,40 +2179,6 @@ namespace TDHelper
                 PAD_SIZE_FILTER));
 
             e.Handled = true;
-        }
-
-        /// <summary>
-        /// Ensure that the key pressed is in the filter string.
-        /// </summary>
-        /// <param name="selected">The currently selected text.</param>
-        /// <param name="key">The key pressed.</param>
-        /// <param name="filter">The filter of allowed characters.</param>
-        /// <returns></returns>
-        private string CheckKeyPress(
-            string selected,
-            string key,
-            string filter)
-        {
-            string result = selected;
-
-            if (filter.Contains(key))
-            {
-                if (selected.Contains(key))
-                {
-                    result = selected.Replace(key, " ");
-                }
-                else
-                {
-                    result += key;
-                }
-
-                if (result.Trim().Length == 0)
-                {
-                    result = string.Empty;
-                }
-            }
-
-            return result;
         }
 
         /// <summary>
@@ -2648,6 +2636,19 @@ namespace TDHelper
         /// </summary>
         /// <param name="sender">The sender object.</param>
         /// <param name="e">The event arguments.</param>
+        private void EventHandler_Ships_SelectionChangeCommitted(
+            object sender,
+            EventArgs e)
+        {
+            settingsRef.LastUsedConfig = ((ComboBoxItem)cboCommandersShips.SelectedItem).Value.ToString();
+            SetShipList();
+        }
+
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void EventHandler_ShipsSold_KeyDown(
             object sender,
             KeyEventArgs e)
@@ -2896,8 +2897,8 @@ namespace TDHelper
         {
             Debug.WriteLine(string.Format("testSystems Firing at: {0}", CurrentTimestamp()));
 
-            if (!backgroundWorker6.IsBusy && 
-                !settingsRef.DisableNetLogs && 
+            if (!backgroundWorker6.IsBusy &&
+                !settingsRef.DisableNetLogs &&
                 !string.IsNullOrEmpty(settingsRef.NetLogPath))
             {
                 backgroundWorker6.RunWorkerAsync();
@@ -2963,7 +2964,8 @@ namespace TDHelper
                 chkRunOptionsUnique.Checked = true;
             }
         }
-        #endregion
+
+        #endregion Event Handlers
 
         /// <summary>
         /// Get the buy command string.
@@ -3852,25 +3854,35 @@ namespace TDHelper
             if (panel.Visible)
             {
                 // See if this options panel has a commodity combo box.
-                ComboBox commodities = panel.Controls.OfType<ComboBox>()
+                CheckedComboBox commodities = panel.Controls.OfType<CheckedComboBox>()
                     .FirstOrDefault(x => x.Name.Contains("Commodities"));
 
                 if (commodities != null)
                 {
                     // Detach and reattach the destinations data source.
-                    commodities.DataSource = null;
+                    //                    commodities.DataSource = null;
+                    commodities.Items.Clear();
+                    IList<string> dataSource = null;
 
                     switch (methodIndex)
                     {
                         case 1: // Buy
-                                // All commodities & ships
-                            commodities.DataSource = CommodityAndShipList;
+                            dataSource = CommodityAndShipList;
+
+                            // All commodities & ships
                             break;
 
                         case 2: // Sell
-                                // Just commodities.
-                            commodities.DataSource = CommoditiesList;
+                            dataSource = CommoditiesList;
                             break;
+                    }
+
+                    if (dataSource != null)
+                    {
+                        foreach (string item in dataSource)
+                        {
+                            commodities.Items.Add(new ComboBoxItem(item));
+                        }
                     }
                 }
             }
@@ -3964,7 +3976,7 @@ namespace TDHelper
             TextBox padsizes = panel.Controls.OfType<TextBox>()
                 .FirstOrDefault(x => x.Name.Contains("Pads"));
 
-            if (padsizes != null && 
+            if (padsizes != null &&
                 string.IsNullOrEmpty(padsizes.Text))
             {
                 // It has but it is empty so set it to the same value as the currently selected ship.

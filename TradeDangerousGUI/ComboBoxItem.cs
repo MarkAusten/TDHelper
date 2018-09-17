@@ -5,6 +5,18 @@
     /// </summary>
     public class ComboBoxItem
     {
+        public ComboBoxItem(
+            string name,
+            object value = null)
+        {
+            Text = name;
+            Value = value ?? name;
+        }
+
+        public ComboBoxItem()
+        {
+        }
+
         /// <summary>
         /// Gets or sets the text to be displayed in the control.
         /// </summary>

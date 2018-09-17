@@ -1,6 +1,8 @@
 v2.0.8.3
 --------
 * Fixed issue #40.
+* Fixed issue #39.
+* Changed commoditiy drop down list to a check box form to allow multiple items to be selected.
 
 v2.0.8.2
 --------
