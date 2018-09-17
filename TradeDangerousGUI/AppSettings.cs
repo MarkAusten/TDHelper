@@ -602,10 +602,7 @@ namespace TDHelper
         /// <returns>A list of available ships.</returns>
         public IList<ComboBoxItem> SetAvailableShips()
         {
-            if (string.IsNullOrEmpty(settingsRef.AvailableShips))
-            {
-                LoadInitialShipList();
-            }
+            LoadInitialShipList();
 
             IList<ComboBoxItem> ships = new List<ComboBoxItem>();
 
@@ -725,7 +722,11 @@ namespace TDHelper
             foreach (ShipConfig ship in shipSection.ShipSettings.Cast<ShipConfig>())
             {
                 string sectionName = "Default {0}".With(++id);
-                settingsRef.AvailableShips += ",{0}".With(sectionName);
+
+                if (!settingsRef.AvailableShips.Contains(sectionName))
+                {
+                    settingsRef.AvailableShips += ",{0}".With(sectionName);
+                }
 
                 config[sectionName]["Capacity"].DecimalValue
                     = decimal.TryParse(ship.InitialCapacity, out decimal capacity)

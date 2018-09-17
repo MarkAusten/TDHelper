@@ -475,8 +475,8 @@ namespace TDHelper
             if (refreshList)
             {
                 validConfigs = SetAvailableShips();
-                //cboCommandersShips.DataSource = null;
-                //cboCommandersShips.DataSource = validConfigs;
+
+                cboCommandersShips.Items.Clear();
 
                 foreach (ComboBoxItem item in validConfigs)
                 {
@@ -517,11 +517,6 @@ namespace TDHelper
                 settings.Padsizes = string.Empty;
                 settings.UnladenLY = 1;
             }
-
-            //cboCommandersShips.SelectedIndex
-            //   = !string.IsNullOrEmpty(settings.LastUsedConfig)
-            //   ? cboCommandersShips.FindStringExact(GetShipNameFromConfigSection(settings.LastUsedConfig))
-            //   : 0;
 
             cboCommandersShips.SelectedIndex
                = !string.IsNullOrEmpty(settings.LastUsedConfig)
