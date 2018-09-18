@@ -2,7 +2,7 @@
 
 Trade Dangerous Helper has been updated. The excellent maddavo plugin stopped working some months ago and Cmdr eyeonus wrote a new plugin that pulls data either from a server mainained by Cmdr Tromador or from the EDDB server as a fallback. This new pugin, EDDBlink, allowed TD Helper to work again but not as an integrated system. I have, therefore, updated TD Helper, removing all the maddavo plugin calls and substituting the EDDBlink plugin call allowing TD Helper to work again as intended. There were a few other bugs that got squished in the process.
 
-Cmdr MarkAusten
+Cmdr Austen
 
 ## 2016.08.28
 Trade Dangerous Helper is an extremely helpful GUI by Jon Wrights for the powerful command-line utility tradedangerous by Oliver Smith. Sadly the last update of TDHelper is now over a year ago and due to changes in the netlog format the tool was not able to create the Pilot's log anymore. Jon Wright has kindly put his source code under the MIT License that allows me to modify and publish this code to ensure its functionality with the current Elite version.
