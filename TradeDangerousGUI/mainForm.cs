@@ -3853,37 +3853,37 @@ namespace TDHelper
             // Only refresh the panel if it is visible.
             if (panel.Visible)
             {
-                // See if this options panel has a commodity combo box.
-                CheckedComboBox commodities = panel.Controls.OfType<CheckedComboBox>()
-                    .FirstOrDefault(x => x.Name.Contains("Commodities"));
-
-                if (commodities != null)
+                switch (methodIndex)
                 {
-                    // Detach and reattach the destinations data source.
-                    //                    commodities.DataSource = null;
-                    commodities.Items.Clear();
-                    IList<string> dataSource = null;
+                    case 1: // Buy
+                        // See if this options panel has a commodity checked combo box.
+                        CheckedComboBox buyCommodities = panel.Controls.OfType<CheckedComboBox>()
+                            .FirstOrDefault(x => x.Name.Contains("Commodities"));
 
-                    switch (methodIndex)
-                    {
-                        case 1: // Buy
-                            dataSource = CommodityAndShipList;
-
-                            // All commodities & ships
-                            break;
-
-                        case 2: // Sell
-                            dataSource = CommoditiesList;
-                            break;
-                    }
-
-                    if (dataSource != null)
-                    {
-                        foreach (string item in dataSource)
+                        if (buyCommodities != null)
                         {
-                            commodities.Items.Add(new ComboBoxItem(item));
+                            buyCommodities.Items.Clear();
+
+                            foreach (string item in CommoditiesList)
+                            {
+                                buyCommodities.Items.Add(new ComboBoxItem(item));
+                            }
                         }
-                    }
+
+                        break;
+
+                    case 2: // Sell
+                        // See if this options panel has a commodity combo box.
+                        ComboBox sellCommodities = panel.Controls.OfType<ComboBox>()
+                            .FirstOrDefault(x => x.Name.Contains("Commodities"));
+
+                        if (sellCommodities != null)
+                        {
+                            sellCommodities.DataSource = null;
+                            sellCommodities.DataSource = CommodityAndShipList;
+                        }
+
+                        break;
                 }
             }
         }

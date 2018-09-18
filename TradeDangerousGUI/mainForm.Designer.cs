@@ -247,7 +247,7 @@
             this.hdrCost = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnDbMaintenance = new System.Windows.Forms.Button();
             this.chkIncludeInsurance = new System.Windows.Forms.CheckBox();
-            this.cboCommandersShips = new SeparatorComboBox.SeparatorComboBox();
+            this.cboSellOptionsCommodities = new System.Windows.Forms.ComboBox();
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker4 = new System.ComponentModel.BackgroundWorker();
             this.panRunOptions = new System.Windows.Forms.Panel();
@@ -278,7 +278,6 @@
             this.grpSellOptionsSort = new System.Windows.Forms.GroupBox();
             this.panBuyOptions = new System.Windows.Forms.Panel();
             this.grpBuyOptionsSort = new System.Windows.Forms.GroupBox();
-            this.cboBuyOptionsCommodities = new TDHelper.CheckedComboBox();
             this.lblRouteOptionsJumps = new System.Windows.Forms.Label();
             this.lblRouteOptionsMaxLS = new System.Windows.Forms.Label();
             this.lblRouteOptionsPruneHops = new System.Windows.Forms.Label();
@@ -310,7 +309,8 @@
             this.panOldDataOptions = new System.Windows.Forms.Panel();
             this.panLocalOptions = new System.Windows.Forms.Panel();
             this.panOptions = new System.Windows.Forms.Panel();
-            this.cboSellOptionsCommodities = new TDHelper.CheckedComboBox();
+            this.cboBuyOptionsCommodities = new TDHelper.CheckedComboBox();
+            this.cboCommandersShips = new SeparatorComboBox.SeparatorComboBox();
             this.mnuSetValues.SuspendLayout();
             this.mnuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRunOptionsRoutes)).BeginInit();
@@ -3057,25 +3057,17 @@
             this.tipToolTips.SetToolTip(this.chkIncludeInsurance, "Include the insurance in the RUN calculation.");
             this.chkIncludeInsurance.UseVisualStyleBackColor = true;
             // 
-            // cboCommandersShips
+            // cboSellOptionsCommodities
             // 
-            this.cboCommandersShips.AutoAdjustItemHeight = false;
-            this.cboCommandersShips.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.cboCommandersShips.DropDownHeight = 400;
-            this.cboCommandersShips.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboCommandersShips.FormattingEnabled = true;
-            this.cboCommandersShips.IntegralHeight = false;
-            this.cboCommandersShips.Location = new System.Drawing.Point(6, 4);
-            this.cboCommandersShips.Name = "cboCommandersShips";
-            this.cboCommandersShips.SeparatorColor = System.Drawing.Color.RoyalBlue;
-            this.cboCommandersShips.SeparatorMargin = 1;
-            this.cboCommandersShips.SeparatorStyle = System.Drawing.Drawing2D.DashStyle.Solid;
-            this.cboCommandersShips.SeparatorWidth = 2;
-            this.cboCommandersShips.Size = new System.Drawing.Size(272, 21);
-            this.cboCommandersShips.TabIndex = 1;
-            this.cboCommandersShips.TabStop = false;
-            this.tipToolTips.SetToolTip(this.cboCommandersShips, "Select a ship");
-            this.cboCommandersShips.SelectionChangeCommitted += new System.EventHandler(this.EventHandler_Ships_SelectionChangeCommitted);
+            this.cboSellOptionsCommodities.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSellOptionsCommodities.FormattingEnabled = true;
+            this.cboSellOptionsCommodities.IntegralHeight = false;
+            this.cboSellOptionsCommodities.Location = new System.Drawing.Point(72, 31);
+            this.cboSellOptionsCommodities.MaxDropDownItems = 50;
+            this.cboSellOptionsCommodities.Name = "cboSellOptionsCommodities";
+            this.cboSellOptionsCommodities.Size = new System.Drawing.Size(240, 21);
+            this.cboSellOptionsCommodities.TabIndex = 88;
+            this.tipToolTips.SetToolTip(this.cboSellOptionsCommodities, "With drop down list open DEL to unselect and, SHIFT+DEL to select all.");
             // 
             // backgroundWorker3
             // 
@@ -3456,21 +3448,6 @@
             this.grpBuyOptionsSort.Size = new System.Drawing.Size(310, 26);
             this.grpBuyOptionsSort.TabIndex = 86;
             this.grpBuyOptionsSort.TabStop = false;
-            // 
-            // cboBuyOptionsCommodities
-            // 
-            this.cboBuyOptionsCommodities.CheckOnClick = true;
-            this.cboBuyOptionsCommodities.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.cboBuyOptionsCommodities.DropDownHeight = 1;
-            this.cboBuyOptionsCommodities.FormattingEnabled = true;
-            this.cboBuyOptionsCommodities.IntegralHeight = false;
-            this.cboBuyOptionsCommodities.Location = new System.Drawing.Point(72, 31);
-            this.cboBuyOptionsCommodities.MaxDropDownItems = 50;
-            this.cboBuyOptionsCommodities.Name = "cboBuyOptionsCommodities";
-            this.cboBuyOptionsCommodities.Size = new System.Drawing.Size(240, 21);
-            this.cboBuyOptionsCommodities.TabIndex = 68;
-            this.tipToolTips.SetToolTip(this.cboBuyOptionsCommodities, "With drop down list open DEL to unselect and, SHIFT+DEL to select all.");
-            this.cboBuyOptionsCommodities.ValueSeparator = ", ";
             // 
             // lblRouteOptionsJumps
             // 
@@ -3871,9 +3848,9 @@
             // panOptions
             // 
             this.panOptions.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panOptions.Controls.Add(this.panRunOptions);
             this.panOptions.Controls.Add(this.panSellOptions);
             this.panOptions.Controls.Add(this.panBuyOptions);
-            this.panOptions.Controls.Add(this.panRunOptions);
             this.panOptions.Controls.Add(this.panTradeOptions);
             this.panOptions.Controls.Add(this.panRaresOptions);
             this.panOptions.Controls.Add(this.panOldDataOptions);
@@ -3886,20 +3863,40 @@
             this.panOptions.Size = new System.Drawing.Size(322, 197);
             this.panOptions.TabIndex = 1;
             // 
-            // cboSellOptionsCommodities
+            // cboBuyOptionsCommodities
             // 
-            this.cboSellOptionsCommodities.CheckOnClick = true;
-            this.cboSellOptionsCommodities.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.cboSellOptionsCommodities.DropDownHeight = 1;
-            this.cboSellOptionsCommodities.FormattingEnabled = true;
-            this.cboSellOptionsCommodities.IntegralHeight = false;
-            this.cboSellOptionsCommodities.Location = new System.Drawing.Point(72, 31);
-            this.cboSellOptionsCommodities.MaxDropDownItems = 50;
-            this.cboSellOptionsCommodities.Name = "cboSellOptionsCommodities";
-            this.cboSellOptionsCommodities.Size = new System.Drawing.Size(240, 21);
-            this.cboSellOptionsCommodities.TabIndex = 88;
-            this.tipToolTips.SetToolTip(this.cboSellOptionsCommodities, "With drop down list open DEL to unselect and, SHIFT+DEL to select all.");
-            this.cboSellOptionsCommodities.ValueSeparator = ", ";
+            this.cboBuyOptionsCommodities.CheckOnClick = true;
+            this.cboBuyOptionsCommodities.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cboBuyOptionsCommodities.DropDownHeight = 1;
+            this.cboBuyOptionsCommodities.FormattingEnabled = true;
+            this.cboBuyOptionsCommodities.IntegralHeight = false;
+            this.cboBuyOptionsCommodities.Location = new System.Drawing.Point(72, 31);
+            this.cboBuyOptionsCommodities.MaxDropDownItems = 50;
+            this.cboBuyOptionsCommodities.Name = "cboBuyOptionsCommodities";
+            this.cboBuyOptionsCommodities.Size = new System.Drawing.Size(240, 21);
+            this.cboBuyOptionsCommodities.TabIndex = 68;
+            this.tipToolTips.SetToolTip(this.cboBuyOptionsCommodities, "With drop down list open DEL to unselect and, SHIFT+DEL to select all.");
+            this.cboBuyOptionsCommodities.ValueSeparator = ", ";
+            // 
+            // cboCommandersShips
+            // 
+            this.cboCommandersShips.AutoAdjustItemHeight = false;
+            this.cboCommandersShips.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cboCommandersShips.DropDownHeight = 400;
+            this.cboCommandersShips.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboCommandersShips.FormattingEnabled = true;
+            this.cboCommandersShips.IntegralHeight = false;
+            this.cboCommandersShips.Location = new System.Drawing.Point(6, 4);
+            this.cboCommandersShips.Name = "cboCommandersShips";
+            this.cboCommandersShips.SeparatorColor = System.Drawing.Color.RoyalBlue;
+            this.cboCommandersShips.SeparatorMargin = 1;
+            this.cboCommandersShips.SeparatorStyle = System.Drawing.Drawing2D.DashStyle.Solid;
+            this.cboCommandersShips.SeparatorWidth = 2;
+            this.cboCommandersShips.Size = new System.Drawing.Size(272, 21);
+            this.cboCommandersShips.TabIndex = 1;
+            this.cboCommandersShips.TabStop = false;
+            this.tipToolTips.SetToolTip(this.cboCommandersShips, "Select a ship");
+            this.cboCommandersShips.SelectionChangeCommitted += new System.EventHandler(this.EventHandler_Ships_SelectionChangeCommitted);
             // 
             // MainForm
             // 
@@ -4311,7 +4308,7 @@
         private SeparatorComboBox.SeparatorComboBox cboCommandersShips;
         private System.Windows.Forms.Panel panStatus;
         private TDHelper.CheckedComboBox cboBuyOptionsCommodities;
-        private CheckedComboBox cboSellOptionsCommodities;
+        private System.Windows.Forms.ComboBox cboSellOptionsCommodities;
     }
 }
 

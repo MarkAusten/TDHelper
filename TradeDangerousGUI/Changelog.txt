@@ -1,3 +1,7 @@
+v2.0.8.4
+--------
+* Sell commodity drop down now only allows one item to be selected.
+
 v2.0.8.3
 --------
 * Fixed issue #40.
