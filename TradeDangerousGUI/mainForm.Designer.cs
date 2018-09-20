@@ -248,6 +248,8 @@
             this.btnDbMaintenance = new System.Windows.Forms.Button();
             this.chkIncludeInsurance = new System.Windows.Forms.CheckBox();
             this.cboSellOptionsCommodities = new System.Windows.Forms.ComboBox();
+            this.cboBuyOptionsCommodities = new TDHelper.CheckedComboBox();
+            this.cboCommandersShips = new SeparatorComboBox.SeparatorComboBox();
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker4 = new System.ComponentModel.BackgroundWorker();
             this.panRunOptions = new System.Windows.Forms.Panel();
@@ -309,8 +311,6 @@
             this.panOldDataOptions = new System.Windows.Forms.Panel();
             this.panLocalOptions = new System.Windows.Forms.Panel();
             this.panOptions = new System.Windows.Forms.Panel();
-            this.cboBuyOptionsCommodities = new TDHelper.CheckedComboBox();
-            this.cboCommandersShips = new SeparatorComboBox.SeparatorComboBox();
             this.mnuSetValues.SuspendLayout();
             this.mnuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRunOptionsRoutes)).BeginInit();
@@ -841,7 +841,7 @@
             this.numRouteOptionsPruneHops.Size = new System.Drawing.Size(60, 20);
             this.numRouteOptionsPruneHops.TabIndex = 4;
             this.numRouteOptionsPruneHops.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numRouteOptionsPruneHops, "Number of hops before pruning starts, to enable set >=2");
+            this.tipToolTips.SetToolTip(this.numRouteOptionsPruneHops, resources.GetString("numRouteOptionsPruneHops.ToolTip"));
             this.numRouteOptionsPruneHops.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
             this.numRouteOptionsPruneHops.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
@@ -858,7 +858,7 @@
             this.numRouteOptionsPruneScore.Size = new System.Drawing.Size(60, 20);
             this.numRouteOptionsPruneScore.TabIndex = 3;
             this.numRouteOptionsPruneScore.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numRouteOptionsPruneScore, "Percentage of route score change, below which pruning occurs");
+            this.tipToolTips.SetToolTip(this.numRouteOptionsPruneScore, resources.GetString("numRouteOptionsPruneScore.ToolTip"));
             this.numRouteOptionsPruneScore.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
             this.numRouteOptionsPruneScore.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
@@ -876,7 +876,9 @@
             this.numRouteOptionsLsPenalty.Size = new System.Drawing.Size(60, 20);
             this.numRouteOptionsLsPenalty.TabIndex = 2;
             this.numRouteOptionsLsPenalty.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numRouteOptionsLsPenalty, "Scoring penalty per LS traveled to station");
+            this.tipToolTips.SetToolTip(this.numRouteOptionsLsPenalty, "Reduces the score of routes by this percentage for every 1000ls\r\n   you have to t" +
+        "ravel to stations, which helps prioritize routes\r\n   with a shorter supercruise " +
+        "time.");
             this.numRouteOptionsLsPenalty.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
             this.numRouteOptionsLsPenalty.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
@@ -893,7 +895,9 @@
             this.numRouteOptionsMaxLSDistance.Size = new System.Drawing.Size(60, 20);
             this.numRouteOptionsMaxLSDistance.TabIndex = 1;
             this.numRouteOptionsMaxLSDistance.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numRouteOptionsMaxLSDistance, "Maximum distance station can be from system drop");
+            this.tipToolTips.SetToolTip(this.numRouteOptionsMaxLSDistance, "Filter stations by their distance-to-star. Stations for which\r\n   distance-to-sta" +
+        "r is known that have a distance above this will\r\n   not be considered for tradin" +
+        "g.");
             this.numRouteOptionsMaxLSDistance.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
             this.numRouteOptionsMaxLSDistance.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
@@ -942,7 +946,7 @@
             this.numShipInsurance.TabIndex = 2;
             this.numShipInsurance.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numShipInsurance.ThousandsSeparator = true;
-            this.tipToolTips.SetToolTip(this.numShipInsurance, "Keep at least this much in credits during routing");
+            this.tipToolTips.SetToolTip(this.numShipInsurance, "How many credits to hold back for insurance purposes");
             this.numShipInsurance.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
             this.numShipInsurance.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
@@ -1811,7 +1815,8 @@
             this.lblBuyOptionsCommodity.Size = new System.Drawing.Size(61, 13);
             this.lblBuyOptionsCommodity.TabIndex = 85;
             this.lblBuyOptionsCommodity.Text = "Commodity:";
-            this.tipToolTips.SetToolTip(this.lblBuyOptionsCommodity, "Commodities to search for using Buy/Sell, and can be delimited by comma");
+            this.tipToolTips.SetToolTip(this.lblBuyOptionsCommodity, "One or more commodities for which to search.\r\nWith list open DEL to unselect all " +
+        "and, SHIFT+DEL to select all.");
             // 
             // optBuyOptionsDistance
             // 
@@ -1859,8 +1864,7 @@
             this.lblBuyOptionsSort.Size = new System.Drawing.Size(76, 13);
             this.lblBuyOptionsSort.TabIndex = 86;
             this.lblBuyOptionsSort.Text = "Sort results by:";
-            this.tipToolTips.SetToolTip(this.lblBuyOptionsSort, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
-        "?");
+            this.tipToolTips.SetToolTip(this.lblBuyOptionsSort, "Sort the results.");
             // 
             // lblSellOptionsSort
             // 
@@ -1870,8 +1874,7 @@
             this.lblSellOptionsSort.Size = new System.Drawing.Size(76, 13);
             this.lblSellOptionsSort.TabIndex = 86;
             this.lblSellOptionsSort.Text = "Sort results by:";
-            this.tipToolTips.SetToolTip(this.lblSellOptionsSort, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
-        "?");
+            this.tipToolTips.SetToolTip(this.lblSellOptionsSort, "Sort the results.");
             // 
             // optSellOptionsSupply
             // 
@@ -1906,7 +1909,7 @@
             this.lblSellOptionsCommodity.Size = new System.Drawing.Size(61, 13);
             this.lblSellOptionsCommodity.TabIndex = 85;
             this.lblSellOptionsCommodity.Text = "Commodity:";
-            this.tipToolTips.SetToolTip(this.lblSellOptionsCommodity, "Commodities to search for using Buy/Sell, and can be delimited by comma");
+            this.tipToolTips.SetToolTip(this.lblSellOptionsCommodity, "A single commodity for which to search.");
             // 
             // numSellOptionsBelow
             // 
@@ -2123,8 +2126,7 @@
             this.lblRaresOptionsSort.Size = new System.Drawing.Size(76, 13);
             this.lblRaresOptionsSort.TabIndex = 86;
             this.lblRaresOptionsSort.Text = "Sort results by:";
-            this.tipToolTips.SetToolTip(this.lblRaresOptionsSort, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
-        "?");
+            this.tipToolTips.SetToolTip(this.lblRaresOptionsSort, "Sort the results.");
             // 
             // optRaresOptionsDistance
             // 
@@ -2426,8 +2428,7 @@
             this.lblMarketOptionsType.Size = new System.Drawing.Size(63, 13);
             this.lblMarketOptionsType.TabIndex = 86;
             this.lblMarketOptionsType.Text = "Market type";
-            this.tipToolTips.SetToolTip(this.lblMarketOptionsType, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
-        "?");
+            this.tipToolTips.SetToolTip(this.lblMarketOptionsType, "Filter the result list.");
             // 
             // optMarketOptionsBuy
             // 
@@ -2462,7 +2463,7 @@
             this.optMarketOptionsAll.TabIndex = 87;
             this.optMarketOptionsAll.TabStop = true;
             this.optMarketOptionsAll.Text = "All";
-            this.tipToolTips.SetToolTip(this.optMarketOptionsAll, "All items.");
+            this.tipToolTips.SetToolTip(this.optMarketOptionsAll, "List all items.");
             this.optMarketOptionsAll.UseVisualStyleBackColor = true;
             // 
             // btnNavOptionsSwap
@@ -3067,7 +3068,43 @@
             this.cboSellOptionsCommodities.Name = "cboSellOptionsCommodities";
             this.cboSellOptionsCommodities.Size = new System.Drawing.Size(240, 21);
             this.cboSellOptionsCommodities.TabIndex = 88;
-            this.tipToolTips.SetToolTip(this.cboSellOptionsCommodities, "With drop down list open DEL to unselect and, SHIFT+DEL to select all.");
+            this.tipToolTips.SetToolTip(this.cboSellOptionsCommodities, "A single commodity for which to search.");
+            // 
+            // cboBuyOptionsCommodities
+            // 
+            this.cboBuyOptionsCommodities.CheckOnClick = true;
+            this.cboBuyOptionsCommodities.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cboBuyOptionsCommodities.DropDownHeight = 1;
+            this.cboBuyOptionsCommodities.FormattingEnabled = true;
+            this.cboBuyOptionsCommodities.IntegralHeight = false;
+            this.cboBuyOptionsCommodities.Location = new System.Drawing.Point(72, 31);
+            this.cboBuyOptionsCommodities.MaxDropDownItems = 50;
+            this.cboBuyOptionsCommodities.Name = "cboBuyOptionsCommodities";
+            this.cboBuyOptionsCommodities.Size = new System.Drawing.Size(240, 21);
+            this.cboBuyOptionsCommodities.TabIndex = 68;
+            this.tipToolTips.SetToolTip(this.cboBuyOptionsCommodities, "One or more commodities for which to search.\r\nWith list open DEL to unselect all " +
+        "and, SHIFT+DEL to select all.");
+            this.cboBuyOptionsCommodities.ValueSeparator = ", ";
+            // 
+            // cboCommandersShips
+            // 
+            this.cboCommandersShips.AutoAdjustItemHeight = false;
+            this.cboCommandersShips.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cboCommandersShips.DropDownHeight = 400;
+            this.cboCommandersShips.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboCommandersShips.FormattingEnabled = true;
+            this.cboCommandersShips.IntegralHeight = false;
+            this.cboCommandersShips.Location = new System.Drawing.Point(6, 4);
+            this.cboCommandersShips.Name = "cboCommandersShips";
+            this.cboCommandersShips.SeparatorColor = System.Drawing.Color.RoyalBlue;
+            this.cboCommandersShips.SeparatorMargin = 1;
+            this.cboCommandersShips.SeparatorStyle = System.Drawing.Drawing2D.DashStyle.Solid;
+            this.cboCommandersShips.SeparatorWidth = 2;
+            this.cboCommandersShips.Size = new System.Drawing.Size(272, 21);
+            this.cboCommandersShips.TabIndex = 1;
+            this.cboCommandersShips.TabStop = false;
+            this.tipToolTips.SetToolTip(this.cboCommandersShips, "Select a ship");
+            this.cboCommandersShips.SelectionChangeCommitted += new System.EventHandler(this.EventHandler_Ships_SelectionChangeCommitted);
             // 
             // backgroundWorker3
             // 
@@ -3466,6 +3503,9 @@
             this.lblRouteOptionsMaxLS.Size = new System.Drawing.Size(46, 13);
             this.lblRouteOptionsMaxLS.TabIndex = 10;
             this.lblRouteOptionsMaxLS.Text = "Max LS:";
+            this.tipToolTips.SetToolTip(this.lblRouteOptionsMaxLS, "Filter stations by their distance-to-star. Stations for which\r\n   distance-to-sta" +
+        "r is known that have a distance above this will\r\n   not be considered for tradin" +
+        "g.");
             // 
             // lblRouteOptionsPruneHops
             // 
@@ -3475,6 +3515,7 @@
             this.lblRouteOptionsPruneHops.Size = new System.Drawing.Size(66, 13);
             this.lblRouteOptionsPruneHops.TabIndex = 15;
             this.lblRouteOptionsPruneHops.Text = "Prune Hops:";
+            this.tipToolTips.SetToolTip(this.lblRouteOptionsPruneHops, resources.GetString("lblRouteOptionsPruneHops.ToolTip"));
             // 
             // lblRouteOptionsPruneScore
             // 
@@ -3484,6 +3525,7 @@
             this.lblRouteOptionsPruneScore.Size = new System.Drawing.Size(69, 13);
             this.lblRouteOptionsPruneScore.TabIndex = 49;
             this.lblRouteOptionsPruneScore.Text = "Prune Score:";
+            this.tipToolTips.SetToolTip(this.lblRouteOptionsPruneScore, resources.GetString("lblRouteOptionsPruneScore.ToolTip"));
             // 
             // lblRouteOptionsLsPenalty
             // 
@@ -3493,6 +3535,9 @@
             this.lblRouteOptionsLsPenalty.Size = new System.Drawing.Size(61, 13);
             this.lblRouteOptionsLsPenalty.TabIndex = 8;
             this.lblRouteOptionsLsPenalty.Text = "LS Penalty:";
+            this.tipToolTips.SetToolTip(this.lblRouteOptionsLsPenalty, "Reduces the score of routes by this percentage for every 1000ls\r\n   you have to t" +
+        "ravel to stations, which helps prioritize routes\r\n   with a shorter supercruise " +
+        "time.");
             // 
             // lblShipInsurance
             // 
@@ -3502,6 +3547,7 @@
             this.lblShipInsurance.Size = new System.Drawing.Size(57, 13);
             this.lblShipInsurance.TabIndex = 51;
             this.lblShipInsurance.Text = "Insurance:";
+            this.tipToolTips.SetToolTip(this.lblShipInsurance, "How many credits to hold back for insurance purposes");
             // 
             // backgroundWorker5
             // 
@@ -3848,55 +3894,20 @@
             // panOptions
             // 
             this.panOptions.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panOptions.Controls.Add(this.panRunOptions);
+            this.panOptions.Controls.Add(this.panMarketOptions);
+            this.panOptions.Controls.Add(this.panRaresOptions);
             this.panOptions.Controls.Add(this.panSellOptions);
             this.panOptions.Controls.Add(this.panBuyOptions);
+            this.panOptions.Controls.Add(this.panRunOptions);
             this.panOptions.Controls.Add(this.panTradeOptions);
-            this.panOptions.Controls.Add(this.panRaresOptions);
             this.panOptions.Controls.Add(this.panOldDataOptions);
             this.panOptions.Controls.Add(this.panNavOptions);
-            this.panOptions.Controls.Add(this.panMarketOptions);
             this.panOptions.Controls.Add(this.panLocalOptions);
             this.panOptions.Controls.Add(this.panShipVendorOptions);
             this.panOptions.Location = new System.Drawing.Point(10, 33);
             this.panOptions.Name = "panOptions";
             this.panOptions.Size = new System.Drawing.Size(322, 197);
             this.panOptions.TabIndex = 1;
-            // 
-            // cboBuyOptionsCommodities
-            // 
-            this.cboBuyOptionsCommodities.CheckOnClick = true;
-            this.cboBuyOptionsCommodities.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.cboBuyOptionsCommodities.DropDownHeight = 1;
-            this.cboBuyOptionsCommodities.FormattingEnabled = true;
-            this.cboBuyOptionsCommodities.IntegralHeight = false;
-            this.cboBuyOptionsCommodities.Location = new System.Drawing.Point(72, 31);
-            this.cboBuyOptionsCommodities.MaxDropDownItems = 50;
-            this.cboBuyOptionsCommodities.Name = "cboBuyOptionsCommodities";
-            this.cboBuyOptionsCommodities.Size = new System.Drawing.Size(240, 21);
-            this.cboBuyOptionsCommodities.TabIndex = 68;
-            this.tipToolTips.SetToolTip(this.cboBuyOptionsCommodities, "With drop down list open DEL to unselect and, SHIFT+DEL to select all.");
-            this.cboBuyOptionsCommodities.ValueSeparator = ", ";
-            // 
-            // cboCommandersShips
-            // 
-            this.cboCommandersShips.AutoAdjustItemHeight = false;
-            this.cboCommandersShips.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.cboCommandersShips.DropDownHeight = 400;
-            this.cboCommandersShips.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboCommandersShips.FormattingEnabled = true;
-            this.cboCommandersShips.IntegralHeight = false;
-            this.cboCommandersShips.Location = new System.Drawing.Point(6, 4);
-            this.cboCommandersShips.Name = "cboCommandersShips";
-            this.cboCommandersShips.SeparatorColor = System.Drawing.Color.RoyalBlue;
-            this.cboCommandersShips.SeparatorMargin = 1;
-            this.cboCommandersShips.SeparatorStyle = System.Drawing.Drawing2D.DashStyle.Solid;
-            this.cboCommandersShips.SeparatorWidth = 2;
-            this.cboCommandersShips.Size = new System.Drawing.Size(272, 21);
-            this.cboCommandersShips.TabIndex = 1;
-            this.cboCommandersShips.TabStop = false;
-            this.tipToolTips.SetToolTip(this.cboCommandersShips, "Select a ship");
-            this.cboCommandersShips.SelectionChangeCommitted += new System.EventHandler(this.EventHandler_Ships_SelectionChangeCommitted);
             // 
             // MainForm
             // 

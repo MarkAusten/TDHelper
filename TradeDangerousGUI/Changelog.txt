@@ -1,3 +1,9 @@
+v2.0.8.5
+--------
+* Only update the commodity lists if they have not been previously set.
+* Reload the commodity drop down lists after a database update.
+* Fixed some missing and incorrect tool tips.
+
 v2.0.8.4
 --------
 * Sell commodity drop down now only allows one item to be selected.
@@ -27,7 +33,7 @@ v2.0.8.0
 --------
 * On first start up, before the commander profile option is run, the ship list now defaults to all the ships with their initial, just purchased, options.
 
-vv2.0.7.0
+v2.0.7.0
 --------
 * Changed the sections in which the ship data is stored to use the invaariant internal ship ID. This prevents problems when changing the ship's name or call sign.
 * Added new ComboBoxItem class that simulated the ListItem class found in MVC and ASP.

@@ -513,12 +513,15 @@ namespace TDHelper
                 EnableBtnStarts();
                 td_proc.Dispose();
 
-                // we have to update the comboboxes now
+                // we have to update the system/station comboboxes now
                 if (!backgroundWorker1.IsBusy)
                 {
                     buttonCaller = 16; // mark us as needing a full refresh
                     backgroundWorker1.RunWorkerAsync();
                 }
+
+                // Reset the commodity controls to ensure that any changes are reflected in the lists.
+                ResetCommodityDropDownLists();
 
                 OptimiseAllDatabases();
 
@@ -2004,6 +2007,9 @@ namespace TDHelper
 
                 LoadSettings();
             }
+
+            // Ensure that the run options panel is foremost.
+            panRunOptions.BringToFront();
 
             SplashScreen.SetStatus("Completed.");
         }
@@ -3738,6 +3744,26 @@ namespace TDHelper
         }
 
         /// <summary>
+        /// Reset the commodities drop down lists.
+        /// </summary>
+        private void ResetCommodityDropDownLists()
+        {
+            // Remove al the items in the commodity check combo box controls.
+            foreach (CheckedComboBox ccbo in Controls.OfType<CheckedComboBox>()
+                .Where(x => x.Name.Contains("Commodities")))
+            {
+                ccbo.Items.Clear();
+            }
+
+            // Set the data source to null for each of the commodity combo box controls.
+            foreach (ComboBox cbo in Controls.OfType<ComboBox>()
+                .Where(x => x.Name.Contains("Commodities")))
+            {
+                cbo.DataSource = null;
+            }
+        }
+
+        /// <summary>
         /// Select all the text on the control.
         /// </summary>
         /// <param name="sender">The clicked control.</param>
@@ -3860,7 +3886,8 @@ namespace TDHelper
                         CheckedComboBox buyCommodities = panel.Controls.OfType<CheckedComboBox>()
                             .FirstOrDefault(x => x.Name.Contains("Commodities"));
 
-                        if (buyCommodities != null)
+                        if (buyCommodities != null &&
+                            buyCommodities.Items.Count == 0)
                         {
                             buyCommodities.Items.Clear();
 
@@ -3877,9 +3904,10 @@ namespace TDHelper
                         ComboBox sellCommodities = panel.Controls.OfType<ComboBox>()
                             .FirstOrDefault(x => x.Name.Contains("Commodities"));
 
-                        if (sellCommodities != null)
+                        if (sellCommodities != null &&
+                            sellCommodities.DataSource == null)
                         {
-                            sellCommodities.DataSource = null;
+                            //                            sellCommodities.DataSource = null;
                             sellCommodities.DataSource = CommodityAndShipList;
                         }
 
