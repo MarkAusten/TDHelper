@@ -64,6 +64,8 @@
             this.miscGroupBox = new System.Windows.Forms.GroupBox();
             this.chkQuiet = new System.Windows.Forms.CheckBox();
             this.lblRebuyPercentage = new System.Windows.Forms.Label();
+            this.lblLocale = new System.Windows.Forms.Label();
+            this.txtLocale = new System.Windows.Forms.TextBox();
             this.overrideGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rebuyPercentage)).BeginInit();
             this.miscGroupBox.SuspendLayout();
@@ -90,7 +92,7 @@
             // okButton
             // 
             this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.okButton.Location = new System.Drawing.Point(300, 395);
+            this.okButton.Location = new System.Drawing.Point(300, 424);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 28);
             this.okButton.TabIndex = 16;
@@ -101,7 +103,7 @@
             // cancelButton
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cancelButton.Location = new System.Drawing.Point(12, 395);
+            this.cancelButton.Location = new System.Drawing.Point(12, 424);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 28);
             this.cancelButton.TabIndex = 14;
@@ -369,7 +371,7 @@
             // resetButton
             // 
             this.resetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.resetButton.Location = new System.Drawing.Point(151, 395);
+            this.resetButton.Location = new System.Drawing.Point(151, 424);
             this.resetButton.Name = "resetButton";
             this.resetButton.Size = new System.Drawing.Size(84, 28);
             this.resetButton.TabIndex = 15;
@@ -394,12 +396,14 @@
             // 
             // miscGroupBox
             // 
+            this.miscGroupBox.Controls.Add(this.lblLocale);
+            this.miscGroupBox.Controls.Add(this.txtLocale);
             this.miscGroupBox.Controls.Add(this.chkQuiet);
             this.miscGroupBox.Controls.Add(this.rebuyPercentage);
             this.miscGroupBox.Controls.Add(this.lblRebuyPercentage);
             this.miscGroupBox.Location = new System.Drawing.Point(12, 336);
             this.miscGroupBox.Name = "miscGroupBox";
-            this.miscGroupBox.Size = new System.Drawing.Size(363, 50);
+            this.miscGroupBox.Size = new System.Drawing.Size(363, 82);
             this.miscGroupBox.TabIndex = 17;
             this.miscGroupBox.TabStop = false;
             this.miscGroupBox.Text = "Misc.";
@@ -423,11 +427,27 @@
             this.lblRebuyPercentage.TabIndex = 2;
             this.lblRebuyPercentage.Text = "Rebuy Percentage:";
             // 
+            // lblLocale
+            // 
+            this.lblLocale.AutoSize = true;
+            this.lblLocale.Location = new System.Drawing.Point(7, 49);
+            this.lblLocale.Name = "lblLocale";
+            this.lblLocale.Size = new System.Drawing.Size(42, 13);
+            this.lblLocale.TabIndex = 14;
+            this.lblLocale.Text = "Locale:";
+            // 
+            // txtLocale
+            // 
+            this.txtLocale.Location = new System.Drawing.Point(97, 46);
+            this.txtLocale.Name = "txtLocale";
+            this.txtLocale.Size = new System.Drawing.Size(74, 20);
+            this.txtLocale.TabIndex = 15;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(387, 430);
+            this.ClientSize = new System.Drawing.Size(387, 459);
             this.Controls.Add(this.miscGroupBox);
             this.Controls.Add(this.resetButton);
             this.Controls.Add(this.overrideGroupBox);
@@ -487,5 +507,7 @@
         private System.Windows.Forms.ComboBox verbosityComboBox;
         private System.Windows.Forms.CheckBox chkProgress;
         private System.Windows.Forms.CheckBox chkSummary;
+        private System.Windows.Forms.Label lblLocale;
+        private System.Windows.Forms.TextBox txtLocale;
     }
 }

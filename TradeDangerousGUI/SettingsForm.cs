@@ -16,7 +16,7 @@ namespace TDHelper
         {
             ((Button)sender).Enabled = false;
 
-            this.Close();
+            Close();
         }
 
         /// <summary>
@@ -26,33 +26,34 @@ namespace TDHelper
         {
             TDSettings settings = MainForm.settingsRef;
 
-            settings.DisableNetLogs = this.overrideDisableNetLogs.Checked;
-            settings.DoNotUpdate = this.overrideDoNotUpdate.Checked;
-            settings.CopySystemToClipboard = !this.overrideCopySystemToClipboard.Checked;
+            settings.DisableNetLogs = overrideDisableNetLogs.Checked;
+            settings.DoNotUpdate = overrideDoNotUpdate.Checked;
+            settings.CopySystemToClipboard = !overrideCopySystemToClipboard.Checked;
 
-            settings.PythonPath = this.pythonPathBox.Text;
-            settings.TDPath = this.tdPathBox.Text;
-            settings.EdcePath = this.edcePathBox.Text;
-            settings.NetLogPath = this.txtNetLogsPath.Text;
+            settings.PythonPath = pythonPathBox.Text;
+            settings.TDPath = tdPathBox.Text;
+            settings.EdcePath = edcePathBox.Text;
+            settings.NetLogPath = txtNetLogsPath.Text;
 
-            settings.ExtraRunParams = this.extraRunParameters.Text;
+            settings.ExtraRunParams = extraRunParameters.Text;
+            settings.Locale = txtLocale.Text;
 
-            settings.RebuyPercentage = this.rebuyPercentage.Value;
+            settings.RebuyPercentage = rebuyPercentage.Value;
 
-            settings.Quiet = !this.chkQuiet.Checked;
-            settings.Verbosity = this.verbosityComboBox.SelectedIndex;
-            settings.TestSystems = this.testSystemsCheckBox.Checked;
-            settings.ShowProgress = this.chkProgress.Checked;
-            settings.Summary = this.chkSummary.Checked;
+            settings.Quiet = !chkQuiet.Checked;
+            settings.Verbosity = verbosityComboBox.SelectedIndex;
+            settings.TestSystems = testSystemsCheckBox.Checked;
+            settings.ShowProgress = chkProgress.Checked;
+            settings.Summary = chkSummary.Checked;
         }
 
         private void FormValidator()
         {
-            this.CopyValuesToSettings();
+            CopyValuesToSettings();
 
             MainForm.SaveSettingsToIniFile();
 
-            this.Close();
+            Close();
         }
 
         private void Generic_KeyDown(object sender, KeyEventArgs e)
@@ -61,7 +62,7 @@ namespace TDHelper
             {
                 e.Handled = true;
                 e.SuppressKeyPress = true;
-                this.Close();
+                Close();
             }
             else if (e.KeyCode == Keys.Enter)
             {
@@ -98,7 +99,7 @@ namespace TDHelper
             if (d == DialogResult.Yes)
             {
                 MainForm.callForReset = true;
-                this.Dispose();
+                Dispose();
             }
 
             ((Button)sender).Enabled = true;
@@ -173,12 +174,13 @@ namespace TDHelper
                 MainForm.settingsRef.TreeViewFont = MainForm.settingsRef.ConvertToFontString(tvDefaultFont);
             }
 
-            this.rebuyPercentage.Value = MainForm.settingsRef.RebuyPercentage;
-            this.chkQuiet.Checked = !MainForm.settingsRef.Quiet;
-            this.testSystemsCheckBox.Checked = MainForm.settingsRef.TestSystems;
-            this.verbosityComboBox.SelectedIndex = (int)MainForm.settingsRef.Verbosity;
-            this.chkProgress.Checked = MainForm.settingsRef.ShowProgress;
-            this.chkSummary.Checked = MainForm.settingsRef.Summary;
+            rebuyPercentage.Value = MainForm.settingsRef.RebuyPercentage;
+            chkQuiet.Checked = !MainForm.settingsRef.Quiet;
+            testSystemsCheckBox.Checked = MainForm.settingsRef.TestSystems;
+            verbosityComboBox.SelectedIndex = (int)MainForm.settingsRef.Verbosity;
+            chkProgress.Checked = MainForm.settingsRef.ShowProgress;
+            chkSummary.Checked = MainForm.settingsRef.Summary;
+            txtLocale.Text = MainForm.settingsRef.Locale;
         }
 
         private void TvFontSelectorButton_Click(object sender, EventArgs e)

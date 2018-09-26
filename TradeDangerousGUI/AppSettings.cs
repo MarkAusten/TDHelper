@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
@@ -218,6 +220,7 @@ namespace TDHelper
                 settings.EdcePath = GetStringSetting(configSection, "EdcePath");
                 settings.HasUpdated = GetBooleanSetting(configSection, "HasUpdated");
                 settings.ImportPath = GetStringSetting(configSection, "ImportPath");
+                settings.Locale = GetStringSetting(configSection, "Locale");
                 settings.LastUsedConfig = GetStringSetting(configSection, "LastUsedConfig");
                 settings.LocationChild = GetStringSetting(configSection, "LocationChild");
                 settings.LocationParent = GetStringSetting(configSection, "LocationParent");
@@ -237,6 +240,13 @@ namespace TDHelper
 
                 settings.SkipVend = GetBooleanSetting(configSection, "SkipVend");
                 settings.Solo = GetBooleanSetting(configSection, "Solo");
+
+                // Update settings if required.
+                if (string.IsNullOrEmpty(settings.Locale))
+                {
+                    // Set the locale to British Engish.
+                    settings.Locale = "en-gb";
+                }
             }
         }
 
@@ -346,6 +356,7 @@ namespace TDHelper
             configSection["HasUpdated"].BoolValue = settings.HasUpdated;
             configSection["ImportPath"].StringValue = settings.ImportPath ?? string.Empty;
             configSection["LastUsedConfig"].StringValue = settings.LastUsedConfig ?? string.Empty;
+            configSection["Locale"].StringValue = settings.Locale ?? string.Empty;
             configSection["LocationChild"].StringValue = settings.LocationChild ?? string.Empty;
             configSection["LocationParent"].StringValue = settings.LocationParent ?? string.Empty;
             configSection["MiniModeOnTop"].BoolValue = settings.MiniModeOnTop;
@@ -870,6 +881,7 @@ namespace TDHelper
         public decimal LadenLY { get; set; }
         public string LastUsedConfig { get; set; }
         public decimal Limit { get; set; }
+        public string Locale { get; set; }
         public string LocationChild { get; set; }
         public string LocationParent { get; set; }
         public bool Loop { get; set; }
@@ -959,6 +971,7 @@ namespace TDHelper
             instance.LadenLY = 0;
             instance.LastUsedConfig = string.Empty;
             instance.Limit = 0;
+            instance.Locale = string.Empty;
             instance.LocationChild = string.Empty;
             instance.LocationParent = string.Empty;
             instance.Loop = false;

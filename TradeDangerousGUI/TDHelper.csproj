@@ -281,6 +281,9 @@
   <ItemGroup>
     <Content Include="Changelog.txt" />
     <Content Include="License.txt" />
+    <None Include="TDH2Tooltips.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="unknown.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

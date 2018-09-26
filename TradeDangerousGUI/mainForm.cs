@@ -72,6 +72,8 @@ namespace TDHelper
         private string savedFile1 = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "saved_1.txt");
         private string savedFile2 = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "saved_2.txt");
         private string savedFile3 = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "saved_3.txt");
+        private string tooltipsTranslations = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "TDH2Tooltips.ini");
+        private bool tooltipsTranslated = false;
         private string SelectedCommodity = string.Empty;
         private List<string> ShipList = new List<string>();
         private string SourceSystem = string.Empty;
@@ -2011,7 +2013,102 @@ namespace TDHelper
             // Ensure that the run options panel is foremost.
             panRunOptions.BringToFront();
 
+            // Translate and set the tooltips.
+            SplashScreen.SetStatus("Translating tooltips...");
+            TranslateTooltips();
+
             SplashScreen.SetStatus("Completed.");
+        }
+
+        /// <summary>
+        /// Translate the tooltips into the correct language.
+        /// </summary>
+        private void TranslateTooltips()
+        {
+            if (!tooltipsTranslated)
+            {
+                if (CheckIfFileOpens(tooltipsTranslations))
+                {
+                    // Load up the translations.
+                    IDictionary<string, string> translations = LoadTooltipTranslations(
+                        tooltipsTranslations,
+                        settingsRef.Locale);
+
+                    // Get a reference to the tooltip component.
+                    FieldInfo fieldInfo = GetType().GetField("components", BindingFlags.Instance | BindingFlags.NonPublic);
+                    IContainer parent = (IContainer)fieldInfo.GetValue(this);
+                    List<ToolTip> ToolTipList = parent.Components.OfType<ToolTip>().ToList();
+
+                    if (ToolTipList.Count > 0)
+                    {
+                        ToolTip tt = ToolTipList[0];
+
+                        // Cycle through each object on the form and if there is a tooltip set for the object
+                        // then translate the tooltip if a translation exists.
+                        foreach (Control control in this.GetAllChildren())
+                        {
+                            string key = tt.GetToolTip(control);
+
+                            if (!string.IsNullOrEmpty(key))
+                            {
+                                if (translations.ContainsKey(key))
+                                {
+                                    string value = translations[key]
+                                    .Replace(">", "\t")
+                                    .Replace("|", Environment.NewLine);
+
+                                    tt.SetToolTip(control, value);
+                                }
+                                else
+                                {
+                                    if (key.StartsWith("Tooltip-"))
+                                    {
+                                        Debug.WriteLine("{0} not found".With(key));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                tooltipsTranslated = true;
+            }
+        }
+
+        /// <summary>
+        /// Load the tooltip translations from the file using the specified language setting.
+        /// </summary>
+        /// <param name="tooltipsTranslations"></param>
+        /// <param name="currentLanguage"></param>
+        /// <returns></returns>
+        private IDictionary<string, string> LoadTooltipTranslations(
+            string tooltipsTranslations,
+            string currentLanguage)
+        {
+            IDictionary<string, string> translations = new Dictionary<string, string>();
+
+            try
+            {
+                SharpConfig.Configuration config = SharpConfig.Configuration.LoadFromFile(tooltipsTranslations);
+
+                int count = config.SectionCount;
+
+                for (int i = 1; i <= count; ++i)
+                {
+                    string sectionHeader = "Tooltip-{0:d3}".With(i);
+                    string translation = config[sectionHeader][currentLanguage].StringValue;
+
+                    translations.Add(
+                        sectionHeader,
+                        translation);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.GetFullMessage());
+            }
+
+            return translations;
         }
 
         /// <summary>

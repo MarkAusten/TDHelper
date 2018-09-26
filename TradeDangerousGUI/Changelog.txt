@@ -3,6 +3,7 @@ v2.0.8.5
 * Only update the commodity lists if they have not been previously set.
 * Reload the commodity drop down lists after a database update.
 * Fixed some missing and incorrect tool tips.
+* Tooltips now multi-lingual.
 
 v2.0.8.4
 --------

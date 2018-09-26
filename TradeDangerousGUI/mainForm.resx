@@ -166,15 +166,6 @@
   <data name="numNavOptionsRefuelJumps.ToolTip" xml:space="preserve">
     <value>Specify the maximum consecutive systems which do not have stations you can pass through. For example "--ref 1" would require every jump on the route have a station. "--ref 2" would require that you not make more than one stationless jump after another.</value>
   </data>
-  <metadata name="backgroundWorker3.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>331, 11</value>
-  </metadata>
-  <metadata name="backgroundWorker4.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>495, 11</value>
-  </metadata>
-  <metadata name="mnuStrip2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>430, 51</value>
-  </metadata>
   <data name="lblRouteOptionsPruneHops.ToolTip" xml:space="preserve">
     <value>Being applying "--prune-score" from this hop onward. Set 0 to disable.
    NOTE: This can speed up long run calculations, but it can also
@@ -186,6 +177,15 @@
    NOTE: This can speed up long run calculations, but it can also
    cause you to miss gold-mines that are a just a few hops away.</value>
   </data>
+  <metadata name="backgroundWorker3.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>331, 11</value>
+  </metadata>
+  <metadata name="backgroundWorker4.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>495, 11</value>
+  </metadata>
+  <metadata name="mnuStrip2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>430, 51</value>
+  </metadata>
   <metadata name="backgroundWorker5.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>659, 11</value>
   </metadata>

@@ -250,6 +250,11 @@
             this.cboSellOptionsCommodities = new System.Windows.Forms.ComboBox();
             this.cboBuyOptionsCommodities = new TDHelper.CheckedComboBox();
             this.cboCommandersShips = new SeparatorComboBox.SeparatorComboBox();
+            this.lblRouteOptionsMaxLS = new System.Windows.Forms.Label();
+            this.lblRouteOptionsPruneHops = new System.Windows.Forms.Label();
+            this.lblRouteOptionsPruneScore = new System.Windows.Forms.Label();
+            this.lblRouteOptionsLsPenalty = new System.Windows.Forms.Label();
+            this.lblShipInsurance = new System.Windows.Forms.Label();
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker4 = new System.ComponentModel.BackgroundWorker();
             this.panRunOptions = new System.Windows.Forms.Panel();
@@ -281,11 +286,6 @@
             this.panBuyOptions = new System.Windows.Forms.Panel();
             this.grpBuyOptionsSort = new System.Windows.Forms.GroupBox();
             this.lblRouteOptionsJumps = new System.Windows.Forms.Label();
-            this.lblRouteOptionsMaxLS = new System.Windows.Forms.Label();
-            this.lblRouteOptionsPruneHops = new System.Windows.Forms.Label();
-            this.lblRouteOptionsPruneScore = new System.Windows.Forms.Label();
-            this.lblRouteOptionsLsPenalty = new System.Windows.Forms.Label();
-            this.lblShipInsurance = new System.Windows.Forms.Label();
             this.backgroundWorker5 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker6 = new System.ComponentModel.BackgroundWorker();
             this.lblTrackerLink = new System.Windows.Forms.LinkLabel();
@@ -411,7 +411,7 @@
             this.lblRunOptionsDestination.Size = new System.Drawing.Size(63, 13);
             this.lblRunOptionsDestination.TabIndex = 1;
             this.lblRunOptionsDestination.Text = "Destination:";
-            this.tipToolTips.SetToolTip(this.lblRunOptionsDestination, "Destination point in the form of system or system/station");
+            this.tipToolTips.SetToolTip(this.lblRunOptionsDestination, "Tooltip-017");
             // 
             // backgroundWorker1
             // 
@@ -429,9 +429,7 @@
             this.cboRunOptionsDestination.Name = "cboRunOptionsDestination";
             this.cboRunOptionsDestination.Size = new System.Drawing.Size(212, 21);
             this.cboRunOptionsDestination.TabIndex = 0;
-            this.tipToolTips.SetToolTip(this.cboRunOptionsDestination, "Destination point in the form of system or system/station\r\nCtrl+Enter adds a Syst" +
-        "em/Station to the favorites\r\nShift+Enter removes a System/Station from the favor" +
-        "ites");
+            this.tipToolTips.SetToolTip(this.cboRunOptionsDestination, "Tooltip-017");
             this.cboRunOptionsDestination.DropDown += new System.EventHandler(this.EventHandler_DropDown);
             this.cboRunOptionsDestination.SelectedIndexChanged += new System.EventHandler(this.EventHandler_DestinationChanged);
             this.cboRunOptionsDestination.DropDownClosed += new System.EventHandler(this.EventHandler_DropDownClosed);
@@ -556,7 +554,7 @@
             this.lblCommandersCredits.Size = new System.Drawing.Size(42, 13);
             this.lblCommandersCredits.TabIndex = 0;
             this.lblCommandersCredits.Text = "Credits:";
-            this.tipToolTips.SetToolTip(this.lblCommandersCredits, "Current credits");
+            this.tipToolTips.SetToolTip(this.lblCommandersCredits, "Tooltip-013");
             // 
             // lblRouteOptionsShipCapacity
             // 
@@ -566,7 +564,7 @@
             this.lblRouteOptionsShipCapacity.Size = new System.Drawing.Size(51, 13);
             this.lblRouteOptionsShipCapacity.TabIndex = 1;
             this.lblRouteOptionsShipCapacity.Text = "Capacity:";
-            this.tipToolTips.SetToolTip(this.lblRouteOptionsShipCapacity, "Total cargo space in your ship");
+            this.tipToolTips.SetToolTip(this.lblRouteOptionsShipCapacity, "Tooltip-008");
             // 
             // lblUnladenLy
             // 
@@ -576,7 +574,7 @@
             this.lblUnladenLy.Size = new System.Drawing.Size(66, 13);
             this.lblUnladenLy.TabIndex = 3;
             this.lblUnladenLy.Text = "Unladen LY:";
-            this.tipToolTips.SetToolTip(this.lblUnladenLy, "Distance that can be travelled while unladen (including fuel)");
+            this.tipToolTips.SetToolTip(this.lblUnladenLy, "Tooltip-096");
             // 
             // lblLadenLy
             // 
@@ -586,7 +584,7 @@
             this.lblLadenLy.Size = new System.Drawing.Size(56, 13);
             this.lblLadenLy.TabIndex = 2;
             this.lblLadenLy.Text = "Laden LY:";
-            this.tipToolTips.SetToolTip(this.lblLadenLy, "Distance that can be travelled while fully laden (including fuel)");
+            this.tipToolTips.SetToolTip(this.lblLadenLy, "Tooltip-025");
             // 
             // chkRunOptionsTowards
             // 
@@ -598,8 +596,7 @@
             this.chkRunOptionsTowards.TabIndex = 11;
             this.chkRunOptionsTowards.TabStop = false;
             this.chkRunOptionsTowards.Text = "Towards";
-            this.tipToolTips.SetToolTip(this.chkRunOptionsTowards, "Favors distance covered over profit generated during routing (requires a Destinat" +
-        "ion)");
+            this.tipToolTips.SetToolTip(this.chkRunOptionsTowards, "Tooltip-094");
             this.chkRunOptionsTowards.UseVisualStyleBackColor = true;
             this.chkRunOptionsTowards.Click += new System.EventHandler(this.EventHandler_Towards_Click);
             // 
@@ -614,7 +611,7 @@
             this.chkRunOptionsLoop.TabIndex = 2;
             this.chkRunOptionsLoop.TabStop = false;
             this.chkRunOptionsLoop.Text = "Loop";
-            this.tipToolTips.SetToolTip(this.chkRunOptionsLoop, "Attempts to get a round-trip route");
+            this.tipToolTips.SetToolTip(this.chkRunOptionsLoop, "Tooltip-040");
             this.chkRunOptionsLoop.UseVisualStyleBackColor = true;
             this.chkRunOptionsLoop.Click += new System.EventHandler(this.EventHandler_Loop_Click);
             // 
@@ -768,7 +765,7 @@
             this.chkRunOptionsDirect.TabIndex = 4;
             this.chkRunOptionsDirect.TabStop = false;
             this.chkRunOptionsDirect.Text = "Direct";
-            this.tipToolTips.SetToolTip(this.chkRunOptionsDirect, "Attempts to calculate a 1 hop route, ignoring distance (volatile)");
+            this.tipToolTips.SetToolTip(this.chkRunOptionsDirect, "Tooltip-018");
             this.chkRunOptionsDirect.UseVisualStyleBackColor = true;
             this.chkRunOptionsDirect.Click += new System.EventHandler(this.EventHandler_DirectCheckBox_Click);
             // 
@@ -786,7 +783,7 @@
             this.numRunOptionsRoutes.TabIndex = 9;
             this.numRunOptionsRoutes.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numRunOptionsRoutes.ThousandsSeparator = true;
-            this.tipToolTips.SetToolTip(this.numRunOptionsRoutes, "Generates this many routes for a Run");
+            this.tipToolTips.SetToolTip(this.numRunOptionsRoutes, "Tooltip-020");
             this.numRunOptionsRoutes.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
             this.numRunOptionsRoutes.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
@@ -798,8 +795,7 @@
             this.numRunOptionsEndJumps.Size = new System.Drawing.Size(46, 20);
             this.numRunOptionsEndJumps.TabIndex = 8;
             this.numRunOptionsEndJumps.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numRunOptionsEndJumps, "Try to finish this many jumps away from the destination, this requires a destinat" +
-        "ion (volatile)");
+            this.tipToolTips.SetToolTip(this.numRunOptionsEndJumps, "Tooltip-019");
             this.numRunOptionsEndJumps.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
             this.numRunOptionsEndJumps.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
@@ -811,8 +807,7 @@
             this.numRunOptionsStartJumps.Size = new System.Drawing.Size(46, 20);
             this.numRunOptionsStartJumps.TabIndex = 7;
             this.numRunOptionsStartJumps.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numRunOptionsStartJumps, "Try to route starting from this many jumps away from the source system (volatile)" +
-        "");
+            this.tipToolTips.SetToolTip(this.numRunOptionsStartJumps, "Tooltip-089");
             this.numRunOptionsStartJumps.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
             this.numRunOptionsStartJumps.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
@@ -829,7 +824,7 @@
             this.numRouteOptionsLimit.Size = new System.Drawing.Size(71, 20);
             this.numRouteOptionsLimit.TabIndex = 2;
             this.numRouteOptionsLimit.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numRouteOptionsLimit, "Limit each commodity purchased to this amount on a hop");
+            this.tipToolTips.SetToolTip(this.numRouteOptionsLimit, "Tooltip-006");
             this.numRouteOptionsLimit.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
             this.numRouteOptionsLimit.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
@@ -841,7 +836,7 @@
             this.numRouteOptionsPruneHops.Size = new System.Drawing.Size(60, 20);
             this.numRouteOptionsPruneHops.TabIndex = 4;
             this.numRouteOptionsPruneHops.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numRouteOptionsPruneHops, resources.GetString("numRouteOptionsPruneHops.ToolTip"));
+            this.tipToolTips.SetToolTip(this.numRouteOptionsPruneHops, "Tooltip-057");
             this.numRouteOptionsPruneHops.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
             this.numRouteOptionsPruneHops.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
@@ -858,7 +853,7 @@
             this.numRouteOptionsPruneScore.Size = new System.Drawing.Size(60, 20);
             this.numRouteOptionsPruneScore.TabIndex = 3;
             this.numRouteOptionsPruneScore.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numRouteOptionsPruneScore, resources.GetString("numRouteOptionsPruneScore.ToolTip"));
+            this.tipToolTips.SetToolTip(this.numRouteOptionsPruneScore, "Tooltip-058");
             this.numRouteOptionsPruneScore.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
             this.numRouteOptionsPruneScore.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
@@ -876,9 +871,7 @@
             this.numRouteOptionsLsPenalty.Size = new System.Drawing.Size(60, 20);
             this.numRouteOptionsLsPenalty.TabIndex = 2;
             this.numRouteOptionsLsPenalty.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numRouteOptionsLsPenalty, "Reduces the score of routes by this percentage for every 1000ls\r\n   you have to t" +
-        "ravel to stations, which helps prioritize routes\r\n   with a shorter supercruise " +
-        "time.");
+            this.tipToolTips.SetToolTip(this.numRouteOptionsLsPenalty, "Tooltip-042");
             this.numRouteOptionsLsPenalty.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
             this.numRouteOptionsLsPenalty.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
@@ -895,9 +888,7 @@
             this.numRouteOptionsMaxLSDistance.Size = new System.Drawing.Size(60, 20);
             this.numRouteOptionsMaxLSDistance.TabIndex = 1;
             this.numRouteOptionsMaxLSDistance.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numRouteOptionsMaxLSDistance, "Filter stations by their distance-to-star. Stations for which\r\n   distance-to-sta" +
-        "r is known that have a distance above this will\r\n   not be considered for tradin" +
-        "g.");
+            this.tipToolTips.SetToolTip(this.numRouteOptionsMaxLSDistance, "Tooltip-047");
             this.numRouteOptionsMaxLSDistance.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
             this.numRouteOptionsMaxLSDistance.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
@@ -915,7 +906,7 @@
             this.numRouteOptionsGpt.TabIndex = 0;
             this.numRouteOptionsGpt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numRouteOptionsGpt.ThousandsSeparator = true;
-            this.tipToolTips.SetToolTip(this.numRouteOptionsGpt, "Minimum profit in credits per ton on any hop");
+            this.tipToolTips.SetToolTip(this.numRouteOptionsGpt, "Tooltip-022");
             this.numRouteOptionsGpt.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
             this.numRouteOptionsGpt.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
@@ -929,7 +920,7 @@
             this.chkRunOptionsUnique.TabIndex = 12;
             this.chkRunOptionsUnique.TabStop = false;
             this.chkRunOptionsUnique.Text = "Unique";
-            this.tipToolTips.SetToolTip(this.chkRunOptionsUnique, "Require that stations on a route only be visited once");
+            this.tipToolTips.SetToolTip(this.chkRunOptionsUnique, "Tooltip-095");
             this.chkRunOptionsUnique.UseVisualStyleBackColor = true;
             this.chkRunOptionsUnique.Click += new System.EventHandler(this.EventHandler_UniqueCheckBox_Click);
             // 
@@ -946,7 +937,7 @@
             this.numShipInsurance.TabIndex = 2;
             this.numShipInsurance.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numShipInsurance.ThousandsSeparator = true;
-            this.tipToolTips.SetToolTip(this.numShipInsurance, "How many credits to hold back for insurance purposes");
+            this.tipToolTips.SetToolTip(this.numShipInsurance, "Tooltip-076");
             this.numShipInsurance.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
             this.numShipInsurance.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
@@ -962,7 +953,7 @@
             this.numRouteOptionsShipCapacity.Size = new System.Drawing.Size(60, 20);
             this.numRouteOptionsShipCapacity.TabIndex = 5;
             this.numRouteOptionsShipCapacity.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numRouteOptionsShipCapacity, "Total cargo space in your ship");
+            this.tipToolTips.SetToolTip(this.numRouteOptionsShipCapacity, "Tooltip-008");
             this.numRouteOptionsShipCapacity.Value = new decimal(new int[] {
             1,
             0,
@@ -979,7 +970,7 @@
             this.numRouteOptionsJumps.Size = new System.Drawing.Size(39, 20);
             this.numRouteOptionsJumps.TabIndex = 1;
             this.numRouteOptionsJumps.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numRouteOptionsJumps, "A jump is any system between two hops");
+            this.tipToolTips.SetToolTip(this.numRouteOptionsJumps, "Tooltip-068");
             this.numRouteOptionsJumps.Value = new decimal(new int[] {
             1,
             0,
@@ -1001,7 +992,7 @@
             this.numRouteOptionsHops.Size = new System.Drawing.Size(39, 20);
             this.numRouteOptionsHops.TabIndex = 0;
             this.numRouteOptionsHops.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numRouteOptionsHops, "A hop is a station to load/unload from");
+            this.tipToolTips.SetToolTip(this.numRouteOptionsHops, "Tooltip-067");
             this.numRouteOptionsHops.Value = new decimal(new int[] {
             2,
             0,
@@ -1018,7 +1009,7 @@
             this.numCommandersCredits.TabIndex = 6;
             this.numCommandersCredits.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numCommandersCredits.ThousandsSeparator = true;
-            this.tipToolTips.SetToolTip(this.numCommandersCredits, "Current credits");
+            this.tipToolTips.SetToolTip(this.numCommandersCredits, "Tooltip-013");
             this.numCommandersCredits.Value = new decimal(new int[] {
             100,
             0,
@@ -1040,7 +1031,7 @@
             this.numUnladenLy.Size = new System.Drawing.Size(53, 20);
             this.numUnladenLy.TabIndex = 4;
             this.numUnladenLy.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numUnladenLy, "Distance that can be travelled while unladen (including fuel)");
+            this.tipToolTips.SetToolTip(this.numUnladenLy, "Tooltip-096");
             this.numUnladenLy.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
             this.numUnladenLy.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
@@ -1062,7 +1053,7 @@
             this.numLadenLy.Size = new System.Drawing.Size(53, 20);
             this.numLadenLy.TabIndex = 3;
             this.numLadenLy.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numLadenLy, "Distance that can be travelled while fully laden (including fuel)");
+            this.tipToolTips.SetToolTip(this.numLadenLy, "Tooltip-025");
             this.numLadenLy.Value = new decimal(new int[] {
             1,
             0,
@@ -1080,7 +1071,7 @@
             this.lblRunOptionsRoutes.TabIndex = 58;
             this.lblRunOptionsRoutes.Tag = "";
             this.lblRunOptionsRoutes.Text = "Routes:";
-            this.tipToolTips.SetToolTip(this.lblRunOptionsRoutes, "Generates this many routes for a Run");
+            this.tipToolTips.SetToolTip(this.lblRunOptionsRoutes, "Tooltip-020");
             // 
             // cboMethod
             // 
@@ -1101,7 +1092,7 @@
             this.cboMethod.Size = new System.Drawing.Size(82, 21);
             this.cboMethod.TabIndex = 7;
             this.cboMethod.TabStop = false;
-            this.tipToolTips.SetToolTip(this.cboMethod, "Select the command to run");
+            this.tipToolTips.SetToolTip(this.cboMethod, "Tooltip-048");
             this.cboMethod.SelectedIndexChanged += new System.EventHandler(this.EventHandler_MethodComboBox_SelectedIndexChanged);
             // 
             // txtVia
@@ -1112,7 +1103,7 @@
             this.txtVia.Size = new System.Drawing.Size(311, 20);
             this.txtVia.TabIndex = 19;
             this.txtVia.TabStop = false;
-            this.tipToolTips.SetToolTip(this.txtVia, "Attempt to route through these systems, delimited by comma");
+            this.tipToolTips.SetToolTip(this.txtVia, "Tooltip-052");
             // 
             // lblVia
             // 
@@ -1124,7 +1115,7 @@
             this.lblVia.Size = new System.Drawing.Size(25, 13);
             this.lblVia.TabIndex = 45;
             this.lblVia.Text = "Via:";
-            this.tipToolTips.SetToolTip(this.lblVia, "Attempt to route through these systems, delimited by comma");
+            this.tipToolTips.SetToolTip(this.lblVia, "Tooltip-052");
             // 
             // lblRunOptionsStartJumps
             // 
@@ -1134,8 +1125,7 @@
             this.lblRunOptionsStartJumps.Size = new System.Drawing.Size(65, 13);
             this.lblRunOptionsStartJumps.TabIndex = 43;
             this.lblRunOptionsStartJumps.Text = "Start Jumps:";
-            this.tipToolTips.SetToolTip(this.lblRunOptionsStartJumps, "Try to route starting from this many jumps away from the source system (volatile)" +
-        "");
+            this.tipToolTips.SetToolTip(this.lblRunOptionsStartJumps, "Tooltip-089");
             // 
             // lblRunOptionsEndJumps
             // 
@@ -1146,8 +1136,7 @@
             this.lblRunOptionsEndJumps.Size = new System.Drawing.Size(62, 13);
             this.lblRunOptionsEndJumps.TabIndex = 41;
             this.lblRunOptionsEndJumps.Text = "End Jumps:";
-            this.tipToolTips.SetToolTip(this.lblRunOptionsEndJumps, "Try to finish this many jumps away from the destination, this requires a destinat" +
-        "ion (volatile)");
+            this.tipToolTips.SetToolTip(this.lblRunOptionsEndJumps, "Tooltip-019");
             // 
             // txtAvoid
             // 
@@ -1157,7 +1146,7 @@
             this.txtAvoid.Size = new System.Drawing.Size(311, 20);
             this.txtAvoid.TabIndex = 18;
             this.txtAvoid.TabStop = false;
-            this.tipToolTips.SetToolTip(this.txtAvoid, "Avoids can include system/station and items delimited by comma");
+            this.tipToolTips.SetToolTip(this.txtAvoid, "Tooltip-003");
             this.txtAvoid.TextChanged += new System.EventHandler(this.EventHandler_Avoid_TextChanged);
             // 
             // lblAvoid
@@ -1170,7 +1159,7 @@
             this.lblAvoid.Size = new System.Drawing.Size(37, 13);
             this.lblAvoid.TabIndex = 39;
             this.lblAvoid.Text = "Avoid:";
-            this.tipToolTips.SetToolTip(this.lblAvoid, "Avoids can include system/station and items delimited by comma");
+            this.tipToolTips.SetToolTip(this.lblAvoid, "Tooltip-003");
             // 
             // chkRunOptionsBlkMkt
             // 
@@ -1181,7 +1170,7 @@
             this.chkRunOptionsBlkMkt.TabIndex = 3;
             this.chkRunOptionsBlkMkt.TabStop = false;
             this.chkRunOptionsBlkMkt.Text = "BMkt";
-            this.tipToolTips.SetToolTip(this.chkRunOptionsBlkMkt, "Require stations with a black market");
+            this.tipToolTips.SetToolTip(this.chkRunOptionsBlkMkt, "Tooltip-005");
             this.chkRunOptionsBlkMkt.UseVisualStyleBackColor = true;
             this.chkRunOptionsBlkMkt.Click += new System.EventHandler(this.EventHandler_BmktCheckBox_Click);
             // 
@@ -1193,7 +1182,7 @@
             this.lblRouteOptionsHops.Size = new System.Drawing.Size(35, 13);
             this.lblRouteOptionsHops.TabIndex = 29;
             this.lblRouteOptionsHops.Text = "Hops:";
-            this.tipToolTips.SetToolTip(this.lblRouteOptionsHops, "A hop is a station to load/unload from");
+            this.tipToolTips.SetToolTip(this.lblRouteOptionsHops, "Tooltip-067");
             // 
             // btnDbUpdate
             // 
@@ -1203,7 +1192,7 @@
             this.btnDbUpdate.TabIndex = 4;
             this.btnDbUpdate.TabStop = false;
             this.btnDbUpdate.Text = "Update DB";
-            this.tipToolTips.SetToolTip(this.btnDbUpdate, "Update the database based on time from previous update");
+            this.tipToolTips.SetToolTip(this.btnDbUpdate, "Tooltip-015");
             this.btnDbUpdate.UseVisualStyleBackColor = true;
             this.btnDbUpdate.Click += new System.EventHandler(this.EventHandler_DbUpdate_Click);
             // 
@@ -1215,8 +1204,7 @@
             this.btnGetSystem.TabIndex = 1;
             this.btnGetSystem.TabStop = false;
             this.btnGetSystem.Text = "C";
-            this.tipToolTips.SetToolTip(this.btnGetSystem, "Get the most recent systems from the network logs (Ctrl+Click for a full refresh)" +
-        "");
+            this.tipToolTips.SetToolTip(this.btnGetSystem, "Tooltip-021");
             this.btnGetSystem.UseVisualStyleBackColor = true;
             this.btnGetSystem.Click += new System.EventHandler(this.EventHandler_GetSystemButton_Click);
             // 
@@ -1228,7 +1216,7 @@
             this.lblSourceSystem.Size = new System.Drawing.Size(44, 13);
             this.lblSourceSystem.TabIndex = 2;
             this.lblSourceSystem.Text = "Source:";
-            this.tipToolTips.SetToolTip(this.lblSourceSystem, "Starting point in the form of system or system/station");
+            this.tipToolTips.SetToolTip(this.lblSourceSystem, "Tooltip-088");
             // 
             // lblPadSize
             // 
@@ -1238,7 +1226,7 @@
             this.lblPadSize.Size = new System.Drawing.Size(34, 13);
             this.lblPadSize.TabIndex = 34;
             this.lblPadSize.Text = "Pads:";
-            this.tipToolTips.SetToolTip(this.lblPadSize, "Minimum pad sizes to consider a hop, can be M, L, and/or ?");
+            this.tipToolTips.SetToolTip(this.lblPadSize, "Tooltip-055");
             // 
             // txtPadSize
             // 
@@ -1248,7 +1236,7 @@
             this.txtPadSize.Size = new System.Drawing.Size(35, 20);
             this.txtPadSize.TabIndex = 1;
             this.txtPadSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tipToolTips.SetToolTip(this.txtPadSize, "Minimum pad sizes to consider a hop, can be M, L, and/or ?");
+            this.tipToolTips.SetToolTip(this.txtPadSize, "Tooltip-055");
             this.txtPadSize.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_PadSize_KeyPress);
             // 
             // lblRouteOptionsAge
@@ -1259,7 +1247,7 @@
             this.lblRouteOptionsAge.Size = new System.Drawing.Size(29, 13);
             this.lblRouteOptionsAge.TabIndex = 51;
             this.lblRouteOptionsAge.Text = "Age:";
-            this.tipToolTips.SetToolTip(this.lblRouteOptionsAge, "Filter any hops based on the age of their recent data, up to 30 days");
+            this.tipToolTips.SetToolTip(this.lblRouteOptionsAge, "Tooltip-002");
             // 
             // numRouteOptionsAge
             // 
@@ -1275,7 +1263,7 @@
             this.numRouteOptionsAge.Size = new System.Drawing.Size(60, 20);
             this.numRouteOptionsAge.TabIndex = 0;
             this.numRouteOptionsAge.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numRouteOptionsAge, "Filter any hops based on the age of their recent data, up to 30 days");
+            this.tipToolTips.SetToolTip(this.numRouteOptionsAge, "Tooltip-002");
             this.numRouteOptionsAge.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
             this.numRouteOptionsAge.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
@@ -1287,7 +1275,7 @@
             this.lblRouteOptionsGpt.Size = new System.Drawing.Size(52, 13);
             this.lblRouteOptionsGpt.TabIndex = 27;
             this.lblRouteOptionsGpt.Text = "Min GPT:";
-            this.tipToolTips.SetToolTip(this.lblRouteOptionsGpt, "Minimum profit in credits per ton on any hop");
+            this.tipToolTips.SetToolTip(this.lblRouteOptionsGpt, "Tooltip-022");
             // 
             // cboSourceSystem
             // 
@@ -1298,9 +1286,7 @@
             this.cboSourceSystem.Name = "cboSourceSystem";
             this.cboSourceSystem.Size = new System.Drawing.Size(213, 21);
             this.cboSourceSystem.TabIndex = 0;
-            this.tipToolTips.SetToolTip(this.cboSourceSystem, "Starting point in the form of system or system/station\r\nCtrl+Enter adds a System/" +
-        "Station to the favorites\r\nShift+Enter removes a System/Station from the favorite" +
-        "s");
+            this.tipToolTips.SetToolTip(this.cboSourceSystem, "Tooltip-088");
             this.cboSourceSystem.DropDown += new System.EventHandler(this.EventHandler_DropDown);
             this.cboSourceSystem.DropDownClosed += new System.EventHandler(this.EventHandler_DropDownClosed);
             this.cboSourceSystem.TextChanged += new System.EventHandler(this.EventHandler_SrcSystemComboBox_TextChanged);
@@ -1314,7 +1300,7 @@
             this.lblRouteOptionsMargin.Size = new System.Drawing.Size(42, 13);
             this.lblRouteOptionsMargin.TabIndex = 53;
             this.lblRouteOptionsMargin.Text = "Margin:";
-            this.tipToolTips.SetToolTip(this.lblRouteOptionsMargin, "Profit margin variance");
+            this.tipToolTips.SetToolTip(this.lblRouteOptionsMargin, "Tooltip-043");
             // 
             // numRouteOptionsMargin
             // 
@@ -1330,7 +1316,7 @@
             this.numRouteOptionsMargin.Size = new System.Drawing.Size(60, 20);
             this.numRouteOptionsMargin.TabIndex = 2;
             this.numRouteOptionsMargin.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numRouteOptionsMargin, "Profit margin variance (<1.00)");
+            this.tipToolTips.SetToolTip(this.numRouteOptionsMargin, "Tooltip-043");
             this.numRouteOptionsMargin.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
             this.numRouteOptionsMargin.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
@@ -1342,7 +1328,7 @@
             this.lblRouteOptionsCargoLimit.Size = new System.Drawing.Size(62, 13);
             this.lblRouteOptionsCargoLimit.TabIndex = 13;
             this.lblRouteOptionsCargoLimit.Text = "Cargo Limit:";
-            this.tipToolTips.SetToolTip(this.lblRouteOptionsCargoLimit, "Limit each commodity purchased to this amount on a hop");
+            this.tipToolTips.SetToolTip(this.lblRouteOptionsCargoLimit, "Tooltip-069");
             // 
             // lblRouteOptionsMaxGpt
             // 
@@ -1352,7 +1338,7 @@
             this.lblRouteOptionsMaxGpt.Size = new System.Drawing.Size(55, 13);
             this.lblRouteOptionsMaxGpt.TabIndex = 55;
             this.lblRouteOptionsMaxGpt.Text = "Max GPT:";
-            this.tipToolTips.SetToolTip(this.lblRouteOptionsMaxGpt, "Maximum profit in credits per ton on any hop");
+            this.tipToolTips.SetToolTip(this.lblRouteOptionsMaxGpt, "Tooltip-046");
             // 
             // numRouteOptionsMaxGpt
             // 
@@ -1368,7 +1354,7 @@
             this.numRouteOptionsMaxGpt.TabIndex = 1;
             this.numRouteOptionsMaxGpt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numRouteOptionsMaxGpt.ThousandsSeparator = true;
-            this.tipToolTips.SetToolTip(this.numRouteOptionsMaxGpt, "Maximum profit in credits per ton on any hop");
+            this.tipToolTips.SetToolTip(this.numRouteOptionsMaxGpt, "Tooltip-046");
             this.numRouteOptionsMaxGpt.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
             this.numRouteOptionsMaxGpt.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
@@ -1381,7 +1367,7 @@
             this.btnMiniMode.TabIndex = 2;
             this.btnMiniMode.TabStop = false;
             this.btnMiniMode.Text = "&T";
-            this.tipToolTips.SetToolTip(this.btnMiniMode, "Switch to a minimal TreeView mode for Run output (ESC to exit)");
+            this.tipToolTips.SetToolTip(this.btnMiniMode, "Tooltip-049");
             this.btnMiniMode.UseVisualStyleBackColor = true;
             this.btnMiniMode.Click += new System.EventHandler(this.EventHandler_MiniModeButton_Click);
             // 
@@ -1394,7 +1380,7 @@
             this.icoUpdateNotify.Size = new System.Drawing.Size(21, 21);
             this.icoUpdateNotify.TabIndex = 59;
             this.icoUpdateNotify.TabStop = false;
-            this.tipToolTips.SetToolTip(this.icoUpdateNotify, "An update to TDHelper is available! Restart to update.");
+            this.tipToolTips.SetToolTip(this.icoUpdateNotify, "Tooltip-099");
             this.icoUpdateNotify.Visible = false;
             // 
             // numRouteOptionsStock
@@ -1411,7 +1397,7 @@
             this.numRouteOptionsStock.TabIndex = 0;
             this.numRouteOptionsStock.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numRouteOptionsStock.ThousandsSeparator = true;
-            this.tipToolTips.SetToolTip(this.numRouteOptionsStock, "Filter hops below this level of stock");
+            this.tipToolTips.SetToolTip(this.numRouteOptionsStock, "Tooltip-091");
             this.numRouteOptionsStock.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
             this.numRouteOptionsStock.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
@@ -1423,7 +1409,7 @@
             this.lblStock.Size = new System.Drawing.Size(50, 13);
             this.lblStock.TabIndex = 57;
             this.lblStock.Text = "    Stock:";
-            this.tipToolTips.SetToolTip(this.lblStock, "Filter hops below this level of stock");
+            this.tipToolTips.SetToolTip(this.lblStock, "Tooltip-091");
             // 
             // lblRunOptionsLoopInt
             // 
@@ -1433,7 +1419,7 @@
             this.lblRunOptionsLoopInt.Size = new System.Drawing.Size(49, 13);
             this.lblRunOptionsLoopInt.TabIndex = 59;
             this.lblRunOptionsLoopInt.Text = "Loop Int:";
-            this.tipToolTips.SetToolTip(this.lblRunOptionsLoopInt, "Minimum hops between visiting the same station");
+            this.tipToolTips.SetToolTip(this.lblRunOptionsLoopInt, "Tooltip-041");
             // 
             // numRunOptionsLoopInt
             // 
@@ -1443,7 +1429,7 @@
             this.numRunOptionsLoopInt.Size = new System.Drawing.Size(46, 20);
             this.numRunOptionsLoopInt.TabIndex = 6;
             this.numRunOptionsLoopInt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numRunOptionsLoopInt, "Minimum hops between visiting the same station");
+            this.tipToolTips.SetToolTip(this.numRunOptionsLoopInt, "Tooltip-041");
             this.numRunOptionsLoopInt.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
             this.numRunOptionsLoopInt.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
@@ -1458,7 +1444,7 @@
             this.chkRunOptionsShorten.TabIndex = 10;
             this.chkRunOptionsShorten.TabStop = false;
             this.chkRunOptionsShorten.Text = "Shorten";
-            this.tipToolTips.SetToolTip(this.chkRunOptionsShorten, "Finds the highest gainful route with the least hops (requires a Destination)");
+            this.tipToolTips.SetToolTip(this.chkRunOptionsShorten, "Tooltip-078");
             this.chkRunOptionsShorten.UseVisualStyleBackColor = true;
             this.chkRunOptionsShorten.Click += new System.EventHandler(this.EventHandler_ShortenCheckBox_Click);
             // 
@@ -1476,7 +1462,7 @@
             this.numRouteOptionsDemand.TabIndex = 1;
             this.numRouteOptionsDemand.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numRouteOptionsDemand.ThousandsSeparator = true;
-            this.tipToolTips.SetToolTip(this.numRouteOptionsDemand, "Filter hops below this level of demand");
+            this.tipToolTips.SetToolTip(this.numRouteOptionsDemand, "Tooltip-091");
             this.numRouteOptionsDemand.Enter += new System.EventHandler(this.EventHandler_NumericUpDown_Enter);
             this.numRouteOptionsDemand.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EventHandler_NumericUpDown_MouseUp);
             // 
@@ -1488,7 +1474,7 @@
             this.lblRouteOptionsDemand.Size = new System.Drawing.Size(50, 13);
             this.lblRouteOptionsDemand.TabIndex = 61;
             this.lblRouteOptionsDemand.Text = "Demand:";
-            this.tipToolTips.SetToolTip(this.lblRouteOptionsDemand, "Filter hops below this level of demand");
+            this.tipToolTips.SetToolTip(this.lblRouteOptionsDemand, "Tooltip-091");
             // 
             // chkRunOptionsJumps
             // 
@@ -1499,7 +1485,7 @@
             this.chkRunOptionsJumps.TabIndex = 5;
             this.chkRunOptionsJumps.TabStop = false;
             this.chkRunOptionsJumps.Text = "Jumps";
-            this.tipToolTips.SetToolTip(this.chkRunOptionsJumps, "Show jumps between hops during a multi-hop route");
+            this.tipToolTips.SetToolTip(this.chkRunOptionsJumps, "Tooltip-070");
             this.chkRunOptionsJumps.UseVisualStyleBackColor = true;
             // 
             // btnCmdrProfile
@@ -1510,8 +1496,7 @@
             this.btnCmdrProfile.TabIndex = 5;
             this.btnCmdrProfile.TabStop = false;
             this.btnCmdrProfile.Text = "Cmdr Profile";
-            this.tipToolTips.SetToolTip(this.btnCmdrProfile, "Download the commander\'s profile from Frontier and populate the available values." +
-        "");
+            this.tipToolTips.SetToolTip(this.btnCmdrProfile, "Tooltip-010");
             this.btnCmdrProfile.UseVisualStyleBackColor = true;
             this.btnCmdrProfile.Click += new System.EventHandler(this.EventHandler_CmdrProfile_Click);
             // 
@@ -1523,7 +1508,7 @@
             this.btnSaveSettings.TabIndex = 6;
             this.btnSaveSettings.TabStop = false;
             this.btnSaveSettings.Text = "Save Settings";
-            this.tipToolTips.SetToolTip(this.btnSaveSettings, "Save the settings immediately.");
+            this.tipToolTips.SetToolTip(this.btnSaveSettings, "Tooltip-071");
             this.btnSaveSettings.UseVisualStyleBackColor = true;
             this.btnSaveSettings.Click += new System.EventHandler(this.EventHandler_SaveSettings_Click);
             // 
@@ -1535,8 +1520,7 @@
             this.lblRunOptionsPlanetary.Size = new System.Drawing.Size(54, 13);
             this.lblRunOptionsPlanetary.TabIndex = 69;
             this.lblRunOptionsPlanetary.Text = "Planetary:";
-            this.tipToolTips.SetToolTip(this.lblRunOptionsPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
-        "?");
+            this.tipToolTips.SetToolTip(this.lblRunOptionsPlanetary, "Tooltip-056");
             // 
             // txtRunOptionsPlanetary
             // 
@@ -1547,8 +1531,7 @@
             this.txtRunOptionsPlanetary.Size = new System.Drawing.Size(32, 20);
             this.txtRunOptionsPlanetary.TabIndex = 13;
             this.txtRunOptionsPlanetary.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tipToolTips.SetToolTip(this.txtRunOptionsPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
-        "?");
+            this.tipToolTips.SetToolTip(this.txtRunOptionsPlanetary, "Tooltip-056");
             this.txtRunOptionsPlanetary.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_Planetary_KeyPress);
             // 
             // btnSettings
@@ -1559,7 +1542,7 @@
             this.btnSettings.Size = new System.Drawing.Size(23, 23);
             this.btnSettings.TabIndex = 3;
             this.btnSettings.TabStop = false;
-            this.tipToolTips.SetToolTip(this.btnSettings, "Configuration settings");
+            this.tipToolTips.SetToolTip(this.btnSettings, "Tooltip-075");
             this.btnSettings.UseVisualStyleBackColor = true;
             this.btnSettings.Click += new System.EventHandler(this.EventHandler_Settings_Click);
             // 
@@ -1571,7 +1554,7 @@
             this.btnRunOptionsSwap.TabIndex = 70;
             this.btnRunOptionsSwap.TabStop = false;
             this.btnRunOptionsSwap.Text = "S";
-            this.tipToolTips.SetToolTip(this.btnRunOptionsSwap, "Swap the contents of Source/Destination");
+            this.tipToolTips.SetToolTip(this.btnRunOptionsSwap, "Tooltip-093");
             this.btnRunOptionsSwap.UseVisualStyleBackColor = true;
             this.btnRunOptionsSwap.Click += new System.EventHandler(this.EventHandler_SwapSourceAndDestination);
             // 
@@ -1583,7 +1566,7 @@
             this.lblBuyOptionsSupply.Size = new System.Drawing.Size(51, 13);
             this.lblBuyOptionsSupply.TabIndex = 60;
             this.lblBuyOptionsSupply.Text = "   Supply:";
-            this.tipToolTips.SetToolTip(this.lblBuyOptionsSupply, "Limit to stations known to have at least this much supply");
+            this.tipToolTips.SetToolTip(this.lblBuyOptionsSupply, "Tooltip-092");
             // 
             // numBuyOptionsSupply
             // 
@@ -1599,7 +1582,7 @@
             this.numBuyOptionsSupply.TabIndex = 61;
             this.numBuyOptionsSupply.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numBuyOptionsSupply.ThousandsSeparator = true;
-            this.tipToolTips.SetToolTip(this.numBuyOptionsSupply, "Limit to stations known to have at least this much supply");
+            this.tipToolTips.SetToolTip(this.numBuyOptionsSupply, "Tooltip-092");
             // 
             // numBuyOptionsLimit
             // 
@@ -1614,7 +1597,7 @@
             this.numBuyOptionsLimit.Size = new System.Drawing.Size(53, 20);
             this.numBuyOptionsLimit.TabIndex = 66;
             this.numBuyOptionsLimit.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numBuyOptionsLimit, "Limit each commodity purchased to this amount on a hop");
+            this.tipToolTips.SetToolTip(this.numBuyOptionsLimit, "Tooltip-006");
             // 
             // lblBuyOptionsLimit
             // 
@@ -1624,7 +1607,7 @@
             this.lblBuyOptionsLimit.Size = new System.Drawing.Size(45, 13);
             this.lblBuyOptionsLimit.TabIndex = 67;
             this.lblBuyOptionsLimit.Text = "Results:";
-            this.tipToolTips.SetToolTip(this.lblBuyOptionsLimit, "Limit the number of results shown.");
+            this.tipToolTips.SetToolTip(this.lblBuyOptionsLimit, "Tooltip-065");
             // 
             // lblBuyOptionsNearLy
             // 
@@ -1634,7 +1617,7 @@
             this.lblBuyOptionsNearLy.Size = new System.Drawing.Size(49, 13);
             this.lblBuyOptionsNearLy.TabIndex = 68;
             this.lblBuyOptionsNearLy.Text = "Near LY:";
-            this.tipToolTips.SetToolTip(this.lblBuyOptionsNearLy, "Distance to search for local system/station info.");
+            this.tipToolTips.SetToolTip(this.lblBuyOptionsNearLy, "Tooltip-073");
             // 
             // numBuyOptionsNearLy
             // 
@@ -1655,7 +1638,7 @@
             this.numBuyOptionsNearLy.Size = new System.Drawing.Size(53, 20);
             this.numBuyOptionsNearLy.TabIndex = 69;
             this.numBuyOptionsNearLy.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numBuyOptionsNearLy, "Distance to search for local system/station info.");
+            this.tipToolTips.SetToolTip(this.numBuyOptionsNearLy, "Tooltip-073");
             this.numBuyOptionsNearLy.Value = new decimal(new int[] {
             1,
             0,
@@ -1670,7 +1653,7 @@
             this.txtBuyOptionsAvoid.Size = new System.Drawing.Size(244, 20);
             this.txtBuyOptionsAvoid.TabIndex = 72;
             this.txtBuyOptionsAvoid.TabStop = false;
-            this.tipToolTips.SetToolTip(this.txtBuyOptionsAvoid, "Avoids can include system/station and items delimited by comma");
+            this.tipToolTips.SetToolTip(this.txtBuyOptionsAvoid, "Tooltip-003");
             // 
             // lblBuyOptionsAvoid
             // 
@@ -1682,7 +1665,7 @@
             this.lblBuyOptionsAvoid.Size = new System.Drawing.Size(37, 13);
             this.lblBuyOptionsAvoid.TabIndex = 73;
             this.lblBuyOptionsAvoid.Text = "Avoid:";
-            this.tipToolTips.SetToolTip(this.lblBuyOptionsAvoid, "Avoids can include system/station and items delimited by comma");
+            this.tipToolTips.SetToolTip(this.lblBuyOptionsAvoid, "Tooltip-003");
             // 
             // lblBuyOptionsPlanetary
             // 
@@ -1692,8 +1675,7 @@
             this.lblBuyOptionsPlanetary.Size = new System.Drawing.Size(54, 13);
             this.lblBuyOptionsPlanetary.TabIndex = 75;
             this.lblBuyOptionsPlanetary.Text = "Planetary:";
-            this.tipToolTips.SetToolTip(this.lblBuyOptionsPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
-        "?");
+            this.tipToolTips.SetToolTip(this.lblBuyOptionsPlanetary, "Tooltip-056");
             // 
             // txtBuyOptionsPlanetary
             // 
@@ -1704,8 +1686,7 @@
             this.txtBuyOptionsPlanetary.Size = new System.Drawing.Size(32, 20);
             this.txtBuyOptionsPlanetary.TabIndex = 74;
             this.txtBuyOptionsPlanetary.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tipToolTips.SetToolTip(this.txtBuyOptionsPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
-        "?");
+            this.tipToolTips.SetToolTip(this.txtBuyOptionsPlanetary, "Tooltip-056");
             this.txtBuyOptionsPlanetary.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_Planetary_KeyPress);
             // 
             // chkBuyOptionsBlkMkt
@@ -1717,7 +1698,7 @@
             this.chkBuyOptionsBlkMkt.TabIndex = 76;
             this.chkBuyOptionsBlkMkt.TabStop = false;
             this.chkBuyOptionsBlkMkt.Text = "BMkt";
-            this.tipToolTips.SetToolTip(this.chkBuyOptionsBlkMkt, "Require stations with a black market");
+            this.tipToolTips.SetToolTip(this.chkBuyOptionsBlkMkt, "Tooltip-005");
             this.chkBuyOptionsBlkMkt.UseVisualStyleBackColor = true;
             // 
             // lblBuyOptionsPads
@@ -1728,7 +1709,7 @@
             this.lblBuyOptionsPads.Size = new System.Drawing.Size(34, 13);
             this.lblBuyOptionsPads.TabIndex = 78;
             this.lblBuyOptionsPads.Text = "Pads:";
-            this.tipToolTips.SetToolTip(this.lblBuyOptionsPads, "Minimum pad sizes to consider a hop, can be M, L, and/or ?");
+            this.tipToolTips.SetToolTip(this.lblBuyOptionsPads, "Tooltip-055");
             // 
             // txtBuyOptionsPads
             // 
@@ -1739,7 +1720,7 @@
             this.txtBuyOptionsPads.Size = new System.Drawing.Size(32, 20);
             this.txtBuyOptionsPads.TabIndex = 77;
             this.txtBuyOptionsPads.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tipToolTips.SetToolTip(this.txtBuyOptionsPads, "Minimum pad sizes to consider a hop, can be M, L, and/or ?");
+            this.tipToolTips.SetToolTip(this.txtBuyOptionsPads, "Tooltip-055");
             this.txtBuyOptionsPads.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_PadSize_KeyPress);
             // 
             // chkBuyOptionsOneStop
@@ -1751,7 +1732,7 @@
             this.chkBuyOptionsOneStop.TabIndex = 79;
             this.chkBuyOptionsOneStop.TabStop = false;
             this.chkBuyOptionsOneStop.Text = "1-Stop";
-            this.tipToolTips.SetToolTip(this.chkBuyOptionsOneStop, "Filters stations that don\'t contain all commodities searched for (volatile)");
+            this.tipToolTips.SetToolTip(this.chkBuyOptionsOneStop, "Tooltip-054");
             this.chkBuyOptionsOneStop.UseVisualStyleBackColor = true;
             this.chkBuyOptionsOneStop.CheckedChanged += new System.EventHandler(this.EventHandler_BuyOptionsOneStop_CheckedChanged);
             // 
@@ -1769,7 +1750,7 @@
             this.numBuyOptionsAbove.TabIndex = 80;
             this.numBuyOptionsAbove.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numBuyOptionsAbove.ThousandsSeparator = true;
-            this.tipToolTips.SetToolTip(this.numBuyOptionsAbove, "Commodities above this price are filtered out");
+            this.tipToolTips.SetToolTip(this.numBuyOptionsAbove, "Tooltip-001");
             // 
             // lblBuyOptionsAbove
             // 
@@ -1779,7 +1760,7 @@
             this.lblBuyOptionsAbove.Size = new System.Drawing.Size(41, 13);
             this.lblBuyOptionsAbove.TabIndex = 81;
             this.lblBuyOptionsAbove.Text = "Above:";
-            this.tipToolTips.SetToolTip(this.lblBuyOptionsAbove, "Commodities above this price are filtered out");
+            this.tipToolTips.SetToolTip(this.lblBuyOptionsAbove, "Tooltip-001");
             // 
             // numBuyOptionsBelow
             // 
@@ -1795,7 +1776,7 @@
             this.numBuyOptionsBelow.TabIndex = 82;
             this.numBuyOptionsBelow.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numBuyOptionsBelow.ThousandsSeparator = true;
-            this.tipToolTips.SetToolTip(this.numBuyOptionsBelow, "Commodities above this price are filtered out");
+            this.tipToolTips.SetToolTip(this.numBuyOptionsBelow, "Tooltip-001");
             // 
             // lblBuyOptionsBelow
             // 
@@ -1805,7 +1786,7 @@
             this.lblBuyOptionsBelow.Size = new System.Drawing.Size(39, 13);
             this.lblBuyOptionsBelow.TabIndex = 83;
             this.lblBuyOptionsBelow.Text = "Below:";
-            this.tipToolTips.SetToolTip(this.lblBuyOptionsBelow, "Commodities below this price are filtered out");
+            this.tipToolTips.SetToolTip(this.lblBuyOptionsBelow, "Tooltip-004");
             // 
             // lblBuyOptionsCommodity
             // 
@@ -1815,8 +1796,7 @@
             this.lblBuyOptionsCommodity.Size = new System.Drawing.Size(61, 13);
             this.lblBuyOptionsCommodity.TabIndex = 85;
             this.lblBuyOptionsCommodity.Text = "Commodity:";
-            this.tipToolTips.SetToolTip(this.lblBuyOptionsCommodity, "One or more commodities for which to search.\r\nWith list open DEL to unselect all " +
-        "and, SHIFT+DEL to select all.");
+            this.tipToolTips.SetToolTip(this.lblBuyOptionsCommodity, "Tooltip-011");
             // 
             // optBuyOptionsDistance
             // 
@@ -1827,7 +1807,7 @@
             this.optBuyOptionsDistance.TabIndex = 66;
             this.optBuyOptionsDistance.TabStop = true;
             this.optBuyOptionsDistance.Text = "Distance";
-            this.tipToolTips.SetToolTip(this.optBuyOptionsDistance, "Sort items by distance and then price.");
+            this.tipToolTips.SetToolTip(this.optBuyOptionsDistance, "Tooltip-081");
             this.optBuyOptionsDistance.UseVisualStyleBackColor = true;
             // 
             // optBuyOptionsPrice
@@ -1839,8 +1819,7 @@
             this.optBuyOptionsPrice.TabIndex = 67;
             this.optBuyOptionsPrice.TabStop = true;
             this.optBuyOptionsPrice.Text = "Price";
-            this.tipToolTips.SetToolTip(this.optBuyOptionsPrice, "Keeps items sorted by price when using --near\r\n (otherwise items are listed by di" +
-        "stance and then price)");
+            this.tipToolTips.SetToolTip(this.optBuyOptionsPrice, "Tooltip-082");
             this.optBuyOptionsPrice.UseVisualStyleBackColor = true;
             this.optBuyOptionsPrice.CheckedChanged += new System.EventHandler(this.EventHandler_BuyOptionsPrice_CheckedChanged);
             // 
@@ -1853,7 +1832,7 @@
             this.optBuyOptionsSupply.TabIndex = 68;
             this.optBuyOptionsSupply.TabStop = true;
             this.optBuyOptionsSupply.Text = "Supply";
-            this.tipToolTips.SetToolTip(this.optBuyOptionsSupply, "Sorts items by supply available first and then price");
+            this.tipToolTips.SetToolTip(this.optBuyOptionsSupply, "Tooltip-086");
             this.optBuyOptionsSupply.UseVisualStyleBackColor = true;
             // 
             // lblBuyOptionsSort
@@ -1874,7 +1853,7 @@
             this.lblSellOptionsSort.Size = new System.Drawing.Size(76, 13);
             this.lblSellOptionsSort.TabIndex = 86;
             this.lblSellOptionsSort.Text = "Sort results by:";
-            this.tipToolTips.SetToolTip(this.lblSellOptionsSort, "Sort the results.");
+            this.tipToolTips.SetToolTip(this.lblSellOptionsSort, "Tooltip-087");
             // 
             // optSellOptionsSupply
             // 
@@ -1885,7 +1864,7 @@
             this.optSellOptionsSupply.TabIndex = 66;
             this.optSellOptionsSupply.TabStop = true;
             this.optSellOptionsSupply.Text = "Supply";
-            this.tipToolTips.SetToolTip(this.optSellOptionsSupply, "Sorts items by supply available first and then price");
+            this.tipToolTips.SetToolTip(this.optSellOptionsSupply, "Tooltip-086");
             this.optSellOptionsSupply.UseVisualStyleBackColor = true;
             // 
             // optSellOptionsPrice
@@ -1897,8 +1876,7 @@
             this.optSellOptionsPrice.TabIndex = 67;
             this.optSellOptionsPrice.TabStop = true;
             this.optSellOptionsPrice.Text = "Price";
-            this.tipToolTips.SetToolTip(this.optSellOptionsPrice, "Keeps items sorted by price when using --near\r\n (otherwise items are listed by di" +
-        "stance and then price)");
+            this.tipToolTips.SetToolTip(this.optSellOptionsPrice, "Tooltip-082");
             this.optSellOptionsPrice.UseVisualStyleBackColor = true;
             // 
             // lblSellOptionsCommodity
@@ -1909,7 +1887,7 @@
             this.lblSellOptionsCommodity.Size = new System.Drawing.Size(61, 13);
             this.lblSellOptionsCommodity.TabIndex = 85;
             this.lblSellOptionsCommodity.Text = "Commodity:";
-            this.tipToolTips.SetToolTip(this.lblSellOptionsCommodity, "A single commodity for which to search.");
+            this.tipToolTips.SetToolTip(this.lblSellOptionsCommodity, "Tooltip-012");
             // 
             // numSellOptionsBelow
             // 
@@ -1925,7 +1903,7 @@
             this.numSellOptionsBelow.TabIndex = 82;
             this.numSellOptionsBelow.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numSellOptionsBelow.ThousandsSeparator = true;
-            this.tipToolTips.SetToolTip(this.numSellOptionsBelow, "Commodities above this price are filtered out");
+            this.tipToolTips.SetToolTip(this.numSellOptionsBelow, "Tooltip-001");
             // 
             // lblSellOptionsBelow
             // 
@@ -1935,7 +1913,7 @@
             this.lblSellOptionsBelow.Size = new System.Drawing.Size(39, 13);
             this.lblSellOptionsBelow.TabIndex = 83;
             this.lblSellOptionsBelow.Text = "Below:";
-            this.tipToolTips.SetToolTip(this.lblSellOptionsBelow, "Commodities below this price are filtered out");
+            this.tipToolTips.SetToolTip(this.lblSellOptionsBelow, "Tooltip-004");
             // 
             // numSellOptionsAbove
             // 
@@ -1951,7 +1929,7 @@
             this.numSellOptionsAbove.TabIndex = 80;
             this.numSellOptionsAbove.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numSellOptionsAbove.ThousandsSeparator = true;
-            this.tipToolTips.SetToolTip(this.numSellOptionsAbove, "Commodities above this price are filtered out");
+            this.tipToolTips.SetToolTip(this.numSellOptionsAbove, "Tooltip-001");
             // 
             // lblSellOptionsAbove
             // 
@@ -1961,7 +1939,7 @@
             this.lblSellOptionsAbove.Size = new System.Drawing.Size(41, 13);
             this.lblSellOptionsAbove.TabIndex = 81;
             this.lblSellOptionsAbove.Text = "Above:";
-            this.tipToolTips.SetToolTip(this.lblSellOptionsAbove, "Commodities above this price are filtered out");
+            this.tipToolTips.SetToolTip(this.lblSellOptionsAbove, "Tooltip-001");
             // 
             // lblSellOptionsPads
             // 
@@ -1971,7 +1949,7 @@
             this.lblSellOptionsPads.Size = new System.Drawing.Size(34, 13);
             this.lblSellOptionsPads.TabIndex = 78;
             this.lblSellOptionsPads.Text = "Pads:";
-            this.tipToolTips.SetToolTip(this.lblSellOptionsPads, "Minimum pad sizes to consider a hop, can be M, L, and/or ?");
+            this.tipToolTips.SetToolTip(this.lblSellOptionsPads, "Tooltip-055");
             // 
             // numSellOptionsNearLy
             // 
@@ -1992,7 +1970,7 @@
             this.numSellOptionsNearLy.Size = new System.Drawing.Size(53, 20);
             this.numSellOptionsNearLy.TabIndex = 69;
             this.numSellOptionsNearLy.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numSellOptionsNearLy, "Distance to search for local system/station info.");
+            this.tipToolTips.SetToolTip(this.numSellOptionsNearLy, "Tooltip-007");
             this.numSellOptionsNearLy.Value = new decimal(new int[] {
             1,
             0,
@@ -2008,7 +1986,7 @@
             this.txtSellOptionsPads.Size = new System.Drawing.Size(32, 20);
             this.txtSellOptionsPads.TabIndex = 77;
             this.txtSellOptionsPads.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tipToolTips.SetToolTip(this.txtSellOptionsPads, "Minimum pad sizes to consider a hop, can be M, L, and/or ?");
+            this.tipToolTips.SetToolTip(this.txtSellOptionsPads, "Tooltip-055");
             this.txtSellOptionsPads.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_PadSize_KeyPress);
             // 
             // lblSellOptionsLimit
@@ -2019,7 +1997,7 @@
             this.lblSellOptionsLimit.Size = new System.Drawing.Size(45, 13);
             this.lblSellOptionsLimit.TabIndex = 67;
             this.lblSellOptionsLimit.Text = "Results:";
-            this.tipToolTips.SetToolTip(this.lblSellOptionsLimit, "Limit the number of results shown.");
+            this.tipToolTips.SetToolTip(this.lblSellOptionsLimit, "Tooltip-065");
             // 
             // lblSellOptionsPlanetary
             // 
@@ -2029,8 +2007,7 @@
             this.lblSellOptionsPlanetary.Size = new System.Drawing.Size(54, 13);
             this.lblSellOptionsPlanetary.TabIndex = 75;
             this.lblSellOptionsPlanetary.Text = "Planetary:";
-            this.tipToolTips.SetToolTip(this.lblSellOptionsPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
-        "?");
+            this.tipToolTips.SetToolTip(this.lblSellOptionsPlanetary, "Tooltip-056");
             // 
             // txtSellOptionsPlanetary
             // 
@@ -2041,8 +2018,7 @@
             this.txtSellOptionsPlanetary.Size = new System.Drawing.Size(32, 20);
             this.txtSellOptionsPlanetary.TabIndex = 74;
             this.txtSellOptionsPlanetary.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tipToolTips.SetToolTip(this.txtSellOptionsPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
-        "?");
+            this.tipToolTips.SetToolTip(this.txtSellOptionsPlanetary, "Tooltip-056");
             this.txtSellOptionsPlanetary.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_Planetary_KeyPress);
             // 
             // numSellOptionsLimit
@@ -2058,7 +2034,7 @@
             this.numSellOptionsLimit.Size = new System.Drawing.Size(53, 20);
             this.numSellOptionsLimit.TabIndex = 66;
             this.numSellOptionsLimit.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numSellOptionsLimit, "Limit each commodity purchased to this amount on a hop");
+            this.tipToolTips.SetToolTip(this.numSellOptionsLimit, "Tooltip-069");
             // 
             // txtSellOptionsAvoid
             // 
@@ -2068,7 +2044,7 @@
             this.txtSellOptionsAvoid.Size = new System.Drawing.Size(244, 20);
             this.txtSellOptionsAvoid.TabIndex = 72;
             this.txtSellOptionsAvoid.TabStop = false;
-            this.tipToolTips.SetToolTip(this.txtSellOptionsAvoid, "Avoids can include system/station and items delimited by comma");
+            this.tipToolTips.SetToolTip(this.txtSellOptionsAvoid, "Tooltip-003");
             // 
             // lblSellOptionsAvoid
             // 
@@ -2080,7 +2056,7 @@
             this.lblSellOptionsAvoid.Size = new System.Drawing.Size(37, 13);
             this.lblSellOptionsAvoid.TabIndex = 73;
             this.lblSellOptionsAvoid.Text = "Avoid:";
-            this.tipToolTips.SetToolTip(this.lblSellOptionsAvoid, "Avoids can include system/station and items delimited by comma");
+            this.tipToolTips.SetToolTip(this.lblSellOptionsAvoid, "Tooltip-003");
             // 
             // lblSellOptionsNearLy
             // 
@@ -2090,7 +2066,7 @@
             this.lblSellOptionsNearLy.Size = new System.Drawing.Size(49, 13);
             this.lblSellOptionsNearLy.TabIndex = 68;
             this.lblSellOptionsNearLy.Text = "Near LY:";
-            this.tipToolTips.SetToolTip(this.lblSellOptionsNearLy, "Distance to search for local system/station info.");
+            this.tipToolTips.SetToolTip(this.lblSellOptionsNearLy, "Tooltip-007");
             // 
             // numSellOptionsDemand
             // 
@@ -2106,7 +2082,7 @@
             this.numSellOptionsDemand.TabIndex = 61;
             this.numSellOptionsDemand.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numSellOptionsDemand.ThousandsSeparator = true;
-            this.tipToolTips.SetToolTip(this.numSellOptionsDemand, "Limit to stations known to have at least this much supply");
+            this.tipToolTips.SetToolTip(this.numSellOptionsDemand, "Tooltip-091");
             // 
             // lblSellOptionsDemand
             // 
@@ -2116,7 +2092,7 @@
             this.lblSellOptionsDemand.Size = new System.Drawing.Size(50, 13);
             this.lblSellOptionsDemand.TabIndex = 60;
             this.lblSellOptionsDemand.Text = "Demand:";
-            this.tipToolTips.SetToolTip(this.lblSellOptionsDemand, "Limit to stations known to have at least this much supply");
+            this.tipToolTips.SetToolTip(this.lblSellOptionsDemand, "Tooltip-091");
             // 
             // lblRaresOptionsSort
             // 
@@ -2126,7 +2102,7 @@
             this.lblRaresOptionsSort.Size = new System.Drawing.Size(76, 13);
             this.lblRaresOptionsSort.TabIndex = 86;
             this.lblRaresOptionsSort.Text = "Sort results by:";
-            this.tipToolTips.SetToolTip(this.lblRaresOptionsSort, "Sort the results.");
+            this.tipToolTips.SetToolTip(this.lblRaresOptionsSort, "Tooltip-087");
             // 
             // optRaresOptionsDistance
             // 
@@ -2137,7 +2113,7 @@
             this.optRaresOptionsDistance.TabIndex = 66;
             this.optRaresOptionsDistance.TabStop = true;
             this.optRaresOptionsDistance.Text = "Distance";
-            this.tipToolTips.SetToolTip(this.optRaresOptionsDistance, "Sort by proximity rather than price");
+            this.tipToolTips.SetToolTip(this.optRaresOptionsDistance, "Tooltip-080");
             this.optRaresOptionsDistance.UseVisualStyleBackColor = true;
             // 
             // optRaresOptionsPrice
@@ -2149,7 +2125,7 @@
             this.optRaresOptionsPrice.TabIndex = 67;
             this.optRaresOptionsPrice.TabStop = true;
             this.optRaresOptionsPrice.Text = "Price";
-            this.tipToolTips.SetToolTip(this.optRaresOptionsPrice, "Sort by price rather than proximity");
+            this.tipToolTips.SetToolTip(this.optRaresOptionsPrice, "Tooltip-083");
             this.optRaresOptionsPrice.UseVisualStyleBackColor = true;
             // 
             // lblRaresOptionsPads
@@ -2160,7 +2136,7 @@
             this.lblRaresOptionsPads.Size = new System.Drawing.Size(34, 13);
             this.lblRaresOptionsPads.TabIndex = 78;
             this.lblRaresOptionsPads.Text = "Pads:";
-            this.tipToolTips.SetToolTip(this.lblRaresOptionsPads, "Minimum pad sizes to consider a hop, can be M, L, and/or ?");
+            this.tipToolTips.SetToolTip(this.lblRaresOptionsPads, "Tooltip-055");
             // 
             // numRaresOptionsLy
             // 
@@ -2181,7 +2157,7 @@
             this.numRaresOptionsLy.Size = new System.Drawing.Size(63, 20);
             this.numRaresOptionsLy.TabIndex = 69;
             this.numRaresOptionsLy.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numRaresOptionsLy, "Maximum distance to search from center system.");
+            this.tipToolTips.SetToolTip(this.numRaresOptionsLy, "Tooltip-061");
             this.numRaresOptionsLy.Value = new decimal(new int[] {
             1,
             0,
@@ -2197,7 +2173,7 @@
             this.txtRaresOptionsPads.Size = new System.Drawing.Size(32, 20);
             this.txtRaresOptionsPads.TabIndex = 77;
             this.txtRaresOptionsPads.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tipToolTips.SetToolTip(this.txtRaresOptionsPads, "Minimum pad sizes to consider a hop, can be M, L, and/or ?");
+            this.tipToolTips.SetToolTip(this.txtRaresOptionsPads, "Tooltip-055");
             this.txtRaresOptionsPads.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_PadSize_KeyPress);
             // 
             // lblRaresOptionsLimit
@@ -2208,7 +2184,7 @@
             this.lblRaresOptionsLimit.Size = new System.Drawing.Size(45, 13);
             this.lblRaresOptionsLimit.TabIndex = 67;
             this.lblRaresOptionsLimit.Text = "Results:";
-            this.tipToolTips.SetToolTip(this.lblRaresOptionsLimit, "Maximum number of results to show");
+            this.tipToolTips.SetToolTip(this.lblRaresOptionsLimit, "Tooltip-027");
             // 
             // lblRaresOptionsPlanetary
             // 
@@ -2218,8 +2194,7 @@
             this.lblRaresOptionsPlanetary.Size = new System.Drawing.Size(54, 13);
             this.lblRaresOptionsPlanetary.TabIndex = 75;
             this.lblRaresOptionsPlanetary.Text = "Planetary:";
-            this.tipToolTips.SetToolTip(this.lblRaresOptionsPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
-        "?");
+            this.tipToolTips.SetToolTip(this.lblRaresOptionsPlanetary, "Tooltip-056");
             // 
             // chkRaresOptionsReverse
             // 
@@ -2231,8 +2206,7 @@
             this.chkRaresOptionsReverse.TabIndex = 79;
             this.chkRaresOptionsReverse.TabStop = false;
             this.chkRaresOptionsReverse.Text = "Reverse";
-            this.tipToolTips.SetToolTip(this.chkRaresOptionsReverse, "Reverse the order, can be used with \"--ly\" and \"--limit\" to find the furthest-awa" +
-        "y rares.");
+            this.tipToolTips.SetToolTip(this.chkRaresOptionsReverse, "Tooltip-066");
             this.chkRaresOptionsReverse.UseVisualStyleBackColor = true;
             // 
             // txtRaresOptionsPlanetary
@@ -2244,8 +2218,7 @@
             this.txtRaresOptionsPlanetary.Size = new System.Drawing.Size(32, 20);
             this.txtRaresOptionsPlanetary.TabIndex = 74;
             this.txtRaresOptionsPlanetary.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tipToolTips.SetToolTip(this.txtRaresOptionsPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
-        "?\r\n");
+            this.tipToolTips.SetToolTip(this.txtRaresOptionsPlanetary, "Tooltip-056");
             this.txtRaresOptionsPlanetary.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_Planetary_KeyPress);
             // 
             // chkRaresOptionsQuiet
@@ -2257,7 +2230,7 @@
             this.chkRaresOptionsQuiet.TabIndex = 76;
             this.chkRaresOptionsQuiet.TabStop = false;
             this.chkRaresOptionsQuiet.Text = "Quiet";
-            this.tipToolTips.SetToolTip(this.chkRaresOptionsQuiet, "Don\'t include the header lines");
+            this.tipToolTips.SetToolTip(this.chkRaresOptionsQuiet, "Tooltip-062");
             this.chkRaresOptionsQuiet.UseVisualStyleBackColor = true;
             // 
             // numRaresOptionsLimit
@@ -2273,7 +2246,7 @@
             this.numRaresOptionsLimit.Size = new System.Drawing.Size(63, 20);
             this.numRaresOptionsLimit.TabIndex = 66;
             this.numRaresOptionsLimit.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numRaresOptionsLimit, "Maximum number of results to show");
+            this.tipToolTips.SetToolTip(this.numRaresOptionsLimit, "Tooltip-027");
             // 
             // txtRaresOptionsFrom
             // 
@@ -2283,8 +2256,7 @@
             this.txtRaresOptionsFrom.Size = new System.Drawing.Size(173, 20);
             this.txtRaresOptionsFrom.TabIndex = 72;
             this.txtRaresOptionsFrom.TabStop = false;
-            this.tipToolTips.SetToolTip(this.txtRaresOptionsFrom, "Limits results to systems that are at least a given distance away from additional" +
-        " systems.");
+            this.tipToolTips.SetToolTip(this.txtRaresOptionsFrom, "Tooltip-060");
             // 
             // lblRaresOptionsFrom
             // 
@@ -2296,8 +2268,7 @@
             this.lblRaresOptionsFrom.Size = new System.Drawing.Size(74, 13);
             this.lblRaresOptionsFrom.TabIndex = 73;
             this.lblRaresOptionsFrom.Text = "LY away from:";
-            this.tipToolTips.SetToolTip(this.lblRaresOptionsFrom, "Limits results to systems that are at least a given distance away from additional" +
-        " systems.");
+            this.tipToolTips.SetToolTip(this.lblRaresOptionsFrom, "Tooltip-060");
             // 
             // lblRaresOptionsLy
             // 
@@ -2307,7 +2278,7 @@
             this.lblRaresOptionsLy.Size = new System.Drawing.Size(23, 13);
             this.lblRaresOptionsLy.TabIndex = 68;
             this.lblRaresOptionsLy.Text = "LY:";
-            this.tipToolTips.SetToolTip(this.lblRaresOptionsLy, "Maximum distance to search from center system.");
+            this.tipToolTips.SetToolTip(this.lblRaresOptionsLy, "Tooltip-061");
             // 
             // numRaresOptionsAway
             // 
@@ -2328,8 +2299,7 @@
             this.numRaresOptionsAway.Size = new System.Drawing.Size(53, 20);
             this.numRaresOptionsAway.TabIndex = 69;
             this.numRaresOptionsAway.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numRaresOptionsAway, "Limits results to systems that are at least a given distance away  from additiona" +
-        "l systems.");
+            this.tipToolTips.SetToolTip(this.numRaresOptionsAway, "Tooltip-060");
             this.numRaresOptionsAway.Value = new decimal(new int[] {
             1,
             0,
@@ -2344,7 +2314,7 @@
             this.lblRaresOptionsType.Size = new System.Drawing.Size(61, 13);
             this.lblRaresOptionsType.TabIndex = 86;
             this.lblRaresOptionsType.Text = "Rares type:";
-            this.tipToolTips.SetToolTip(this.lblRaresOptionsType, "Only list items known to be either legal or illegal.");
+            this.tipToolTips.SetToolTip(this.lblRaresOptionsType, "Tooltip-063");
             // 
             // optRaresOptionsLegal
             // 
@@ -2355,7 +2325,7 @@
             this.optRaresOptionsLegal.TabIndex = 66;
             this.optRaresOptionsLegal.TabStop = true;
             this.optRaresOptionsLegal.Text = "Legal";
-            this.tipToolTips.SetToolTip(this.optRaresOptionsLegal, "Only list items known to be legal.");
+            this.tipToolTips.SetToolTip(this.optRaresOptionsLegal, "Tooltip-026");
             this.optRaresOptionsLegal.UseVisualStyleBackColor = true;
             // 
             // optRaresOptionsIllegal
@@ -2367,7 +2337,7 @@
             this.optRaresOptionsIllegal.TabIndex = 67;
             this.optRaresOptionsIllegal.TabStop = true;
             this.optRaresOptionsIllegal.Text = "Illegal";
-            this.tipToolTips.SetToolTip(this.optRaresOptionsIllegal, "Only list items known to be illegal.");
+            this.tipToolTips.SetToolTip(this.optRaresOptionsIllegal, "Tooltip-023");
             this.optRaresOptionsIllegal.UseVisualStyleBackColor = true;
             // 
             // optRaresOptionsAll
@@ -2379,7 +2349,7 @@
             this.optRaresOptionsAll.TabIndex = 87;
             this.optRaresOptionsAll.TabStop = true;
             this.optRaresOptionsAll.Text = "All";
-            this.tipToolTips.SetToolTip(this.optRaresOptionsAll, "List all rares.");
+            this.tipToolTips.SetToolTip(this.optRaresOptionsAll, "Tooltip-059");
             this.optRaresOptionsAll.UseVisualStyleBackColor = true;
             // 
             // btnTradeOptionsSwap
@@ -2390,7 +2360,7 @@
             this.btnTradeOptionsSwap.TabIndex = 70;
             this.btnTradeOptionsSwap.TabStop = false;
             this.btnTradeOptionsSwap.Text = "S";
-            this.tipToolTips.SetToolTip(this.btnTradeOptionsSwap, "Swap the contents of Source/Destination");
+            this.tipToolTips.SetToolTip(this.btnTradeOptionsSwap, "Tooltip-093");
             this.btnTradeOptionsSwap.UseVisualStyleBackColor = true;
             this.btnTradeOptionsSwap.Click += new System.EventHandler(this.EventHandler_SwapSourceAndDestination);
             // 
@@ -2403,7 +2373,7 @@
             this.lblTradeOptionDestination.Size = new System.Drawing.Size(63, 13);
             this.lblTradeOptionDestination.TabIndex = 1;
             this.lblTradeOptionDestination.Text = "Destination:";
-            this.tipToolTips.SetToolTip(this.lblTradeOptionDestination, "Destination point in the form of system or system/station");
+            this.tipToolTips.SetToolTip(this.lblTradeOptionDestination, "Tooltip-017");
             // 
             // cboTradeOptionDestination
             // 
@@ -2414,9 +2384,7 @@
             this.cboTradeOptionDestination.Name = "cboTradeOptionDestination";
             this.cboTradeOptionDestination.Size = new System.Drawing.Size(212, 21);
             this.cboTradeOptionDestination.TabIndex = 0;
-            this.tipToolTips.SetToolTip(this.cboTradeOptionDestination, "Destination point in the form of system or system/station\r\nCtrl+Enter adds a Syst" +
-        "em/Station to the favorites\r\nShift+Enter removes a System/Station from the favor" +
-        "ites");
+            this.tipToolTips.SetToolTip(this.cboTradeOptionDestination, "Tooltip-017");
             this.cboTradeOptionDestination.SelectedIndexChanged += new System.EventHandler(this.EventHandler_DestinationChanged);
             this.cboTradeOptionDestination.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EventHandler_DestSystemComboBox_KeyDown);
             // 
@@ -2428,7 +2396,7 @@
             this.lblMarketOptionsType.Size = new System.Drawing.Size(63, 13);
             this.lblMarketOptionsType.TabIndex = 86;
             this.lblMarketOptionsType.Text = "Market type";
-            this.tipToolTips.SetToolTip(this.lblMarketOptionsType, "Filter the result list.");
+            this.tipToolTips.SetToolTip(this.lblMarketOptionsType, "Tooltip-045");
             // 
             // optMarketOptionsBuy
             // 
@@ -2439,7 +2407,7 @@
             this.optMarketOptionsBuy.TabIndex = 66;
             this.optMarketOptionsBuy.TabStop = true;
             this.optMarketOptionsBuy.Text = "Buy";
-            this.tipToolTips.SetToolTip(this.optMarketOptionsBuy, "List only items bought by the station (listed as \'SELL\' in-game)");
+            this.tipToolTips.SetToolTip(this.optMarketOptionsBuy, "Tooltip-079");
             this.optMarketOptionsBuy.UseVisualStyleBackColor = true;
             // 
             // optMarketOptionsSell
@@ -2451,7 +2419,7 @@
             this.optMarketOptionsSell.TabIndex = 67;
             this.optMarketOptionsSell.TabStop = true;
             this.optMarketOptionsSell.Text = "Sell";
-            this.tipToolTips.SetToolTip(this.optMarketOptionsSell, "List only items sold by the station (listed as \'BUY\' in-game)");
+            this.tipToolTips.SetToolTip(this.optMarketOptionsSell, "Tooltip-085");
             this.optMarketOptionsSell.UseVisualStyleBackColor = true;
             // 
             // optMarketOptionsAll
@@ -2463,7 +2431,7 @@
             this.optMarketOptionsAll.TabIndex = 87;
             this.optMarketOptionsAll.TabStop = true;
             this.optMarketOptionsAll.Text = "All";
-            this.tipToolTips.SetToolTip(this.optMarketOptionsAll, "List all items.");
+            this.tipToolTips.SetToolTip(this.optMarketOptionsAll, "Tooltip-044");
             this.optMarketOptionsAll.UseVisualStyleBackColor = true;
             // 
             // btnNavOptionsSwap
@@ -2474,7 +2442,7 @@
             this.btnNavOptionsSwap.TabIndex = 70;
             this.btnNavOptionsSwap.TabStop = false;
             this.btnNavOptionsSwap.Text = "S";
-            this.tipToolTips.SetToolTip(this.btnNavOptionsSwap, "Swap the contents of Source/Destination");
+            this.tipToolTips.SetToolTip(this.btnNavOptionsSwap, "Tooltip-093");
             this.btnNavOptionsSwap.UseVisualStyleBackColor = true;
             this.btnNavOptionsSwap.Click += new System.EventHandler(this.EventHandler_SwapSourceAndDestination);
             // 
@@ -2487,7 +2455,7 @@
             this.chkNavOptionsStations.TabIndex = 62;
             this.chkNavOptionsStations.TabStop = false;
             this.chkNavOptionsStations.Text = "Stations";
-            this.tipToolTips.SetToolTip(this.chkNavOptionsStations, "Lists stations at each stop");
+            this.tipToolTips.SetToolTip(this.chkNavOptionsStations, "Tooltip-051");
             this.chkNavOptionsStations.UseVisualStyleBackColor = true;
             // 
             // lblNavOptionsDestination
@@ -2499,7 +2467,7 @@
             this.lblNavOptionsDestination.Size = new System.Drawing.Size(63, 13);
             this.lblNavOptionsDestination.TabIndex = 1;
             this.lblNavOptionsDestination.Text = "Destination:";
-            this.tipToolTips.SetToolTip(this.lblNavOptionsDestination, "Destination point in the form of system or system/station");
+            this.tipToolTips.SetToolTip(this.lblNavOptionsDestination, "Tooltip-017");
             // 
             // lblNavOptionsRefuelJumps
             // 
@@ -2509,7 +2477,7 @@
             this.lblNavOptionsRefuelJumps.Size = new System.Drawing.Size(74, 13);
             this.lblNavOptionsRefuelJumps.TabIndex = 43;
             this.lblNavOptionsRefuelJumps.Text = "Refuel Jumps:";
-            this.tipToolTips.SetToolTip(this.lblNavOptionsRefuelJumps, resources.GetString("lblNavOptionsRefuelJumps.ToolTip"));
+            this.tipToolTips.SetToolTip(this.lblNavOptionsRefuelJumps, "Tooltip-064");
             // 
             // numNavOptionsRefuelJumps
             // 
@@ -2519,7 +2487,7 @@
             this.numNavOptionsRefuelJumps.Size = new System.Drawing.Size(53, 20);
             this.numNavOptionsRefuelJumps.TabIndex = 2;
             this.numNavOptionsRefuelJumps.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numNavOptionsRefuelJumps, resources.GetString("numNavOptionsRefuelJumps.ToolTip"));
+            this.tipToolTips.SetToolTip(this.numNavOptionsRefuelJumps, "Tooltip-064");
             // 
             // cboNavOptionsDestination
             // 
@@ -2530,9 +2498,7 @@
             this.cboNavOptionsDestination.Name = "cboNavOptionsDestination";
             this.cboNavOptionsDestination.Size = new System.Drawing.Size(212, 21);
             this.cboNavOptionsDestination.TabIndex = 0;
-            this.tipToolTips.SetToolTip(this.cboNavOptionsDestination, "Destination point in the form of system or system/station\r\nCtrl+Enter adds a Syst" +
-        "em/Station to the favorites\r\nShift+Enter removes a System/Station from the favor" +
-        "ites");
+            this.tipToolTips.SetToolTip(this.cboNavOptionsDestination, "Tooltip-017");
             this.cboNavOptionsDestination.SelectedIndexChanged += new System.EventHandler(this.EventHandler_DestinationChanged);
             this.cboNavOptionsDestination.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EventHandler_DestSystemComboBox_KeyDown);
             // 
@@ -2544,7 +2510,7 @@
             this.txtNavOptionsAvoid.Size = new System.Drawing.Size(267, 20);
             this.txtNavOptionsAvoid.TabIndex = 71;
             this.txtNavOptionsAvoid.TabStop = false;
-            this.tipToolTips.SetToolTip(this.txtNavOptionsAvoid, "Avoids can include system/station and items delimited by comma");
+            this.tipToolTips.SetToolTip(this.txtNavOptionsAvoid, "Tooltip-003");
             // 
             // lblNavOptionsAvoid
             // 
@@ -2556,7 +2522,7 @@
             this.lblNavOptionsAvoid.Size = new System.Drawing.Size(37, 13);
             this.lblNavOptionsAvoid.TabIndex = 73;
             this.lblNavOptionsAvoid.Text = "Avoid:";
-            this.tipToolTips.SetToolTip(this.lblNavOptionsAvoid, "Avoids can include system/station and items delimited by comma");
+            this.tipToolTips.SetToolTip(this.lblNavOptionsAvoid, "Tooltip-003");
             // 
             // txtNavOptionsVia
             // 
@@ -2566,7 +2532,7 @@
             this.txtNavOptionsVia.Size = new System.Drawing.Size(267, 20);
             this.txtNavOptionsVia.TabIndex = 72;
             this.txtNavOptionsVia.TabStop = false;
-            this.tipToolTips.SetToolTip(this.txtNavOptionsVia, "Attempt to route through these systems, delimited by comma");
+            this.tipToolTips.SetToolTip(this.txtNavOptionsVia, "Tooltip-052");
             // 
             // lblNavOptionsVia
             // 
@@ -2578,7 +2544,7 @@
             this.lblNavOptionsVia.Size = new System.Drawing.Size(25, 13);
             this.lblNavOptionsVia.TabIndex = 74;
             this.lblNavOptionsVia.Text = "Via:";
-            this.tipToolTips.SetToolTip(this.lblNavOptionsVia, "Attempt to route through these systems, delimited by comma");
+            this.tipToolTips.SetToolTip(this.lblNavOptionsVia, "Tooltip-052");
             // 
             // lblNavOptionsPads
             // 
@@ -2588,7 +2554,7 @@
             this.lblNavOptionsPads.Size = new System.Drawing.Size(34, 13);
             this.lblNavOptionsPads.TabIndex = 82;
             this.lblNavOptionsPads.Text = "Pads:";
-            this.tipToolTips.SetToolTip(this.lblNavOptionsPads, "Minimum pad sizes to consider a hop, can be M, L, and/or ?");
+            this.tipToolTips.SetToolTip(this.lblNavOptionsPads, "Tooltip-055");
             // 
             // txtNavOptionsPads
             // 
@@ -2599,7 +2565,7 @@
             this.txtNavOptionsPads.Size = new System.Drawing.Size(32, 20);
             this.txtNavOptionsPads.TabIndex = 81;
             this.txtNavOptionsPads.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tipToolTips.SetToolTip(this.txtNavOptionsPads, "Minimum pad sizes to consider a hop, can be M, L, and/or ?");
+            this.tipToolTips.SetToolTip(this.txtNavOptionsPads, "Tooltip-055");
             this.txtNavOptionsPads.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_PadSize_KeyPress);
             // 
             // lblNavOptionsPlanetary
@@ -2610,8 +2576,7 @@
             this.lblNavOptionsPlanetary.Size = new System.Drawing.Size(54, 13);
             this.lblNavOptionsPlanetary.TabIndex = 80;
             this.lblNavOptionsPlanetary.Text = "Planetary:";
-            this.tipToolTips.SetToolTip(this.lblNavOptionsPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
-        "?");
+            this.tipToolTips.SetToolTip(this.lblNavOptionsPlanetary, "Tooltip-056");
             // 
             // txtNavOptionsPlanetary
             // 
@@ -2622,8 +2587,7 @@
             this.txtNavOptionsPlanetary.Size = new System.Drawing.Size(32, 20);
             this.txtNavOptionsPlanetary.TabIndex = 79;
             this.txtNavOptionsPlanetary.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tipToolTips.SetToolTip(this.txtNavOptionsPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
-        "?");
+            this.tipToolTips.SetToolTip(this.txtNavOptionsPlanetary, "Tooltip-056");
             this.txtNavOptionsPlanetary.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_Planetary_KeyPress);
             // 
             // numNavOptionsLy
@@ -2645,7 +2609,7 @@
             this.numNavOptionsLy.Size = new System.Drawing.Size(53, 20);
             this.numNavOptionsLy.TabIndex = 84;
             this.numNavOptionsLy.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numNavOptionsLy, "Constrains jumps to a maximum ly distance");
+            this.tipToolTips.SetToolTip(this.numNavOptionsLy, "Tooltip-031");
             this.numNavOptionsLy.Value = new decimal(new int[] {
             1,
             0,
@@ -2660,7 +2624,7 @@
             this.lblNavOptionsLy.Size = new System.Drawing.Size(23, 13);
             this.lblNavOptionsLy.TabIndex = 83;
             this.lblNavOptionsLy.Text = "LY:";
-            this.tipToolTips.SetToolTip(this.lblNavOptionsLy, "Constrains jumps to a maximum ly distance");
+            this.tipToolTips.SetToolTip(this.lblNavOptionsLy, "Tooltip-031");
             // 
             // numOldDataOptionsNearLy
             // 
@@ -2681,7 +2645,7 @@
             this.numOldDataOptionsNearLy.Size = new System.Drawing.Size(53, 20);
             this.numOldDataOptionsNearLy.TabIndex = 2;
             this.numOldDataOptionsNearLy.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numOldDataOptionsNearLy, "[Requires --near] Systems within this range of --near.");
+            this.tipToolTips.SetToolTip(this.numOldDataOptionsNearLy, "Tooltip-053");
             this.numOldDataOptionsNearLy.Value = new decimal(new int[] {
             1,
             0,
@@ -2696,7 +2660,7 @@
             this.lblOldDataOptionsLimit.Size = new System.Drawing.Size(45, 13);
             this.lblOldDataOptionsLimit.TabIndex = 67;
             this.lblOldDataOptionsLimit.Text = "Results:";
-            this.tipToolTips.SetToolTip(this.lblOldDataOptionsLimit, "Maximum number of results to show");
+            this.tipToolTips.SetToolTip(this.lblOldDataOptionsLimit, "Tooltip-027");
             // 
             // numOldDataOptionsLimit
             // 
@@ -2711,7 +2675,7 @@
             this.numOldDataOptionsLimit.Size = new System.Drawing.Size(53, 20);
             this.numOldDataOptionsLimit.TabIndex = 4;
             this.numOldDataOptionsLimit.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numOldDataOptionsLimit, "Maximum number of results to show");
+            this.tipToolTips.SetToolTip(this.numOldDataOptionsLimit, "Tooltip-027");
             // 
             // lblOldDataOptionsNearLy
             // 
@@ -2723,7 +2687,7 @@
             this.lblOldDataOptionsNearLy.Size = new System.Drawing.Size(49, 13);
             this.lblOldDataOptionsNearLy.TabIndex = 73;
             this.lblOldDataOptionsNearLy.Text = "Near LY:";
-            this.tipToolTips.SetToolTip(this.lblOldDataOptionsNearLy, "[Requires --near] Systems within this range of --near.");
+            this.tipToolTips.SetToolTip(this.lblOldDataOptionsNearLy, "Tooltip-053");
             // 
             // chkOldDataOptionsRoute
             // 
@@ -2733,7 +2697,7 @@
             this.chkOldDataOptionsRoute.Size = new System.Drawing.Size(55, 17);
             this.chkOldDataOptionsRoute.TabIndex = 5;
             this.chkOldDataOptionsRoute.Text = "Route";
-            this.tipToolTips.SetToolTip(this.chkOldDataOptionsRoute, "Sort the results of OldData into a route by distance");
+            this.tipToolTips.SetToolTip(this.chkOldDataOptionsRoute, "Tooltip-084");
             this.chkOldDataOptionsRoute.UseVisualStyleBackColor = true;
             // 
             // lblOldDataOptionsMinAge
@@ -2744,7 +2708,7 @@
             this.lblOldDataOptionsMinAge.Size = new System.Drawing.Size(46, 13);
             this.lblOldDataOptionsMinAge.TabIndex = 75;
             this.lblOldDataOptionsMinAge.Text = "MinAge:";
-            this.tipToolTips.SetToolTip(this.lblOldDataOptionsMinAge, "Minimum age in days to filter by");
+            this.tipToolTips.SetToolTip(this.lblOldDataOptionsMinAge, "Tooltip-002");
             // 
             // numOldDataOptionsMinAge
             // 
@@ -2759,7 +2723,7 @@
             this.numOldDataOptionsMinAge.Size = new System.Drawing.Size(53, 20);
             this.numOldDataOptionsMinAge.TabIndex = 3;
             this.numOldDataOptionsMinAge.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numOldDataOptionsMinAge, "Minimum age in days to filter by");
+            this.tipToolTips.SetToolTip(this.numOldDataOptionsMinAge, "Tooltip-002");
             // 
             // chkLocalOptionsTrading
             // 
@@ -2770,7 +2734,7 @@
             this.chkLocalOptionsTrading.TabIndex = 103;
             this.chkLocalOptionsTrading.TabStop = false;
             this.chkLocalOptionsTrading.Text = "Trading";
-            this.tipToolTips.SetToolTip(this.chkLocalOptionsTrading, "Limit stations to those which which have markets or trade data.");
+            this.tipToolTips.SetToolTip(this.chkLocalOptionsTrading, "Tooltip-039");
             this.chkLocalOptionsTrading.UseVisualStyleBackColor = true;
             this.chkLocalOptionsTrading.Click += new System.EventHandler(this.EventHandler_LocalFilterCheckBoxChanged);
             // 
@@ -2793,7 +2757,7 @@
             this.numLocalOptionsLy.Size = new System.Drawing.Size(53, 20);
             this.numLocalOptionsLy.TabIndex = 102;
             this.numLocalOptionsLy.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tipToolTips.SetToolTip(this.numLocalOptionsLy, "Constrains jumps to a maximum ly distance");
+            this.tipToolTips.SetToolTip(this.numLocalOptionsLy, "Tooltip-050");
             this.numLocalOptionsLy.Value = new decimal(new int[] {
             1,
             0,
@@ -2808,7 +2772,7 @@
             this.lblLocalOptionsLy.Size = new System.Drawing.Size(23, 13);
             this.lblLocalOptionsLy.TabIndex = 101;
             this.lblLocalOptionsLy.Text = "LY:";
-            this.tipToolTips.SetToolTip(this.lblLocalOptionsLy, "Constrains jumps to a maximum ly distance");
+            this.tipToolTips.SetToolTip(this.lblLocalOptionsLy, "Tooltip-050");
             // 
             // lblLocalOptionsPads
             // 
@@ -2818,7 +2782,7 @@
             this.lblLocalOptionsPads.Size = new System.Drawing.Size(34, 13);
             this.lblLocalOptionsPads.TabIndex = 100;
             this.lblLocalOptionsPads.Text = "Pads:";
-            this.tipToolTips.SetToolTip(this.lblLocalOptionsPads, "Minimum pad sizes to consider a hop, can be M, L, and/or ?");
+            this.tipToolTips.SetToolTip(this.lblLocalOptionsPads, "Tooltip-055");
             // 
             // txtLocalOptionsPads
             // 
@@ -2829,7 +2793,7 @@
             this.txtLocalOptionsPads.Size = new System.Drawing.Size(32, 20);
             this.txtLocalOptionsPads.TabIndex = 99;
             this.txtLocalOptionsPads.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tipToolTips.SetToolTip(this.txtLocalOptionsPads, "Minimum pad sizes to consider a hop, can be M, L, and/or ?");
+            this.tipToolTips.SetToolTip(this.txtLocalOptionsPads, "Tooltip-055");
             this.txtLocalOptionsPads.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_PadSize_KeyPress);
             // 
             // lblLocalOptionsPlanetary
@@ -2840,8 +2804,7 @@
             this.lblLocalOptionsPlanetary.Size = new System.Drawing.Size(54, 13);
             this.lblLocalOptionsPlanetary.TabIndex = 98;
             this.lblLocalOptionsPlanetary.Text = "Planetary:";
-            this.tipToolTips.SetToolTip(this.lblLocalOptionsPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
-        "?");
+            this.tipToolTips.SetToolTip(this.lblLocalOptionsPlanetary, "Tooltip-056");
             // 
             // txtLocalOptionsPlanetary
             // 
@@ -2852,8 +2815,7 @@
             this.txtLocalOptionsPlanetary.Size = new System.Drawing.Size(32, 20);
             this.txtLocalOptionsPlanetary.TabIndex = 97;
             this.txtLocalOptionsPlanetary.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tipToolTips.SetToolTip(this.txtLocalOptionsPlanetary, "Limit result to stations with one of the specified planetary. Can be Y, N and/or " +
-        "?");
+            this.tipToolTips.SetToolTip(this.txtLocalOptionsPlanetary, "Tooltip-056");
             this.txtLocalOptionsPlanetary.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_Planetary_KeyPress);
             // 
             // btnLocalOptionsReset
@@ -2864,7 +2826,7 @@
             this.btnLocalOptionsReset.Size = new System.Drawing.Size(21, 21);
             this.btnLocalOptionsReset.TabIndex = 95;
             this.btnLocalOptionsReset.Text = "R";
-            this.tipToolTips.SetToolTip(this.btnLocalOptionsReset, "Reset the station filters.");
+            this.tipToolTips.SetToolTip(this.btnLocalOptionsReset, "Tooltip-036");
             this.btnLocalOptionsReset.UseVisualStyleBackColor = true;
             this.btnLocalOptionsReset.Click += new System.EventHandler(this.EventHandler_ResetLocalFilters);
             // 
@@ -2876,7 +2838,7 @@
             this.chkLocalOptionsStations.Size = new System.Drawing.Size(64, 17);
             this.chkLocalOptionsStations.TabIndex = 96;
             this.chkLocalOptionsStations.Text = "Stations";
-            this.tipToolTips.SetToolTip(this.chkLocalOptionsStations, "Filter destinations that don\'t contain stations");
+            this.tipToolTips.SetToolTip(this.chkLocalOptionsStations, "Tooltip-038");
             this.chkLocalOptionsStations.UseVisualStyleBackColor = true;
             this.chkLocalOptionsStations.Click += new System.EventHandler(this.EventHandler_LocalFilterCheckBoxChanged);
             // 
@@ -2889,7 +2851,7 @@
             this.chkLocalOptionsOutfitting.TabIndex = 94;
             this.chkLocalOptionsOutfitting.TabStop = false;
             this.chkLocalOptionsOutfitting.Text = "Outfitting";
-            this.tipToolTips.SetToolTip(this.chkLocalOptionsOutfitting, "Does the station have outfitting facilities? (Default is unknown)");
+            this.tipToolTips.SetToolTip(this.chkLocalOptionsOutfitting, "Tooltip-032");
             this.chkLocalOptionsOutfitting.UseVisualStyleBackColor = true;
             this.chkLocalOptionsOutfitting.Click += new System.EventHandler(this.EventHandler_LocalFilterCheckBoxChanged);
             // 
@@ -2902,7 +2864,7 @@
             this.chkLocalOptionsRearm.TabIndex = 91;
             this.chkLocalOptionsRearm.TabStop = false;
             this.chkLocalOptionsRearm.Text = "Rearm";
-            this.tipToolTips.SetToolTip(this.chkLocalOptionsRearm, "Does the station have rearm facilities? (Default is unknown)");
+            this.tipToolTips.SetToolTip(this.chkLocalOptionsRearm, "Tooltip-033");
             this.chkLocalOptionsRearm.UseVisualStyleBackColor = true;
             this.chkLocalOptionsRearm.Click += new System.EventHandler(this.EventHandler_LocalFilterCheckBoxChanged);
             // 
@@ -2915,7 +2877,7 @@
             this.chkLocalOptionsCommodities.TabIndex = 90;
             this.chkLocalOptionsCommodities.TabStop = false;
             this.chkLocalOptionsCommodities.Text = "Commodities";
-            this.tipToolTips.SetToolTip(this.chkLocalOptionsCommodities, "Does the station have a commodities market? (Default is unknown)");
+            this.tipToolTips.SetToolTip(this.chkLocalOptionsCommodities, "Tooltip-030");
             this.chkLocalOptionsCommodities.UseVisualStyleBackColor = true;
             this.chkLocalOptionsCommodities.Click += new System.EventHandler(this.EventHandler_LocalFilterCheckBoxChanged);
             // 
@@ -2928,7 +2890,7 @@
             this.chkLocalOptionsRepair.TabIndex = 93;
             this.chkLocalOptionsRepair.TabStop = false;
             this.chkLocalOptionsRepair.Text = "Repair";
-            this.tipToolTips.SetToolTip(this.chkLocalOptionsRepair, "Does the station have repair facilities? (Default is unknown)");
+            this.tipToolTips.SetToolTip(this.chkLocalOptionsRepair, "Tooltip-035");
             this.chkLocalOptionsRepair.UseVisualStyleBackColor = true;
             this.chkLocalOptionsRepair.Click += new System.EventHandler(this.EventHandler_LocalFilterCheckBoxChanged);
             // 
@@ -2941,7 +2903,7 @@
             this.chkLocalOptionsBlkMkt.TabIndex = 89;
             this.chkLocalOptionsBlkMkt.TabStop = false;
             this.chkLocalOptionsBlkMkt.Text = "Black Market";
-            this.tipToolTips.SetToolTip(this.chkLocalOptionsBlkMkt, "Does the station have a black market? (Default is unknown)");
+            this.tipToolTips.SetToolTip(this.chkLocalOptionsBlkMkt, "Tooltip-029");
             this.chkLocalOptionsBlkMkt.UseVisualStyleBackColor = true;
             this.chkLocalOptionsBlkMkt.Click += new System.EventHandler(this.EventHandler_LocalFilterCheckBoxChanged);
             // 
@@ -2954,7 +2916,7 @@
             this.chkLocalOptionsRefuel.TabIndex = 92;
             this.chkLocalOptionsRefuel.TabStop = false;
             this.chkLocalOptionsRefuel.Text = "Refuel";
-            this.tipToolTips.SetToolTip(this.chkLocalOptionsRefuel, "Does the station have refueling facilities? (Default is unknown)");
+            this.tipToolTips.SetToolTip(this.chkLocalOptionsRefuel, "Tooltip-034");
             this.chkLocalOptionsRefuel.UseVisualStyleBackColor = true;
             this.chkLocalOptionsRefuel.Click += new System.EventHandler(this.EventHandler_LocalFilterCheckBoxChanged);
             // 
@@ -2967,7 +2929,7 @@
             this.chkLocalOptionsShipyard.TabIndex = 88;
             this.chkLocalOptionsShipyard.TabStop = false;
             this.chkLocalOptionsShipyard.Text = "Shipyard";
-            this.tipToolTips.SetToolTip(this.chkLocalOptionsShipyard, "Does the station have a shipyard? (Default is unknown)");
+            this.tipToolTips.SetToolTip(this.chkLocalOptionsShipyard, "Tooltip-037");
             this.chkLocalOptionsShipyard.UseVisualStyleBackColor = true;
             this.chkLocalOptionsShipyard.Click += new System.EventHandler(this.EventHandler_LocalFilterCheckBoxChanged);
             // 
@@ -2978,7 +2940,7 @@
             this.btnLocalOptionsAll.Size = new System.Drawing.Size(21, 21);
             this.btnLocalOptionsAll.TabIndex = 104;
             this.btnLocalOptionsAll.Text = "A";
-            this.tipToolTips.SetToolTip(this.btnLocalOptionsAll, "Set all the station filters.");
+            this.tipToolTips.SetToolTip(this.btnLocalOptionsAll, "Tooltip-028");
             this.btnLocalOptionsAll.UseVisualStyleBackColor = true;
             this.btnLocalOptionsAll.Click += new System.EventHandler(this.EventHandler_SetLocalFilters);
             // 
@@ -2991,7 +2953,7 @@
             this.chkSellOptionsBlkMkt.TabIndex = 87;
             this.chkSellOptionsBlkMkt.TabStop = false;
             this.chkSellOptionsBlkMkt.Text = "BMkt";
-            this.tipToolTips.SetToolTip(this.chkSellOptionsBlkMkt, "Require stations with a black market");
+            this.tipToolTips.SetToolTip(this.chkSellOptionsBlkMkt, "Tooltip-005");
             this.chkSellOptionsBlkMkt.UseVisualStyleBackColor = true;
             // 
             // btnStationInfo
@@ -3004,7 +2966,7 @@
             this.btnStationInfo.TabIndex = 9;
             this.btnStationInfo.TabStop = false;
             this.btnStationInfo.Text = "i";
-            this.tipToolTips.SetToolTip(this.btnStationInfo, "Show some details of the selected station.");
+            this.tipToolTips.SetToolTip(this.btnStationInfo, "Tooltip-090");
             this.btnStationInfo.UseVisualStyleBackColor = true;
             this.btnStationInfo.Click += new System.EventHandler(this.EventHandler_StationInfo_Click);
             // 
@@ -3019,7 +2981,7 @@
             this.lvShipVendorOptionsShips.Name = "lvShipVendorOptionsShips";
             this.lvShipVendorOptionsShips.Size = new System.Drawing.Size(317, 190);
             this.lvShipVendorOptionsShips.TabIndex = 15;
-            this.tipToolTips.SetToolTip(this.lvShipVendorOptionsShips, "Ships sold at this ship vendor.");
+            this.tipToolTips.SetToolTip(this.lvShipVendorOptionsShips, "Tooltip-097");
             this.lvShipVendorOptionsShips.UseCompatibleStateImageBehavior = false;
             this.lvShipVendorOptionsShips.View = System.Windows.Forms.View.Details;
             // 
@@ -3042,7 +3004,7 @@
             this.btnDbMaintenance.TabIndex = 10;
             this.btnDbMaintenance.TabStop = false;
             this.btnDbMaintenance.Text = "DB Maint.";
-            this.tipToolTips.SetToolTip(this.btnDbMaintenance, "Various database maintenance operations.");
+            this.tipToolTips.SetToolTip(this.btnDbMaintenance, "Tooltip-014");
             this.btnDbMaintenance.UseVisualStyleBackColor = true;
             this.btnDbMaintenance.Click += new System.EventHandler(this.EventHandler_DbMaintenance_Click);
             // 
@@ -3055,7 +3017,7 @@
             this.chkIncludeInsurance.TabIndex = 71;
             this.chkIncludeInsurance.TabStop = false;
             this.chkIncludeInsurance.Text = "Insurance";
-            this.tipToolTips.SetToolTip(this.chkIncludeInsurance, "Include the insurance in the RUN calculation.");
+            this.tipToolTips.SetToolTip(this.chkIncludeInsurance, "Tooltip-024");
             this.chkIncludeInsurance.UseVisualStyleBackColor = true;
             // 
             // cboSellOptionsCommodities
@@ -3068,7 +3030,7 @@
             this.cboSellOptionsCommodities.Name = "cboSellOptionsCommodities";
             this.cboSellOptionsCommodities.Size = new System.Drawing.Size(240, 21);
             this.cboSellOptionsCommodities.TabIndex = 88;
-            this.tipToolTips.SetToolTip(this.cboSellOptionsCommodities, "A single commodity for which to search.");
+            this.tipToolTips.SetToolTip(this.cboSellOptionsCommodities, "Tooltip-012");
             // 
             // cboBuyOptionsCommodities
             // 
@@ -3082,8 +3044,7 @@
             this.cboBuyOptionsCommodities.Name = "cboBuyOptionsCommodities";
             this.cboBuyOptionsCommodities.Size = new System.Drawing.Size(240, 21);
             this.cboBuyOptionsCommodities.TabIndex = 68;
-            this.tipToolTips.SetToolTip(this.cboBuyOptionsCommodities, "One or more commodities for which to search.\r\nWith list open DEL to unselect all " +
-        "and, SHIFT+DEL to select all.");
+            this.tipToolTips.SetToolTip(this.cboBuyOptionsCommodities, "Tooltip-011");
             this.cboBuyOptionsCommodities.ValueSeparator = ", ";
             // 
             // cboCommandersShips
@@ -3103,8 +3064,58 @@
             this.cboCommandersShips.Size = new System.Drawing.Size(272, 21);
             this.cboCommandersShips.TabIndex = 1;
             this.cboCommandersShips.TabStop = false;
-            this.tipToolTips.SetToolTip(this.cboCommandersShips, "Select a ship");
+            this.tipToolTips.SetToolTip(this.cboCommandersShips, "Tooltip-077");
             this.cboCommandersShips.SelectionChangeCommitted += new System.EventHandler(this.EventHandler_Ships_SelectionChangeCommitted);
+            // 
+            // lblRouteOptionsMaxLS
+            // 
+            this.lblRouteOptionsMaxLS.AutoSize = true;
+            this.lblRouteOptionsMaxLS.Location = new System.Drawing.Point(26, 30);
+            this.lblRouteOptionsMaxLS.Name = "lblRouteOptionsMaxLS";
+            this.lblRouteOptionsMaxLS.Size = new System.Drawing.Size(46, 13);
+            this.lblRouteOptionsMaxLS.TabIndex = 10;
+            this.lblRouteOptionsMaxLS.Text = "Max LS:";
+            this.tipToolTips.SetToolTip(this.lblRouteOptionsMaxLS, "Tooltip-047");
+            // 
+            // lblRouteOptionsPruneHops
+            // 
+            this.lblRouteOptionsPruneHops.AutoSize = true;
+            this.lblRouteOptionsPruneHops.Location = new System.Drawing.Point(6, 97);
+            this.lblRouteOptionsPruneHops.Name = "lblRouteOptionsPruneHops";
+            this.lblRouteOptionsPruneHops.Size = new System.Drawing.Size(66, 13);
+            this.lblRouteOptionsPruneHops.TabIndex = 15;
+            this.lblRouteOptionsPruneHops.Text = "Prune Hops:";
+            this.tipToolTips.SetToolTip(this.lblRouteOptionsPruneHops, "Tooltip-057");
+            // 
+            // lblRouteOptionsPruneScore
+            // 
+            this.lblRouteOptionsPruneScore.AutoSize = true;
+            this.lblRouteOptionsPruneScore.Location = new System.Drawing.Point(3, 74);
+            this.lblRouteOptionsPruneScore.Name = "lblRouteOptionsPruneScore";
+            this.lblRouteOptionsPruneScore.Size = new System.Drawing.Size(69, 13);
+            this.lblRouteOptionsPruneScore.TabIndex = 49;
+            this.lblRouteOptionsPruneScore.Text = "Prune Score:";
+            this.tipToolTips.SetToolTip(this.lblRouteOptionsPruneScore, "Tooltip-058");
+            // 
+            // lblRouteOptionsLsPenalty
+            // 
+            this.lblRouteOptionsLsPenalty.AutoSize = true;
+            this.lblRouteOptionsLsPenalty.Location = new System.Drawing.Point(11, 51);
+            this.lblRouteOptionsLsPenalty.Name = "lblRouteOptionsLsPenalty";
+            this.lblRouteOptionsLsPenalty.Size = new System.Drawing.Size(61, 13);
+            this.lblRouteOptionsLsPenalty.TabIndex = 8;
+            this.lblRouteOptionsLsPenalty.Text = "LS Penalty:";
+            this.tipToolTips.SetToolTip(this.lblRouteOptionsLsPenalty, "Tooltip-042");
+            // 
+            // lblShipInsurance
+            // 
+            this.lblShipInsurance.AutoSize = true;
+            this.lblShipInsurance.Location = new System.Drawing.Point(358, 8);
+            this.lblShipInsurance.Name = "lblShipInsurance";
+            this.lblShipInsurance.Size = new System.Drawing.Size(57, 13);
+            this.lblShipInsurance.TabIndex = 51;
+            this.lblShipInsurance.Text = "Insurance:";
+            this.tipToolTips.SetToolTip(this.lblShipInsurance, "Tooltip-076");
             // 
             // backgroundWorker3
             // 
@@ -3495,60 +3506,6 @@
             this.lblRouteOptionsJumps.TabIndex = 31;
             this.lblRouteOptionsJumps.Text = "Jumps:";
             // 
-            // lblRouteOptionsMaxLS
-            // 
-            this.lblRouteOptionsMaxLS.AutoSize = true;
-            this.lblRouteOptionsMaxLS.Location = new System.Drawing.Point(26, 30);
-            this.lblRouteOptionsMaxLS.Name = "lblRouteOptionsMaxLS";
-            this.lblRouteOptionsMaxLS.Size = new System.Drawing.Size(46, 13);
-            this.lblRouteOptionsMaxLS.TabIndex = 10;
-            this.lblRouteOptionsMaxLS.Text = "Max LS:";
-            this.tipToolTips.SetToolTip(this.lblRouteOptionsMaxLS, "Filter stations by their distance-to-star. Stations for which\r\n   distance-to-sta" +
-        "r is known that have a distance above this will\r\n   not be considered for tradin" +
-        "g.");
-            // 
-            // lblRouteOptionsPruneHops
-            // 
-            this.lblRouteOptionsPruneHops.AutoSize = true;
-            this.lblRouteOptionsPruneHops.Location = new System.Drawing.Point(6, 97);
-            this.lblRouteOptionsPruneHops.Name = "lblRouteOptionsPruneHops";
-            this.lblRouteOptionsPruneHops.Size = new System.Drawing.Size(66, 13);
-            this.lblRouteOptionsPruneHops.TabIndex = 15;
-            this.lblRouteOptionsPruneHops.Text = "Prune Hops:";
-            this.tipToolTips.SetToolTip(this.lblRouteOptionsPruneHops, resources.GetString("lblRouteOptionsPruneHops.ToolTip"));
-            // 
-            // lblRouteOptionsPruneScore
-            // 
-            this.lblRouteOptionsPruneScore.AutoSize = true;
-            this.lblRouteOptionsPruneScore.Location = new System.Drawing.Point(3, 74);
-            this.lblRouteOptionsPruneScore.Name = "lblRouteOptionsPruneScore";
-            this.lblRouteOptionsPruneScore.Size = new System.Drawing.Size(69, 13);
-            this.lblRouteOptionsPruneScore.TabIndex = 49;
-            this.lblRouteOptionsPruneScore.Text = "Prune Score:";
-            this.tipToolTips.SetToolTip(this.lblRouteOptionsPruneScore, resources.GetString("lblRouteOptionsPruneScore.ToolTip"));
-            // 
-            // lblRouteOptionsLsPenalty
-            // 
-            this.lblRouteOptionsLsPenalty.AutoSize = true;
-            this.lblRouteOptionsLsPenalty.Location = new System.Drawing.Point(11, 51);
-            this.lblRouteOptionsLsPenalty.Name = "lblRouteOptionsLsPenalty";
-            this.lblRouteOptionsLsPenalty.Size = new System.Drawing.Size(61, 13);
-            this.lblRouteOptionsLsPenalty.TabIndex = 8;
-            this.lblRouteOptionsLsPenalty.Text = "LS Penalty:";
-            this.tipToolTips.SetToolTip(this.lblRouteOptionsLsPenalty, "Reduces the score of routes by this percentage for every 1000ls\r\n   you have to t" +
-        "ravel to stations, which helps prioritize routes\r\n   with a shorter supercruise " +
-        "time.");
-            // 
-            // lblShipInsurance
-            // 
-            this.lblShipInsurance.AutoSize = true;
-            this.lblShipInsurance.Location = new System.Drawing.Point(358, 8);
-            this.lblShipInsurance.Name = "lblShipInsurance";
-            this.lblShipInsurance.Size = new System.Drawing.Size(57, 13);
-            this.lblShipInsurance.TabIndex = 51;
-            this.lblShipInsurance.Text = "Insurance:";
-            this.tipToolTips.SetToolTip(this.lblShipInsurance, "How many credits to hold back for insurance purposes");
-            // 
             // backgroundWorker5
             // 
             this.backgroundWorker5.WorkerReportsProgress = true;
@@ -3894,11 +3851,11 @@
             // panOptions
             // 
             this.panOptions.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panOptions.Controls.Add(this.panRunOptions);
             this.panOptions.Controls.Add(this.panMarketOptions);
             this.panOptions.Controls.Add(this.panRaresOptions);
             this.panOptions.Controls.Add(this.panSellOptions);
             this.panOptions.Controls.Add(this.panBuyOptions);
-            this.panOptions.Controls.Add(this.panRunOptions);
             this.panOptions.Controls.Add(this.panTradeOptions);
             this.panOptions.Controls.Add(this.panOldDataOptions);
             this.panOptions.Controls.Add(this.panNavOptions);
