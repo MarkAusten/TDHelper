@@ -1,3 +1,10 @@
+v2.1.0.0
+--------
+* NetLogs disabled if the user presses cancel when asked to locate the AppConfig.xml file.
+* EDCE removed.
+* Commander Profile requires access token from Frontier.
+* Added Krait Phantom and Mamba ship data.
+
 v2.0.8.5
 --------
 * Only update the commodity lists if they have not been previously set.
@@ -13,7 +20,7 @@ v2.0.8.3
 --------
 * Fixed issue #40.
 * Fixed issue #39.
-* Changed commoditiy drop down list to a check box form to allow multiple items to be selected.
+* Changed commodity drop down list to a check box form to allow multiple items to be selected.
 
 v2.0.8.2
 --------

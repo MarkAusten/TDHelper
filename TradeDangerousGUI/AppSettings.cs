@@ -217,7 +217,6 @@ namespace TDHelper
                 settings.CopySystemToClipboard = GetBooleanSetting(configSection, "CopySystemToClipboard");
                 settings.DisableNetLogs = GetBooleanSetting(configSection, "DisableNetLogs");
                 settings.DoNotUpdate = GetBooleanSetting(configSection, "DoNotUpdate");
-                settings.EdcePath = GetStringSetting(configSection, "EdcePath");
                 settings.HasUpdated = GetBooleanSetting(configSection, "HasUpdated");
                 settings.ImportPath = GetStringSetting(configSection, "ImportPath");
                 settings.Locale = GetStringSetting(configSection, "Locale");
@@ -352,7 +351,6 @@ namespace TDHelper
             configSection["CopySystemToClipboard"].BoolValue = settings.CopySystemToClipboard;
             configSection["DisableNetLogs"].BoolValue = settings.DisableNetLogs;
             configSection["DoNotUpdate"].BoolValue = settings.DoNotUpdate;
-            configSection["EdcePath"].StringValue = settings.EdcePath ?? string.Empty;
             configSection["HasUpdated"].BoolValue = settings.HasUpdated;
             configSection["ImportPath"].StringValue = settings.ImportPath ?? string.Empty;
             configSection["LastUsedConfig"].StringValue = settings.LastUsedConfig ?? string.Empty;
@@ -856,6 +854,8 @@ namespace TDHelper
         } // prevent instancing
 
         public static TDSettings Instance { get { return _inst.Value; } } // return our reference
+        public string AccessToken { get; set; }
+        public DateTime AccessTokenExpiry { get; set; }
         public decimal Age { get; set; }
         public string AvailableShips { get; set; }
         public string Avoid { get; set; }
@@ -868,7 +868,6 @@ namespace TDHelper
         public bool Direct { get; set; }
         public bool DisableNetLogs { get; set; }
         public bool DoNotUpdate { get; set; }
-        public string EdcePath { get; set; }
         public decimal EndJumps { get; set; }
         public string ExtraRunParams { get; set; }
         public decimal GPT { get; set; }
@@ -946,6 +945,8 @@ namespace TDHelper
         public void Reset(TDSettings instance)
         {
             // go through and reset all accessors in instance
+            instance.AccessToken = string.Empty;
+            instance.AccessTokenExpiry = DateTime.Now;
             instance.Age = 0;
             instance.AvailableShips = string.Empty;
             instance.Avoid = string.Empty;
@@ -958,7 +959,6 @@ namespace TDHelper
             instance.Direct = false;
             instance.DisableNetLogs = false;
             instance.DoNotUpdate = false;
-            instance.EdcePath = string.Empty;
             instance.EndJumps = 0;
             instance.ExtraRunParams = string.Empty;
             instance.GPT = 0;

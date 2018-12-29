@@ -43,9 +43,6 @@
             this.testSystemsCheckBox = new System.Windows.Forms.CheckBox();
             this.verboseLabel = new System.Windows.Forms.Label();
             this.verbosityComboBox = new System.Windows.Forms.ComboBox();
-            this.validateEdcePath = new System.Windows.Forms.Button();
-            this.edcePathBox = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
             this.tvFontSelectorButton = new System.Windows.Forms.Button();
             this.currentTVFontBox = new System.Windows.Forms.TextBox();
             this.currentTVFontLabel = new System.Windows.Forms.Label();
@@ -62,18 +59,21 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.rebuyPercentage = new System.Windows.Forms.NumericUpDown();
             this.miscGroupBox = new System.Windows.Forms.GroupBox();
-            this.chkQuiet = new System.Windows.Forms.CheckBox();
-            this.lblRebuyPercentage = new System.Windows.Forms.Label();
             this.lblLocale = new System.Windows.Forms.Label();
             this.txtLocale = new System.Windows.Forms.TextBox();
+            this.chkQuiet = new System.Windows.Forms.CheckBox();
+            this.lblRebuyPercentage = new System.Windows.Forms.Label();
+            this.accessTokenGroupBox = new System.Windows.Forms.GroupBox();
+            this.txtToken = new System.Windows.Forms.TextBox();
             this.overrideGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rebuyPercentage)).BeginInit();
             this.miscGroupBox.SuspendLayout();
+            this.accessTokenGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // extraRunParameters
             // 
-            this.extraRunParameters.Location = new System.Drawing.Point(97, 254);
+            this.extraRunParameters.Location = new System.Drawing.Point(97, 226);
             this.extraRunParameters.Name = "extraRunParameters";
             this.extraRunParameters.Size = new System.Drawing.Size(257, 20);
             this.extraRunParameters.TabIndex = 13;
@@ -83,7 +83,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 257);
+            this.label1.Location = new System.Drawing.Point(6, 229);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(85, 13);
             this.label1.TabIndex = 1;
@@ -92,7 +92,7 @@
             // okButton
             // 
             this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.okButton.Location = new System.Drawing.Point(300, 424);
+            this.okButton.Location = new System.Drawing.Point(300, 581);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 28);
             this.okButton.TabIndex = 16;
@@ -103,7 +103,7 @@
             // cancelButton
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cancelButton.Location = new System.Drawing.Point(12, 424);
+            this.cancelButton.Location = new System.Drawing.Point(12, 581);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 28);
             this.cancelButton.TabIndex = 14;
@@ -149,9 +149,6 @@
             this.overrideGroupBox.Controls.Add(this.testSystemsCheckBox);
             this.overrideGroupBox.Controls.Add(this.verboseLabel);
             this.overrideGroupBox.Controls.Add(this.verbosityComboBox);
-            this.overrideGroupBox.Controls.Add(this.validateEdcePath);
-            this.overrideGroupBox.Controls.Add(this.edcePathBox);
-            this.overrideGroupBox.Controls.Add(this.label5);
             this.overrideGroupBox.Controls.Add(this.tvFontSelectorButton);
             this.overrideGroupBox.Controls.Add(this.currentTVFontBox);
             this.overrideGroupBox.Controls.Add(this.currentTVFontLabel);
@@ -171,7 +168,7 @@
             this.overrideGroupBox.Controls.Add(this.extraRunParameters);
             this.overrideGroupBox.Location = new System.Drawing.Point(12, 12);
             this.overrideGroupBox.Name = "overrideGroupBox";
-            this.overrideGroupBox.Size = new System.Drawing.Size(363, 318);
+            this.overrideGroupBox.Size = new System.Drawing.Size(363, 289);
             this.overrideGroupBox.TabIndex = 7;
             this.overrideGroupBox.TabStop = false;
             this.overrideGroupBox.Text = "Overrides";
@@ -179,7 +176,7 @@
             // chkSummary
             // 
             this.chkSummary.AutoSize = true;
-            this.chkSummary.Location = new System.Drawing.Point(259, 290);
+            this.chkSummary.Location = new System.Drawing.Point(259, 262);
             this.chkSummary.Name = "chkSummary";
             this.chkSummary.Size = new System.Drawing.Size(69, 17);
             this.chkSummary.TabIndex = 69;
@@ -191,7 +188,7 @@
             // chkProgress
             // 
             this.chkProgress.AutoSize = true;
-            this.chkProgress.Location = new System.Drawing.Point(156, 290);
+            this.chkProgress.Location = new System.Drawing.Point(156, 262);
             this.chkProgress.Name = "chkProgress";
             this.chkProgress.Size = new System.Drawing.Size(97, 17);
             this.chkProgress.TabIndex = 68;
@@ -215,7 +212,7 @@
             // 
             this.verboseLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.verboseLabel.AutoSize = true;
-            this.verboseLabel.Location = new System.Drawing.Point(38, 291);
+            this.verboseLabel.Location = new System.Drawing.Point(38, 263);
             this.verboseLabel.Name = "verboseLabel";
             this.verboseLabel.Size = new System.Drawing.Size(53, 13);
             this.verboseLabel.TabIndex = 60;
@@ -231,37 +228,11 @@
             "-v",
             "-vv",
             "-vvv"});
-            this.verbosityComboBox.Location = new System.Drawing.Point(97, 288);
+            this.verbosityComboBox.Location = new System.Drawing.Point(97, 260);
             this.verbosityComboBox.Name = "verbosityComboBox";
             this.verbosityComboBox.Size = new System.Drawing.Size(46, 21);
             this.verbosityComboBox.TabIndex = 59;
             this.verbosityComboBox.TabStop = false;
-            // 
-            // validateEdcePath
-            // 
-            this.validateEdcePath.Location = new System.Drawing.Point(330, 219);
-            this.validateEdcePath.Name = "validateEdcePath";
-            this.validateEdcePath.Size = new System.Drawing.Size(24, 20);
-            this.validateEdcePath.TabIndex = 16;
-            this.validateEdcePath.Text = "...";
-            this.validateEdcePath.UseVisualStyleBackColor = true;
-            this.validateEdcePath.Click += new System.EventHandler(this.ValidateEdcePath_Click);
-            // 
-            // edcePathBox
-            // 
-            this.edcePathBox.Location = new System.Drawing.Point(97, 219);
-            this.edcePathBox.Name = "edcePathBox";
-            this.edcePathBox.Size = new System.Drawing.Size(227, 20);
-            this.edcePathBox.TabIndex = 15;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(28, 222);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(64, 13);
-            this.label5.TabIndex = 14;
-            this.label5.Text = "EDCE Path:";
             // 
             // tvFontSelectorButton
             // 
@@ -371,7 +342,7 @@
             // resetButton
             // 
             this.resetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.resetButton.Location = new System.Drawing.Point(151, 424);
+            this.resetButton.Location = new System.Drawing.Point(151, 581);
             this.resetButton.Name = "resetButton";
             this.resetButton.Size = new System.Drawing.Size(84, 28);
             this.resetButton.TabIndex = 15;
@@ -401,12 +372,28 @@
             this.miscGroupBox.Controls.Add(this.chkQuiet);
             this.miscGroupBox.Controls.Add(this.rebuyPercentage);
             this.miscGroupBox.Controls.Add(this.lblRebuyPercentage);
-            this.miscGroupBox.Location = new System.Drawing.Point(12, 336);
+            this.miscGroupBox.Location = new System.Drawing.Point(12, 307);
             this.miscGroupBox.Name = "miscGroupBox";
             this.miscGroupBox.Size = new System.Drawing.Size(363, 82);
             this.miscGroupBox.TabIndex = 17;
             this.miscGroupBox.TabStop = false;
             this.miscGroupBox.Text = "Misc.";
+            // 
+            // lblLocale
+            // 
+            this.lblLocale.AutoSize = true;
+            this.lblLocale.Location = new System.Drawing.Point(7, 49);
+            this.lblLocale.Name = "lblLocale";
+            this.lblLocale.Size = new System.Drawing.Size(42, 13);
+            this.lblLocale.TabIndex = 14;
+            this.lblLocale.Text = "Locale:";
+            // 
+            // txtLocale
+            // 
+            this.txtLocale.Location = new System.Drawing.Point(97, 46);
+            this.txtLocale.Name = "txtLocale";
+            this.txtLocale.Size = new System.Drawing.Size(74, 20);
+            this.txtLocale.TabIndex = 15;
             // 
             // chkQuiet
             // 
@@ -427,27 +414,30 @@
             this.lblRebuyPercentage.TabIndex = 2;
             this.lblRebuyPercentage.Text = "Rebuy Percentage:";
             // 
-            // lblLocale
+            // accessTokenGroupBox
             // 
-            this.lblLocale.AutoSize = true;
-            this.lblLocale.Location = new System.Drawing.Point(7, 49);
-            this.lblLocale.Name = "lblLocale";
-            this.lblLocale.Size = new System.Drawing.Size(42, 13);
-            this.lblLocale.TabIndex = 14;
-            this.lblLocale.Text = "Locale:";
+            this.accessTokenGroupBox.Controls.Add(this.txtToken);
+            this.accessTokenGroupBox.Location = new System.Drawing.Point(12, 395);
+            this.accessTokenGroupBox.Name = "accessTokenGroupBox";
+            this.accessTokenGroupBox.Size = new System.Drawing.Size(363, 180);
+            this.accessTokenGroupBox.TabIndex = 18;
+            this.accessTokenGroupBox.TabStop = false;
+            this.accessTokenGroupBox.Text = "Access Token";
             // 
-            // txtLocale
+            // txtToken
             // 
-            this.txtLocale.Location = new System.Drawing.Point(97, 46);
-            this.txtLocale.Name = "txtLocale";
-            this.txtLocale.Size = new System.Drawing.Size(74, 20);
-            this.txtLocale.TabIndex = 15;
+            this.txtToken.Location = new System.Drawing.Point(10, 19);
+            this.txtToken.Multiline = true;
+            this.txtToken.Name = "txtToken";
+            this.txtToken.Size = new System.Drawing.Size(344, 155);
+            this.txtToken.TabIndex = 0;
             // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(387, 459);
+            this.ClientSize = new System.Drawing.Size(387, 616);
+            this.Controls.Add(this.accessTokenGroupBox);
             this.Controls.Add(this.miscGroupBox);
             this.Controls.Add(this.resetButton);
             this.Controls.Add(this.overrideGroupBox);
@@ -467,6 +457,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.rebuyPercentage)).EndInit();
             this.miscGroupBox.ResumeLayout(false);
             this.miscGroupBox.PerformLayout();
+            this.accessTokenGroupBox.ResumeLayout(false);
+            this.accessTokenGroupBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -498,9 +490,6 @@
         private System.Windows.Forms.GroupBox miscGroupBox;
         private System.Windows.Forms.Label lblRebuyPercentage;
         private System.Windows.Forms.NumericUpDown rebuyPercentage;
-        private System.Windows.Forms.Button validateEdcePath;
-        private System.Windows.Forms.TextBox edcePathBox;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.CheckBox chkQuiet;
         private System.Windows.Forms.CheckBox testSystemsCheckBox;
         private System.Windows.Forms.Label verboseLabel;
@@ -509,5 +498,7 @@
         private System.Windows.Forms.CheckBox chkSummary;
         private System.Windows.Forms.Label lblLocale;
         private System.Windows.Forms.TextBox txtLocale;
+        private System.Windows.Forms.GroupBox accessTokenGroupBox;
+        private System.Windows.Forms.TextBox txtToken;
     }
 }

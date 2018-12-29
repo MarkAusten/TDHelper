@@ -797,7 +797,7 @@ namespace TDHelper
                 {
                     if (hasRun)
                     {
-                        testSystemsTimer.Start(); // start our background systems list updater (~10s)
+                        testSystemsTimer.Start(); // start our background systems list updater
                     }
 
                     if (lockTaken)
@@ -1473,7 +1473,9 @@ namespace TDHelper
             List<KeyValuePair<string, string>> netLogOutput = new List<KeyValuePair<string, string>>();
             string logDatestamp = string.Empty;
 
-            if (filePaths.Count > 0 && !string.IsNullOrEmpty(filePaths[0]) && refreshMode)
+            if (filePaths.Count > 0 && 
+                !string.IsNullOrEmpty(filePaths[0]) && 
+                refreshMode)
             {
                 // compile a list of all unique systems last visited in all valid log files, oldest to newest
                 // Count the number of files that are later than the timestamp and add one.

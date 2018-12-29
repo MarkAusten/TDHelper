@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
 
 namespace TDHelper
 {
@@ -32,7 +33,6 @@ namespace TDHelper
 
             settings.PythonPath = pythonPathBox.Text;
             settings.TDPath = tdPathBox.Text;
-            settings.EdcePath = edcePathBox.Text;
             settings.NetLogPath = txtNetLogsPath.Text;
 
             settings.ExtraRunParams = extraRunParameters.Text;
@@ -45,6 +45,51 @@ namespace TDHelper
             settings.TestSystems = testSystemsCheckBox.Checked;
             settings.ShowProgress = chkProgress.Checked;
             settings.Summary = chkSummary.Checked;
+
+            settings.AccessToken = ExtractAccessToken(txtToken.Text);
+            settings.AccessTokenExpiry = ExtractAccessTokenExpiry(txtToken.Text);
+        }
+
+        /// <summary>
+        /// Extract the access token from the string if required.
+        /// </summary>
+        /// <param name="text">The string containing the access token to be extracted.</param>
+        /// <returns>The raw access token.</returns>
+        private string ExtractAccessToken(string text)
+        {
+            string token = string.Empty;
+
+            if (text.IndexOf("access_token") != 0)
+            {
+                dynamic json = JValue.Parse(text);
+
+                token = json.access_token;
+            }
+
+            return token;
+        }
+
+        /// <summary>
+        /// Extract the access token expiry time from the string if required.
+        /// </summary>
+        /// <param name="text">The string containing the access token expiry time to be extracted.</param>
+        /// <returns>The raw access token.</returns>
+        private DateTime ExtractAccessTokenExpiry(string text)
+        {
+            DateTime token = DateTime.Today.AddDays(-1);
+
+            if (text.IndexOf("expires") != 0)
+            {
+                dynamic json = JValue.Parse(text);
+
+                double offset = json.expires;
+
+                token = (new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc))
+                    .AddSeconds(offset)
+                    .ToLocalTime();
+            }
+
+            return token;
         }
 
         private void FormValidator()
@@ -154,11 +199,6 @@ namespace TDHelper
                 txtNetLogsPath.Text = MainForm.settingsRef.NetLogPath;
             }
 
-            if (!string.IsNullOrEmpty(MainForm.settingsRef.EdcePath))
-            {
-                edcePathBox.Text = MainForm.settingsRef.EdcePath;
-            }
-
             if (!string.IsNullOrEmpty(MainForm.settingsRef.TreeViewFont))
             {
                 // set our selected font and text box to what we've set in our config
@@ -181,6 +221,7 @@ namespace TDHelper
             chkProgress.Checked = MainForm.settingsRef.ShowProgress;
             chkSummary.Checked = MainForm.settingsRef.Summary;
             txtLocale.Text = MainForm.settingsRef.Locale;
+            txtToken.Text = MainForm.settingsRef.AccessToken;
         }
 
         private void TvFontSelectorButton_Click(object sender, EventArgs e)
@@ -217,14 +258,6 @@ namespace TDHelper
 
                 currentTVFontBox.Text = string.Format("{0}", MainForm.settingsRef.ConvertToFontString(localFontObject));
             }
-        }
-
-        private void ValidateEdcePath_Click(object sender, EventArgs e)
-        {
-            string origPath = MainForm.settingsRef.EdcePath;
-            MainForm.settingsRef.EdcePath = string.Empty;
-            MainForm.ValidateEdcePath(origPath);
-            edcePathBox.Text = MainForm.settingsRef.EdcePath;
         }
 
         private void ValidateNetLogsPath_Click(object sender, EventArgs e)

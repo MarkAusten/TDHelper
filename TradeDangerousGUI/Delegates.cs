@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -1106,20 +1107,14 @@ namespace TDHelper
         /// </summary>
         private string RetrieveCommanderProfile()
         {
-            string fileName = Path.Combine(MainForm.settingsRef.EdcePath, "last.json");
             string json = string.Empty;
 
-            // If the file exists read it into the return string.
-            if (File.Exists(fileName))
+            if (settingsRef.AccessTokenExpiry > DateTime.Now)
             {
-                // Create a StreamReader and open the file
-                using (TextReader reader = new StreamReader(fileName, Encoding.Default))
+                using (WebClient client = new WebClient())
                 {
-                    // Read all the contents of the file in a string
-                    json = reader.ReadToEnd();
-
-                    // Close the StreamReader
-                    reader.Close();
+                    client.Headers.Add("x-frontier-auth", settingsRef.AccessToken);
+                    json = client.DownloadString("https://companion.orerve.net/profile");
                 }
             }
 
@@ -1170,138 +1165,154 @@ namespace TDHelper
         {
             string json = RetrieveCommanderProfile();
 
-            JObject cmdrProfile = JObject.Parse(json);
-
-            // Set the commander name and credit balance.
-            settingsRef.CmdrName = (string)cmdrProfile["profile"]["commander"]["name"];
-            numCommandersCredits.Value = (decimal)cmdrProfile["profile"]["commander"]["credits"];
-
-            decimal hullValue = 0m;
-            decimal modulesValue = 0m;
-            decimal rebuyPercentage = settingsRef.RebuyPercentage;
-
-            // Determine the cargo capacity of the current ship.
-            decimal capacity = 0;
-            int stringLength = "Int_CargoRack_Size".Length;
-
-            foreach (JToken slot in cmdrProfile["profile"]["ship"]["modules"])
+            if (!string.IsNullOrEmpty(json))
             {
-                string module = (string)slot.First["module"]["name"];
+                JObject cmdrProfile = JObject.Parse(json);
 
-                if (module.Length > stringLength && module.Substring(0, stringLength) == "Int_CargoRack_Size")
+                // Set the commander name and credit balance.
+                settingsRef.CmdrName = (string)cmdrProfile["commander"]["name"];
+                numCommandersCredits.Value = (decimal)cmdrProfile["commander"]["credits"];
+
+                decimal hullValue = 0m;
+                decimal modulesValue = 0m;
+                decimal rebuyPercentage = settingsRef.RebuyPercentage;
+
+                // Determine the cargo capacity of the current ship.
+                decimal capacity = 0;
+                int stringLength = "Int_CargoRack_Size".Length;
+
+                foreach (JToken slot in cmdrProfile["ship"]["modules"])
                 {
-                    // Extract the number part of the size.
-                    string[] data = module.Split(new string[] { "_" }, StringSplitOptions.None);
+                    string module = (string)slot.First["module"]["name"];
 
-                    string sizeString = data[2].Replace("Size", string.Empty);
-
-                    if (Int32.TryParse(sizeString, out int size))
+                    if (module.Length > stringLength && module.Substring(0, stringLength) == "Int_CargoRack_Size")
                     {
-                        capacity += (decimal)Math.Pow(2, size);
+                        // Extract the number part of the size.
+                        string[] data = module.Split(new string[] { "_" }, StringSplitOptions.None);
+
+                        string sizeString = data[2].Replace("Size", string.Empty);
+
+                        if (Int32.TryParse(sizeString, out int size))
+                        {
+                            capacity += (decimal)Math.Pow(2, size);
+                        }
                     }
                 }
-            }
 
-            if (capacity > 0)
-            {
-                numRouteOptionsShipCapacity.Value = capacity;
-            }
-
-            // Set this ship as the currently selected ship.
-            string shipName = GetShipName(cmdrProfile["profile"]["ship"]);
-            string sectionName = "Ship ID {0}".With(cmdrProfile["profile"]["ship"]["id"]);
-            string shipType = (string)cmdrProfile["profile"]["ship"]["name"];
-
-            settingsRef.LastUsedConfig = sectionName;
-
-            // Get the details of all the commander's ships and set up the available ships.
-            SharpConfig.Configuration config = GetConfigurationObject();
-
-            string availableShips = string.Empty;
-
-            JToken token = cmdrProfile["profile"]["ships"];
-            string listStructure = string.Empty;
-
-            if (token is JArray)
-            {
-                listStructure = "array";
-            }
-            else if (token is JObject)
-            {
-                listStructure = "object";
-            }
-
-            foreach (JToken ship in cmdrProfile["profile"]["ships"])
-            {
-                JToken shipObject
-                    = listStructure == "array"
-                    ? ship
-                    : ship.First;
-
-                sectionName = "Ship ID {0}".With(shipObject["id"]);
-                shipName = GetShipName(shipObject);
-                shipType = (string)shipObject["name"];
-
-                availableShips += ",{0}".With(sectionName);
-
-                decimal shipCapacity
-                    = sectionName == settingsRef.LastUsedConfig
-                    ? capacity
-                    : 0;
-
-                hullValue = (decimal)shipObject["value"]["hull"];
-                modulesValue = (decimal)shipObject["value"]["modules"];
-
-                Setting capacitySetting = config[sectionName]["Capacity"];
-
-                if (capacitySetting == null)
+                if (capacity > 0)
                 {
-                    // This is a new ship then set the capacity to the current ship capacity or zero as required.
-                    config[sectionName]["capacity"].DecimalValue = shipCapacity;
-                }
-                else if (capacitySetting.IsEmpty)
-                {
-                    capacitySetting.DecimalValue = shipCapacity;
-                }
-                else if (shipCapacity > 0 && capacitySetting.DecimalValue != shipCapacity)
-                {
-                    capacitySetting.DecimalValue = shipCapacity;
+                    numRouteOptionsShipCapacity.Value = capacity;
                 }
 
-                config[sectionName]["LadenLY"].DecimalValue
-                    = decimal.TryParse(config[sectionName]["LadenLY"].StringValue, out decimal ladenLy)
-                    ? ladenLy
-                    : 1;
+                // Set this ship as the currently selected ship.
+                string shipName = GetShipName(cmdrProfile["ship"]);
+                string sectionName = "Ship ID {0}".With(cmdrProfile["ship"]["id"]);
+                string shipType = (string)cmdrProfile["ship"]["name"];
 
-                config[sectionName]["unladenLY"].DecimalValue
-                    = decimal.TryParse(config[sectionName]["UnladenLY"].StringValue, out decimal unladenLy)
-                    ? unladenLy
-                    : 1;
+                settingsRef.LastUsedConfig = sectionName;
 
-                config[sectionName]["shipType"].StringValue = shipType;
-                config[sectionName]["shipName"].StringValue = shipName;
-                config[sectionName]["hullValue"].DecimalValue = hullValue;
-                config[sectionName]["modulesValue"].DecimalValue = modulesValue;
-                config[sectionName]["Insurance"].DecimalValue = Math.Floor(((hullValue + modulesValue) * (rebuyPercentage - 0.0000004m) / 100));
-                config[sectionName]["Padsizes"].StringValue = this.GetPadSizes((string)shipObject["name"]);
-            }
+                // Get the details of all the commander's ships and set up the available ships.
+                SharpConfig.Configuration config = GetConfigurationObject();
 
-            string currentShips = settingsRef.AvailableShips;
-            settingsRef.AvailableShips = availableShips.Substring(1);
-            config["System"]["AvailableShips"].StringValue = settingsRef.AvailableShips;
+                string availableShips = string.Empty;
 
-            // Determine if any ships have been sold and remove if found.
-            IList<string> missingShips = DeterminMissingShips(currentShips, availableShips);
+                JToken token = cmdrProfile["ships"];
+                string listStructure = string.Empty;
 
-            foreach (string ship in missingShips)
+                if (token is JArray)
+                {
+                    listStructure = "array";
+                }
+                else if (token is JObject)
+                {
+                    listStructure = "object";
+                }
+
+                foreach (JToken ship in cmdrProfile["ships"])
+                {
+                    JToken shipObject
+                        = listStructure == "array"
+                        ? ship
+                        : ship.First;
+
+                    sectionName = "Ship ID {0}".With(shipObject["id"]);
+                    shipName = GetShipName(shipObject);
+                    shipType = (string)shipObject["name"];
+
+                    availableShips += ",{0}".With(sectionName);
+
+                    decimal shipCapacity
+                        = sectionName == settingsRef.LastUsedConfig
+                        ? capacity
+                        : 0;
+
+                    hullValue = (decimal)shipObject["value"]["hull"];
+                    modulesValue = (decimal)shipObject["value"]["modules"];
+
+                    Setting capacitySetting = config[sectionName]["Capacity"];
+
+                    if (capacitySetting == null)
+                    {
+                        // This is a new ship then set the capacity to the current ship capacity or zero as required.
+                        config[sectionName]["capacity"].DecimalValue = shipCapacity;
+                    }
+                    else if (capacitySetting.IsEmpty)
+                    {
+                        capacitySetting.DecimalValue = shipCapacity;
+                    }
+                    else if (shipCapacity > 0 && capacitySetting.DecimalValue != shipCapacity)
+                    {
+                        capacitySetting.DecimalValue = shipCapacity;
+                    }
+
+                    config[sectionName]["LadenLY"].DecimalValue
+                        = decimal.TryParse(config[sectionName]["LadenLY"].StringValue, out decimal ladenLy)
+                        ? ladenLy
+                        : 1;
+
+                    config[sectionName]["unladenLY"].DecimalValue
+                        = decimal.TryParse(config[sectionName]["UnladenLY"].StringValue, out decimal unladenLy)
+                        ? unladenLy
+                        : 1;
+
+                    config[sectionName]["shipType"].StringValue = shipType;
+                    config[sectionName]["shipName"].StringValue = shipName;
+                    config[sectionName]["hullValue"].DecimalValue = hullValue;
+                    config[sectionName]["modulesValue"].DecimalValue = modulesValue;
+                    config[sectionName]["Insurance"].DecimalValue = Math.Floor(((hullValue + modulesValue) * (rebuyPercentage - 0.0000004m) / 100));
+                    config[sectionName]["Padsizes"].StringValue = this.GetPadSizes((string)shipObject["name"]);
+                }
+
+                string currentShips = settingsRef.AvailableShips;
+                settingsRef.AvailableShips = availableShips.Substring(1);
+                config["System"]["AvailableShips"].StringValue = settingsRef.AvailableShips;
+
+                // Determine if any ships have been sold and remove if found.
+                IList<string> missingShips = DeterminMissingShips(currentShips, availableShips);
+
+                foreach (string ship in missingShips)
+                {
+                    config.RemoveAllNamed(ship);
+                }
+
+                config.SaveToFile(configFile);
+
+                SetFormTitle(this);
+                SetShipList(true);
+
+                ClearCircularBuffer();
+
+                 StackCircularBuffer("Comander Profile Update completed.\n");
+           }
+            else
             {
-                config.RemoveAllNamed(ship);
+                // Inform the user that the token has expired.
+                ClearCircularBuffer();
+
+                StackCircularBuffer("The Frontier Development Access token has expired. Please supply a new one. Thanks.\n");
+
+                Process.Start("https://companion.orerve.net/login");
             }
-
-            config.SaveToFile(configFile);
-
-            SetFormTitle(this);
-            SetShipList(true);
         }
     }
 }

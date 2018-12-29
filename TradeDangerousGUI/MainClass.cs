@@ -20,9 +20,9 @@ namespace TDHelper
     public partial class MainForm : Form
     {
         public const string ITEM_CSV_FILE = @"data\Item.csv";
-        public const string SHIP_CSV_FILE = @"data\Ship.csv";
         public const string PAD_SIZE_FILTER = "SML?";
         public const string PLANETARY_FILTER = "YN?";
+        public const string SHIP_CSV_FILE = @"data\Ship.csv";
 
         #region Props
 
@@ -58,26 +58,46 @@ namespace TDHelper
         public string t_lastSystem;
         public Process td_proc = new Process();
         private const int circularBufferSize = 32768;
+
+        /// <summary>
+        /// An application sends the WM_SETREDRAW message to a window to allow changes in that
+        /// window to be redrawn or to prevent changes in that window from being redrawn.
+        /// </summary>
+        private const int WM_SETREDRAW = 11;
+
+        private static string tdhPath = string.Empty;
+        private static string tdPath = string.Empty;
         private StringBuilder circularBuffer = new StringBuilder(circularBufferSize);
         private List<int> dgRowIDIndexer = new List<int>();
         private List<int> dgRowIndexer = new List<int>();
         private int dRowIndex = 0;
         private bool hasLogLoaded;
         private bool hasRefreshedRecents;
+        private int insertPosition = 0;
         private int listLimit = 50;
         private bool loadedFromDB;
         private List<KeyValuePair<string, string>> localSystemList = new List<KeyValuePair<string, string>>();
         private Dictionary<string, string> netLogOutput = new Dictionary<string, string>();
         private List<string> output_unclean = new List<string>();
-        private static string tdhPath = string.Empty;
         private DataTable pilotsSystemLogTable = new DataTable("SystemLog");
         private int pRowIndex = 0;
         private Object readNetLock = new Object();
         private DataTable retrieverCacheTable = new DataTable();
-        private static string tdPath = string.Empty;
-        private int insertPosition = 0;
 
         #endregion Props
+
+        /// <summary>
+        /// Suspends painting for the target control. Do NOT forget to call EndControlUpdate!!!
+        /// </summary>
+        /// <param name="control">visual control</param>
+        public static void BeginControlUpdate(Control control)
+        {
+            Message msgSuspendUpdate = Message.Create(control.Handle, WM_SETREDRAW, IntPtr.Zero,
+                  IntPtr.Zero);
+
+            NativeWindow window = NativeWindow.FromHandle(control.Handle);
+            window.DefWndProc(ref msgSuspendUpdate);
+        }
 
         public static bool CheckIfFileOpens(string path)
         {
@@ -119,6 +139,23 @@ namespace TDHelper
             return Convert.ToBase64String(MachineKey.Protect(inputBytes));
         }
 
+        /// <summary>
+        /// Resumes painting for the target control. Intended to be called following a call to BeginControlUpdate()
+        /// </summary>
+        /// <param name="control">visual control</param>
+        public static void EndControlUpdate(Control control)
+        {
+            // Create a C "true" boolean as an IntPtr
+            IntPtr wparam = new IntPtr(1);
+            Message msgResumeUpdate = Message.Create(control.Handle, WM_SETREDRAW, wparam,
+                  IntPtr.Zero);
+
+            NativeWindow window = NativeWindow.FromHandle(control.Handle);
+            window.DefWndProc(ref msgResumeUpdate);
+            control.Invalidate();
+            control.Refresh();
+        }
+
         public static void PlayAlert()
         {
             PlaySoundFile("notify.wav");
@@ -149,57 +186,6 @@ namespace TDHelper
         public static void PlayUnknown()
         {
             PlaySoundFile("unknown.wav");
-        }
-
-        /// <summary>
-        /// Check to see if the EDCE installation is valid.
-        /// </summary>
-        /// <returns>True of the EDCE is valid otherwise false.</returns>
-        public static bool ValidateEdce()
-        {
-            return !string.IsNullOrEmpty(settingsRef.EdcePath)
-                && CheckIfFileOpens(Path.Combine(settingsRef.EdcePath, "edce_client.py"));
-        }
-
-        public static void ValidateEdcePath(string altPath)
-        {
-            // bypass this routine if the python path validator sets our path for us (due to Trade Dangerous Installer)
-            if (!ValidateEdce())
-            {
-                OpenFileDialog x = new OpenFileDialog()
-                {
-                    Title = "TD Helper - Select edce_client.py from the EDCE directory"
-                };
-
-                if (Directory.Exists(settingsRef.EdcePath))
-                {
-                    x.InitialDirectory = settingsRef.EdcePath;
-                }
-
-                x.Filter = "Py files (*.py)|*.py";
-
-                if (x.ShowDialog() == DialogResult.OK)
-                {
-                    settingsRef.EdcePath = Path.GetDirectoryName(x.FileName);
-                    SaveSettingsToIniFile();
-                }
-                else
-                {
-                    string localPath = altPath ?? string.Empty; // prevent null
-
-                    if (!string.IsNullOrEmpty(localPath) && CheckIfFileOpens(Path.Combine(localPath, "edce_client.py")) || localPath.EndsWith(".py"))
-                    {
-                        // if we have an alternate path, we can reset the variable here
-                        settingsRef.EdcePath = localPath;
-
-                        SaveSettingsToIniFile();
-                    }
-                    else
-                    {
-                        throw new Exception("EDCE path is empty or invalid, cannot continue");
-                    }
-                }
-            }
         }
 
         /// <summary>
@@ -248,58 +234,29 @@ namespace TDHelper
 
                     if (result != DialogResult.Cancel)
                     {
-                        if (result == DialogResult.OK)
-                        {
-                            t_AppConfigPath = x.FileName;
-                            settingsRef.NetLogPath = Path.Combine(Directory.GetParent(t_AppConfigPath).ToString(), "Logs"); // set the appropriate Logs folder
+                        t_AppConfigPath = x.FileName;
+                        settingsRef.NetLogPath = Path.Combine(Directory.GetParent(t_AppConfigPath).ToString(), "Logs"); // set the appropriate Logs folder
 
-                            SaveSettingsToIniFile();
-
-                            SetSplashScreenStatus("Validating verbose logging");
-
-                            // always validate when verboselogging is enabled
-                            verboseLoggingChecked = false;
-                            ValidateVerboseLogging();
-                        }
-                        else
-                        {
-                            if (!string.IsNullOrEmpty(altPath) && Directory.Exists(settingsRef.NetLogPath) && settingsRef.NetLogPath.EndsWith("Logs"))
-                            {
-                                t_AppConfigPath = Path.Combine(Directory.GetParent(altPath).ToString(), "AppConfigLocal.xml");
-                                settingsRef.NetLogPath = altPath;
-
-                                SaveSettingsToIniFile();
-
-                                SetSplashScreenStatus("Validating verbose logging");
-
-                                // always validate when verboselogging is enabled
-                                verboseLoggingChecked = false;
-                                ValidateVerboseLogging();
-                            }
-                            else
-                            {
-                                DialogResult dialog2 = TopMostMessageBox.Show(
-                                    true,
-                                    true,
-                                    "Cannot set NetLogPath to a valid directory.{0}We will disable scanning for recent systems, if you want to re-enable it, set a working path.".With(Environment.NewLine),
-                                    "TD Helper - Error",
-                                    MessageBoxButtons.OK);
-
-                                settingsRef.DisableNetLogs = true;
-
-                                SaveSettingsToIniFile();
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // derive our AppConfig.xml path from NetLogPath
-                        t_AppConfigPath = appConfigPath;
+                        SaveSettingsToIniFile();
 
                         SetSplashScreenStatus("Validating verbose logging");
 
-                        // double check the verbose logging state
+                        // always validate when verboselogging is enabled
+                        verboseLoggingChecked = false;
                         ValidateVerboseLogging();
+                    }
+                    else
+                    {
+                        DialogResult dialog2 = TopMostMessageBox.Show(
+                            true,
+                            true,
+                            "Scanning for recent systems has been disabled.",
+                            "TD Helper - Error",
+                            MessageBoxButtons.OK);
+
+                        settingsRef.DisableNetLogs = true;
+
+                        SaveSettingsToIniFile();
                     }
                 }
             }
@@ -545,20 +502,6 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Get the ship name from the specified config section. 
-        /// </summary>
-        /// <param name="sectionName">The name of the section contining the ship data.</param>
-        /// <returns>The ship name.</returns>
-        private string GetShipNameFromConfigSection(string sectionName)
-        {
-            SharpConfig.Configuration config = GetConfigurationObject();
-
-            SharpConfig.Section configSection = config[sectionName];
-
-            return GetStringSetting(configSection, "shipName");
-        }
-
-        /// <summary>
         /// Validate the various path settings.
         /// </summary>
         public void ValidatePaths()
@@ -566,7 +509,6 @@ namespace TDHelper
             // check our paths.
             ValidatePython(null);
             ValidateTDPath(null);
-            ValidateEdcePath(null);
             ValidateNetLogPath(null);
         }
 
@@ -640,9 +582,6 @@ namespace TDHelper
             {
                 settingsRef.RebuyPercentage = 5.00M;
             }
-
-            // Disable the Cmdr Profile button if EDCE is not set.
-            btnCmdrProfile.Enabled = !string.IsNullOrEmpty(settingsRef.EdcePath);
         }
 
         private static string FilterOutput(string input)
@@ -669,6 +608,13 @@ namespace TDHelper
 
             return sanitized;
         }
+
+        [DllImport("user32.dll")]
+        private static extern int SendMessage(
+                    IntPtr hWnd,
+                    uint wMsg,
+                    UIntPtr wParam,
+                    IntPtr lParam);
 
         /// <summary>
         /// Determine if the specified array contains duplicate entries.
@@ -737,6 +683,20 @@ namespace TDHelper
             }
 
             return outputStamp.ToString(format);
+        }
+
+        /// <summary>
+        /// Get the ship name from the specified config section.
+        /// </summary>
+        /// <param name="sectionName">The name of the section contining the ship data.</param>
+        /// <returns>The ship name.</returns>
+        private string GetShipNameFromConfigSection(string sectionName)
+        {
+            SharpConfig.Configuration config = GetConfigurationObject();
+
+            SharpConfig.Section configSection = config[sectionName];
+
+            return GetStringSetting(configSection, "shipName");
         }
 
         private int IndexInList(string input, List<string> listToSearch)
@@ -849,77 +809,34 @@ namespace TDHelper
             }
         }
 
-        [DllImport("user32.dll")]
-        static extern int SendMessage(
-            IntPtr hWnd,
-            uint wMsg,
-            UIntPtr wParam,
-            IntPtr lParam);
-
         private void ReadCircularBuffer()
         {
             // here we consume our buffer
             Invoke(new Action(() =>
              {
-                // Stop the control updating.
-                BeginControlUpdate(rtbOutput);
+                 // Stop the control updating.
+                 BeginControlUpdate(rtbOutput);
 
-                // COnsume the buffer.
-                if (circularBuffer.Length > 0 && circularBuffer.Length <= circularBuffer.Capacity)
+                 // COnsume the buffer.
+                 if (circularBuffer.Length > 0 && circularBuffer.Length <= circularBuffer.Capacity)
                  {
-                    // if our buffer is full, display it
-                    rtbOutput.Text = circularBuffer.ToString();
+                     // if our buffer is full, display it
+                     rtbOutput.Text = circularBuffer.ToString();
                      rtbOutput.SelectionStart = rtbOutput.TextLength;
                      rtbOutput.ScrollToCaret();
                  }
                  else
                  {
-                    // if the buffer overflows, wipe and return empty
-                    ClearCircularBuffer(); // circularBuffer = new StringBuilder(circularBufferSize);
-                }
+                     // if the buffer overflows, wipe and return empty
+                     ClearCircularBuffer(); // circularBuffer = new StringBuilder(circularBufferSize);
+                 }
 
-                // Make the contents of the control scroll down one line.
-                SendMessage(rtbOutput.Handle, (uint)0x00B6, (UIntPtr)0, (IntPtr)(1));
+                 // Make the contents of the control scroll down one line.
+                 SendMessage(rtbOutput.Handle, (uint)0x00B6, (UIntPtr)0, (IntPtr)(1));
 
-                // Enable the control updating.
-                EndControlUpdate(rtbOutput);
+                 // Enable the control updating.
+                 EndControlUpdate(rtbOutput);
              }));
-        }
-
-        /// <summary>
-        /// An application sends the WM_SETREDRAW message to a window to allow changes in that 
-        /// window to be redrawn or to prevent changes in that window from being redrawn.
-        /// </summary>
-        private const int WM_SETREDRAW = 11;
-
-        /// <summary>
-        /// Suspends painting for the target control. Do NOT forget to call EndControlUpdate!!!
-        /// </summary>
-        /// <param name="control">visual control</param>
-        public static void BeginControlUpdate(Control control)
-        {
-            Message msgSuspendUpdate = Message.Create(control.Handle, WM_SETREDRAW, IntPtr.Zero,
-                  IntPtr.Zero);
-
-            NativeWindow window = NativeWindow.FromHandle(control.Handle);
-            window.DefWndProc(ref msgSuspendUpdate);
-        }
-
-        /// <summary>
-        /// Resumes painting for the target control. Intended to be called following a call to BeginControlUpdate()
-        /// </summary>
-        /// <param name="control">visual control</param>
-        public static void EndControlUpdate(Control control)
-        {
-            // Create a C "true" boolean as an IntPtr
-            IntPtr wparam = new IntPtr(1);
-            Message msgResumeUpdate = Message.Create(control.Handle, WM_SETREDRAW, wparam,
-                  IntPtr.Zero);
-
-            NativeWindow window = NativeWindow.FromHandle(control.Handle);
-            window.DefWndProc(ref msgResumeUpdate);
-            control.Invalidate();
-            control.Refresh();
         }
 
         /// <summary>
@@ -1147,7 +1064,7 @@ namespace TDHelper
             // Compare with the control limits and set a new value if outside those limits.
             if (value < control.Minimum)
             {
-                newValue 
+                newValue
                     = defaultValue == -1
                     ? control.Minimum
                     : defaultValue;

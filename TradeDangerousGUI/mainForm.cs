@@ -113,8 +113,6 @@ namespace TDHelper
             testSystemsTimer.Interval = 60000;
             testSystemsTimer.Elapsed += EventHandler_TestSystemsTimer_Delegate;
 
-            btnCmdrProfile.Enabled = ValidateEdce();
-
             SplashScreen.SetStatus("Set ititial state...");
             SetOptionPanelList();
             ShowOrHideOptionsPanel(0);
@@ -630,7 +628,7 @@ namespace TDHelper
             object sender,
             RunWorkerCompletedEventArgs e)
         {
-            testSystemsTimer.Start(); // fire again after ~10s
+            testSystemsTimer.Start(); // fire again after a period of time
         }
 
         /// <summary>
@@ -644,30 +642,19 @@ namespace TDHelper
         {
             if (buttonCaller == 22)
             {
-                // Check to see if the EDCE folder and files are valid
-                if (ValidateEdce())
-                {
-                    // EDCE is valid so set up the call.
-                    commandString = "\"" + Path.Combine(MainForm.settingsRef.EdcePath, "edce_client.py") + "\"";
-                    string currentFolder = Directory.GetCurrentDirectory();
-                    Directory.SetCurrentDirectory(MainForm.settingsRef.EdcePath);
+                    //string currentFolder = Directory.GetCurrentDirectory();
 
-                    try
-                    {
-                        td_proc = new Process();
-                        td_proc.StartInfo.FileName = settingsRef.PythonPath;
+                    //try
+                    //{
+                    //    td_proc = new Process();
+                    //    td_proc.StartInfo.FileName = settingsRef.PythonPath;
 
-                        DoTDProc(commandString);
-                    }
-                    finally
-                    {
-                        Directory.SetCurrentDirectory(currentFolder);
-                    }
-                }
-                else
-                {
-                    PlayAlert();
-                }
+                    //    DoTDProc(commandString);
+                    //}
+                    //finally
+                    //{
+                    //    Directory.SetCurrentDirectory(currentFolder);
+                    //}
             }
 
             commandString = string.Empty; // reset path for thread safety
@@ -681,6 +668,7 @@ namespace TDHelper
             {
                 stopwatch.Stop(); // stop the timer
                 circularBuffer = new System.Text.StringBuilder(2 * circularBufferSize);
+                ClearCircularBuffer();
 
                 EnableBtnStarts();
                 td_proc.Dispose();
@@ -1138,7 +1126,7 @@ namespace TDHelper
         private void EnableBtnStarts()
         {
             // reenable other controls when done
-            string[] exceptions = new string[] { "btnCmdrProfile", "btnStationInfo" };
+            string[] exceptions = new string[] { "btnStationInfo" };
 
             // Enable all the buttons not found in the exceptions array.
             foreach (Button button in panMethods.Controls.OfType<Button>()
@@ -1146,8 +1134,6 @@ namespace TDHelper
             {
                 button.Enabled = true;
             }
-
-            btnCmdrProfile.Enabled = ValidateEdce();
 
             // fix Run button when returning from non-Run commands
             if (buttonCaller == 1 || !btnStart.Enabled)
