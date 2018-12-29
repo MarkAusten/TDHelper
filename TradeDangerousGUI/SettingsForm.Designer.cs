@@ -63,12 +63,9 @@
             this.txtLocale = new System.Windows.Forms.TextBox();
             this.chkQuiet = new System.Windows.Forms.CheckBox();
             this.lblRebuyPercentage = new System.Windows.Forms.Label();
-            this.accessTokenGroupBox = new System.Windows.Forms.GroupBox();
-            this.txtToken = new System.Windows.Forms.TextBox();
             this.overrideGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rebuyPercentage)).BeginInit();
             this.miscGroupBox.SuspendLayout();
-            this.accessTokenGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // extraRunParameters
@@ -92,7 +89,7 @@
             // okButton
             // 
             this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.okButton.Location = new System.Drawing.Point(300, 581);
+            this.okButton.Location = new System.Drawing.Point(300, 396);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 28);
             this.okButton.TabIndex = 16;
@@ -103,7 +100,7 @@
             // cancelButton
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cancelButton.Location = new System.Drawing.Point(12, 581);
+            this.cancelButton.Location = new System.Drawing.Point(12, 396);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 28);
             this.cancelButton.TabIndex = 14;
@@ -342,7 +339,7 @@
             // resetButton
             // 
             this.resetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.resetButton.Location = new System.Drawing.Point(151, 581);
+            this.resetButton.Location = new System.Drawing.Point(151, 396);
             this.resetButton.Name = "resetButton";
             this.resetButton.Size = new System.Drawing.Size(84, 28);
             this.resetButton.TabIndex = 15;
@@ -414,30 +411,11 @@
             this.lblRebuyPercentage.TabIndex = 2;
             this.lblRebuyPercentage.Text = "Rebuy Percentage:";
             // 
-            // accessTokenGroupBox
-            // 
-            this.accessTokenGroupBox.Controls.Add(this.txtToken);
-            this.accessTokenGroupBox.Location = new System.Drawing.Point(12, 395);
-            this.accessTokenGroupBox.Name = "accessTokenGroupBox";
-            this.accessTokenGroupBox.Size = new System.Drawing.Size(363, 180);
-            this.accessTokenGroupBox.TabIndex = 18;
-            this.accessTokenGroupBox.TabStop = false;
-            this.accessTokenGroupBox.Text = "Access Token";
-            // 
-            // txtToken
-            // 
-            this.txtToken.Location = new System.Drawing.Point(10, 19);
-            this.txtToken.Multiline = true;
-            this.txtToken.Name = "txtToken";
-            this.txtToken.Size = new System.Drawing.Size(344, 155);
-            this.txtToken.TabIndex = 0;
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(387, 616);
-            this.Controls.Add(this.accessTokenGroupBox);
+            this.ClientSize = new System.Drawing.Size(387, 431);
             this.Controls.Add(this.miscGroupBox);
             this.Controls.Add(this.resetButton);
             this.Controls.Add(this.overrideGroupBox);
@@ -457,8 +435,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.rebuyPercentage)).EndInit();
             this.miscGroupBox.ResumeLayout(false);
             this.miscGroupBox.PerformLayout();
-            this.accessTokenGroupBox.ResumeLayout(false);
-            this.accessTokenGroupBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -498,7 +474,5 @@
         private System.Windows.Forms.CheckBox chkSummary;
         private System.Windows.Forms.Label lblLocale;
         private System.Windows.Forms.TextBox txtLocale;
-        private System.Windows.Forms.GroupBox accessTokenGroupBox;
-        private System.Windows.Forms.TextBox txtToken;
     }
 }

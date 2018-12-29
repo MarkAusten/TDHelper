@@ -45,9 +45,6 @@ namespace TDHelper
             settings.TestSystems = testSystemsCheckBox.Checked;
             settings.ShowProgress = chkProgress.Checked;
             settings.Summary = chkSummary.Checked;
-
-            settings.AccessToken = ExtractAccessToken(txtToken.Text);
-            settings.AccessTokenExpiry = ExtractAccessTokenExpiry(txtToken.Text);
         }
 
         /// <summary>
@@ -221,7 +218,6 @@ namespace TDHelper
             chkProgress.Checked = MainForm.settingsRef.ShowProgress;
             chkSummary.Checked = MainForm.settingsRef.Summary;
             txtLocale.Text = MainForm.settingsRef.Locale;
-            txtToken.Text = MainForm.settingsRef.AccessToken;
         }
 
         private void TvFontSelectorButton_Click(object sender, EventArgs e)
@@ -288,7 +284,7 @@ namespace TDHelper
                 tdPathBox.Text = MainForm.settingsRef.TDPath;
             }
             else if (MainForm.settingsRef.PythonPath.EndsWith("python.exe")
-                && !MainForm.CheckIfFileOpens(Path.Combine(MainForm.settingsRef.TDPath, "trade.py")))
+                && !MainForm.CheckIfFileOpens(Utilities.GetPathToTradePy()))
             {
                 MainForm.settingsRef.TDPath = string.Empty;
                 MainForm.ValidateTDPath(origTDPath);

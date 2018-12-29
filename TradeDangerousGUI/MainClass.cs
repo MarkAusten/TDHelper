@@ -23,6 +23,7 @@ namespace TDHelper
         public const string PAD_SIZE_FILTER = "SML?";
         public const string PLANETARY_FILTER = "YN?";
         public const string SHIP_CSV_FILE = @"data\Ship.csv";
+        public const int API_TIMEOUT = 60;
 
         #region Props
 
@@ -342,7 +343,7 @@ namespace TDHelper
             if (!string.IsNullOrEmpty(settingsRef.PythonPath) && !settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase))
             {
                 // bypass this routine if the python path validator sets our path for us (due to Trade Dangerous Installer)
-                if (string.IsNullOrEmpty(settingsRef.TDPath) || !CheckIfFileOpens(Path.Combine(settingsRef.TDPath, "trade.py")))
+                if (string.IsNullOrEmpty(settingsRef.TDPath) || !CheckIfFileOpens(Utilities.GetPathToTradePy()))
                 {
                     OpenFileDialog x = new OpenFileDialog()
                     {

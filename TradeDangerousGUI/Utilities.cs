@@ -1,28 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TDHelper
 {
     public static class Utilities
     {
-        /// <summary>
-        /// Replacement for String.Format.
-        /// </summary>
-        /// <param name="format">The formatting string with placeholders.</param>
-        /// <param name="args">The values to insert into the format string.</param>
-        /// <returns>The string with the placeholders replaced.</returns>
-        public static string With(
-            this string format,
-            params object[] args)
-        {
-            return string.Format(format, args);
-        }
-
         /// <summary>
         /// Get a list of the child controls of the root object.
         /// </summary>
@@ -49,7 +35,38 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Convert the number to string with a "." decimal point if required. 
+        /// Get the message and all inner exception messages from the exception.
+        /// </summary>
+        /// <param name="ex">The exception with the messages.</param>
+        /// <returns>A full list of messages.</returns>
+        public static string GetFullMessage(this Exception ex)
+        {
+            string message = string.Empty;
+
+            Exception exception = ex;
+
+            do
+            {
+                message += "{0}{1}".With(Environment.NewLine, exception.Message);
+
+                exception = exception.InnerException;
+            }
+            while (exception != null);
+
+            return message.TrimStart(Environment.NewLine.ToCharArray());
+        }
+
+        /// <summary>
+        /// Return the full path to the trade.py file.
+        /// </summary>
+        /// <returns>The trade.py full path.</returns>
+        public static string GetPathToTradePy()
+        {
+            return Path.Combine(MainForm.settingsRef.TDPath, "trade.py");
+        }
+
+        /// <summary>
+        /// Convert the number to string with a "." decimal point if required.
         /// </summary>
         /// <param name="number">The number to be converted.</param>
         /// <returns>The specified number as a string with a dot as a deciaml point.</returns>
@@ -71,25 +88,16 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Get the message and all inner exception messages from the exception.
+        /// Replacement for String.Format.
         /// </summary>
-        /// <param name="ex">The exception with the messages.</param>
-        /// <returns>A full list of messages.</returns>
-        public static string GetFullMessage(this Exception ex)
+        /// <param name="format">The formatting string with placeholders.</param>
+        /// <param name="args">The values to insert into the format string.</param>
+        /// <returns>The string with the placeholders replaced.</returns>
+        public static string With(
+            this string format,
+            params object[] args)
         {
-            string message = string.Empty;
-
-            Exception exception = ex;
-
-            do
-            {
-                message += "{0}{1}".With(Environment.NewLine, exception.Message);
-
-                exception = exception.InnerException;
-            }
-            while (exception != null);
-
-            return message.TrimStart(Environment.NewLine.ToCharArray());
+            return string.Format(format, args);
         }
     }
 }

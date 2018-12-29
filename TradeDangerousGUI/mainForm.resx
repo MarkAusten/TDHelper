@@ -132,17 +132,6 @@
   <metadata name="mnuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>181, 50</value>
   </metadata>
-  <data name="numRouteOptionsPruneHops.ToolTip" xml:space="preserve">
-    <value>Being applying "--prune-score" from this hop onward. Set 0 to disable.
-   NOTE: This can speed up long run calculations, but it can also
-   cause you to miss gold-mines that are a just a few hops away.</value>
-  </data>
-  <data name="numRouteOptionsPruneScore.ToolTip" xml:space="preserve">
-    <value>After a number of hops (controlled by --prune-hops), eliminate
-   a percentage of the routes from the lowest up by score.
-   NOTE: This can speed up long run calculations, but it can also
-   cause you to miss gold-mines that are a just a few hops away.</value>
-  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="btnSettings.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -159,23 +148,6 @@
         Vj5+lnfA1TipBVwNw+Lux2Es8kI+YZ5NgZN2w89hweHR8yBYkIw+LCTMlVv1pOQwYSr1D68fnO5h5IQ1
         AAAAAElFTkSuQmCC
 </value>
-  </data>
-  <data name="lblNavOptionsRefuelJumps.ToolTip" xml:space="preserve">
-    <value>Specify the maximum consecutive systems which do not have stations you can pass through. For example "--ref 1" would require every jump on the route have a station. "--ref 2" would require that you not make more than one stationless jump after another.</value>
-  </data>
-  <data name="numNavOptionsRefuelJumps.ToolTip" xml:space="preserve">
-    <value>Specify the maximum consecutive systems which do not have stations you can pass through. For example "--ref 1" would require every jump on the route have a station. "--ref 2" would require that you not make more than one stationless jump after another.</value>
-  </data>
-  <data name="lblRouteOptionsPruneHops.ToolTip" xml:space="preserve">
-    <value>Being applying "--prune-score" from this hop onward. Set 0 to disable.
-   NOTE: This can speed up long run calculations, but it can also
-   cause you to miss gold-mines that are a just a few hops away.</value>
-  </data>
-  <data name="lblRouteOptionsPruneScore.ToolTip" xml:space="preserve">
-    <value>After a number of hops (controlled by --prune-hops), eliminate
-   a percentage of the routes from the lowest up by score.
-   NOTE: This can speed up long run calculations, but it can also
-   cause you to miss gold-mines that are a just a few hops away.</value>
   </data>
   <metadata name="backgroundWorker3.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>331, 11</value>

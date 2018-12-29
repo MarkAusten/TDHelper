@@ -1,3 +1,8 @@
+v2.1.0.1
+--------
+* Changed to use the EDAPI plugin supplied with tradedangerous.
+* Added cAPI timeout to prevent hammering of the API.
+
 v2.1.0.0
 --------
 * NetLogs disabled if the user presses cancel when asked to locate the AppConfig.xml file.
@@ -32,7 +37,7 @@ v2.0.8.2
 v2.0.8.1
 --------
 * Fixed issue #34. Add check box to include/exclude insurance in run calculations.
-* The pilot's log now initially only loads up the first 50 most recent systems. There are two new contxt menu options on the grid to load up the next 50 as well or all the systems.
+* The pilot's log now initially only loads up the first 50 most recent systems. There are two new context menu options on the grid to load up the next 50 as well or all the systems.
 * removed Inset and delete row options from the grid context menu.
 * Added max capacity to ships data and used this value to set the maximum value allowed in the ship cargo capacity control.
 * Added code to detect comma decimal points and convert to full stop decimal points.

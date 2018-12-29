@@ -349,7 +349,7 @@ namespace TDHelper
 
             commandString = settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase)
                 ? "" // go in blank so we don't pass silliness to trade.exe
-                : "-u \"" + Path.Combine(settingsRef.TDPath, "trade.py") + "\" ";
+                : "-u \"" + Utilities.GetPathToTradePy() + "\" ";
 
             // catch the method drop down here
             if (buttonCaller == 5)
@@ -1108,14 +1108,11 @@ namespace TDHelper
         private string RetrieveCommanderProfile()
         {
             string json = string.Empty;
+            string path = Path.Combine(settingsRef.TDPath, @"tmp\tdh_profile.json");
 
-            if (settingsRef.AccessTokenExpiry > DateTime.Now)
+            if (CheckIfFileOpens(path))
             {
-                using (WebClient client = new WebClient())
-                {
-                    client.Headers.Add("x-frontier-auth", settingsRef.AccessToken);
-                    json = client.DownloadString("https://companion.orerve.net/profile");
-                }
+                json = File.ReadAllText(path);
             }
 
             return json;
@@ -1170,8 +1167,8 @@ namespace TDHelper
                 JObject cmdrProfile = JObject.Parse(json);
 
                 // Set the commander name and credit balance.
-                settingsRef.CmdrName = (string)cmdrProfile["commander"]["name"];
-                numCommandersCredits.Value = (decimal)cmdrProfile["commander"]["credits"];
+                settingsRef.CmdrName = (string)cmdrProfile["profile"]["commander"]["name"];
+                numCommandersCredits.Value = (decimal)cmdrProfile["profile"]["commander"]["credits"];
 
                 decimal hullValue = 0m;
                 decimal modulesValue = 0m;
@@ -1181,7 +1178,7 @@ namespace TDHelper
                 decimal capacity = 0;
                 int stringLength = "Int_CargoRack_Size".Length;
 
-                foreach (JToken slot in cmdrProfile["ship"]["modules"])
+                foreach (JToken slot in cmdrProfile["profile"]["ship"]["modules"])
                 {
                     string module = (string)slot.First["module"]["name"];
 
@@ -1205,9 +1202,9 @@ namespace TDHelper
                 }
 
                 // Set this ship as the currently selected ship.
-                string shipName = GetShipName(cmdrProfile["ship"]);
-                string sectionName = "Ship ID {0}".With(cmdrProfile["ship"]["id"]);
-                string shipType = (string)cmdrProfile["ship"]["name"];
+                string shipName = GetShipName(cmdrProfile["profile"]["ship"]);
+                string sectionName = "Ship ID {0}".With(cmdrProfile["profile"]["ship"]["id"]);
+                string shipType = (string)cmdrProfile["profile"]["ship"]["name"];
 
                 settingsRef.LastUsedConfig = sectionName;
 
@@ -1228,7 +1225,7 @@ namespace TDHelper
                     listStructure = "object";
                 }
 
-                foreach (JToken ship in cmdrProfile["ships"])
+                foreach (JToken ship in cmdrProfile["profile"]["ships"])
                 {
                     JToken shipObject
                         = listStructure == "array"
@@ -1309,9 +1306,7 @@ namespace TDHelper
                 // Inform the user that the token has expired.
                 ClearCircularBuffer();
 
-                StackCircularBuffer("The Frontier Development Access token has expired. Please supply a new one. Thanks.\n");
-
-                Process.Start("https://companion.orerve.net/login");
+                StackCircularBuffer("Commander profile data file not found or unreadable.\n");
             }
         }
     }

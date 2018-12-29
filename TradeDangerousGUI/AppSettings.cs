@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
@@ -147,6 +145,20 @@ namespace TDHelper
         }
 
         /// <summary>
+        /// Retrieve a integer setting from the config file.
+        /// </summary>
+        /// <param name="section">The section object</param>
+        /// <param name="key">The value key</param>
+        /// <returns>The required value.</returns>
+        public static int GetIntegerSetting(
+            SharpConfig.Section section,
+            string key,
+            int defaultValue = 0)
+        {
+            return SectionHasKey(section, key) ? section[key].IntValue : defaultValue;
+        }
+
+        /// <summary>
         /// Retrieve a string setting from the config file.
         /// </summary>
         /// <param name="section">The section object</param>
@@ -231,6 +243,7 @@ namespace TDHelper
                 settings.SizeParent = GetStringSetting(configSection, "SizeParent");
                 settings.TDPath = GetStringSetting(configSection, "TDPath");
                 settings.TestSystems = GetBooleanSetting(configSection, "TestSystems");
+                settings.TimeOut = GetIntegerSetting(configSection, "TimeOut");
                 settings.TreeViewFont = GetStringSetting(configSection, "TreeViewFont");
                 settings.UploadPath = GetStringSetting(configSection, "UploadPath");
 
@@ -365,6 +378,7 @@ namespace TDHelper
             configSection["SizeParent"].StringValue = settings.SizeParent ?? string.Empty;
             configSection["TDPath"].StringValue = settings.TDPath ?? string.Empty;
             configSection["TestSystems"].BoolValue = settings.TestSystems;
+            configSection["TimeOut"].IntValue = settings.TimeOut;
             configSection["TreeViewFont"].StringValue = settings.TreeViewFont ?? string.Empty;
             configSection["UploadPath"].StringValue = settings.UploadPath ?? string.Empty;
 
@@ -854,8 +868,6 @@ namespace TDHelper
         } // prevent instancing
 
         public static TDSettings Instance { get { return _inst.Value; } } // return our reference
-        public string AccessToken { get; set; }
-        public DateTime AccessTokenExpiry { get; set; }
         public decimal Age { get; set; }
         public string AvailableShips { get; set; }
         public string Avoid { get; set; }
@@ -912,6 +924,7 @@ namespace TDHelper
         public bool Summary { get; set; }
         public string TDPath { get; set; }
         public bool TestSystems { get; set; }
+        public int TimeOut { get; set; }
         public bool Towards { get; set; }
         public string TreeViewFont { get; set; }
         public bool Unique { get; set; }
@@ -945,8 +958,6 @@ namespace TDHelper
         public void Reset(TDSettings instance)
         {
             // go through and reset all accessors in instance
-            instance.AccessToken = string.Empty;
-            instance.AccessTokenExpiry = DateTime.Now;
             instance.Age = 0;
             instance.AvailableShips = string.Empty;
             instance.Avoid = string.Empty;
@@ -1002,6 +1013,7 @@ namespace TDHelper
             instance.Summary = false;
             instance.TDPath = string.Empty;
             instance.TestSystems = false;
+            instance.TimeOut = 0;
             instance.Towards = false;
             instance.TreeViewFont = string.Empty;
             instance.Unique = false;

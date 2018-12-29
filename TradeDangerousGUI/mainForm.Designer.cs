@@ -3235,7 +3235,7 @@
             this.rtbSaved1.Location = new System.Drawing.Point(3, 3);
             this.rtbSaved1.Name = "rtbSaved1";
             this.rtbSaved1.ReadOnly = true;
-            this.rtbSaved1.Size = new System.Drawing.Size(834, 381);
+            this.rtbSaved1.Size = new System.Drawing.Size(841, 178);
             this.rtbSaved1.TabIndex = 2;
             this.rtbSaved1.TabStop = false;
             this.rtbSaved1.Text = "";
@@ -3260,7 +3260,7 @@
             this.rtbSaved2.Location = new System.Drawing.Point(3, 3);
             this.rtbSaved2.Name = "rtbSaved2";
             this.rtbSaved2.ReadOnly = true;
-            this.rtbSaved2.Size = new System.Drawing.Size(832, 380);
+            this.rtbSaved2.Size = new System.Drawing.Size(841, 178);
             this.rtbSaved2.TabIndex = 2;
             this.rtbSaved2.TabStop = false;
             this.rtbSaved2.Text = "";
@@ -3285,7 +3285,7 @@
             this.rtbSaved3.Location = new System.Drawing.Point(3, 3);
             this.rtbSaved3.Name = "rtbSaved3";
             this.rtbSaved3.ReadOnly = true;
-            this.rtbSaved3.Size = new System.Drawing.Size(834, 380);
+            this.rtbSaved3.Size = new System.Drawing.Size(841, 178);
             this.rtbSaved3.TabIndex = 2;
             this.rtbSaved3.TabStop = false;
             this.rtbSaved3.Text = "";
@@ -3311,7 +3311,7 @@
             this.txtNotes.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNotes.Location = new System.Drawing.Point(3, 3);
             this.txtNotes.Name = "txtNotes";
-            this.txtNotes.Size = new System.Drawing.Size(832, 380);
+            this.txtNotes.Size = new System.Drawing.Size(841, 178);
             this.txtNotes.TabIndex = 3;
             this.txtNotes.TabStop = false;
             this.txtNotes.Text = "";

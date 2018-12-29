@@ -62,6 +62,7 @@ namespace TDHelper
         private string appVersion = "v{0}".With(Application.ProductVersion);
 
         private int buttonCaller;
+        private System.Timers.Timer cApiTimer = new System.Timers.Timer();
         private List<string> CommoditiesList = new List<string>();
         private int hasUpdated;
         private int methodFromIndex;
@@ -72,13 +73,13 @@ namespace TDHelper
         private string savedFile1 = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "saved_1.txt");
         private string savedFile2 = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "saved_2.txt");
         private string savedFile3 = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "saved_3.txt");
-        private string tooltipsTranslations = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "TDH2Tooltips.ini");
-        private bool tooltipsTranslated = false;
         private string SelectedCommodity = string.Empty;
         private List<string> ShipList = new List<string>();
         private string SourceSystem = string.Empty;
         private string TargetSystem = string.Empty;
         private System.Timers.Timer testSystemsTimer = new System.Timers.Timer();
+        private bool tooltipsTranslated = false;
+        private string tooltipsTranslations = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "TDH2Tooltips.ini");
         private string tv_outputBox = string.Empty;
         private CultureInfo userCulture = CultureInfo.CurrentCulture;
         private IList<ComboBoxItem> validConfigs = new List<ComboBoxItem>();
@@ -113,6 +114,10 @@ namespace TDHelper
             testSystemsTimer.Interval = 60000;
             testSystemsTimer.Elapsed += EventHandler_TestSystemsTimer_Delegate;
 
+            cApiTimer.AutoReset = true;
+            cApiTimer.Interval = 1000;
+            cApiTimer.Elapsed += EventHandler_cApiTimer_Delegate;
+
             SplashScreen.SetStatus("Set ititial state...");
             SetOptionPanelList();
             ShowOrHideOptionsPanel(0);
@@ -129,6 +134,19 @@ namespace TDHelper
         }
 
         #endregion FormProps
+
+        /// <summary>
+        /// Start the cAPI timer going.
+        /// </summary>
+        /// <param name="interval">The number of seconds to start the timer.</param>
+        public void StartApiTimer(int interval = API_TIMEOUT)
+        {
+            btnCmdrProfile.Enabled = false;
+            settingsRef.TimeOut = interval;
+            btnCmdrProfile.Text = "({0})".With(settingsRef.TimeOut);
+
+            cApiTimer.Start();
+        }
 
         /// <summary>
         /// Add the avoid option.
@@ -348,7 +366,7 @@ namespace TDHelper
 
                 if (!settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase))
                 {
-                    commandString = "-u \"" + Path.Combine(settingsRef.TDPath, "trade.py") + "\" " + commandString;
+                    commandString = "-u \"" + Utilities.GetPathToTradePy() + "\" " + commandString;
                 }
 
                 DoTDProc(commandString);
@@ -642,19 +660,12 @@ namespace TDHelper
         {
             if (buttonCaller == 22)
             {
-                    //string currentFolder = Directory.GetCurrentDirectory();
+                commandString = Utilities.GetPathToTradePy() + " import -P edapi -O tdh";
 
-                    //try
-                    //{
-                    //    td_proc = new Process();
-                    //    td_proc.StartInfo.FileName = settingsRef.PythonPath;
+                td_proc = new Process();
+                td_proc.StartInfo.FileName = settingsRef.PythonPath;
 
-                    //    DoTDProc(commandString);
-                    //}
-                    //finally
-                    //{
-                    //    Directory.SetCurrentDirectory(currentFolder);
-                    //}
+                DoTDProc(commandString);
             }
 
             commandString = string.Empty; // reset path for thread safety
@@ -667,11 +678,13 @@ namespace TDHelper
             if (!backgroundWorker7.IsBusy)
             {
                 stopwatch.Stop(); // stop the timer
-                circularBuffer = new System.Text.StringBuilder(2 * circularBufferSize);
-                ClearCircularBuffer();
+                //circularBuffer = new System.Text.StringBuilder(2 * circularBufferSize);
+                //ClearCircularBuffer();
 
                 EnableBtnStarts();
                 td_proc.Dispose();
+
+                StartApiTimer();
 
                 // make a sound when we're done with a long operation (>10s)
                 if (stopwatch.ElapsedMilliseconds > 10000)
@@ -916,6 +929,11 @@ namespace TDHelper
             {
                 chkRunOptionsTowards.Checked = settingsRef.Towards;
                 chkRunOptionsLoop.Checked = false;
+            }
+
+            if (settingsRef.TimeOut > 0)
+            {
+                StartApiTimer(settingsRef.TimeOut);
             }
         }
 
@@ -1223,6 +1241,36 @@ namespace TDHelper
             {
                 chkBuyOptionsOneStop.Checked = false;
             }
+        }
+
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_cApiTimer_Delegate(
+            object sender,
+            ElapsedEventArgs e)
+        {
+            Debug.WriteLine(string.Format("cAPI Firing at: {0}", CurrentTimestamp()));
+
+            this.Invoke(new Action(() =>
+            {
+                settingsRef.TimeOut -= 1;
+
+                if (settingsRef.TimeOut > 0)
+                {
+                    btnCmdrProfile.Text = "({0})".With(settingsRef.TimeOut);
+                    btnCmdrProfile.Enabled = false;
+                }
+                else
+                {
+                    cApiTimer.Stop();
+
+                    btnCmdrProfile.Text = "Cmdr Profile";
+                    btnCmdrProfile.Enabled = true;
+                }
+            }));
         }
 
         /// <summary>
@@ -2004,97 +2052,6 @@ namespace TDHelper
             TranslateTooltips();
 
             SplashScreen.SetStatus("Completed.");
-        }
-
-        /// <summary>
-        /// Translate the tooltips into the correct language.
-        /// </summary>
-        private void TranslateTooltips()
-        {
-            if (!tooltipsTranslated)
-            {
-                if (CheckIfFileOpens(tooltipsTranslations))
-                {
-                    // Load up the translations.
-                    IDictionary<string, string> translations = LoadTooltipTranslations(
-                        tooltipsTranslations,
-                        settingsRef.Locale);
-
-                    // Get a reference to the tooltip component.
-                    FieldInfo fieldInfo = GetType().GetField("components", BindingFlags.Instance | BindingFlags.NonPublic);
-                    IContainer parent = (IContainer)fieldInfo.GetValue(this);
-                    List<ToolTip> ToolTipList = parent.Components.OfType<ToolTip>().ToList();
-
-                    if (ToolTipList.Count > 0)
-                    {
-                        ToolTip tt = ToolTipList[0];
-
-                        // Cycle through each object on the form and if there is a tooltip set for the object
-                        // then translate the tooltip if a translation exists.
-                        foreach (Control control in this.GetAllChildren())
-                        {
-                            string key = tt.GetToolTip(control);
-
-                            if (!string.IsNullOrEmpty(key))
-                            {
-                                if (translations.ContainsKey(key))
-                                {
-                                    string value = translations[key]
-                                    .Replace(">", "\t")
-                                    .Replace("|", Environment.NewLine);
-
-                                    tt.SetToolTip(control, value);
-                                }
-                                else
-                                {
-                                    if (key.StartsWith("Tooltip-"))
-                                    {
-                                        Debug.WriteLine("{0} not found".With(key));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                tooltipsTranslated = true;
-            }
-        }
-
-        /// <summary>
-        /// Load the tooltip translations from the file using the specified language setting.
-        /// </summary>
-        /// <param name="tooltipsTranslations"></param>
-        /// <param name="currentLanguage"></param>
-        /// <returns></returns>
-        private IDictionary<string, string> LoadTooltipTranslations(
-            string tooltipsTranslations,
-            string currentLanguage)
-        {
-            IDictionary<string, string> translations = new Dictionary<string, string>();
-
-            try
-            {
-                SharpConfig.Configuration config = SharpConfig.Configuration.LoadFromFile(tooltipsTranslations);
-
-                int count = config.SectionCount;
-
-                for (int i = 1; i <= count; ++i)
-                {
-                    string sectionHeader = "Tooltip-{0:d3}".With(i);
-                    string translation = config[sectionHeader][currentLanguage].StringValue;
-
-                    translations.Add(
-                        sectionHeader,
-                        translation);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetFullMessage());
-            }
-
-            return translations;
         }
 
         /// <summary>
@@ -3054,8 +3011,6 @@ namespace TDHelper
             }
         }
 
-        #endregion Event Handlers
-
         /// <summary>
         /// Get the buy command string.
         /// </summary>
@@ -3676,6 +3631,42 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Load the tooltip translations from the file using the specified language setting.
+        /// </summary>
+        /// <param name="tooltipsTranslations"></param>
+        /// <param name="currentLanguage"></param>
+        /// <returns></returns>
+        private IDictionary<string, string> LoadTooltipTranslations(
+            string tooltipsTranslations,
+            string currentLanguage)
+        {
+            IDictionary<string, string> translations = new Dictionary<string, string>();
+
+            try
+            {
+                SharpConfig.Configuration config = SharpConfig.Configuration.LoadFromFile(tooltipsTranslations);
+
+                int count = config.SectionCount;
+
+                for (int i = 1; i <= count; ++i)
+                {
+                    string sectionHeader = "Tooltip-{0:d3}".With(i);
+                    string translation = config[sectionHeader][currentLanguage].StringValue;
+
+                    translations.Add(
+                        sectionHeader,
+                        translation);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.GetFullMessage());
+            }
+
+            return translations;
+        }
+
         private void MethodSelectState()
         {
             SuspendLayout();
@@ -4236,6 +4227,63 @@ namespace TDHelper
             ShowStatus("Completed");
             ClearStatus(wait);
         }
+
+        /// <summary>
+        /// Translate the tooltips into the correct language.
+        /// </summary>
+        private void TranslateTooltips()
+        {
+            if (!tooltipsTranslated)
+            {
+                if (CheckIfFileOpens(tooltipsTranslations))
+                {
+                    // Load up the translations.
+                    IDictionary<string, string> translations = LoadTooltipTranslations(
+                        tooltipsTranslations,
+                        settingsRef.Locale);
+
+                    // Get a reference to the tooltip component.
+                    FieldInfo fieldInfo = GetType().GetField("components", BindingFlags.Instance | BindingFlags.NonPublic);
+                    IContainer parent = (IContainer)fieldInfo.GetValue(this);
+                    List<ToolTip> ToolTipList = parent.Components.OfType<ToolTip>().ToList();
+
+                    if (ToolTipList.Count > 0)
+                    {
+                        ToolTip tt = ToolTipList[0];
+
+                        // Cycle through each object on the form and if there is a tooltip set for the object
+                        // then translate the tooltip if a translation exists.
+                        foreach (Control control in this.GetAllChildren())
+                        {
+                            string key = tt.GetToolTip(control);
+
+                            if (!string.IsNullOrEmpty(key))
+                            {
+                                if (translations.ContainsKey(key))
+                                {
+                                    string value = translations[key]
+                                    .Replace(">", "\t")
+                                    .Replace("|", Environment.NewLine);
+
+                                    tt.SetToolTip(control, value);
+                                }
+                                else
+                                {
+                                    if (key.StartsWith("Tooltip-"))
+                                    {
+                                        Debug.WriteLine("{0} not found".With(key));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                tooltipsTranslated = true;
+            }
+        }
+
+        #endregion Event Handlers
 
         private void ValidateDestForEndJumps()
         {
