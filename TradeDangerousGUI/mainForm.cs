@@ -1252,8 +1252,6 @@ namespace TDHelper
             object sender,
             ElapsedEventArgs e)
         {
-            Debug.WriteLine(string.Format("cAPI Firing at: {0}", CurrentTimestamp()));
-
             this.Invoke(new Action(() =>
             {
                 settingsRef.TimeOut -= 1;
