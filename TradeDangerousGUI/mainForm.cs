@@ -1252,7 +1252,7 @@ namespace TDHelper
             object sender,
             ElapsedEventArgs e)
         {
-            this.Invoke(new Action(() =>
+            Invoke(new Action(() =>
             {
                 settingsRef.TimeOut -= 1;
 
