@@ -1,3 +1,7 @@
+v2.1.0.2
+--------
+* Removed any empty options in the update DB command. Fixes issue #47.
+
 v2.1.0.1
 --------
 * Changed to use the EDAPI plugin supplied with tradedangerous. Thanks to gazelle and eyeonus for updating this.

@@ -241,6 +241,14 @@ namespace TDHelper
                 result = result.Trim(',');
             }
 
+            // Remove any empty options.
+            if (!string.IsNullOrEmpty(result))
+            {
+                string[] list = result.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+
+                result = string.Join(",", list);
+            }
+
             return result;
         }
 
