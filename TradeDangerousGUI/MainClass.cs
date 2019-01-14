@@ -435,6 +435,7 @@ namespace TDHelper
                 validConfigs = SetAvailableShips();
 
                 cboCommandersShips.Items.Clear();
+                cboCommandersShips.ClearSeparators();
 
                 foreach (ComboBoxItem item in validConfigs)
                 {
@@ -448,7 +449,7 @@ namespace TDHelper
 
                 if (index < cboCommandersShips.Items.Count)
                 {
-                    cboCommandersShips.SetSeparator(index);
+                    cboCommandersShips.SetSeparator(cboCommandersShips.Items.Count - index);
                 }
             }
 

@@ -1252,23 +1252,30 @@ namespace TDHelper
             object sender,
             ElapsedEventArgs e)
         {
-            Invoke(new Action(() =>
+            try
             {
-                settingsRef.TimeOut -= 1;
-
-                if (settingsRef.TimeOut > 0)
+                Invoke(new Action(() =>
                 {
-                    btnCmdrProfile.Text = "({0})".With(settingsRef.TimeOut);
-                    btnCmdrProfile.Enabled = false;
-                }
-                else
-                {
-                    cApiTimer.Stop();
+                    settingsRef.TimeOut -= 1;
 
-                    btnCmdrProfile.Text = "Cmdr Profile";
-                    btnCmdrProfile.Enabled = true;
-                }
-            }));
+                    if (settingsRef.TimeOut > 0)
+                    {
+                        btnCmdrProfile.Text = "({0})".With(settingsRef.TimeOut);
+                        btnCmdrProfile.Enabled = false;
+                    }
+                    else
+                    {
+                        cApiTimer.Stop();
+
+                        btnCmdrProfile.Text = "Cmdr Profile";
+                        btnCmdrProfile.Enabled = true;
+                    }
+                }));
+            }
+            catch (Exception ex)
+            {
+                // Do nothing.
+            }
         }
 
         /// <summary>

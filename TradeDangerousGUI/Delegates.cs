@@ -1213,7 +1213,7 @@ namespace TDHelper
 
                 string availableShips = string.Empty;
 
-                JToken token = cmdrProfile["ships"];
+                JToken token = cmdrProfile["profile"]["ships"];
                 string listStructure = string.Empty;
 
                 if (token is JArray)

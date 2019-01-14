@@ -61,6 +61,11 @@ namespace SeparatorComboBox
             _separators.Add(pos);
         }
 
+        public void ClearSeparators()
+        {
+            _separators.Clear();
+        }
+
         protected override void OnDrawItem(DrawItemEventArgs e)
         {
             if (-1 == e.Index) return;

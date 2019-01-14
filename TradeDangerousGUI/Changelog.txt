@@ -1,3 +1,8 @@
+v2.1.0.3
+--------
+* Fixed bug in commander profile. Issue #48.
+* Added clear separator method in ship drop down list.
+
 v2.1.0.2
 --------
 * Removed any empty options in the update DB command. Fixes issue #47.
