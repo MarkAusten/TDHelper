@@ -497,9 +497,9 @@ namespace TDHelper
 
             numRouteOptionsShipCapacity.Value = settings.Capacity;
             numShipInsurance.Value = Math.Max(settings.Insurance, numShipInsurance.Minimum);
-            numLadenLy.Value = Math.Max(settings.LadenLY, numLadenLy.Minimum);
+            numLadenLy.Value = Math.Max(settings.LadenLY / 100, numLadenLy.Minimum);
             txtPadSize.Text = settings.Padsizes;
-            numUnladenLy.Value = Math.Max(settings.UnladenLY, numUnladenLy.Minimum);
+            numUnladenLy.Value = Math.Max(settings.UnladenLY / 100, numUnladenLy.Minimum);
             numRouteOptionsShipCapacity.Maximum = Decimal.MaxValue;
         }
 
