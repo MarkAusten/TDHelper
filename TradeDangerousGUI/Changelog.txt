@@ -1,3 +1,9 @@
+v2.1.0.4
+--------
+* Added support for "--ls-max" and "--planetary" to the OldData command.
+* Changed the caption and tool tip for the route option on the old data panel.
+* Reduced default limit from 42 to 10 when route is checked since sorting for best distance overall is not an O(n) solution.
+
 v2.1.0.3
 --------
 * Fixed bug in commander profile. Issue #48.

@@ -3281,10 +3281,29 @@ namespace TDHelper
                 cmdPath += AddCheckedOption(chkOldDataOptionsRoute.Checked, "route");
                 cmdPath += AddNumericOption(numOldDataOptionsNearLy.Value, "ly");
                 cmdPath += AddNumericOption(numOldDataOptionsMinAge.Value, "min-age");
-                cmdPath += AddLimitOption(numOldDataOptionsLimit.Value);
+
+                decimal route = numOldDataOptionsLimit.Value;
+
+                if (chkOldDataOptionsRoute.Checked)
+                {
+                    route 
+                        = route == 0 
+                        ? 10 
+                        : route;
+                }
+
+                cmdPath += AddLimitOption(route);
+                cmdPath += AddPlanetaryOption(txtOldDataOptionsPlanetary.Text);
+                cmdPath += AddNumericOption(numOldDataOptionsMaxLSDistance.Value, "ls-max");
+                cmdPath += AddPadOption(txtOldDataOptionsPads.Text);
 
                 cmdPath += AddVerbosity();
                 cmdPath += AddNear(sourceSystem);
+            }
+            else
+            {
+                ClearCircularBuffer();
+                StackCircularBuffer("You need to specify a source system.\n");
             }
 
             return cmdPath;
