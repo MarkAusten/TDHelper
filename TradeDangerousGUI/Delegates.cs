@@ -355,7 +355,7 @@ namespace TDHelper
             if (buttonCaller == 5)
             {
                 // catch the database update button
-                commandString += "import -P eddblink -O {0},progbar".With(DBUpdateCommandString);
+                commandString += "import -P eddblink -O {0}".With(DBUpdateCommandString);
             }
         }
 
