@@ -1,3 +1,8 @@
+v2.1.0.5
+--------
+* Removed the "progbar" option on the TD comand line as this no longer does anything and the progress bar is the default.
+* Fixed issue with availableShips being null.
+
 v2.1.0.4
 --------
 * Added support for "--ls-max" and "--planetary" to the OldData command.
