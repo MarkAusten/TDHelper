@@ -720,11 +720,15 @@ namespace TDHelper
                                 SetSourceAndDestinationLists(true);
                                 // bind the recent systems/stations first
 
+                                string setting = cboSourceSystem.Text;
                                 cboSourceSystem.DataSource = null;
                                 cboSourceSystem.DataSource = SourceList;
+                                cboSourceSystem.Text = setting;
 
+                                setting = cboRunOptionsDestination.Text;
                                 cboRunOptionsDestination.DataSource = null;
                                 cboRunOptionsDestination.DataSource = DestinationList;
+                                cboRunOptionsDestination.Text = setting;
 
                                 if (buttonCaller == 16)
                                 {
@@ -747,19 +751,29 @@ namespace TDHelper
                                 {
                                     SetSourceAndDestinationLists();
 
+                                    string setting = cboSourceSystem.Text;
                                     cboSourceSystem.DataSource = null;
                                     cboSourceSystem.DataSource = SourceList;
+                                    cboSourceSystem.Text = setting;
 
-                                    // reset our cursor after the refresh if the user had input focus
-                                    if (cboSourceSystem.Text.Length > 0)
-                                    {
-                                        cboSourceSystem.Select(cboSourceSystem.Text.Length, 0);
-                                    }
+                                    setting = cboRunOptionsDestination.Text;
+                                    cboRunOptionsDestination.DataSource = null;
+                                    cboRunOptionsDestination.DataSource = DestinationList;
+                                    cboRunOptionsDestination.Text = setting;
 
-                                    if (cboRunOptionsDestination.Text.Length > 0)
-                                    {
-                                        cboRunOptionsDestination.Select(cboSourceSystem.Text.Length, 0);
-                                    }
+                                    //cboSourceSystem.DataSource = null;
+                                    //cboSourceSystem.DataSource = SourceList;
+
+                                    //// reset our cursor after the refresh if the user had input focus
+                                    //if (cboSourceSystem.Text.Length > 0)
+                                    //{
+                                    //    cboSourceSystem.Select(cboSourceSystem.Text.Length, 0);
+                                    //}
+
+                                    //if (cboRunOptionsDestination.Text.Length > 0)
+                                    //{
+                                    //    cboRunOptionsDestination.Select(cboSourceSystem.Text.Length, 0);
+                                    //}
                                 }));
 
                                 hasRefreshedRecents = false;
@@ -775,8 +789,18 @@ namespace TDHelper
                             {
                                 SetSourceAndDestinationLists(true);
 
+                                //cboSourceSystem.DataSource = null;
+                                //cboSourceSystem.DataSource = SourceList;
+
+                                string setting = cboSourceSystem.Text;
                                 cboSourceSystem.DataSource = null;
                                 cboSourceSystem.DataSource = SourceList;
+                                cboSourceSystem.Text = setting;
+
+                                setting = cboRunOptionsDestination.Text;
+                                cboRunOptionsDestination.DataSource = null;
+                                cboRunOptionsDestination.DataSource = DestinationList;
+                                cboRunOptionsDestination.Text = setting;
 
                                 cboSourceSystem.AutoCompleteCustomSource.AddRange(outputSysStnNames.ToArray());
                             }));
