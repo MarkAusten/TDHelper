@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -733,53 +734,64 @@ namespace TDHelper
         /// </summary>
         private void LoadInitialShipList()
         {
-            SharpConfig.Configuration config = GetConfigurationObject();
-
-            ShipSection shipSection = ((ShipSection)ConfigurationManager.GetSection("ships"));
-
-            int id = 0;
-            string availableShips = settingsRef.AvailableShips;
-
-            bool noneOwned = string.IsNullOrEmpty(availableShips);
-
-            foreach (ShipConfig ship in shipSection.ShipSettings.Cast<ShipConfig>())
+            try
             {
-                string sectionName = "Default {0}".With(++id);
+                SharpConfig.Configuration config = GetConfigurationObject();
 
-                if (!settingsRef.AvailableShips.Contains(sectionName))
+                ShipSection shipSection = ((ShipSection)ConfigurationManager.GetSection("ships"));
+
+                int id = 0;
+
+                if (settingsRef.AvailableShips == null)
                 {
-                    settingsRef.AvailableShips += ",{0}".With(sectionName);
+                    settingsRef.AvailableShips = string.Empty;
                 }
 
-                config[sectionName]["Capacity"].DecimalValue
-                    = decimal.TryParse(ship.InitialCapacity, out decimal capacity)
-                    ? capacity
-                    : 1;
+                bool noneOwned = string.IsNullOrEmpty(settingsRef.AvailableShips);
 
-                config[sectionName]["LadenLY"].DecimalValue
-                    = decimal.TryParse(ship.InitialLadenLY, out decimal ladenLy)
-                    ? ladenLy
-                    : 1;
-
-                config[sectionName]["unladenLY"].DecimalValue
-                    = decimal.TryParse(ship.InitialUnladenLY, out decimal unladenLy)
-                    ? unladenLy
-                    : 1;
-
-                config[sectionName]["shipName"].StringValue = ship.Name;
-                config[sectionName]["Padsizes"].StringValue = ship.PadSizes;
-                config[sectionName]["shipType"].StringValue = ship.ShipType;
-
-                if (noneOwned &&
-                    ship.Name.Equals("Sidewinder"))
+                foreach (ShipConfig ship in shipSection.ShipSettings.Cast<ShipConfig>())
                 {
-                    settingsRef.LastUsedConfig = sectionName;
+                    string sectionName = "Default {0}".With(++id);
+
+                    if (!settingsRef.AvailableShips.Contains(sectionName))
+                    {
+                        settingsRef.AvailableShips += ",{0}".With(sectionName);
+                    }
+
+                    config[sectionName]["Capacity"].DecimalValue
+                        = decimal.TryParse(ship.InitialCapacity, out decimal capacity)
+                        ? capacity
+                        : 1;
+
+                    config[sectionName]["LadenLY"].DecimalValue
+                        = decimal.TryParse(ship.InitialLadenLY, out decimal ladenLy)
+                        ? ladenLy
+                        : 1;
+
+                    config[sectionName]["unladenLY"].DecimalValue
+                        = decimal.TryParse(ship.InitialUnladenLY, out decimal unladenLy)
+                        ? unladenLy
+                        : 1;
+
+                    config[sectionName]["shipName"].StringValue = ship.Name;
+                    config[sectionName]["Padsizes"].StringValue = ship.PadSizes;
+                    config[sectionName]["shipType"].StringValue = ship.ShipType;
+
+                    if (noneOwned &&
+                        ship.Name.Equals("Sidewinder"))
+                    {
+                        settingsRef.LastUsedConfig = sectionName;
+                    }
                 }
+
+                config.SaveToFile(configFile);
+
+                settingsRef.AvailableShips = settingsRef.AvailableShips.Trim(new char[] { ',' });
             }
-
-            config.SaveToFile(configFile);
-
-            settingsRef.AvailableShips = settingsRef.AvailableShips.Trim(new char[] { ',' });
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.GetFullMessage());
+            }
         }
 
         private void RemoveMarkedStation(
