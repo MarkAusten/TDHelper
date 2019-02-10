@@ -257,6 +257,10 @@
             this.lblOldDataOptionsMaxLSDistance = new System.Windows.Forms.Label();
             this.lblOldDataOptionsPlanetary = new System.Windows.Forms.Label();
             this.txtOldDataOptionsPlanetary = new System.Windows.Forms.TextBox();
+            this.cboCommandersShips = new SeparatorComboBox.SeparatorComboBox();
+            this.cboBuyOptionsCommodities = new TDHelper.CheckedComboBox();
+            this.lblOldDataOptionsPads = new System.Windows.Forms.Label();
+            this.txtOldDataOptionsPads = new System.Windows.Forms.TextBox();
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker4 = new System.ComponentModel.BackgroundWorker();
             this.panRunOptions = new System.Windows.Forms.Panel();
@@ -313,10 +317,6 @@
             this.panOldDataOptions = new System.Windows.Forms.Panel();
             this.panLocalOptions = new System.Windows.Forms.Panel();
             this.panOptions = new System.Windows.Forms.Panel();
-            this.cboCommandersShips = new SeparatorComboBox.SeparatorComboBox();
-            this.cboBuyOptionsCommodities = new TDHelper.CheckedComboBox();
-            this.lblOldDataOptionsPads = new System.Windows.Forms.Label();
-            this.txtOldDataOptionsPads = new System.Windows.Forms.TextBox();
             this.mnuSetValues.SuspendLayout();
             this.mnuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRunOptionsRoutes)).BeginInit();
@@ -2643,21 +2643,11 @@
             0,
             0,
             131072});
-            this.numOldDataOptionsNearLy.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.numOldDataOptionsNearLy.Name = "numOldDataOptionsNearLy";
             this.numOldDataOptionsNearLy.Size = new System.Drawing.Size(64, 20);
             this.numOldDataOptionsNearLy.TabIndex = 2;
             this.numOldDataOptionsNearLy.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tipToolTips.SetToolTip(this.numOldDataOptionsNearLy, "Tooltip-053");
-            this.numOldDataOptionsNearLy.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             // 
             // lblOldDataOptionsLimit
             // 
@@ -3136,6 +3126,62 @@
             this.txtOldDataOptionsPlanetary.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tipToolTips.SetToolTip(this.txtOldDataOptionsPlanetary, "Tooltip-056");
             this.txtOldDataOptionsPlanetary.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_Planetary_KeyPress);
+            // 
+            // cboCommandersShips
+            // 
+            this.cboCommandersShips.AutoAdjustItemHeight = false;
+            this.cboCommandersShips.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cboCommandersShips.DropDownHeight = 400;
+            this.cboCommandersShips.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboCommandersShips.FormattingEnabled = true;
+            this.cboCommandersShips.IntegralHeight = false;
+            this.cboCommandersShips.Location = new System.Drawing.Point(6, 4);
+            this.cboCommandersShips.Name = "cboCommandersShips";
+            this.cboCommandersShips.SeparatorColor = System.Drawing.Color.RoyalBlue;
+            this.cboCommandersShips.SeparatorMargin = 1;
+            this.cboCommandersShips.SeparatorStyle = System.Drawing.Drawing2D.DashStyle.Solid;
+            this.cboCommandersShips.SeparatorWidth = 2;
+            this.cboCommandersShips.Size = new System.Drawing.Size(272, 21);
+            this.cboCommandersShips.TabIndex = 1;
+            this.cboCommandersShips.TabStop = false;
+            this.tipToolTips.SetToolTip(this.cboCommandersShips, "Tooltip-077");
+            this.cboCommandersShips.SelectionChangeCommitted += new System.EventHandler(this.EventHandler_Ships_SelectionChangeCommitted);
+            // 
+            // cboBuyOptionsCommodities
+            // 
+            this.cboBuyOptionsCommodities.CheckOnClick = true;
+            this.cboBuyOptionsCommodities.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cboBuyOptionsCommodities.DropDownHeight = 1;
+            this.cboBuyOptionsCommodities.FormattingEnabled = true;
+            this.cboBuyOptionsCommodities.IntegralHeight = false;
+            this.cboBuyOptionsCommodities.Location = new System.Drawing.Point(72, 31);
+            this.cboBuyOptionsCommodities.MaxDropDownItems = 50;
+            this.cboBuyOptionsCommodities.Name = "cboBuyOptionsCommodities";
+            this.cboBuyOptionsCommodities.Size = new System.Drawing.Size(240, 21);
+            this.cboBuyOptionsCommodities.TabIndex = 68;
+            this.tipToolTips.SetToolTip(this.cboBuyOptionsCommodities, "Tooltip-011");
+            this.cboBuyOptionsCommodities.ValueSeparator = ", ";
+            // 
+            // lblOldDataOptionsPads
+            // 
+            this.lblOldDataOptionsPads.AutoSize = true;
+            this.lblOldDataOptionsPads.Location = new System.Drawing.Point(178, 36);
+            this.lblOldDataOptionsPads.Name = "lblOldDataOptionsPads";
+            this.lblOldDataOptionsPads.Size = new System.Drawing.Size(34, 13);
+            this.lblOldDataOptionsPads.TabIndex = 81;
+            this.lblOldDataOptionsPads.Text = "Pads:";
+            this.tipToolTips.SetToolTip(this.lblOldDataOptionsPads, "Tooltip-055");
+            // 
+            // txtOldDataOptionsPads
+            // 
+            this.txtOldDataOptionsPads.Location = new System.Drawing.Point(218, 34);
+            this.txtOldDataOptionsPads.MaxLength = 3;
+            this.txtOldDataOptionsPads.Name = "txtOldDataOptionsPads";
+            this.txtOldDataOptionsPads.Size = new System.Drawing.Size(35, 20);
+            this.txtOldDataOptionsPads.TabIndex = 80;
+            this.txtOldDataOptionsPads.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tipToolTips.SetToolTip(this.txtOldDataOptionsPads, "Tooltip-055");
+            this.txtOldDataOptionsPads.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_PadSize_KeyPress);
             // 
             // backgroundWorker3
             // 
@@ -3891,62 +3937,6 @@
             this.panOptions.Name = "panOptions";
             this.panOptions.Size = new System.Drawing.Size(322, 197);
             this.panOptions.TabIndex = 1;
-            // 
-            // cboCommandersShips
-            // 
-            this.cboCommandersShips.AutoAdjustItemHeight = false;
-            this.cboCommandersShips.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.cboCommandersShips.DropDownHeight = 400;
-            this.cboCommandersShips.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboCommandersShips.FormattingEnabled = true;
-            this.cboCommandersShips.IntegralHeight = false;
-            this.cboCommandersShips.Location = new System.Drawing.Point(6, 4);
-            this.cboCommandersShips.Name = "cboCommandersShips";
-            this.cboCommandersShips.SeparatorColor = System.Drawing.Color.RoyalBlue;
-            this.cboCommandersShips.SeparatorMargin = 1;
-            this.cboCommandersShips.SeparatorStyle = System.Drawing.Drawing2D.DashStyle.Solid;
-            this.cboCommandersShips.SeparatorWidth = 2;
-            this.cboCommandersShips.Size = new System.Drawing.Size(272, 21);
-            this.cboCommandersShips.TabIndex = 1;
-            this.cboCommandersShips.TabStop = false;
-            this.tipToolTips.SetToolTip(this.cboCommandersShips, "Tooltip-077");
-            this.cboCommandersShips.SelectionChangeCommitted += new System.EventHandler(this.EventHandler_Ships_SelectionChangeCommitted);
-            // 
-            // cboBuyOptionsCommodities
-            // 
-            this.cboBuyOptionsCommodities.CheckOnClick = true;
-            this.cboBuyOptionsCommodities.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.cboBuyOptionsCommodities.DropDownHeight = 1;
-            this.cboBuyOptionsCommodities.FormattingEnabled = true;
-            this.cboBuyOptionsCommodities.IntegralHeight = false;
-            this.cboBuyOptionsCommodities.Location = new System.Drawing.Point(72, 31);
-            this.cboBuyOptionsCommodities.MaxDropDownItems = 50;
-            this.cboBuyOptionsCommodities.Name = "cboBuyOptionsCommodities";
-            this.cboBuyOptionsCommodities.Size = new System.Drawing.Size(240, 21);
-            this.cboBuyOptionsCommodities.TabIndex = 68;
-            this.tipToolTips.SetToolTip(this.cboBuyOptionsCommodities, "Tooltip-011");
-            this.cboBuyOptionsCommodities.ValueSeparator = ", ";
-            // 
-            // lblOldDataOptionsPads
-            // 
-            this.lblOldDataOptionsPads.AutoSize = true;
-            this.lblOldDataOptionsPads.Location = new System.Drawing.Point(178, 36);
-            this.lblOldDataOptionsPads.Name = "lblOldDataOptionsPads";
-            this.lblOldDataOptionsPads.Size = new System.Drawing.Size(34, 13);
-            this.lblOldDataOptionsPads.TabIndex = 81;
-            this.lblOldDataOptionsPads.Text = "Pads:";
-            this.tipToolTips.SetToolTip(this.lblOldDataOptionsPads, "Tooltip-055");
-            // 
-            // txtOldDataOptionsPads
-            // 
-            this.txtOldDataOptionsPads.Location = new System.Drawing.Point(218, 34);
-            this.txtOldDataOptionsPads.MaxLength = 3;
-            this.txtOldDataOptionsPads.Name = "txtOldDataOptionsPads";
-            this.txtOldDataOptionsPads.Size = new System.Drawing.Size(35, 20);
-            this.txtOldDataOptionsPads.TabIndex = 80;
-            this.txtOldDataOptionsPads.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tipToolTips.SetToolTip(this.txtOldDataOptionsPads, "Tooltip-055");
-            this.txtOldDataOptionsPads.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EventHandler_PadSize_KeyPress);
             // 
             // MainForm
             // 

@@ -717,18 +717,7 @@ namespace TDHelper
 
                             this.Invoke(new Action(() =>
                             {
-                                SetSourceAndDestinationLists(true);
-                                // bind the recent systems/stations first
-
-                                string setting = cboSourceSystem.Text;
-                                cboSourceSystem.DataSource = null;
-                                cboSourceSystem.DataSource = SourceList;
-                                cboSourceSystem.Text = setting;
-
-                                setting = cboRunOptionsDestination.Text;
-                                cboRunOptionsDestination.DataSource = null;
-                                cboRunOptionsDestination.DataSource = DestinationList;
-                                cboRunOptionsDestination.Text = setting;
+                                UpdateSourceAndDestination(true);
 
                                 if (buttonCaller == 16)
                                 {
@@ -749,17 +738,7 @@ namespace TDHelper
                                 // only call if we have an update
                                 this.Invoke(new Action(() =>
                                 {
-                                    SetSourceAndDestinationLists();
-
-                                    string setting = cboSourceSystem.Text;
-                                    cboSourceSystem.DataSource = null;
-                                    cboSourceSystem.DataSource = SourceList;
-                                    cboSourceSystem.Text = setting;
-
-                                    setting = cboRunOptionsDestination.Text;
-                                    cboRunOptionsDestination.DataSource = null;
-                                    cboRunOptionsDestination.DataSource = DestinationList;
-                                    cboRunOptionsDestination.Text = setting;
+                                    UpdateSourceAndDestination();
 
                                     //cboSourceSystem.DataSource = null;
                                     //cboSourceSystem.DataSource = SourceList;
@@ -787,20 +766,7 @@ namespace TDHelper
 
                             this.Invoke(new Action(() =>
                             {
-                                SetSourceAndDestinationLists(true);
-
-                                //cboSourceSystem.DataSource = null;
-                                //cboSourceSystem.DataSource = SourceList;
-
-                                string setting = cboSourceSystem.Text;
-                                cboSourceSystem.DataSource = null;
-                                cboSourceSystem.DataSource = SourceList;
-                                cboSourceSystem.Text = setting;
-
-                                setting = cboRunOptionsDestination.Text;
-                                cboRunOptionsDestination.DataSource = null;
-                                cboRunOptionsDestination.DataSource = DestinationList;
-                                cboRunOptionsDestination.Text = setting;
+                                UpdateSourceAndDestination(true);
 
                                 cboSourceSystem.AutoCompleteCustomSource.AddRange(outputSysStnNames.ToArray());
                             }));
@@ -2053,6 +2019,22 @@ namespace TDHelper
                     }
                 }
             }
+        }
+
+        private void UpdateSourceAndDestination(bool first = false)
+        {
+            SetSourceAndDestinationLists(first);
+
+            // bind the recent systems/stations first
+            string setting = cboSourceSystem.Text;
+            cboSourceSystem.DataSource = null;
+            cboSourceSystem.DataSource = SourceList;
+            cboSourceSystem.Text = setting;
+
+            setting = cboRunOptionsDestination.Text;
+            cboRunOptionsDestination.DataSource = null;
+            cboRunOptionsDestination.DataSource = DestinationList;
+            cboRunOptionsDestination.Text = setting;
         }
 
         private void SetSourceAndDestinationLists(bool first = false)

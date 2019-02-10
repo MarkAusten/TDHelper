@@ -180,9 +180,11 @@ namespace TDHelper
         /// </summary>
         /// <param name="limit">The settings value.</param>
         /// <returns>The limit parameter.</returns>
-        private string AddLimitOption(decimal limit)
+        private string AddLimitOption(
+            decimal limit, 
+            bool noCap = false)
         {
-            return AddNumericOption((limit == 0 ? 42 : limit), "limit");
+            return AddNumericOption((!noCap && limit == 0 ? 42 : limit), "limit");
         }
 
         /// <summary>
@@ -255,9 +257,12 @@ namespace TDHelper
             string option,
             bool quoted = false)
         {
-            if (quoted)
+            if (!string.IsNullOrEmpty(value))
             {
-                value = "\"{0}\"".With(value);
+                if (quoted)
+                {
+                    value = "\"{0}\"".With(value);
+                }
             }
 
             return string.IsNullOrEmpty(value)
@@ -3274,37 +3279,18 @@ namespace TDHelper
         {
             string cmdPath = string.Empty;
 
-            if (!string.IsNullOrEmpty(sourceSystem))
-            {
-                cmdPath += "olddata";
+            cmdPath += "olddata";
 
-                cmdPath += AddCheckedOption(chkOldDataOptionsRoute.Checked, "route");
-                cmdPath += AddNumericOption(numOldDataOptionsNearLy.Value, "ly");
-                cmdPath += AddNumericOption(numOldDataOptionsMinAge.Value, "min-age");
+            cmdPath += AddCheckedOption(chkOldDataOptionsRoute.Checked, "route");
+            cmdPath += AddNumericOption(numOldDataOptionsNearLy.Value, "ly");
+            cmdPath += AddNumericOption(numOldDataOptionsMinAge.Value, "min-age");
+            cmdPath += AddLimitOption(numOldDataOptionsLimit.Value, true);
+            cmdPath += AddPlanetaryOption(txtOldDataOptionsPlanetary.Text);
+            cmdPath += AddNumericOption(numOldDataOptionsMaxLSDistance.Value, "ls-max");
+            cmdPath += AddPadOption(txtOldDataOptionsPads.Text);
 
-                decimal route = numOldDataOptionsLimit.Value;
-
-                if (chkOldDataOptionsRoute.Checked)
-                {
-                    route 
-                        = route == 0 
-                        ? 10 
-                        : route;
-                }
-
-                cmdPath += AddLimitOption(route);
-                cmdPath += AddPlanetaryOption(txtOldDataOptionsPlanetary.Text);
-                cmdPath += AddNumericOption(numOldDataOptionsMaxLSDistance.Value, "ls-max");
-                cmdPath += AddPadOption(txtOldDataOptionsPads.Text);
-
-                cmdPath += AddVerbosity();
-                cmdPath += AddNear(sourceSystem);
-            }
-            else
-            {
-                ClearCircularBuffer();
-                StackCircularBuffer("You need to specify a source system.\n");
-            }
+            cmdPath += AddVerbosity();
+            cmdPath += AddNear(sourceSystem);
 
             return cmdPath;
         }

@@ -325,7 +325,7 @@ namespace TDHelper
             {
                 if (hasUpdated == 0)
                 {
-                    StackCircularBuffer("\nData updated.");
+                    StackCircularBuffer("\nCommand completed.");
                 }
             }
             else if (buttonCaller == 11)

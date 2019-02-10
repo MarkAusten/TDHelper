@@ -2,6 +2,8 @@ v2.1.0.5
 --------
 * Removed the "progbar" option on the TD comand line as this no longer does anything and the progress bar is the default.
 * Fixed issue with availableShips being null.
+* Fixed issue with old data command. the command "trade.py olddata" is valid.
+* Removed old data route limit and added warning to tooltip instead.
 
 v2.1.0.4
 --------
