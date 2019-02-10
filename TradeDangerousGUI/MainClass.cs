@@ -201,10 +201,80 @@ namespace TDHelper
             }
         }
 
+        /// <summary>
+        /// Check the default paths for the AppConfig.xml file
+        /// </summary>
+        public static void CheckDefaultNetLogPaths()
+        {
+            if (string.IsNullOrEmpty(settingsRef.NetLogPath))
+            {
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+                path = Path.Combine(path, @"Frontier\Products\elite-dangerous-64");
+
+                string file = CheckNetLogPath(path);
+
+                if (string.IsNullOrEmpty(file))
+                {
+                    path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                    path = Path.Combine(path, @"Frontier_Developments\Products\elite-dangerous-64");
+
+                    file = CheckNetLogPath(path);
+                }
+
+                if (string.IsNullOrEmpty(file))
+                {
+                    path = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+                    path = Path.Combine(path, @"Steam\steamapps\common\Elite Dangerous\Products\elite-dangerous-64");
+
+                    file = CheckNetLogPath(path);
+                }
+
+                if (string.IsNullOrEmpty(file))
+                {
+                    path = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+                    path = Path.Combine(path, @"Oculus\Software\frontier-developments-plc-elite-dangerous\Products\elite-dangerous-64");
+
+                    file = CheckNetLogPath(path);
+                }
+
+#if DEBUG
+                if (string.IsNullOrEmpty(file))
+                {
+                    path = @"C:\Development";
+
+                    file = CheckNetLogPath(path);
+                }
+#endif
+                if (!string.IsNullOrEmpty(file))
+                {
+                    settingsRef.NetLogPath = file.Replace("AppConfig.xml", "Logs");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Check to se if the AppConfig.xml file exists at the specified path.
+        /// </summary>
+        /// <param name="path">The path to check.</param>
+        /// <returns>The full path to the file if found otherwise a blank string.</returns>
+        public static string CheckNetLogPath(string path)
+        {
+            string file = Path.Combine(path, "AppConfig.xml");
+
+            if (!File.Exists(file))
+            {
+                file = string.Empty;
+            }
+
+            return file;
+        }
+
         public static DialogResult ValidateNetLogPath(
             string altPath,
             bool force = false)
         {
+            CheckDefaultNetLogPaths();
+
             DialogResult result = DialogResult.None;
 
             // override to avoid net log logic
@@ -265,12 +335,98 @@ namespace TDHelper
             return result;
         }
 
+        /// <summary>
+        /// Try to locate the path to the python interpreter from the environment. 
+        /// </summary>
+        /// <param name="target">The target environment.</param>
+        /// <returns>The full path to the interpreter or blank if not found.</returns>
+        public static string ExtractPythonPathFromEnvironment(EnvironmentVariableTarget target)
+        {
+            string[] userPath = Environment.GetEnvironmentVariable("Path", target).Split(';');
+
+            // Scan through path variables to find the python path.
+            string pythonPath = string.Empty;
+            string pythonExe = string.Empty;
+
+            if (!int.TryParse(ConfigurationManager.AppSettings["minimumPythonVersion"], out int minVersion))
+            {
+                minVersion = 34;
+            }
+
+            foreach (string path in userPath)
+            {
+                if (path.ToLower().Contains("python"))
+                {
+                    // Find that last array element that starts with python
+                    string[] folders = path.ToLower().Split('\\');
+                    int offset = -1;
+
+                    for (int i = folders.Length - 1; i >= 0; --i)
+                    {
+                        if (folders[i].StartsWith("python"))
+                        {
+                            offset = i;
+                            break;
+                        }
+                    }
+
+                    if (offset > -1)
+                    {
+                        // Check the version number
+                        bool versionOkay = false;
+
+                        if (int.TryParse(folders[offset].Substring(6), out int version))
+                        {
+                            versionOkay = version >= minVersion;
+                        }
+
+                        if (versionOkay)
+                        {
+                            pythonExe = Path.Combine(string.Join(@"\", folders.Take(1 + offset)), "python.exe");
+
+                            if (!File.Exists(pythonExe))
+                            {
+                                pythonExe = string.Empty;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return pythonExe;
+        }
+        
+
         public static void ValidatePython(string altPath)
         {
             /*
              * This method attempts to find python.exe by using 'where', and
              * if that should fail we then ask the user
              */
+
+            if (string.IsNullOrEmpty(settingsRef.PythonPath))
+            {
+                string pythonExe = ExtractPythonPathFromEnvironment(EnvironmentVariableTarget.User);
+
+                if (string.IsNullOrEmpty(pythonExe))
+                {
+                    pythonExe = ExtractPythonPathFromEnvironment(EnvironmentVariableTarget.Process);
+                }
+
+                if (string.IsNullOrEmpty(pythonExe))
+                {
+                    pythonExe = ExtractPythonPathFromEnvironment(EnvironmentVariableTarget.Machine);
+                }
+
+                if (!string.IsNullOrEmpty(pythonExe))
+                {
+                    settingsRef.PythonPath = pythonExe;
+                }
+            }
 
             // before we do anything else, check if the current path works
             if (string.IsNullOrEmpty(settingsRef.PythonPath) || !CheckIfFileOpens(settingsRef.PythonPath))
@@ -328,7 +484,8 @@ namespace TDHelper
             }
             else
             {
-                if (!string.IsNullOrEmpty(settingsRef.PythonPath) && settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase))
+                if (!string.IsNullOrEmpty(settingsRef.PythonPath) && 
+                    settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase))
                 {
                     // make sure we adjust relative paths to CSVs if we need to
                     settingsRef.TDPath = Directory.GetParent(settingsRef.PythonPath).ToString();
