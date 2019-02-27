@@ -262,7 +262,7 @@ namespace TDHelper
         /// </summary>
         private static void SetConnections()
         {
-            tdPath = Path.Combine(settingsRef.TDPath, @"data\TradeDangerous.db");
+            tdPath = Path.Combine(assemblyPath, @"data\TradeDangerous.db");
             tdhPath = Path.Combine(assemblyPath, "TDHelper.db");
 
             tdConn = GetConnection(tdPath);

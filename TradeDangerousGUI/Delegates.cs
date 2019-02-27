@@ -6,8 +6,6 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -21,37 +19,6 @@ namespace TDHelper
         /*
          * Mostly worker delegate related stuff goes here
          */
-
-        private void CleanUpdatedPricesFile()
-        {
-            /*
-                * This should search for Buy/Sell price for each commodity and set them to 0
-                */
-
-            string pricesFilePath = Path.Combine(settingsRef.TDPath, "prices.last");
-            string pricesFileOutputPath = Path.Combine(settingsRef.TDPath, "prices.updated");
-            string match = @"(\d+)\s+(\d+)\s+";
-            string replace = "0        0        ";
-            string contents = "";
-
-            if (File.Exists(pricesFilePath))
-            {
-                using (StreamReader reader = new StreamReader(pricesFilePath))
-                {
-                    contents = reader.ReadToEnd();
-                    reader.Close();
-                }
-                using (StreamWriter writer = new StreamWriter(pricesFileOutputPath))
-                {
-                    writer.Write(Regex.Replace(contents, match, replace));
-                    writer.Close();
-                }
-            }
-            else
-            {
-                throw new Exception("Cannot open the prices file for some reason");
-            }
-        }
 
         private void DecompressUpdate(string zipFileURL, string path)
         {
@@ -92,7 +59,7 @@ namespace TDHelper
         /// <param name="currentShips">The list of current ships.</param>
         /// <param name="availableShips">The list of now available ships from the profile.</param>
         /// <returns>A list of missing ships.</returns>
-        private IList<string> DeterminMissingShips(
+        private IList<string> DetermineMissingShips(
             string currentShips,
             string availableShips)
         {
@@ -216,7 +183,7 @@ namespace TDHelper
             }
         }
 
-        private void DoTDProc(string path)
+        public void DoTDProc(string path)
         {
             //
             // Assume we are calling this from a non-UI thread
@@ -328,13 +295,6 @@ namespace TDHelper
                     StackCircularBuffer("\nCommand completed.");
                 }
             }
-            else if (buttonCaller == 11)
-            {
-                if (procCode == 0) // exit code should be 0
-                {
-                    StackCircularBuffer("\nZero'ing all commodities in the prices.last file, and saving to: " + settingsRef.TDPath + "\\updated.prices\nNOTE: This will -NOT- import/upload the changes, you must do so manually.");
-                }
-            }
 
             commandString = string.Empty; // reset the path for thread safety
         }
@@ -345,17 +305,13 @@ namespace TDHelper
              * UPDATE DB BUTTON: called from Worker4
              */
             td_proc = new Process();
-            td_proc.StartInfo.FileName = settingsRef.PythonPath;
-
-            commandString = settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase)
-                ? "" // go in blank so we don't pass silliness to trade.exe
-                : "-u \"" + Utilities.GetPathToTradePy() + "\" ";
+            td_proc.StartInfo.FileName = "trade";
 
             // catch the method drop down here
             if (buttonCaller == 5)
             {
                 // catch the database update button
-                commandString += "import -P eddblink -O {0}".With(DBUpdateCommandString);
+                commandString += " import -P eddblink -O {0}".With(DBUpdateCommandString);
             }
         }
 
@@ -434,26 +390,6 @@ namespace TDHelper
                 TranslateShipType(shipType),
                 shipId,
                 shipName);
-        }
-
-        private void GetUpdatedPricesFile()
-        {
-            buttonCaller = 11;  // mark us as coming from the commodities editor (ctrl+click)
-            string pricesFilePath = Path.Combine(settingsRef.TDPath, "prices.last");
-
-            // first check if the input prices.last file already exists, if so delete it
-            if (File.Exists(pricesFilePath))
-            {
-                File.Delete(pricesFilePath);
-            }
-
-            // hop to the worker delegate to grab updated prices for a station
-            if (!backgroundWorker2.IsBusy)
-            {
-                DisablebtnStarts();
-                backgroundWorker2.RunWorkerAsync();
-                // head over to the worker delegate event RunWorkerCompleted for the next step
-            }
         }
 
         private int IsValidRunOutput(string input)
@@ -1108,7 +1044,7 @@ namespace TDHelper
         private string RetrieveCommanderProfile()
         {
             string json = string.Empty;
-            string path = Path.Combine(settingsRef.TDPath, @"tmp\tdh_profile.json");
+            string path = Path.Combine(assemblyPath, @"tmp\tdh_profile.json");
 
             if (CheckIfFileOpens(path))
             {
@@ -1285,7 +1221,7 @@ namespace TDHelper
                 config["System"]["AvailableShips"].StringValue = settingsRef.AvailableShips;
 
                 // Determine if any ships have been sold and remove if found.
-                IList<string> missingShips = DeterminMissingShips(currentShips, availableShips);
+                IList<string> missingShips = DetermineMissingShips(currentShips, availableShips);
 
                 foreach (string ship in missingShips)
                 {
@@ -1299,8 +1235,8 @@ namespace TDHelper
 
                 ClearCircularBuffer();
 
-                 StackCircularBuffer("Comander Profile Update completed.\n");
-           }
+                StackCircularBuffer("Comander Profile Update completed.\n");
+            }
             else
             {
                 // Inform the user that the token has expired.

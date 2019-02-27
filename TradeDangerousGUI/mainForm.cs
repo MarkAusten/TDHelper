@@ -367,12 +367,8 @@ namespace TDHelper
                 Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
                 td_proc = new Process();
-                td_proc.StartInfo.FileName = settingsRef.PythonPath;
-
-                if (!settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase))
-                {
-                    commandString = "-u \"" + Utilities.GetPathToTradePy() + "\" " + commandString;
-                }
+//                td_proc.StartInfo.FileName = settingsRef.PythonPath;
+                td_proc.StartInfo.FileName = "trade";
 
                 DoTDProc(commandString);
             }
@@ -393,12 +389,7 @@ namespace TDHelper
                     tabControl1.SelectedTab = pagOutput;
                 }
 
-                // assume we're coming from getUpdatedPricesFile()
-                if (!string.IsNullOrEmpty(settingsRef.ImportPath) && buttonCaller == 11)
-                {
-                    CleanUpdatedPricesFile();
-                }
-                else if (!backgroundWorker1.IsBusy && buttonCaller == 16)
+                if (!backgroundWorker1.IsBusy && buttonCaller == 16)
                 {
                     // force a db sync if we're marked
                     backgroundWorker1.RunWorkerAsync();
@@ -665,10 +656,10 @@ namespace TDHelper
         {
             if (buttonCaller == 22)
             {
-                commandString = Utilities.GetPathToTradePy() + " import -P edapi -O tdh";
+                commandString = "import -P edapi -O tdh";
 
                 td_proc = new Process();
-                td_proc.StartInfo.FileName = settingsRef.PythonPath;
+                td_proc.StartInfo.FileName = "trade";
 
                 DoTDProc(commandString);
             }
@@ -2106,10 +2097,12 @@ namespace TDHelper
             // Call the refresh method for the run options panel.
             OptionsPanelRefresh(panRunOptions);
 
+            SplashScreen.CloseForm();
+
+            ValidateTDPath();
+
             // start the database uploader
             backgroundWorker6.RunWorkerAsync();
-
-            SplashScreen.CloseForm();
         }
 
         /// <summary>

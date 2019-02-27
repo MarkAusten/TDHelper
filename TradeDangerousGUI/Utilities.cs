@@ -57,15 +57,6 @@ namespace TDHelper
         }
 
         /// <summary>
-        /// Return the full path to the trade.py file.
-        /// </summary>
-        /// <returns>The trade.py full path.</returns>
-        public static string GetPathToTradePy()
-        {
-            return Path.Combine(MainForm.settingsRef.TDPath, "trade.py");
-        }
-
-        /// <summary>
         /// Convert the number to string with a "." decimal point if required.
         /// </summary>
         /// <param name="number">The number to be converted.</param>

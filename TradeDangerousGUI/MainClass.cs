@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Media;
+using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -14,16 +15,17 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web.Security;
 using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
 
 namespace TDHelper
 {
     public partial class MainForm : Form
     {
+        public const int API_TIMEOUT = 60;
         public const string ITEM_CSV_FILE = @"data\Item.csv";
         public const string PAD_SIZE_FILTER = "SML?";
         public const string PLANETARY_FILTER = "YN?";
         public const string SHIP_CSV_FILE = @"data\Ship.csv";
-        public const int API_TIMEOUT = 60;
 
         #region Props
 
@@ -100,107 +102,6 @@ namespace TDHelper
             window.DefWndProc(ref msgSuspendUpdate);
         }
 
-        public static bool CheckIfFileOpens(string path)
-        {
-            bool fileOpens = false;
-
-            try
-            {
-                if (File.Exists(path))
-                {
-                    // throw if file can't be opened, hopefully
-                    FileStream p = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                    p.Close();
-                    p.Dispose();
-
-                    fileOpens = true;
-                }
-            }
-            catch
-            {
-                // Do nothing...
-            }
-
-            return fileOpens;
-        }
-
-        public static string Decrypt(string input)
-        {
-            // return a normalized string version of our decoded input
-            var inputBytes = Convert.FromBase64String(input);
-
-            return Encoding.UTF8.GetString(MachineKey.Unprotect(inputBytes));
-        }
-
-        public static string Encrypt(string input)
-        {
-            // return a base64 string version of our encoded input
-            var inputBytes = Encoding.UTF8.GetBytes(input);
-
-            return Convert.ToBase64String(MachineKey.Protect(inputBytes));
-        }
-
-        /// <summary>
-        /// Resumes painting for the target control. Intended to be called following a call to BeginControlUpdate()
-        /// </summary>
-        /// <param name="control">visual control</param>
-        public static void EndControlUpdate(Control control)
-        {
-            // Create a C "true" boolean as an IntPtr
-            IntPtr wparam = new IntPtr(1);
-            Message msgResumeUpdate = Message.Create(control.Handle, WM_SETREDRAW, wparam,
-                  IntPtr.Zero);
-
-            NativeWindow window = NativeWindow.FromHandle(control.Handle);
-            window.DefWndProc(ref msgResumeUpdate);
-            control.Invalidate();
-            control.Refresh();
-        }
-
-        public static void PlayAlert()
-        {
-            PlaySoundFile("notify.wav");
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="fileName"></param>
-        public static void PlaySoundFile(string fileName)
-        {
-            if (!settingsRef.Quiet)
-            {
-                // a simple method for playing a custom beep.wav or the default system Beep
-                SoundPlayer player = new SoundPlayer();
-                Assembly thisExecutable = System.Reflection.Assembly.GetExecutingAssembly();
-                string localSound = Path.Combine(assemblyPath, fileName);
-
-                if (CheckIfFileOpens(localSound))
-                {
-                    player.SoundLocation = localSound;
-                    player.LoadAsync();
-                    player.Play();
-                }
-            }
-        }
-
-        public static void PlayUnknown()
-        {
-            PlaySoundFile("unknown.wav");
-        }
-
-        /// <summary>
-        /// Displays the status message if the splash screen is visible.
-        /// </summary>
-        /// <param name="message">The message to be displayed.</param>
-        public static void SetSplashScreenStatus(string message)
-        {
-            if (SplashScreen.IsVisible)
-            {
-                SplashScreen.SetStatus(message);
-            }
-        }
-
         /// <summary>
         /// Check the default paths for the AppConfig.xml file
         /// </summary>
@@ -252,6 +153,30 @@ namespace TDHelper
             }
         }
 
+        public static bool CheckIfFileOpens(string path)
+        {
+            bool fileOpens = false;
+
+            try
+            {
+                if (File.Exists(path))
+                {
+                    // throw if file can't be opened, hopefully
+                    FileStream p = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    p.Close();
+                    p.Dispose();
+
+                    fileOpens = true;
+                }
+            }
+            catch
+            {
+                // Do nothing...
+            }
+
+            return fileOpens;
+        }
+
         /// <summary>
         /// Check to se if the AppConfig.xml file exists at the specified path.
         /// </summary>
@@ -269,74 +194,41 @@ namespace TDHelper
             return file;
         }
 
-        public static DialogResult ValidateNetLogPath(
-            string altPath,
-            bool force = false)
+        public static string Decrypt(string input)
         {
-            CheckDefaultNetLogPaths();
+            // return a normalized string version of our decoded input
+            var inputBytes = Convert.FromBase64String(input);
 
-            DialogResult result = DialogResult.None;
+            return Encoding.UTF8.GetString(MachineKey.Unprotect(inputBytes));
+        }
 
-            // override to avoid net log logic
-            if (!settingsRef.DisableNetLogs)
-            {
-                string appConfigPath = string.Empty;
+        public static string Encrypt(string input)
+        {
+            // return a base64 string version of our encoded input
+            var inputBytes = Encoding.UTF8.GetBytes(input);
 
-                if (!string.IsNullOrEmpty(settingsRef.NetLogPath))
-                {
-                    appConfigPath = Path.Combine(
-                        Directory.GetParent(settingsRef.NetLogPath).ToString(),
-                        "AppConfig.xml");
-                }
-
-                if (force ||
-                    string.IsNullOrEmpty(settingsRef.NetLogPath) ||
-                    string.IsNullOrEmpty(appConfigPath) ||
-                    !CheckIfFileOpens(appConfigPath))
-                {
-                    // let's just ask the user where to look
-                    OpenFileDialog x = new OpenFileDialog()
-                    {
-                        Title = "TD Helper - Select a valid Elite: Dangerous AppConfig.xml",
-                        Filter = "AppConfig.xml|*.xml"
-                    };
-
-                    result = x.ShowDialog();
-
-                    if (result != DialogResult.Cancel)
-                    {
-                        t_AppConfigPath = x.FileName;
-                        settingsRef.NetLogPath = Path.Combine(Directory.GetParent(t_AppConfigPath).ToString(), "Logs"); // set the appropriate Logs folder
-
-                        SaveSettingsToIniFile();
-
-                        SetSplashScreenStatus("Validating verbose logging");
-
-                        // always validate when verboselogging is enabled
-                        verboseLoggingChecked = false;
-                        ValidateVerboseLogging();
-                    }
-                    else
-                    {
-                        DialogResult dialog2 = TopMostMessageBox.Show(
-                            true,
-                            true,
-                            "Scanning for recent systems has been disabled.",
-                            "TD Helper - Error",
-                            MessageBoxButtons.OK);
-
-                        settingsRef.DisableNetLogs = true;
-
-                        SaveSettingsToIniFile();
-                    }
-                }
-            }
-
-            return result;
+            return Convert.ToBase64String(MachineKey.Protect(inputBytes));
         }
 
         /// <summary>
-        /// Try to locate the path to the python interpreter from the environment. 
+        /// Resumes painting for the target control. Intended to be called following a call to BeginControlUpdate()
+        /// </summary>
+        /// <param name="control">visual control</param>
+        public static void EndControlUpdate(Control control)
+        {
+            // Create a C "true" boolean as an IntPtr
+            IntPtr wparam = new IntPtr(1);
+            Message msgResumeUpdate = Message.Create(control.Handle, WM_SETREDRAW, wparam,
+                  IntPtr.Zero);
+
+            NativeWindow window = NativeWindow.FromHandle(control.Handle);
+            window.DefWndProc(ref msgResumeUpdate);
+            control.Invalidate();
+            control.Refresh();
+        }
+
+        /// <summary>
+        /// Try to locate the path to the python interpreter from the environment.
         /// </summary>
         /// <param name="target">The target environment.</param>
         /// <returns>The full path to the interpreter or blank if not found.</returns>
@@ -399,7 +291,117 @@ namespace TDHelper
 
             return pythonExe;
         }
-        
+
+        public static void PlayAlert()
+        {
+            PlaySoundFile("notify.wav");
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="fileName"></param>
+        public static void PlaySoundFile(string fileName)
+        {
+            if (!settingsRef.Quiet)
+            {
+                // a simple method for playing a custom beep.wav or the default system Beep
+                SoundPlayer player = new SoundPlayer();
+                Assembly thisExecutable = System.Reflection.Assembly.GetExecutingAssembly();
+                string localSound = Path.Combine(assemblyPath, fileName);
+
+                if (CheckIfFileOpens(localSound))
+                {
+                    player.SoundLocation = localSound;
+                    player.LoadAsync();
+                    player.Play();
+                }
+            }
+        }
+
+        public static void PlayUnknown()
+        {
+            PlaySoundFile("unknown.wav");
+        }
+
+        /// <summary>
+        /// Displays the status message if the splash screen is visible.
+        /// </summary>
+        /// <param name="message">The message to be displayed.</param>
+        public static void SetSplashScreenStatus(string message)
+        {
+            if (SplashScreen.IsVisible)
+            {
+                SplashScreen.SetStatus(message);
+            }
+        }
+
+        public static DialogResult ValidateNetLogPath(
+            string altPath,
+            bool force = false)
+        {
+            DialogResult result = DialogResult.None;
+
+            // override to avoid net log logic
+            if (!settingsRef.DisableNetLogs)
+            {
+                CheckDefaultNetLogPaths();
+
+                string appConfigPath = string.Empty;
+
+                if (!string.IsNullOrEmpty(settingsRef.NetLogPath))
+                {
+                    appConfigPath = Path.Combine(
+                        Directory.GetParent(settingsRef.NetLogPath).ToString(),
+                        "AppConfig.xml");
+                }
+
+                if (force ||
+                    string.IsNullOrEmpty(settingsRef.NetLogPath) ||
+                    string.IsNullOrEmpty(appConfigPath) ||
+                    !CheckIfFileOpens(appConfigPath))
+                {
+                    // let's just ask the user where to look
+                    OpenFileDialog x = new OpenFileDialog()
+                    {
+                        Title = "TD Helper - Select a valid Elite: Dangerous AppConfig.xml",
+                        Filter = "AppConfig.xml|*.xml"
+                    };
+
+                    result = x.ShowDialog();
+
+                    if (result != DialogResult.Cancel)
+                    {
+                        // set the appropriate Logs folder
+                        t_AppConfigPath = x.FileName;
+                        settingsRef.NetLogPath = Path.Combine(Directory.GetParent(t_AppConfigPath).ToString(), "Logs");
+
+                        SaveSettingsToIniFile();
+
+                        SetSplashScreenStatus("Validating verbose logging");
+
+                        // always validate when verboselogging is enabled
+                        verboseLoggingChecked = false;
+                        ValidateVerboseLogging();
+                    }
+                    else
+                    {
+                        DialogResult dialog2 = TopMostMessageBox.Show(
+                            true,
+                            true,
+                            "Scanning for recent systems has been disabled.",
+                            "TD Helper - Error",
+                            MessageBoxButtons.OK);
+
+                        settingsRef.DisableNetLogs = true;
+
+                        SaveSettingsToIniFile();
+                    }
+                }
+            }
+
+            return result;
+        }
 
         public static void ValidatePython(string altPath)
         {
@@ -433,111 +435,93 @@ namespace TDHelper
             {
                 OpenFileDialog x = new OpenFileDialog()
                 {
-                    Title = "TD Helper - Select your python.exe or trade.exe",
+                    Title = "TD Helper - Select your python.exe",
                     Filter = "Python Interpreter (*.exe)|*.exe"
                 };
 
                 if (x.ShowDialog() == DialogResult.OK)
                 {
-                    if (CheckIfFileOpens(x.FileName))
-                    {
-                        settingsRef.PythonPath = Path.GetFullPath(x.FileName);
-                        SaveSettingsToIniFile();
+                    altPath = x.FileName;
+                }
 
-                        if (settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase))
-                        {
-                            // we're running Trade Dangerous Installer, adjust the relative paths
-                            settingsRef.TDPath = Directory.GetParent(settingsRef.PythonPath).ToString();
-                            t_itemListPath = Path.Combine(settingsRef.TDPath, ITEM_CSV_FILE);
-                            t_shipListPath = Path.Combine(settingsRef.TDPath, SHIP_CSV_FILE);
-
-                            SaveSettingsToIniFile();
-                        }
-                    }
-                    else
-                    {
-                        throw new Exception("Unable to access the python interpreter, this is fatal");
-                    }
+                if (CheckIfFileOpens(altPath))
+                {
+                    settingsRef.PythonPath = altPath;
+                    SaveSettingsToIniFile();
                 }
                 else
                 {
-                    if (CheckIfFileOpens(altPath))
-                    {
-                        settingsRef.PythonPath = altPath;
-                        SaveSettingsToIniFile();
+                    MessageBox.Show(
+                        "Fatal Error - python.exe must be located.",
+                        "Fatal Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Stop);
 
-                        if (settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase))
-                        {
-                            // we're running Trade Dangerous Installer, adjust the relative paths
-                            settingsRef.TDPath = Directory.GetParent(settingsRef.PythonPath).ToString();
-                            t_itemListPath = Path.Combine(settingsRef.TDPath, ITEM_CSV_FILE);
-                            t_shipListPath = Path.Combine(settingsRef.TDPath, SHIP_CSV_FILE);
-
-                            SaveSettingsToIniFile();
-                        }
-                    }
-                    else
-                    {
-                        throw new Exception("Unable to access the python interpreter, this is fatal");
-                    }
-                }
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(settingsRef.PythonPath) && 
-                    settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase))
-                {
-                    // make sure we adjust relative paths to CSVs if we need to
-                    settingsRef.TDPath = Directory.GetParent(settingsRef.PythonPath).ToString();
-                    t_itemListPath = Path.Combine(settingsRef.TDPath, ITEM_CSV_FILE);
-                    t_shipListPath = Path.Combine(settingsRef.TDPath, SHIP_CSV_FILE);
+                    Application.Exit();
                 }
             }
         }
 
-        public static void ValidateTDPath(string altPath)
+        public static void ValidateTDPath()
         {
-            if (!string.IsNullOrEmpty(settingsRef.PythonPath) && !settingsRef.PythonPath.EndsWith("trade.exe", StringComparison.OrdinalIgnoreCase))
+            string output = RunProcess("pip", "show tradedangerous");
+
+            if (string.IsNullOrEmpty(output))
             {
-                // bypass this routine if the python path validator sets our path for us (due to Trade Dangerous Installer)
-                if (string.IsNullOrEmpty(settingsRef.TDPath) || !CheckIfFileOpens(Utilities.GetPathToTradePy()))
+                DialogResult result = MessageBox.Show(
+                    "Tradedangerous not installed via pip. Install now?",
+                    "Tradedangerous",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
                 {
-                    OpenFileDialog x = new OpenFileDialog()
-                    {
-                        Title = "TD Helper - Select Trade.py from the Trade Dangerous directory"
-                    };
+                    output = RunProcess("pip", "install tradedangerous");
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "Fatal Error - tradedangerous must be installed.",
+                        "Fatal Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Stop);
 
-                    if (Directory.Exists(settingsRef.TDPath))
-                    {
-                        x.InitialDirectory = settingsRef.TDPath;
-                    }
+                    Application.Exit();
+                }
+            }
+            else
+            {
+                // Get the installed version.
+                string[] lines = output.Split(
+                    new[] { Environment.NewLine },
+                    StringSplitOptions.None);
 
-                    x.Filter = "Py files (*.py)|*.py";
+                string installedVersion = lines[1].Substring(1 + lines[1].IndexOf(":")).Trim();
 
-                    if (x.ShowDialog() == DialogResult.OK)
-                    {
-                        settingsRef.TDPath = Path.GetDirectoryName(x.FileName);
-                        // we have to create the item/ship paths again after the validation
-                        t_itemListPath = Path.Combine(settingsRef.TDPath, ITEM_CSV_FILE);
-                        t_shipListPath = Path.Combine(settingsRef.TDPath, SHIP_CSV_FILE);
+                using (WebClient client = new WebClient())
+                {
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                    output = client.DownloadString("https://pypi.python.org/pypi/tradedangerous/json");
 
-                        SaveSettingsToIniFile();
-                    }
-                    else
+                    JObject jo = JObject.Parse(output);
+
+                    string currentVersion = ((JObject)jo["releases"])
+                        .Properties()
+                        .Select(p => p.Name)
+                        .OrderByDescending(x => x)
+                        .First();
+
+                    if (installedVersion != currentVersion)
                     {
-                        string localPath = altPath ?? string.Empty; // prevent null
-                        if (!string.IsNullOrEmpty(localPath) && CheckIfFileOpens(Path.Combine(localPath, "trade.py")) || localPath.EndsWith(".py"))
+                        DialogResult result = MessageBox.Show(
+                            "New tradedangerous version available. Upgrade now?",
+                            "Tradedangerous",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Question);
+
+                        if (result == DialogResult.Yes)
                         {
-                            // if we have an alternate path, we can reset the variable here
-                            settingsRef.TDPath = localPath;
-                            t_itemListPath = Path.Combine(settingsRef.TDPath, ITEM_CSV_FILE);
-                            t_shipListPath = Path.Combine(settingsRef.TDPath, SHIP_CSV_FILE);
-
-                            SaveSettingsToIniFile();
-                        }
-                        else
-                        {
-                            throw new Exception("TradeDangerous path is empty or invalid, cannot continue");
+                            output = RunProcess("pip", "install --upgrade tradedangerous");
                         }
                     }
                 }
@@ -667,7 +651,6 @@ namespace TDHelper
         {
             // check our paths.
             ValidatePython(null);
-            ValidateTDPath(null);
             ValidateNetLogPath(null);
         }
 
@@ -726,15 +709,8 @@ namespace TDHelper
             }
 
             // make sure we pull CSV paths after we validate our inputs
-            if (!string.IsNullOrEmpty(settingsRef.TDPath))
-            {
-                t_itemListPath = Path.Combine(settingsRef.TDPath, ITEM_CSV_FILE);
-            }
-
-            if (!string.IsNullOrEmpty(settingsRef.TDPath))
-            {
-                t_shipListPath = Path.Combine(settingsRef.TDPath, SHIP_CSV_FILE);
-            }
+            t_itemListPath = Path.Combine(assemblyPath, ITEM_CSV_FILE);
+            t_shipListPath = Path.Combine(assemblyPath, SHIP_CSV_FILE);
 
             // Set the default rebuy percentage to 5%.
             if (settingsRef.RebuyPercentage == 0)
@@ -766,6 +742,32 @@ namespace TDHelper
             string sanitized = Regex.Replace(input, pattern, string.Empty, RegexOptions.Compiled);
 
             return sanitized;
+        }
+
+        private static string RunProcess(string filename, string args)
+        {
+            // Start the child process.
+            Process p = new Process();
+
+            // Redirect the output stream of the child process.
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.FileName = filename;
+            p.StartInfo.Arguments = args;
+            p.StartInfo.CreateNoWindow = true;
+
+            p.Start();
+
+            // Do not wait for the child process to exit before
+            // reading to the end of its redirected stream.
+            // p.WaitForExit();
+            // Read the output stream first and then wait.
+
+            string output = p.StandardOutput.ReadToEnd();
+
+            p.WaitForExit();
+
+            return output;
         }
 
         [DllImport("user32.dll")]

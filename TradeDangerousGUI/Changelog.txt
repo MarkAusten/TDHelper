@@ -1,3 +1,9 @@
+v3.0.0.0
+--------
+* Updated TDH to use "pip" commands to install and upgarde tradedangerous.
+* Used the official AppConfig.xml locations to try and locate the file automatically using the manual method as a fallback.
+* Examined the PATH environment variable to locate the python pathg using the manual method as a fallback.
+
 v2.1.0.5
 --------
 * Removed the "progbar" option on the TD comand line as this no longer does anything and the progress bar is the default.

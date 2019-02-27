@@ -47,14 +47,11 @@
             this.currentTVFontBox = new System.Windows.Forms.TextBox();
             this.currentTVFontLabel = new System.Windows.Forms.Label();
             this.btnNetLogsPath = new System.Windows.Forms.Button();
-            this.validateTDPath = new System.Windows.Forms.Button();
             this.validatePythonPath = new System.Windows.Forms.Button();
             this.txtNetLogsPath = new System.Windows.Forms.TextBox();
-            this.tdPathBox = new System.Windows.Forms.TextBox();
             this.pythonPathBox = new System.Windows.Forms.TextBox();
             this.lblNetLogsPath = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.resetButton = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.rebuyPercentage = new System.Windows.Forms.NumericUpDown();
@@ -70,7 +67,7 @@
             // 
             // extraRunParameters
             // 
-            this.extraRunParameters.Location = new System.Drawing.Point(97, 226);
+            this.extraRunParameters.Location = new System.Drawing.Point(97, 197);
             this.extraRunParameters.Name = "extraRunParameters";
             this.extraRunParameters.Size = new System.Drawing.Size(257, 20);
             this.extraRunParameters.TabIndex = 13;
@@ -80,7 +77,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 229);
+            this.label1.Location = new System.Drawing.Point(6, 200);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(85, 13);
             this.label1.TabIndex = 1;
@@ -89,7 +86,7 @@
             // okButton
             // 
             this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.okButton.Location = new System.Drawing.Point(300, 396);
+            this.okButton.Location = new System.Drawing.Point(300, 367);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 28);
             this.okButton.TabIndex = 16;
@@ -100,7 +97,7 @@
             // cancelButton
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cancelButton.Location = new System.Drawing.Point(12, 396);
+            this.cancelButton.Location = new System.Drawing.Point(12, 367);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 28);
             this.cancelButton.TabIndex = 14;
@@ -150,14 +147,11 @@
             this.overrideGroupBox.Controls.Add(this.currentTVFontBox);
             this.overrideGroupBox.Controls.Add(this.currentTVFontLabel);
             this.overrideGroupBox.Controls.Add(this.btnNetLogsPath);
-            this.overrideGroupBox.Controls.Add(this.validateTDPath);
             this.overrideGroupBox.Controls.Add(this.validatePythonPath);
             this.overrideGroupBox.Controls.Add(this.txtNetLogsPath);
-            this.overrideGroupBox.Controls.Add(this.tdPathBox);
             this.overrideGroupBox.Controls.Add(this.pythonPathBox);
             this.overrideGroupBox.Controls.Add(this.lblNetLogsPath);
             this.overrideGroupBox.Controls.Add(this.label3);
-            this.overrideGroupBox.Controls.Add(this.label2);
             this.overrideGroupBox.Controls.Add(this.overrideCopySystemToClipboard);
             this.overrideGroupBox.Controls.Add(this.overrideDisableNetLogs);
             this.overrideGroupBox.Controls.Add(this.overrideDoNotUpdate);
@@ -165,7 +159,7 @@
             this.overrideGroupBox.Controls.Add(this.extraRunParameters);
             this.overrideGroupBox.Location = new System.Drawing.Point(12, 12);
             this.overrideGroupBox.Name = "overrideGroupBox";
-            this.overrideGroupBox.Size = new System.Drawing.Size(363, 289);
+            this.overrideGroupBox.Size = new System.Drawing.Size(363, 261);
             this.overrideGroupBox.TabIndex = 7;
             this.overrideGroupBox.TabStop = false;
             this.overrideGroupBox.Text = "Overrides";
@@ -173,7 +167,7 @@
             // chkSummary
             // 
             this.chkSummary.AutoSize = true;
-            this.chkSummary.Location = new System.Drawing.Point(259, 262);
+            this.chkSummary.Location = new System.Drawing.Point(259, 233);
             this.chkSummary.Name = "chkSummary";
             this.chkSummary.Size = new System.Drawing.Size(69, 17);
             this.chkSummary.TabIndex = 69;
@@ -185,7 +179,7 @@
             // chkProgress
             // 
             this.chkProgress.AutoSize = true;
-            this.chkProgress.Location = new System.Drawing.Point(156, 262);
+            this.chkProgress.Location = new System.Drawing.Point(156, 233);
             this.chkProgress.Name = "chkProgress";
             this.chkProgress.Size = new System.Drawing.Size(97, 17);
             this.chkProgress.TabIndex = 68;
@@ -209,7 +203,7 @@
             // 
             this.verboseLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.verboseLabel.AutoSize = true;
-            this.verboseLabel.Location = new System.Drawing.Point(38, 263);
+            this.verboseLabel.Location = new System.Drawing.Point(38, 234);
             this.verboseLabel.Name = "verboseLabel";
             this.verboseLabel.Size = new System.Drawing.Size(53, 13);
             this.verboseLabel.TabIndex = 60;
@@ -225,7 +219,7 @@
             "-v",
             "-vv",
             "-vvv"});
-            this.verbosityComboBox.Location = new System.Drawing.Point(97, 260);
+            this.verbosityComboBox.Location = new System.Drawing.Point(97, 231);
             this.verbosityComboBox.Name = "verbosityComboBox";
             this.verbosityComboBox.Size = new System.Drawing.Size(46, 21);
             this.verbosityComboBox.TabIndex = 59;
@@ -260,23 +254,13 @@
             // 
             // btnNetLogsPath
             // 
-            this.btnNetLogsPath.Location = new System.Drawing.Point(331, 193);
+            this.btnNetLogsPath.Location = new System.Drawing.Point(331, 169);
             this.btnNetLogsPath.Name = "btnNetLogsPath";
             this.btnNetLogsPath.Size = new System.Drawing.Size(24, 20);
             this.btnNetLogsPath.TabIndex = 12;
             this.btnNetLogsPath.Text = "...";
             this.btnNetLogsPath.UseVisualStyleBackColor = true;
             this.btnNetLogsPath.Click += new System.EventHandler(this.ValidateNetLogsPath_Click);
-            // 
-            // validateTDPath
-            // 
-            this.validateTDPath.Location = new System.Drawing.Point(331, 167);
-            this.validateTDPath.Name = "validateTDPath";
-            this.validateTDPath.Size = new System.Drawing.Size(24, 20);
-            this.validateTDPath.TabIndex = 10;
-            this.validateTDPath.Text = "...";
-            this.validateTDPath.UseVisualStyleBackColor = true;
-            this.validateTDPath.Click += new System.EventHandler(this.ValidateTDPath_Click);
             // 
             // validatePythonPath
             // 
@@ -290,17 +274,10 @@
             // 
             // txtNetLogsPath
             // 
-            this.txtNetLogsPath.Location = new System.Drawing.Point(98, 193);
+            this.txtNetLogsPath.Location = new System.Drawing.Point(98, 169);
             this.txtNetLogsPath.Name = "txtNetLogsPath";
             this.txtNetLogsPath.Size = new System.Drawing.Size(227, 20);
             this.txtNetLogsPath.TabIndex = 11;
-            // 
-            // tdPathBox
-            // 
-            this.tdPathBox.Location = new System.Drawing.Point(98, 167);
-            this.tdPathBox.Name = "tdPathBox";
-            this.tdPathBox.Size = new System.Drawing.Size(227, 20);
-            this.tdPathBox.TabIndex = 9;
             // 
             // pythonPathBox
             // 
@@ -312,7 +289,7 @@
             // lblNetLogsPath
             // 
             this.lblNetLogsPath.AutoSize = true;
-            this.lblNetLogsPath.Location = new System.Drawing.Point(14, 197);
+            this.lblNetLogsPath.Location = new System.Drawing.Point(14, 173);
             this.lblNetLogsPath.Name = "lblNetLogsPath";
             this.lblNetLogsPath.Size = new System.Drawing.Size(78, 13);
             this.lblNetLogsPath.TabIndex = 6;
@@ -327,19 +304,10 @@
             this.label3.TabIndex = 5;
             this.label3.Text = "Python Path:";
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(42, 170);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(50, 13);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "TD Path:";
-            // 
             // resetButton
             // 
             this.resetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.resetButton.Location = new System.Drawing.Point(151, 396);
+            this.resetButton.Location = new System.Drawing.Point(151, 367);
             this.resetButton.Name = "resetButton";
             this.resetButton.Size = new System.Drawing.Size(84, 28);
             this.resetButton.TabIndex = 15;
@@ -369,7 +337,7 @@
             this.miscGroupBox.Controls.Add(this.chkQuiet);
             this.miscGroupBox.Controls.Add(this.rebuyPercentage);
             this.miscGroupBox.Controls.Add(this.lblRebuyPercentage);
-            this.miscGroupBox.Location = new System.Drawing.Point(12, 307);
+            this.miscGroupBox.Location = new System.Drawing.Point(12, 278);
             this.miscGroupBox.Name = "miscGroupBox";
             this.miscGroupBox.Size = new System.Drawing.Size(363, 82);
             this.miscGroupBox.TabIndex = 17;
@@ -415,7 +383,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(387, 431);
+            this.ClientSize = new System.Drawing.Size(387, 402);
             this.Controls.Add(this.miscGroupBox);
             this.Controls.Add(this.resetButton);
             this.Controls.Add(this.overrideGroupBox);
@@ -451,12 +419,9 @@
         private System.Windows.Forms.GroupBox overrideGroupBox;
         private System.Windows.Forms.Label lblNetLogsPath;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnNetLogsPath;
-        private System.Windows.Forms.Button validateTDPath;
         private System.Windows.Forms.Button validatePythonPath;
         private System.Windows.Forms.TextBox txtNetLogsPath;
-        private System.Windows.Forms.TextBox tdPathBox;
         private System.Windows.Forms.TextBox pythonPathBox;
         private System.Windows.Forms.Button resetButton;
         private System.Windows.Forms.Button tvFontSelectorButton;

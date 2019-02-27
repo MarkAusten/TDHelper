@@ -242,7 +242,7 @@ namespace TDHelper
                 settings.Quiet = GetBooleanSetting(configSection, "Quiet");
                 settings.SizeChild = GetStringSetting(configSection, "SizeChild");
                 settings.SizeParent = GetStringSetting(configSection, "SizeParent");
-                settings.TDPath = GetStringSetting(configSection, "TDPath");
+                settings.TDVersion = GetStringSetting(configSection, "TDVersion");
                 settings.TestSystems = GetBooleanSetting(configSection, "TestSystems");
                 settings.TimeOut = GetIntegerSetting(configSection, "TimeOut");
                 settings.TreeViewFont = GetStringSetting(configSection, "TreeViewFont");
@@ -377,7 +377,7 @@ namespace TDHelper
             configSection["Quiet"].BoolValue = settings.Quiet;
             configSection["SizeChild"].StringValue = settings.SizeChild ?? string.Empty;
             configSection["SizeParent"].StringValue = settings.SizeParent ?? string.Empty;
-            configSection["TDPath"].StringValue = settings.TDPath ?? string.Empty;
+            configSection["TDVersion"].StringValue = settings.TDVersion ?? string.Empty;
             configSection["TestSystems"].BoolValue = settings.TestSystems;
             configSection["TimeOut"].IntValue = settings.TimeOut;
             configSection["TreeViewFont"].StringValue = settings.TreeViewFont ?? string.Empty;
@@ -934,7 +934,7 @@ namespace TDHelper
         public decimal StartJumps { get; set; }
         public decimal Stock { get; set; }
         public bool Summary { get; set; }
-        public string TDPath { get; set; }
+        public string TDVersion { get; set; }
         public bool TestSystems { get; set; }
         public int TimeOut { get; set; }
         public bool Towards { get; set; }
@@ -1023,7 +1023,7 @@ namespace TDHelper
             instance.StartJumps = 0;
             instance.Stock = 0;
             instance.Summary = false;
-            instance.TDPath = string.Empty;
+            instance.TDVersion = string.Empty;
             instance.TestSystems = false;
             instance.TimeOut = 0;
             instance.Towards = false;

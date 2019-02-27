@@ -32,7 +32,6 @@ namespace TDHelper
             settings.CopySystemToClipboard = !overrideCopySystemToClipboard.Checked;
 
             settings.PythonPath = pythonPathBox.Text;
-            settings.TDPath = tdPathBox.Text;
             settings.NetLogPath = txtNetLogsPath.Text;
 
             settings.ExtraRunParams = extraRunParameters.Text;
@@ -186,11 +185,6 @@ namespace TDHelper
                 pythonPathBox.Text = MainForm.settingsRef.PythonPath;
             }
 
-            if (!string.IsNullOrEmpty(MainForm.settingsRef.TDPath))
-            {
-                tdPathBox.Text = MainForm.settingsRef.TDPath;
-            }
-
             if (!string.IsNullOrEmpty(MainForm.settingsRef.NetLogPath))
             {
                 txtNetLogsPath.Text = MainForm.settingsRef.NetLogPath;
@@ -272,47 +266,11 @@ namespace TDHelper
         private void ValidatePythonPath_Click(object sender, EventArgs e)
         {
             string origPath = MainForm.settingsRef.PythonPath;
-            string origTDPath = MainForm.settingsRef.TDPath;
 
             MainForm.settingsRef.PythonPath = string.Empty;
             MainForm.ValidatePython(origPath);
 
-            // adjust for Trade Dangerous Installer
-            if (MainForm.settingsRef.PythonPath.EndsWith("trade.exe"))
-            {
-                MainForm.ValidateTDPath(origTDPath);
-                tdPathBox.Text = MainForm.settingsRef.TDPath;
-            }
-            else if (MainForm.settingsRef.PythonPath.EndsWith("python.exe")
-                && !MainForm.CheckIfFileOpens(Utilities.GetPathToTradePy()))
-            {
-                MainForm.settingsRef.TDPath = string.Empty;
-                MainForm.ValidateTDPath(origTDPath);
-                tdPathBox.Text = MainForm.settingsRef.TDPath;
-            }
-
             pythonPathBox.Text = MainForm.settingsRef.PythonPath;
-        }
-
-        private void ValidateTDPath_Click(object sender, EventArgs e)
-        {
-            string origPath = MainForm.settingsRef.TDPath;
-            string origPyPath = MainForm.settingsRef.PythonPath;
-
-            // if we're using Trade Dangerous Installer, wipe our interpreter path first
-            if (origPyPath.EndsWith("trade.exe"))
-                MainForm.settingsRef.PythonPath = string.Empty;
-
-            MainForm.settingsRef.TDPath = string.Empty;
-            MainForm.ValidateTDPath(origPath);
-
-            if (origPyPath.EndsWith("trade.exe"))
-            {
-                MainForm.ValidatePython(origPyPath);
-                pythonPathBox.Text = MainForm.settingsRef.PythonPath;
-            }
-
-            tdPathBox.Text = MainForm.settingsRef.TDPath;
         }
     }
 }
