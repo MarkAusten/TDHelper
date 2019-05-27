@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("TDHelper2")]
+[assembly: AssemblyProduct("TDHelper3")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 //      Major Version
 //      Minor Version
 //      Build Number
-//      Revision
+//      Revisio1
 //
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:

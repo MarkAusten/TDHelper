@@ -131,8 +131,8 @@ namespace TDHelper
                     string manifestAssemblyVersion = root.Element("Version").Value;
                     string localAssemblyVersion = GetFileVersion(localAssemblyPath);
 
-                    int manifestVersion = ConvertVersion(manifestAssemblyVersion);
-                    int assemblyVersion = ConvertVersion(localAssemblyVersion);
+                    long manifestVersion = ConvertVersion(manifestAssemblyVersion);
+                    long assemblyVersion = ConvertVersion(localAssemblyVersion);
 
                     manifestVersionIsGreater = manifestVersion > assemblyVersion;
                 }
@@ -150,7 +150,7 @@ namespace TDHelper
         /// </summary>
         /// <param name="version">The version to convert.</param>
         /// <returns>The version number as an int.</returns>
-        public static int ConvertVersion(string version)
+        public static long ConvertVersion(string version)
         {
             string newVersion = string.Empty;
 
@@ -163,7 +163,7 @@ namespace TDHelper
                 newVersion += part.PadLeft(3).Replace(" ", "0");
             }
 
-            if (!int.TryParse(newVersion, out int versionNumber))
+            if (!long.TryParse(newVersion, out long versionNumber))
             {
                 versionNumber = 0;
             }

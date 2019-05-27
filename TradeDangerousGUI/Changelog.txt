@@ -1,6 +1,10 @@
+v3.0.0.1
+--------
+* Fix bug that overflowed the int limits when checking ther version number for TDH3
+
 v3.0.0.0
 --------
-* Updated TDH to use "pip" commands to install and upgarde tradedangerous.
+* Updated TDH to use "pip" commands to install and upgrade tradedangerous.
 * Used the official AppConfig.xml locations to try and locate the file automatically using the manual method as a fallback.
 * Examined the PATH environment variable to locate the python pathg using the manual method as a fallback.
 
