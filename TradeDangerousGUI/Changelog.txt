@@ -1,6 +1,7 @@
 v3.0.0.2
 --------
 * Attempt to reduce the long delay issue when selecting a source for the first time.
+* Added indexing commands to try and improved database access speed.
 
 v3.0.0.1
 --------

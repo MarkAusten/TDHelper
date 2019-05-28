@@ -36,6 +36,8 @@
             this.btnClose = new System.Windows.Forms.Button();
             this.lblVacuum = new System.Windows.Forms.Label();
             this.lblAnalyse = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.btnIndex = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnVacuum
@@ -61,7 +63,7 @@
             // btnClose
             // 
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClose.Location = new System.Drawing.Point(467, 282);
+            this.btnClose.Location = new System.Drawing.Point(467, 342);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 17;
@@ -76,7 +78,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVacuum.Location = new System.Drawing.Point(93, 83);
             this.lblVacuum.Name = "lblVacuum";
-            this.lblVacuum.Size = new System.Drawing.Size(449, 170);
+            this.lblVacuum.Size = new System.Drawing.Size(449, 168);
             this.lblVacuum.TabIndex = 20;
             this.lblVacuum.Text = resources.GetString("lblVacuum.Text");
             // 
@@ -91,11 +93,35 @@
             this.lblAnalyse.TabIndex = 21;
             this.lblAnalyse.Text = resources.GetString("lblAnalyse.Text");
             // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.Location = new System.Drawing.Point(98, 278);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(444, 41);
+            this.label1.TabIndex = 23;
+            this.label1.Text = "The INDEX command adds various indices to the Trade Gangerous database that may i" +
+    "mprove the performance of TD Helper.";
+            // 
+            // btnIndex
+            // 
+            this.btnIndex.Location = new System.Drawing.Point(12, 278);
+            this.btnIndex.Name = "btnIndex";
+            this.btnIndex.Size = new System.Drawing.Size(75, 23);
+            this.btnIndex.TabIndex = 22;
+            this.btnIndex.Text = "Index";
+            this.btnIndex.UseVisualStyleBackColor = true;
+            this.btnIndex.Click += new System.EventHandler(this.EventHandler_Index_Click);
+            // 
             // DbMaintenanceForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(554, 317);
+            this.ClientSize = new System.Drawing.Size(554, 377);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.btnIndex);
             this.Controls.Add(this.lblAnalyse);
             this.Controls.Add(this.lblVacuum);
             this.Controls.Add(this.btnClose);
@@ -115,5 +141,7 @@
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Label lblVacuum;
         private System.Windows.Forms.Label lblAnalyse;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnIndex;
     }
 }

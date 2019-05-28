@@ -2290,6 +2290,20 @@ namespace TDHelper
             SendNonQueryCommandToDatabase("VACUUM", conn);
         }
 
+        /// <summary>
+        /// Add the missing indices if they are, in fact, missing.
+        /// </summary>
+        private void AddMissingIndicesToDatabase()
+        {
+            CloseConnection(tdConn);
+            CloseConnection(tdhConn);
+
+            SQLiteConnection conn = GetConnection(tdPath);
+
+            SendNonQueryCommandToDatabase("create index if not exists Station_name_index on Station (name)", conn);
+            SendNonQueryCommandToDatabase("create index if not exists System_name_index on System (name)", conn);
+        }
+
         private void VacuumPilotsLogDB()
         {
             // a simple method to vacuum our database

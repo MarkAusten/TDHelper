@@ -486,6 +486,26 @@ namespace TDHelper
 
                 StackCircularBuffer("Analysis completed.{0}".With(Environment.NewLine));
             }
+            if (DBUpdateCommandString == "INDEX")
+            {
+                // only start the stopwatch for callers that run in the background
+                if (!backgroundWorker3.IsBusy)
+                {
+                    backgroundWorker3.RunWorkerAsync();
+                }
+                else
+                {
+                    stopwatch.Start();
+                }
+
+                ClearCircularBuffer();
+
+                StackCircularBuffer("Adding missing indices to database...{0}".With(Environment.NewLine));
+
+                AddMissingIndicesToDatabase();
+
+                StackCircularBuffer("Indexing completed.{0}".With(Environment.NewLine));
+            }
             else if (DBUpdateCommandString == "VACUUM")
             {
                 // only start the stopwatch for callers that run in the background

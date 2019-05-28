@@ -95,5 +95,17 @@ namespace TDHelper
                 "VACUUM",
                 "This may take an excessively long time, possibly many hours. Are you sure you want to do this?");
         }
+
+        /// <summary>
+        /// The event handler for vacuum clicked.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_Index_Click(object sender, EventArgs e)
+        {
+            ProcessMaintenanceRequest(
+                "INDEX",
+                "This may take little while. Are you sure you want to do this?");
+        }
     }
 }
