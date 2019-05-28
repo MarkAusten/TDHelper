@@ -1,3 +1,7 @@
+v3.0.0.2
+--------
+* Attempt to reduce the long delay issue when selecting a source for the first time.
+
 v3.0.0.1
 --------
 * Fix bug that overflowed the int limits when checking ther version number for TDH3
