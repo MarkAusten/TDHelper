@@ -2072,6 +2072,11 @@ namespace TDHelper
             SplashScreen.SetStatus("Translating tooltips...");
             TranslateTooltips();
 
+            SplashScreen.SetStatus("Setting up access to the main database...");
+            Application.DoEvents();
+
+            GrabStationData("Shinrarta Dezhra", "Jameson Memorial");
+
             SplashScreen.SetStatus("Completed.");
         }
 

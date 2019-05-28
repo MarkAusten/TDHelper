@@ -2,6 +2,8 @@ v3.0.0.2
 --------
 * Attempt to reduce the long delay issue when selecting a source for the first time.
 * Added indexing commands to try and improved database access speed.
+* Added a dummy call to the station data for Shinrarta Dezhra/Jameson Memorial during startup to get over the first access problem.
+* Changed the manifest location folder to TDHelper3 for this version.
 
 v3.0.0.1
 --------
