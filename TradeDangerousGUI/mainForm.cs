@@ -1270,7 +1270,7 @@ namespace TDHelper
             }
             catch (Exception ex)
             {
-                // Do nothing.
+                Debug.WriteLine(ex.GetFullMessage());
             }
         }
 
@@ -2755,7 +2755,11 @@ namespace TDHelper
                 // make sure we filter unwanted characters from the string
                 string filteredString = RemoveExtraWhitespace(cboSourceSystem.Text);
 
-                if ((e.KeyCode == Keys.Enter & e.Modifiers == Keys.Control)
+                if (e.KeyData == Keys.Enter & e.Modifiers == Keys.None)
+                {
+                    ProcessSelectedSource();
+                }
+                else if ((e.KeyCode == Keys.Enter & e.Modifiers == Keys.Control)
                     && StringInList(filteredString, outputSysStnNames))
                 {
                     // if ctrl+enter, is a known system/station, and not in our net log, mark it down
@@ -2793,24 +2797,27 @@ namespace TDHelper
         /// </summary>
         /// <param name="sender">The sender object.</param>
         /// <param name="e">The event arguments.</param>
-        private void EventHandler_SrcSystemComboBox_TextChanged(
+        private void ProcessSelectedSource()
+        {
+            string filteredString = RemoveExtraWhitespace(cboSourceSystem.Text);
+
+            PopulateStationPanel(filteredString);
+
+            chkRunOptionsTowards.Enabled = cboRunOptionsDestination.Text.Length > 3; // requires "--fr"
+
+            SetStationInfoButtonState();
+        }
+
+        /// <summary>
+        /// Event handler.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
+        private void EventHandler_SrcSystemComboBox_SourceSelected(
             object sender,
             EventArgs e)
         {
-            // wait for the user to type a few characters
-            if (cboSourceSystem.Text.Length > 3 && methodIndex != 10)
-            {
-                string filteredString = RemoveExtraWhitespace(cboSourceSystem.Text);
-                PopulateStationPanel(filteredString);
-
-                chkRunOptionsTowards.Enabled = cboRunOptionsDestination.Text.Length > 3; // requires "--fr"
-            }
-            else
-            {
-                chkRunOptionsTowards.Enabled = false;
-            }
-
-            SetStationInfoButtonState();
+            ProcessSelectedSource();
         }
 
         /// <summary>

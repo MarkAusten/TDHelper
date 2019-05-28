@@ -1296,7 +1296,6 @@
             this.tipToolTips.SetToolTip(this.cboSourceSystem, "Tooltip-088");
             this.cboSourceSystem.DropDown += new System.EventHandler(this.EventHandler_DropDown);
             this.cboSourceSystem.DropDownClosed += new System.EventHandler(this.EventHandler_DropDownClosed);
-            this.cboSourceSystem.TextChanged += new System.EventHandler(this.EventHandler_SrcSystemComboBox_TextChanged);
             this.cboSourceSystem.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EventHandler_SrcSystemComboBox_KeyDown);
             // 
             // lblRouteOptionsMargin
