@@ -1,3 +1,6 @@
+## 2022.06.17
+I am not longer the active maintainer for this application. Please see JarangMandi (https://github.com/jarangmandi) for future issues.
+
 ## 2018.06.26
 
 Trade Dangerous Helper has been updated. The excellent maddavo plugin stopped working some months ago and Cmdr eyeonus wrote a new plugin that pulls data either from a server mainained by Cmdr Tromador or from the EDDB server as a fallback. This new pugin, EDDBlink, allowed TD Helper to work again but not as an integrated system. I have, therefore, updated TD Helper, removing all the maddavo plugin calls and substituting the EDDBlink plugin call allowing TD Helper to work again as intended. There were a few other bugs that got squished in the process.
